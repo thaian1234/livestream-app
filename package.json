@@ -11,7 +11,9 @@
         "db:migrate": "drizzle-kit migrate",
         "db:push": "drizzle-kit push",
         "db:studio": "drizzle-kit studio",
-        "db:check": "drizzle-kit check"
+        "db:check": "drizzle-kit check",
+        "db:drop": "drizzle-kit drop",
+        "db:introspect": "drizzle-kit introspect"
     },
     "dependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
