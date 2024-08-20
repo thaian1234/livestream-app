@@ -1,0 +1,16 @@
+version: "3.9"
+
+services: # Define the services to be run by Docker Compose
+    db: # Name of the service, in this case, a PostgreSQL database
+        image: postgres:16.4-alpine3.20 # Use the official PostgreSQL image from Docker Hub
+        ports:
+            - "5432:5432" # Map port 5432 on the host to port 5432 in the container, allowing access to the database from the host
+        volumes:
+            - pgdata:/var/lib/postgresql/data # Mount a named volume 'pgdata' to persist data in the specified directory inside the container
+        environment: # Set environment variables for the PostgreSQL container. These variables configure the PostgreSQL database.
+            - POSTGRES_DB=${DB_NAME} # The name of the database to be created
+            - POSTGRES_USER=${DB_USER} # The username for the PostgreSQL database
+            - POSTGRES_PASSWORD=${DB_PASSWORD} # The password for the PostgreSQL database user
+
+volumes: # Define named volumes that can be used by services
+    pgdata: # Named volume 'pgdata' used to persist PostgreSQL data outside the container
