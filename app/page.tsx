@@ -1,3 +1,3 @@
 export default function Page() {
-	return <div>My branch</div>;
+	return <div>My commit</div>;
 }
