@@ -6,7 +6,7 @@ config({
 });
 
 export default defineConfig({
-    schema: "./server/db/schemas/*",
+    schema: "./server/db/schemas/*.table.ts",
     out: "./server/db/migrations",
     dialect: "postgresql",
     verbose: true,

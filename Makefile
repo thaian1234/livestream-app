@@ -9,7 +9,7 @@ docker-down:
 	@docker-compose down
 
 # Show the status of the Docker Compose services
-dcoker-status:
+docker-status:
 	@docker-compose ps
 
 # Clean up Docker resources
