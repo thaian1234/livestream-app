@@ -16,12 +16,14 @@
         "db:introspect": "drizzle-kit introspect"
     },
     "dependencies": {
+        "@node-rs/argon2": "^1.8.3",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
         "drizzle-orm": "^0.33.0",
         "drizzle-zod": "^0.5.1",
+        "hono": "^4.5.6",
         "lucide-react": "^0.428.0",
         "next": "14.2.5",
         "postgres": "^3.4.4",
