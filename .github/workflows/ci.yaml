@@ -1,0 +1,61 @@
+name: Check Merge Conflicts
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  check_conflicts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for merge conflicts
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          
+          # Fetch all branches
+          git fetch origin
+
+          # If this is a PR, use the head ref, otherwise use the current branch
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH="${{ github.head_ref }}"
+          else
+            BRANCH="${{ github.ref_name }}"
+          fi
+
+          echo "Checking branch: $BRANCH"
+
+          # Try to merge the current branch into main
+          git checkout main
+          git reset --hard origin/main
+          if git merge --no-commit --no-ff origin/$BRANCH; then
+            echo "No conflicts detected. Branch can be merged cleanly."
+            git merge --abort
+            exit 0
+          else
+            echo "Merge conflicts or issues detected. Please check your branch."
+            git diff --name-only --diff-filter=U
+            git merge --abort || true
+            exit 1
+          fi
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        if: failure() && github.event_name == 'pull_request'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'This pull request has merge conflicts or other issues that need to be resolved before it can be merged into the main branch. Please update your branch with the latest changes from main and resolve any conflicts or issues.'
+            })
