@@ -16,4 +16,23 @@ docker-status:
 docker-clean:
 	@docker-compose down -v --remove-orphans
 
-.PHONY: docker-up docker-down docker-status docker-clean
+db-reset:
+	docker-compose down
+	docker-compose up -d
+	@echo "Waiting for database to be ready..."
+	@timeout 15 > NUL
+	@echo "Running migrations..."
+	bun run db:migrate
+
+db-reset-migrate:
+	docker-compose down
+	docker-compose up -d
+	@echo "Waiting for database to be ready..."
+	@timeout 10 > NUL
+	@echo "Generate schemas..."
+	bun run db:generate
+	@echo "Running migrations..."
+	bun run db:migrate
+
+.PHONY: docker-up docker-down docker-status docker-clean db-reset db-reset-migrate
+
