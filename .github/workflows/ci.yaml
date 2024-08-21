@@ -1,0 +1,15 @@
+name: CI
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Check for conflicts
+              run: |
+                  git fetch origin main
+                  git merge-base --is-ancestor origin/main HEAD || (echo "Branch is not up to date with main. Please update." && exit 1)
