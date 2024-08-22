@@ -14,7 +14,7 @@ class Database {
 
     private constructor() {
         const sql = postgres(process.env.DB_URL!);
-        this.db = drizzle(sql);
+        this.db = drizzle(sql, { schema: tableSchemas });
         Database.instance = this;
     }
 

@@ -13,6 +13,7 @@ export interface IUserService {
         id: string,
         data: UserValidation.Update,
     ): Utils.MethodReturnType<UserService, "updateUser">;
+    getAllUser(): Utils.MethodReturnType<UserService, "getAllUser">;
 }
 
 export class UserService implements IUserService {
@@ -25,5 +26,8 @@ export class UserService implements IUserService {
     }
     public async updateUser(id: string, data: UserValidation.Update) {
         return await this.userRepository.update(id, data);
+    }
+    public async getAllUser() {
+        return await this.userRepository.findAll();
     }
 }

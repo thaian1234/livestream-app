@@ -6,6 +6,13 @@ import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IUserService, UserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
+import {
+    deleteCookie,
+    getCookie,
+    getSignedCookie,
+    setCookie,
+    setSignedCookie,
+} from "hono/cookie";
 import { z } from "zod";
 
 import { IController } from "./types.controller";
@@ -24,14 +31,12 @@ export class UserController {
     setupHandlers() {
         return this.factory
             .createApp()
+            .get("/", ...this.getAllUserHandler())
             .patch("/:id", ...this.updateUserHandler());
     }
     private updateUserHandler() {
         const params = z.object({
             id: z.string().uuid(),
-        });
-        const response = UserValidation.selectSchema.omit({
-            hasedPassword: true,
         });
         return this.factory.createHandlers(
             zValidator(
@@ -47,20 +52,22 @@ export class UserController {
                     id,
                     jsonData,
                 );
-                const resp = response.safeParse(updatedUser);
-                if (!resp.success) {
-                    return ApiResponse.WriteJSON({
-                        c,
-                        msg: "Failed to parse",
-                        status: HttpStatus.BadGateway,
-                    });
-                }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: resp.data,
+                    data: updatedUser,
                     status: HttpStatus.OK,
                 });
             },
         );
+    }
+    private getAllUserHandler() {
+        return this.factory.createHandlers(async (c) => {
+            const users = await this.userService.getAllUser();
+            return ApiResponse.WriteJSON({
+                c,
+                data: users,
+                status: 200,
+            });
+        });
     }
 }

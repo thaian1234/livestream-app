@@ -12,7 +12,10 @@ export class UserValidation {
         createdAt: true,
         updatedAt: true,
     });
-    public static selectSchema = this.baseSchema;
+    public static selectSchema = this.baseSchema.omit({
+        hasedPassword: true,
+    });
+    public static selectManySchema = this.selectSchema.array();
     public static insertSchema = createInsertSchema(
         tableSchemas.userTable,
     ).merge(this.baseSchema);
@@ -22,6 +25,12 @@ export class UserValidation {
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
+    public static parse(data: unknown) {
+        return this.selectSchema.parse(data);
+    }
+    public static parseMany(data: unknown) {
+        return this.selectManySchema.parse(data);
+    }
 }
 export namespace UserValidation {
     export type Insert = z.infer<typeof UserValidation.insertSchema>;
