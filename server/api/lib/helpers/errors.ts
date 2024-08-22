@@ -1,9 +1,5 @@
 import { HttpStatus } from "../types/http.type";
-import { Context } from "hono";
-import { HTTPResponseError } from "hono/types";
 import { StatusCode } from "hono/utils/http-status";
-
-import { ApiResponse } from "./api-response";
 
 class AppError extends Error {
     constructor(
@@ -67,30 +63,3 @@ export class MyError {
         HttpStatus.TooManyRequests,
     );
 }
-
-export const errorHandler = (err: Error | HTTPResponseError, c: Context) => {
-    switch (true) {
-        case err instanceof MyError.UnauthenticatedError:
-        case err instanceof MyError.UnauthorizedError:
-        case err instanceof MyError.NotFoundError:
-        case err instanceof MyError.ValidationError:
-        case err instanceof MyError.ConflictError:
-        case err instanceof MyError.BadGatewayError:
-        case err instanceof MyError.InternalServerError:
-        case err instanceof MyError.TooManyRequestsError:
-        case err instanceof MyError.ServiceUnavailableError:
-            return ApiResponse.WriteJSON({
-                c,
-                status: err.statusCode,
-                errors: err.message,
-            });
-
-        default:
-            console.error("Error failed to handle: ", err);
-            return ApiResponse.WriteJSON({
-                c,
-                status: HttpStatus.InternalServerError,
-                errors: err.message,
-            });
-    }
-};

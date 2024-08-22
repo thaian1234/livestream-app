@@ -15,6 +15,7 @@ class Database {
     private constructor() {
         const sql = postgres(process.env.DB_URL!);
         this.db = drizzle(sql);
+        Database.instance = this;
     }
 
     public static getInstance(): Database {
@@ -24,5 +25,4 @@ class Database {
         return Database.instance;
     }
 }
-
-export const db = Database.getInstance().db;
+export default Database;

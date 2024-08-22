@@ -8,17 +8,26 @@ export class UserValidation {
         email: z.string().email(),
         imageUrl: z.string().url(),
         username: z.string().min(4).max(20),
+    }).omit({
+        createdAt: true,
+        updatedAt: true,
     });
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(
         tableSchemas.userTable,
     ).merge(this.baseSchema);
-    public static updateSchema = this.baseSchema.partial().required({
+    public static updateSchema = this.baseSchema.partial().omit({
         id: true,
     });
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
+}
+export namespace UserValidation {
+    export type Insert = z.infer<typeof UserValidation.insertSchema>;
+    export type Update = z.infer<typeof UserValidation.updateSchema>;
+    export type Select = z.infer<typeof UserValidation.selectSchema>;
+    export type Delete = z.infer<typeof UserValidation.deleteSchema>;
 }
 
 export class FollowValidation {
@@ -31,7 +40,7 @@ export class FollowValidation {
         id: true,
     });
 }
-
+// TODO: Add FollowTypes
 export class BlockValidation {
     private static baseSchema = createSelectSchema(tableSchemas.blockTable);
     public static selectSchema = this.baseSchema;
@@ -42,4 +51,4 @@ export class BlockValidation {
         id: true,
     });
 }
-
+// TODO: Add BlockTypes

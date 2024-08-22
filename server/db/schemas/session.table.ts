@@ -15,7 +15,8 @@ export const sessionTable = pgTable("session", {
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
         .notNull()
-        .$onUpdate(() => new Date()),
+        .$onUpdate(() => new Date())
+        .defaultNow(),
 });
 
 export const sessionRelations = relations(sessionTable, ({ one }) => ({
