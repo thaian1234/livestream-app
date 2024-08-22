@@ -22,7 +22,8 @@ export const followTable = pgTable(
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at")
             .notNull()
-            .$onUpdate(() => new Date()),
+            .$onUpdate(() => new Date())
+            .defaultNow(),
     },
     (table) => ({
         unq: uniqueIndex("follower_following_unq").on(

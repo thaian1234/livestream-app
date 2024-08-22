@@ -8,6 +8,13 @@
       "when": 1724165441241,
       "tag": "0000_third_machine_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1724297558001,
+      "tag": "0001_lively_harrier",
+      "breakpoints": true
     }
   ]
 }

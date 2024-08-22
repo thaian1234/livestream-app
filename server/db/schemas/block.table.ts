@@ -19,7 +19,8 @@ export const blockTable = pgTable(
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at")
             .notNull()
-            .$onUpdate(() => new Date()),
+            .$onUpdate(() => new Date())
+            .defaultNow(),
     },
     (table) => ({
         unq: uniqueIndex("blocker_blocked_unq").on(
@@ -35,11 +36,11 @@ export const blockRelations = relations(blockTable, ({ one }) => ({
     blocker: one(userTable, {
         fields: [blockTable.blockerId],
         references: [userTable.id],
-        relationName: "blocked_by",
+        relationName: "blocking",
     }),
     blocked: one(userTable, {
         fields: [blockTable.blockedId],
         references: [userTable.id],
-        relationName: "blocking",
+        relationName: "blocked_by",
     }),
 }));
