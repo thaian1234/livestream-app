@@ -1,3 +1,5 @@
+import { SomeZodObject, ZodObject, ZodObjectDef, ZodSchema, z } from "zod";
+
 export interface IWriter<Insert, Update, Select, ID = string> {
     create(data: Insert): Promise<Select | undefined>;
     update(id: ID, data: Update): Promise<Select | undefined>;

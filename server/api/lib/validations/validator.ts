@@ -15,12 +15,12 @@ export class Validator {
     public static handleParseError<T>(result: ResultType<T>, c: Context) {
         if (!result.success) {
             const zodErr = result.error
-                ? result?.error.flatten().fieldErrors
+                ? result.error.flatten().fieldErrors
                 : "Something went wrong";
-            return ApiResponse.WriteJSON({
+            return ApiResponse.WriteErrorJSON({
                 c,
                 status: HttpStatus.BadRequest,
-                errors: zodErr,
+                msg: zodErr as string,
             });
         }
     }
@@ -28,6 +28,13 @@ export class Validator {
         err: Error | HTTPResponseError,
         c: Context,
     ) {
+        if (err instanceof ZodError) {
+            return ApiResponse.WriteErrorJSON({
+                c,
+                status: HttpStatus.BadRequest,
+                msg: "Vaidated fail",
+            });
+        }
         switch (true) {
             case err instanceof MyError.UnauthenticatedError:
             case err instanceof MyError.UnauthorizedError:
@@ -39,17 +46,17 @@ export class Validator {
             case err instanceof MyError.TooManyRequestsError:
             case err instanceof MyError.ServiceUnavailableError:
             case err instanceof MyError.GatewayTimeoutError:
-                return ApiResponse.WriteJSON({
+                return ApiResponse.WriteErrorJSON({
                     c,
                     status: err.statusCode,
-                    errors: err.message,
+                    msg: err.message,
                 });
             default:
                 console.error("Failed to handle error: ", err);
-                return ApiResponse.WriteJSON({
+                return ApiResponse.WriteErrorJSON({
                     c,
                     status: HttpStatus.InternalServerError,
-                    errors: err.message,
+                    msg: err.message,
                 });
         }
     }

@@ -18,7 +18,6 @@ app.notFound((c) => {
     // TODO: Handle not found
     return c.text("Api not found");
 });
-
 // Setup routes
 const routes = app.route("/", userRoutes);
 
