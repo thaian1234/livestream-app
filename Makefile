@@ -28,7 +28,7 @@ db-reset-migrate:
 	docker-compose down
 	docker-compose up -d
 	@echo "Waiting for database to be ready..."
-	@timeout 10 > NUL
+	@timeout 3 > NUL
 	@echo "Generate schemas..."
 	bun run db:generate
 	@echo "Running migrations..."
