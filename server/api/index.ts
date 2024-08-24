@@ -23,4 +23,5 @@ const routes = app.route("/", userRoutes);
 
 type AppType = typeof routes;
 
-export { app, type AppType };
+export { type AppType };
+export default app;
