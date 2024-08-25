@@ -61,3 +61,24 @@ export class BlockValidation {
     });
 }
 // TODO: Add BlockTypes
+
+export class AuthValidation {
+    private static baseSchema = UserValidation.insertSchema
+        .pick({
+            username: true,
+            email: true,
+        })
+        .extend({
+            hasedPassword: z
+                .string()
+                .min(6, "Password must be at least 6 characters long"),
+        });
+    public static signinSchema = this.baseSchema.omit({
+        username: true,
+    });
+    public static signupSchema = this.baseSchema;
+}
+export namespace AuthValidation {
+    export type Signin = z.infer<typeof AuthValidation.signinSchema>;
+    export type Signup = z.infer<typeof AuthValidation.signupSchema>;
+}
