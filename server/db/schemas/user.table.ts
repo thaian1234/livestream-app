@@ -17,7 +17,7 @@ export const userTable = pgTable("users", {
     updatedAt: timestamp("updated_at")
         .notNull()
         .$onUpdate(() => new Date())
-        .defaultNow(),
+          .defaultNow(),
 });
 
 export const userRelations = relations(userTable, ({ many, one }) => ({
