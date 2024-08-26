@@ -6,13 +6,6 @@ import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IUserService, UserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
-import {
-    deleteCookie,
-    getCookie,
-    getSignedCookie,
-    setCookie,
-    setSignedCookie,
-} from "hono/cookie";
 import { z } from "zod";
 
 import { IController } from "./types.controller";
@@ -52,6 +45,13 @@ export class UserController {
                     id,
                     jsonData,
                 );
+                if (!updatedUser) {
+                    return ApiResponse.WriteErrorJSON({
+                        c,
+                        status: HttpStatus.NotFound,
+                        msg: "User not found",
+                    });
+                }
                 return ApiResponse.WriteJSON({
                     c,
                     data: updatedUser,
@@ -63,6 +63,13 @@ export class UserController {
     private getAllUserHandler() {
         return this.factory.createHandlers(async (c) => {
             const users = await this.userService.getAllUser();
+            if (!users) {
+                return ApiResponse.WriteErrorJSON({
+                    c,
+                    status: HttpStatus.NotFound,
+                    msg: "Users not found",
+                });
+            }
             return ApiResponse.WriteJSON({
                 c,
                 data: users,

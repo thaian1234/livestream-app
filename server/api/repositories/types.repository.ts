@@ -1,5 +1,3 @@
-import { SomeZodObject, ZodObject, ZodObjectDef, ZodSchema, z } from "zod";
-
 export interface IWriter<Insert, Update, Select, ID = string> {
     create(data: Insert): Promise<Select | undefined>;
     update(id: ID, data: Update): Promise<Select | undefined>;
@@ -7,5 +5,5 @@ export interface IWriter<Insert, Update, Select, ID = string> {
 }
 export interface IReader<Select, ID = string> {
     findById(id: ID): Promise<Select | undefined>;
-    findAll(): Promise<Select[]>;
+    findAll(): Promise<Select[] | undefined>;
 }
