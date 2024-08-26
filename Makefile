@@ -20,7 +20,7 @@ db-reset:
 	docker-compose down
 	docker-compose up -d
 	@echo "Waiting for database to be ready..."
-	@timeout 15 > NUL
+	@timeout 5 > NUL
 	@echo "Running migrations..."
 	bun run db:migrate
 

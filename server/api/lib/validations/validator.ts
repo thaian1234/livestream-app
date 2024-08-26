@@ -56,7 +56,7 @@ export class Validator {
                 return ApiResponse.WriteErrorJSON({
                     c,
                     status: HttpStatus.InternalServerError,
-                    msg: err.message,
+                    msg: "Something went wrong",
                 });
         }
     }

@@ -16,9 +16,7 @@ export class UserValidation {
         hasedPassword: true,
     });
     public static selectManySchema = this.selectSchema.array();
-    public static insertSchema = createInsertSchema(
-        tableSchemas.userTable,
-    ).merge(this.baseSchema);
+    public static insertSchema = createInsertSchema(tableSchemas.userTable);
     public static updateSchema = this.baseSchema.partial().omit({
         id: true,
     });
@@ -69,9 +67,13 @@ export class AuthValidation {
             email: true,
         })
         .extend({
-            hasedPassword: z
+            password: z
                 .string()
-                .min(6, "Password must be at least 6 characters long"),
+                .min(6, "Password must be at least 6 characters long")
+                .max(
+                    255,
+                    "Password must not be at more than 255 characters long",
+                ),
         });
     public static signinSchema = this.baseSchema.omit({
         username: true,

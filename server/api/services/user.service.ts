@@ -14,6 +14,10 @@ export interface IUserService {
         data: UserValidation.Update,
     ): Utils.MethodReturnType<UserService, "updateUser">;
     getAllUser(): Utils.MethodReturnType<UserService, "getAllUser">;
+    getUserByEmailOrUsername(
+        email: string,
+        username: string,
+    ): Utils.MethodReturnType<UserService, "getUserByEmailOrUsername">;
 }
 
 export class UserService implements IUserService {
@@ -29,5 +33,8 @@ export class UserService implements IUserService {
     }
     public async getAllUser() {
         return await this.userRepository.findAll();
+    }
+    public async getUserByEmailOrUsername(email: string, username: string) {
+        return await this.userRepository.findByEmailOrUsername(email, username);
     }
 }

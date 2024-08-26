@@ -1,6 +1,6 @@
-import { MyError } from "../lib/helpers/errors";
+import { Utils } from "../lib/helpers/utils";
 import { UserValidation } from "../lib/validations/schema.validation";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -13,7 +13,12 @@ export interface IUserRepository
             UserValidation.Update,
             UserValidation.Select
         >,
-        IReader<UserValidation.Select> {}
+        IReader<UserValidation.Select> {
+    findByEmailOrUsername(
+        email: string,
+        username: string,
+    ): Utils.MethodReturnType<UserRepository, "findByEmailOrUsername">;
+}
 
 export class UserRepository implements IUserRepository {
     private db;
@@ -25,24 +30,14 @@ export class UserRepository implements IUserRepository {
             const user = await this.db.query.userTable.findFirst({
                 where: eq(tableSchemas.userTable.id, id),
             });
-            if (!user) {
-                throw new MyError.NotFoundError();
-            }
-            return UserValidation.selectSchema.parse(user);
-        } catch (error) {
-            throw error;
-        }
+            return UserValidation.parse(user);
+        } catch (error) {}
     }
     async findAll() {
         try {
             const users = await this.db.query.userTable.findMany();
-            if (!users) {
-                throw new MyError.NotFoundError();
-            }
             return UserValidation.parseMany(users);
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) {}
     }
     async create(data: UserValidation.Insert) {
         try {
@@ -50,13 +45,8 @@ export class UserRepository implements IUserRepository {
                 .insert(tableSchemas.userTable)
                 .values(data)
                 .returning();
-            if (user.length === 0) {
-                throw new MyError.InternalServerError();
-            }
-            return UserValidation.parse(user);
-        } catch (error) {
-            throw error;
-        }
+            return UserValidation.parse(user[0]);
+        } catch (error) {}
     }
     async update(id: string, data: UserValidation.Update) {
         try {
@@ -65,13 +55,9 @@ export class UserRepository implements IUserRepository {
                 .set(data)
                 .where(eq(tableSchemas.userTable.id, id))
                 .returning();
-            if (user.length === 0) {
-                throw new MyError.NotFoundError();
-            }
+
             return UserValidation.parse(user[0]);
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) {}
     }
     async delete(id: string) {
         try {
@@ -82,8 +68,17 @@ export class UserRepository implements IUserRepository {
                 return false;
             }
             return true;
-        } catch (error) {
-            throw error;
-        }
+        } catch (error) {}
+    }
+    async findByEmailOrUsername(email: string, username: string) {
+        try {
+            const user = await this.db.query.userTable.findFirst({
+                where: or(
+                    eq(tableSchemas.userTable.email, email),
+                    eq(tableSchemas.userTable.username, username),
+                ),
+            });
+            return UserValidation.parse(user);
+        } catch (error) {}
     }
 }
