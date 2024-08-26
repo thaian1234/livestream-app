@@ -6,7 +6,7 @@ export default async function Page() {
     const $get = client.api.users.$get;
     const resp = await $get();
     if (!resp.ok) {
-        const err = (await resp.json()).msg;
+        const err = (await resp.json()).status;
         return <div>{err}</div>;
     }
     const allUsers = (await resp.json()).data;

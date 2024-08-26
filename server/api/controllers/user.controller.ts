@@ -1,4 +1,5 @@
 import { ApiResponse } from "../lib/helpers/api-response";
+import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { HttpStatus } from "../lib/types/http.type";
@@ -66,8 +67,8 @@ export class UserController {
             if (!users) {
                 return ApiResponse.WriteErrorJSON({
                     c,
-                    status: HttpStatus.NotFound,
-                    msg: "Users not found",
+                    status: HttpStatus.BadRequest,
+                    msg: "abc",
                 });
             }
             return ApiResponse.WriteJSON({
