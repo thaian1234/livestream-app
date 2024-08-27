@@ -4,57 +4,46 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import { HttpStatus } from "../lib/types/http.type";
 import { AuthValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
-import { ISignupService, SignupService } from "../services/signup.service";
+import { ISigninService, SignInService } from "../services/signin.service";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
 
 import { IController } from "./types.controller";
 
-export interface ISignupController extends IController {
-    setupHandlers(): Utils.MethodReturnType<SignupController, "setupHandlers">;
+export interface ISigninController extends IController {
+    setupHandlers(): Utils.MethodReturnType<SigninController, "setupHandlers">;
 }
-
-export class SignupController implements ISignupController {
+export class SigninController {
     private factory: CreateFactoryType;
-    private signupService: ISignupService;
+    private siginService: ISigninService;
     constructor(factory: CreateFactoryType) {
         this.factory = factory;
-        this.signupService = new SignupService();
+        this.siginService = new SignInService();
     }
     setupHandlers() {
         return this.factory
             .createApp()
-            .post("/sign-up", ...this.signupHandler());
+            .post("/sign-in", ...this.signinHandler());
     }
-    private signupHandler() {
+    private signinHandler() {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                AuthValidation.signupSchema,
+                AuthValidation.signinSchema,
                 Validator.handleParseError,
             ),
             async (c) => {
                 const jsonData = c.req.valid("json");
-                const existingUser = await this.signupService.checkExistingUser(
-                    jsonData.email,
-                    jsonData.username,
-                );
-                if (existingUser) {
-                    return ApiResponse.WriteErrorJSON({
-                        c,
-                        status: HttpStatus.BadRequest,
-                        msg: "Email or Username already in use",
-                    });
-                }
                 const { session, sessionCookie } =
-                    await this.signupService.signupWithEmailAndPassword(
-                        jsonData,
+                    await this.siginService.singinWithEmailAndPassword(
+                        jsonData.email,
+                        jsonData.password,
                     );
                 if (!session || !sessionCookie) {
                     return ApiResponse.WriteErrorJSON({
                         c,
                         status: HttpStatus.Unauthorized,
-                        msg: "Sign up failed",
+                        msg: "Your Email or Password is not correct",
                     });
                 }
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
@@ -64,7 +53,7 @@ export class SignupController implements ISignupController {
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.OK,
-                    msg: "Sign up successfully",
+                    msg: "Sign in successfully",
                     data: null,
                 });
             },

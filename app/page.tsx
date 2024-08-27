@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-
 import { client } from "@/server/api/client";
 
 export default async function Page() {
@@ -17,14 +15,30 @@ export default async function Page() {
         .then((data) => {
             console.log(data);
         });
+    // Sigin
+    async function signIn() {
+        const $post = client.api.auth["sign-in"].$post;
+        const respSignin = await $post({
+            json: {
+                email: "test@test12345.com",
+                password: "123456",
+            },
+        });
+        if (!respSignin.ok) {
+            const err = (await respSignin.json()).status;
+            return <div>{err}</div>;
+        }
+    }
 
     return (
-        <div>
-            {allUsers.map((u) => (
-                <div key={u.id}>
-                    Name: {u.username}, id: {u.id}
-                </div>
-            ))}
-        </div>
+        <>
+            <div>
+                {allUsers.map((u) => (
+                    <div key={u.id}>
+                        Name: {u.username}, id: {u.id}
+                    </div>
+                ))}
+            </div>
+        </>
     );
 }

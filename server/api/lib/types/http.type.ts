@@ -17,7 +17,7 @@ export enum HttpStatus {
     IMUsed = 226, // RFC 3229, 10.4.1
     MultipleChoices = 300, // RFC 9110, 15.4.1
     MovedPermanently = 301, // RFC 9110, 15.4.2
-    Found = 302, // RFC 9110, 15.4.3
+    Redirection = 302, // RFC 9110, 15.4.3
     SeeOther = 303, // RFC 9110, 15.4.4
     NotModified = 304, // RFC 9110, 15.4.5
     UseProxy = 305, // RFC 9110, 15.4.6
@@ -101,7 +101,7 @@ export function statusText(code: number): string {
             return "Multiple Choices";
         case HttpStatus.MovedPermanently:
             return "Moved Permanently";
-        case HttpStatus.Found:
+        case HttpStatus.Redirection:
             return "Found";
         case HttpStatus.SeeOther:
             return "See Other";

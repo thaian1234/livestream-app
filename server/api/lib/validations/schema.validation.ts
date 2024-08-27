@@ -12,17 +12,26 @@ export class UserValidation {
         createdAt: true,
         updatedAt: true,
     });
+    private static baseManySchema = this.baseSchema.array();
     public static selectSchema = this.baseSchema.omit({
         hasedPassword: true,
     });
-    public static selectManySchema = this.selectSchema.array();
-    public static insertSchema = createInsertSchema(tableSchemas.userTable);
+    public static selectManySchema = this.baseManySchema;
+    public static insertSchema = createInsertSchema(tableSchemas.userTable, {
+        email: z.string().email(),
+    });
     public static updateSchema = this.baseSchema.partial().omit({
         id: true,
     });
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
+    public static pareBase(data: unknown) {
+        return this.baseSchema.parse(data);
+    }
+    public static pareBaseMany(data: unknown) {
+        return this.baseManySchema.parse(data);
+    }
     public static parse(data: unknown) {
         return this.selectSchema.parse(data);
     }
@@ -72,7 +81,7 @@ export class AuthValidation {
                 .min(6, "Password must be at least 6 characters long")
                 .max(
                     255,
-                    "Password must not be at more than 255 characters long",
+                    "Password must not be more than 255 characters long",
                 ),
         });
     public static signinSchema = this.baseSchema.omit({

@@ -5,9 +5,9 @@ import { AuthValidation } from "../lib/validations/schema.validation";
 import { IUserService, UserService } from "./user.service";
 
 export interface ISignupService {
-    signupWithPassword(
+    signupWithEmailAndPassword(
         data: AuthValidation.Signup,
-    ): Utils.MethodReturnType<SignupService, "signupWithPassword">;
+    ): Utils.MethodReturnType<SignupService, "signupWithEmailAndPassword">;
     checkExistingUser(
         email: string,
         username: string,
@@ -19,7 +19,7 @@ export class SignupService {
     constructor() {
         this.userService = new UserService();
     }
-    public async signupWithPassword(data: AuthValidation.Signup) {
+    public async signupWithEmailAndPassword(data: AuthValidation.Signup) {
         const hasedPassword = await Utils.PasswordUtils.hashPassword(
             data.password,
         );
@@ -33,12 +33,7 @@ export class SignupService {
                 sessionCookie: null,
             };
         }
-        const session = await lucia.createSession(newUser.id, {});
-        const sessionCookie = lucia.createSessionCookie(session.id);
-        return {
-            session,
-            sessionCookie,
-        };
+        return await Utils.createSessionClient(newUser.id);
     }
     public async checkExistingUser(email: string, username: string) {
         return !!(await this.userService.getUserByEmailOrUsername(

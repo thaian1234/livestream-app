@@ -1,5 +1,7 @@
 import { hash, verify } from "@node-rs/argon2";
 
+import { lucia } from "./lucia.auth";
+
 export namespace Utils {
     export type MethodReturnType<T, K extends keyof T> = T[K] extends (
         ...args: any[]
@@ -26,5 +28,11 @@ export namespace Utils {
             });
             return passwordHash;
         }
+    }
+
+    export async function createSessionClient(userId: string) {
+        const session = await lucia.createSession(userId, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        return { session, sessionCookie };
     }
 }
