@@ -1,9 +1,9 @@
 import { HttpStatus } from "../types/http.type";
-import { StatusCode } from "hono/utils/http-status";
+import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
 
 class AppError extends Error {
     constructor(
-        public statusCode: StatusCode,
+        public statusCode: Exclude<StatusCode, SuccessStatusCode>,
         message: string,
     ) {
         super(message);
@@ -12,7 +12,10 @@ class AppError extends Error {
 }
 
 class ErrorFactory {
-    static createError(defaultMessage: string, statusCode: StatusCode) {
+    static createError(
+        defaultMessage: string,
+        statusCode: Exclude<StatusCode, SuccessStatusCode>,
+    ) {
         return class extends AppError {
             constructor(message: string = defaultMessage) {
                 super(statusCode, message);
