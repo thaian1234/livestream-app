@@ -18,6 +18,9 @@ export interface IUserService {
         email: string,
         username: string,
     ): Utils.MethodReturnType<UserService, "getUserByEmailOrUsername">;
+    getUserByEmail(
+        email: string,
+    ): Utils.MethodReturnType<UserService, "getUserByEmail">;
 }
 
 export class UserService implements IUserService {
@@ -36,5 +39,8 @@ export class UserService implements IUserService {
     }
     public async getUserByEmailOrUsername(email: string, username: string) {
         return await this.userRepository.findByEmailOrUsername(email, username);
+    }
+    public async getUserByEmail(email: string) {
+        return await this.userRepository.findByEmail(email);
     }
 }

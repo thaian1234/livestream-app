@@ -18,6 +18,9 @@ export interface IUserRepository
         email: string,
         username: string,
     ): Utils.MethodReturnType<UserRepository, "findByEmailOrUsername">;
+    findByEmail(
+        email: string,
+    ): Utils.MethodReturnType<UserRepository, "findByEmail">;
 }
 
 export class UserRepository implements IUserRepository {
@@ -31,6 +34,14 @@ export class UserRepository implements IUserRepository {
                 where: eq(tableSchemas.userTable.id, id),
             });
             return UserValidation.parse(user);
+        } catch (error) {}
+    }
+    async findByEmail(email: string) {
+        try {
+            const user = await this.db.query.userTable.findFirst({
+                where: eq(tableSchemas.userTable.email, email),
+            });
+            return UserValidation.pareBase(user);
         } catch (error) {}
     }
     async findAll() {
