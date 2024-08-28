@@ -28,7 +28,7 @@
         "dotenv": "^16.4.5",
         "drizzle-orm": "^0.33.0",
         "drizzle-zod": "^0.5.1",
-        "hono": "^4.5.8",
+        "hono": "^4.5.9",
         "lucide-react": "^0.428.0",
         "next": "14.2.6",
         "oslo": "^1.2.1",
@@ -42,10 +42,10 @@
         "zod": "^3.23.8"
     },
     "devDependencies": {
-        "@types/node": "^20.16.1",
+        "@types/node": "^20.16.2",
         "@types/react": "^18.3.4",
         "@types/react-dom": "^18.3.0",
-        "drizzle-kit": "^0.24.1",
+        "drizzle-kit": "^0.24.2",
         "eslint": "^8.57.0",
         "eslint-config-next": "14.2.5",
         "postcss": "^8.4.41",

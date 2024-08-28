@@ -5,6 +5,7 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import { HttpStatus } from "../lib/types/http.type";
 import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
+import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IUserService, UserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
@@ -39,9 +40,14 @@ export class UserController {
                 Validator.handleParseError,
             ),
             zValidator("param", params, Validator.handleParseError),
+            AuthMiddleware.isAuthenticated,
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const { id } = c.req.valid("param");
+                const currentUser = c.get("getUser");
+                if (currentUser.id !== id) {
+                    throw new MyError.UnauthorizedError();
+                }
                 const updatedUser = await this.userService.updateUser(
                     id,
                     jsonData,
@@ -62,20 +68,24 @@ export class UserController {
         );
     }
     private getAllUserHandler() {
-        return this.factory.createHandlers(async (c) => {
-            const users = await this.userService.getAllUser();
-            if (!users) {
-                return ApiResponse.WriteErrorJSON({
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const users = await this.userService.getAllUser();
+                console.log(c.get("getUser"));
+                if (!users) {
+                    return ApiResponse.WriteErrorJSON({
+                        c,
+                        status: HttpStatus.BadRequest,
+                        msg: "Failed to fetch users",
+                    });
+                }
+                return ApiResponse.WriteJSON({
                     c,
-                    status: HttpStatus.BadRequest,
-                    msg: "abc",
+                    data: users,
+                    status: HttpStatus.OK,
                 });
-            }
-            return ApiResponse.WriteJSON({
-                c,
-                data: users,
-                status: 200,
-            });
-        });
+            },
+        );
     }
 }

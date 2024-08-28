@@ -1,6 +1,12 @@
 import { createFactory } from "hono/factory";
+import type { Session, User } from "lucia";
 
-type ContextVariables = {};
+type ContextVariables = {
+    user: User | null;
+    session: Session | null;
+    getUser: User;
+    getSession: Session;
+};
 
 type Env = {
     Variables: ContextVariables;
