@@ -3,7 +3,7 @@ import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
 
 type ApiResponseType<T> = {
     status: SuccessStatusCode;
-    data: T;
+    data?: T;
     c: Context;
     msg?: string;
 };
@@ -14,7 +14,12 @@ type ApiErrorResponseType = {
 };
 
 export class ApiResponse {
-    public static WriteJSON<T>({ c, data, status, msg }: ApiResponseType<T>) {
+    public static WriteJSON<T>({
+        c,
+        data = undefined,
+        status,
+        msg,
+    }: ApiResponseType<T>) {
         return c.json(
             {
                 status,
