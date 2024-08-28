@@ -72,7 +72,6 @@ export class UserController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const users = await this.userService.getAllUser();
-                console.log(c.get("getUser"));
                 if (!users) {
                     return ApiResponse.WriteErrorJSON({
                         c,

@@ -65,7 +65,7 @@ export class SignupController implements ISignupController {
                     c,
                     status: HttpStatus.OK,
                     msg: "Sign up successfully",
-                    data: null,
+                    data: undefined,
                 });
             },
         );

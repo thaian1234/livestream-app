@@ -13,7 +13,7 @@ export class UserValidation {
         updatedAt: true,
     });
     public static selectSchema = this.baseSchema.omit({
-        hasedPassword: true,
+        hashedPassword: true,
     });
     public static insertSchema = createInsertSchema(tableSchemas.userTable, {
         email: z.string().email(),
