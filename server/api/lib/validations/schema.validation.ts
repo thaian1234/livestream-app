@@ -20,6 +20,7 @@ export class UserValidation {
     });
     public static updateSchema = this.baseSchema.partial().omit({
         id: true,
+        email: true,
     });
     public static deleteSchema = this.baseSchema.pick({
         id: true,
