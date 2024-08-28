@@ -10,7 +10,7 @@ export const userTable = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     username: text("username").notNull().unique(),
     email: text("email").notNull().unique(),
-    hasedPassword: text("hased_password"),
+    hashedPassword: text("hashed_password"),
     imageUrl: text("image_url"),
     bio: text("bio"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

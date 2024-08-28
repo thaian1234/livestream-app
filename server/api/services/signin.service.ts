@@ -16,14 +16,14 @@ export class SignInService implements ISigninService {
     }
     public async singinWithEmailAndPassword(email: string, password: string) {
         const existingUser = await this.userService.getUserByEmail(email);
-        if (!existingUser || !existingUser.hasedPassword) {
+        if (!existingUser || !existingUser.hashedPassword) {
             return {
                 session: null,
                 sessionCookie: null,
             };
         }
         const validPassword = await Utils.PasswordUtils.verifyHash(
-            existingUser.hasedPassword,
+            existingUser.hashedPassword,
             password,
         );
         if (!validPassword) {

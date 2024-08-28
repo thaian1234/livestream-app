@@ -13,7 +13,7 @@ const app = new Hono<Env>().basePath("/api");
 
 // Middleware
 app.use(logger());
-// app.use(csrf());
+app.use(csrf());
 app.use(
     "*",
     cors({

@@ -20,12 +20,12 @@ export class SignupService {
         this.userService = new UserService();
     }
     public async signupWithEmailAndPassword(data: AuthValidation.Signup) {
-        const hasedPassword = await Utils.PasswordUtils.hashPassword(
+        const hashedPassword = await Utils.PasswordUtils.hashPassword(
             data.password,
         );
         const newUser = await this.userService.createUser({
             ...data,
-            hasedPassword: hasedPassword,
+            hashedPassword: hashedPassword,
         });
         if (!newUser) {
             return {

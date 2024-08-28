@@ -1,4 +1,6 @@
 import { ApiResponse } from "../lib/helpers/api-response";
+import { MyError } from "../lib/helpers/errors";
+import { lucia } from "../lib/helpers/lucia.auth";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { HttpStatus } from "../lib/types/http.type";
@@ -6,7 +8,7 @@ import { AuthValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { ISigninService, SignInService } from "../services/signin.service";
 import { zValidator } from "@hono/zod-validator";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 
 import { IController } from "./types.controller";
 
@@ -23,7 +25,8 @@ export class SigninController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .post("/sign-in", ...this.signinHandler());
+            .post("/sign-in", ...this.signinHandler())
+            .post("/sign-out", ...this.signoutHandler());
     }
     private signinHandler() {
         return this.factory.createHandlers(
@@ -54,9 +57,28 @@ export class SigninController {
                     c,
                     status: HttpStatus.OK,
                     msg: "Sign in successfully",
-                    data: null,
+                    data: undefined,
                 });
             },
         );
+    }
+    private signoutHandler() {
+        return this.factory.createHandlers(async (c) => {
+            const sessionId = getCookie(c, lucia.sessionCookieName);
+            if (!sessionId) {
+                throw new MyError.UnauthenticatedError();
+            }
+            await lucia.invalidateSession(sessionId);
+            setCookie(c, lucia.sessionCookieName, "", {
+                expires: new Date(0),
+                sameSite: "Strict",
+            });
+            return ApiResponse.WriteJSON({
+                c,
+                msg: "Sign out successfully",
+                status: HttpStatus.OK,
+                data: undefined,
+            });
+        });
     }
 }
