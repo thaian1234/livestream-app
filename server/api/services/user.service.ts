@@ -5,23 +5,7 @@ import {
     UserRepository,
 } from "../repositories/user.repository";
 
-export interface IUserService {
-    createUser(
-        data: UserValidation.Insert,
-    ): Utils.MethodReturnType<UserService, "createUser">;
-    updateUser(
-        id: string,
-        data: UserValidation.Update,
-    ): Utils.MethodReturnType<UserService, "updateUser">;
-    getAllUser(): Utils.MethodReturnType<UserService, "getAllUser">;
-    getUserByEmailOrUsername(
-        email: string,
-        username: string,
-    ): Utils.MethodReturnType<UserService, "getUserByEmailOrUsername">;
-    getUserByEmail(
-        email: string,
-    ): Utils.MethodReturnType<UserService, "getUserByEmail">;
-}
+export interface IUserService extends Utils.AutoMappedClass<UserService> {}
 
 export class UserService implements IUserService {
     private userRepository: IUserRepository;

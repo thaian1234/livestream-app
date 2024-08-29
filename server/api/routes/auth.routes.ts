@@ -1,29 +1,22 @@
 import {
-    ISigninController,
-    SigninController,
-} from "../controllers/signin.controller";
-import {
-    ISignupController,
-    SignupController,
-} from "../controllers/signup.controller";
+    AuthController,
+    IAuthController,
+} from "../controllers/auth.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { createFactory } from "hono/factory";
 
 class AuthRoutes {
     private factory: CreateFactoryType;
-    private signupController: ISignupController;
-    private signinController: ISigninController;
+    private authController: IAuthController;
     constructor() {
         this.factory = createFactory();
-        this.signupController = new SignupController(this.factory);
-        this.signinController = new SigninController(this.factory);
+        this.authController = new AuthController(this.factory);
     }
     setupRoutes() {
         return this.factory
             .createApp()
             .basePath("/auth")
-            .route("/", this.signupController.setupHandlers())
-            .route("/", this.signinController.setupHandlers());
+            .route("/", this.authController.setupHandlers());
     }
 }
 

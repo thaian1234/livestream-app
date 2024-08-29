@@ -1,8 +1,8 @@
+import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { HttpStatus } from "../lib/types/http.type";
 import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -10,11 +10,8 @@ import { IUserService, UserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
-import { IController } from "./types.controller";
-
-export interface IUserController extends IController {
-    setupHandlers(): Utils.MethodReturnType<UserController, "setupHandlers">;
-}
+export interface IUserController
+    extends Utils.PickMethods<UserController, "setupHandlers"> {}
 
 export class UserController {
     private factory: CreateFactoryType;
@@ -53,11 +50,7 @@ export class UserController {
                     jsonData,
                 );
                 if (!updatedUser) {
-                    return ApiResponse.WriteErrorJSON({
-                        c,
-                        status: HttpStatus.NotFound,
-                        msg: "User not found",
-                    });
+                    throw new MyError.NotFoundError("User not found");
                 }
                 return ApiResponse.WriteJSON({
                     c,
@@ -73,11 +66,7 @@ export class UserController {
             async (c) => {
                 const users = await this.userService.getAllUser();
                 if (!users) {
-                    return ApiResponse.WriteErrorJSON({
-                        c,
-                        status: HttpStatus.BadRequest,
-                        msg: "Failed to fetch users",
-                    });
+                    throw new MyError.BadRequestError("Failed to fetch user");
                 }
                 return ApiResponse.WriteJSON({
                     c,

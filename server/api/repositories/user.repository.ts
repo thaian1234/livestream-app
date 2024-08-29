@@ -5,23 +5,8 @@ import { eq, or } from "drizzle-orm";
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
 
-import { IReader, IWriter } from "./types.repository";
-
 export interface IUserRepository
-    extends IWriter<
-            UserValidation.Insert,
-            UserValidation.Update,
-            UserValidation.Select
-        >,
-        IReader<UserValidation.Select> {
-    findByEmailOrUsername(
-        email: string,
-        username: string,
-    ): Utils.MethodReturnType<UserRepository, "findByEmailOrUsername">;
-    findByEmail(
-        email: string,
-    ): Utils.MethodReturnType<UserRepository, "findByEmail">;
-}
+    extends Utils.AutoMappedClass<UserRepository> {}
 
 export class UserRepository implements IUserRepository {
     private db;
