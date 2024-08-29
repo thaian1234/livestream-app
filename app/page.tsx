@@ -6,11 +6,11 @@ import { LoginButton } from "@/components/login-button";
 import { Button } from "@/components/ui/button";
 
 export default function Page() {
-    const { data, isPending } = clientAPI.users.useGetAllUser();
+    const { data, isPending, error } = clientAPI.users.useGetAllUser();
     const { mutate, isPending: isUpdating } =
         clientAPI.users.useUpdateUserById();
-    if (!data) {
-        return <div>Loading</div>;
+    if (!data?.data) {
+        return <div>{error?.message}</div>;
     }
     const updateAction = () => {
         mutate({
@@ -25,7 +25,7 @@ export default function Page() {
     return (
         <>
             <div>
-                {data.map((item) => (
+                {data.data.map((item) => (
                     <div key={item.id}>
                         <p>{item.id}</p>
                         <p>{item.username}</p>

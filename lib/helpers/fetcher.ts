@@ -6,21 +6,21 @@ import {
 } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
-import { HttpStatus } from "@/server/api/lib/types/http.type";
+import { HttpStatus } from "@/server/api/lib/constant/http.type";
 
 export namespace Fetcher {
     type ClientType = (...args: any[]) => any;
     type ResponseType<T extends ClientType> = InferResponseType<
         T,
         HttpStatus.OK
-    >["data"];
+    >;
     type RequestType<T extends ClientType> = InferRequestType<T>;
 
     const handleResponse = async (res: Response) => {
         if (!res.ok) {
             throw new Error((await res.json()).msg);
         }
-        return (await res.json()).data;
+        return await res.json();
     };
 
     export function useHonoQuery<T extends ClientType>(

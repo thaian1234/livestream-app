@@ -19,6 +19,7 @@ async function signIn() {
         const err = (await respSignin.json()).status;
         return;
     }
+    const data = await respSignin.json();
     console.log("Sign in successfully");
 }
 
