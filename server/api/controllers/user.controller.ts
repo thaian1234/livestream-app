@@ -30,6 +30,7 @@ export class UserController {
         const params = z.object({
             id: z.string().uuid(),
         });
+        const respSchema = UserValidation.selectSchema;
         return this.factory.createHandlers(
             zValidator(
                 "json",
@@ -54,13 +55,14 @@ export class UserController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: updatedUser,
+                    data: respSchema.parse(updatedUser),
                     status: HttpStatus.OK,
                 });
             },
         );
     }
     private getAllUserHandler() {
+        const respData = UserValidation.selectSchema.array();
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
@@ -70,7 +72,7 @@ export class UserController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: users,
+                    data: respData.parse(users),
                     status: HttpStatus.OK,
                 });
             },
