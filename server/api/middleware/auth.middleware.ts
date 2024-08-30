@@ -1,11 +1,12 @@
+import { LuciaService } from "../external-services/lucia.service";
 import { MyError } from "../lib/helpers/errors";
-import { lucia } from "../lib/helpers/lucia.auth";
 import { Env } from "../lib/types/factory.type";
 import { every, some } from "hono/combine";
 import { getCookie } from "hono/cookie";
 import { createFactory } from "hono/factory";
 
 const factory = createFactory<Env>();
+const lucia = LuciaService.getInstance();
 
 export namespace AuthMiddleware {
     export const init = factory.createMiddleware(async (c, next) => {
