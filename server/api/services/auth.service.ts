@@ -1,4 +1,7 @@
-import { lucia } from "../lib/helpers/lucia.auth";
+import {
+    ILuciaService,
+    LuciaService,
+} from "../external-services/lucia.service";
 import { Utils } from "../lib/helpers/utils";
 import { AuthValidation } from "../lib/validations/schema.validation";
 
@@ -8,20 +11,24 @@ export interface IAuthService extends Utils.AutoMappedClass<AuthService> {}
 
 export class AuthService implements IAuthService {
     private userService: IUserService;
+    private luciaService: ILuciaService;
     constructor() {
         this.userService = new UserService();
+        this.luciaService = new LuciaService();
     }
-    public async authenticateUser(data: AuthValidation.Signin) {
-        const existingUser = await this.userService.getUserByEmail(data.email);
+    public async authenticateUser(credentials: AuthValidation.Signin) {
+        const existingUser = await this.userService.getUserByEmailOrUsername(
+            credentials.email,
+        );
         if (!existingUser || !existingUser.hashedPassword) {
             return {
                 session: null,
                 sessionCookie: null,
             };
         }
-        const validPassword = await this.validatePassword(
+        const validPassword = await Utils.PasswordUtils.verifyHash(
             existingUser.hashedPassword,
-            data.password,
+            credentials.password,
         );
         if (!validPassword) {
             return {
@@ -29,14 +36,14 @@ export class AuthService implements IAuthService {
                 sessionCookie: null,
             };
         }
-        return await this.initiateSession(existingUser.id);
+        return await this.luciaService.initiateSession(existingUser.id);
     }
-    public async registerUser(data: AuthValidation.Signup) {
+    public async registerUser(credentials: AuthValidation.Signup) {
         const hashedPassword = await Utils.PasswordUtils.hashPassword(
-            data.password,
+            credentials.password,
         );
         const newUser = await this.userService.createUser({
-            ...data,
+            ...credentials,
             hashedPassword: hashedPassword,
         });
         if (!newUser) {
@@ -45,30 +52,16 @@ export class AuthService implements IAuthService {
                 sessionCookie: null,
             };
         }
-        return await this.initiateSession(newUser.id);
+        return await this.luciaService.initiateSession(newUser.id);
     }
     public async terminateSession(sessionId: string) {
-        await this.revokeSession(sessionId);
-        return this.getSessionCookieName();
+        await this.luciaService.revokeSession(sessionId);
+        return this.luciaService.getSessionCookieName();
     }
-    public async verifyUserExistence(email: string, username: string) {
+    public async verifyUserExistence(email: string, username?: string) {
         return !!(await this.userService.getUserByEmailOrUsername(
             email,
             username,
         ));
-    }
-    private async initiateSession(userId: string) {
-        const session = await lucia.createSession(userId, {});
-        const sessionCookie = lucia.createSessionCookie(session.id);
-        return { session, sessionCookie };
-    }
-    private async validatePassword(hash: string, password: string) {
-        return Utils.PasswordUtils.verifyHash(hash, password);
-    }
-    private async revokeSession(sessionId: string) {
-        return lucia.invalidateSession(sessionId);
-    }
-    private getSessionCookieName() {
-        return lucia.sessionCookieName;
     }
 }

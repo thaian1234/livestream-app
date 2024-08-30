@@ -18,7 +18,7 @@ export class UserRepository implements IUserRepository {
             const user = await this.db.query.userTable.findFirst({
                 where: eq(tableSchemas.userTable.id, id),
             });
-            return UserValidation.parse(user);
+            return user;
         } catch (error) {}
     }
     async findByEmail(email: string) {
@@ -32,7 +32,7 @@ export class UserRepository implements IUserRepository {
     async findAll() {
         try {
             const users = await this.db.query.userTable.findMany();
-            return UserValidation.parseMany(users);
+            return users;
         } catch (error) {}
     }
     async create(data: UserValidation.Insert) {
@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
                 .insert(tableSchemas.userTable)
                 .values(data)
                 .returning();
-            return UserValidation.parse(user[0]);
+            return user[0];
         } catch (error) {}
     }
     async update(id: string, data: UserValidation.Update) {
@@ -52,7 +52,7 @@ export class UserRepository implements IUserRepository {
                 .where(eq(tableSchemas.userTable.id, id))
                 .returning();
 
-            return UserValidation.parse(user[0]);
+            return user[0];
         } catch (error) {}
     }
     async delete(id: string) {
@@ -74,7 +74,7 @@ export class UserRepository implements IUserRepository {
                     eq(tableSchemas.userTable.username, username),
                 ),
             });
-            return UserValidation.parse(user);
+            return user;
         } catch (error) {}
     }
 }

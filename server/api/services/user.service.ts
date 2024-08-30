@@ -21,7 +21,10 @@ export class UserService implements IUserService {
     public async getAllUser() {
         return await this.userRepository.findAll();
     }
-    public async getUserByEmailOrUsername(email: string, username: string) {
+    public async getUserByEmailOrUsername(email: string, username?: string) {
+        if (!username) {
+            return await this.userRepository.findByEmail(email);
+        }
         return await this.userRepository.findByEmailOrUsername(email, username);
     }
     public async getUserByEmail(email: string) {

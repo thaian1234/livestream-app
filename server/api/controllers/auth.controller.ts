@@ -1,7 +1,7 @@
+import { LuciaService } from "../external-services/lucia.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
-import { lucia } from "../lib/helpers/lucia.auth";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AuthValidation } from "../lib/validations/schema.validation";
@@ -23,11 +23,11 @@ export class AuthController implements IAuthController {
     public setupHandlers() {
         return this.factory
             .createApp()
-            .post("/sign-in", ...this.signinHandler())
-            .post("/sign-out", ...this.signoutHandler())
-            .post("/sign-up", ...this.signupHandler());
+            .post("/sign-in", ...this.signInHandler())
+            .post("/sign-out", ...this.signOutHandler())
+            .post("/sign-up", ...this.signUpHandler());
     }
-    private signinHandler() {
+    private signInHandler() {
         return this.factory.createHandlers(
             zValidator(
                 "json",
@@ -56,9 +56,9 @@ export class AuthController implements IAuthController {
             },
         );
     }
-    private signoutHandler() {
+    private signOutHandler() {
         return this.factory.createHandlers(async (c) => {
-            const sessionId = getCookie(c, lucia.sessionCookieName);
+            const sessionId = getCookie(c, LuciaService.getInstance().sessionCookieName);
             if (!sessionId) {
                 throw new MyError.UnauthenticatedError();
             }
@@ -76,7 +76,7 @@ export class AuthController implements IAuthController {
             });
         });
     }
-    private signupHandler() {
+    private signUpHandler() {
         return this.factory.createHandlers(
             zValidator(
                 "json",
