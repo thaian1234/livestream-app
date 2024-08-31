@@ -3,15 +3,16 @@ import {
     IAuthController,
 } from "../controllers/auth.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { UserRepository } from "../repositories/user.repository";
+import { AuthService } from "../services/auth.service";
+import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 
 class AuthRoutes {
-    private factory: CreateFactoryType;
-    private authController: IAuthController;
-    constructor() {
-        this.factory = createFactory();
-        this.authController = new AuthController(this.factory);
-    }
+    constructor(
+        private readonly factory: CreateFactoryType,
+        private readonly authController: IAuthController,
+    ) {}
     setupRoutes() {
         return this.factory
             .createApp()
@@ -19,6 +20,14 @@ class AuthRoutes {
             .route("/", this.authController.setupHandlers());
     }
 }
+function createAuthRoutes() {
+    const factory = createFactory();
+    const userRepository = new UserRepository();
+    const userService = new UserService(userRepository);
+    const authService = new AuthService(userService);
+    const authController = new AuthController(factory, authService);
 
-const authRoutesInstance = new AuthRoutes();
-export const authRoutes = authRoutesInstance.setupRoutes();
+    return new AuthRoutes(factory, authController);
+}
+
+export const authRoutes = createAuthRoutes().setupRoutes();

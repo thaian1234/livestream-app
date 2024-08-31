@@ -1,17 +1,11 @@
 import { Utils } from "../lib/helpers/utils";
 import { UserValidation } from "../lib/validations/schema.validation";
-import {
-    IUserRepository,
-    UserRepository,
-} from "../repositories/user.repository";
+import { IUserRepository } from "../repositories/user.repository";
 
 export interface IUserService extends Utils.AutoMappedClass<UserService> {}
 
 export class UserService implements IUserService {
-    private userRepository: IUserRepository;
-    constructor() {
-        this.userRepository = new UserRepository();
-    }
+    constructor(private userRepository: IUserRepository) {}
     public async createUser(data: UserValidation.Insert) {
         return await this.userRepository.create(data);
     }

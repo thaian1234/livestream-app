@@ -14,12 +14,10 @@ export interface IUserController
     extends Utils.PickMethods<UserController, "setupHandlers"> {}
 
 export class UserController {
-    private factory: CreateFactoryType;
-    private userService: IUserService;
-    constructor(factory: CreateFactoryType) {
-        this.factory = factory;
-        this.userService = new UserService();
-    }
+    constructor(
+        private factory: CreateFactoryType,
+        private userService: IUserService,
+    ) {}
     setupHandlers() {
         return this.factory
             .createApp()

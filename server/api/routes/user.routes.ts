@@ -3,15 +3,15 @@ import {
     UserController,
 } from "../controllers/user.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { UserRepository } from "../repositories/user.repository";
+import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 
 class UserRoutes {
-    private factory: CreateFactoryType;
-    private userController: IUserController;
-    constructor() {
-        this.factory = createFactory();
-        this.userController = new UserController(this.factory);
-    }
+    constructor(
+        private readonly factory: CreateFactoryType,
+        private readonly userController: IUserController,
+    ) {}
     setupRoutes() {
         return this.factory
             .createApp()
@@ -19,5 +19,13 @@ class UserRoutes {
     }
 }
 
-const userRoutesInstance = new UserRoutes();
-export const userRoutes = userRoutesInstance.setupRoutes();
+function createUserRoutes(): UserRoutes {
+    const factory = createFactory();
+    const userRepository = new UserRepository();
+    const userService = new UserService(userRepository);
+    const userController = new UserController(factory, userService);
+
+    return new UserRoutes(factory, userController);
+}
+
+export const userRoutes = createUserRoutes().setupRoutes();
