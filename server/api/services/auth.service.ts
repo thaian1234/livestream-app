@@ -10,10 +10,8 @@ import { IUserService, UserService } from "./user.service";
 export interface IAuthService extends Utils.AutoMappedClass<AuthService> {}
 
 export class AuthService implements IAuthService {
-    private userService: IUserService;
-    private luciaService: ILuciaService;
-    constructor() {
-        this.userService = new UserService();
+    luciaService: LuciaService;
+    constructor(private readonly userService: IUserService) {
         this.luciaService = new LuciaService();
     }
     public async authenticateUser(credentials: AuthValidation.Signin) {

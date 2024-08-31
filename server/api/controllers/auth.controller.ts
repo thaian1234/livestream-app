@@ -14,12 +14,10 @@ export interface IAuthController
     extends Utils.PickMethods<AuthController, "setupHandlers"> {}
 
 export class AuthController implements IAuthController {
-    private factory: CreateFactoryType;
-    private authService: IAuthService;
-    constructor(factory: CreateFactoryType) {
-        this.factory = factory;
-        this.authService = new AuthService();
-    }
+    constructor(
+        private readonly factory: CreateFactoryType,
+        private readonly authService: IAuthService,
+    ) {}
     public setupHandlers() {
         return this.factory
             .createApp()
@@ -58,7 +56,10 @@ export class AuthController implements IAuthController {
     }
     private signOutHandler() {
         return this.factory.createHandlers(async (c) => {
-            const sessionId = getCookie(c, LuciaService.getInstance().sessionCookieName);
+            const sessionId = getCookie(
+                c,
+                LuciaService.getInstance().sessionCookieName,
+            );
             if (!sessionId) {
                 throw new MyError.UnauthenticatedError();
             }
