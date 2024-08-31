@@ -9,9 +9,6 @@ export default function Page() {
     const { data, isPending, error } = clientAPI.users.useGetAllUser();
     const { mutate, isPending: isUpdating } =
         clientAPI.users.useUpdateUserById();
-    if (!data?.data) {
-        return <div>{error?.message}</div>;
-    }
     const updateAction = () => {
         mutate({
             json: {
@@ -22,6 +19,17 @@ export default function Page() {
             },
         });
     };
+    if (!data?.data) {
+        return (
+            <div>
+                <Button onClick={updateAction} disabled={isUpdating}>
+                    Update
+                </Button>
+                {error?.message}
+            </div>
+        );
+    }
+
     return (
         <>
             <div>
