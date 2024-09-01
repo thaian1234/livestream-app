@@ -8,6 +8,7 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import {
     AuthValidation,
     EmailVerificationValidation,
+    UserValidation,
 } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IAuthService } from "../services/auth.service";
@@ -34,7 +35,8 @@ export class AuthController implements IAuthController {
             .post("/sign-out", ...this.signOutHandler())
             .post("/sign-up", ...this.signUpHandler())
             .post("/verify-email", ...this.verifyEmailHandler())
-            .post("/resend-verify", ...this.resendVerifyCodeHandler());
+            .post("/resend-verify", ...this.resendVerifyCodeHandler())
+            .get("/verify-session", ...this.verifySessionHandler());
     }
     private signInHandler() {
         return this.factory.createHandlers(
@@ -223,5 +225,27 @@ export class AuthController implements IAuthController {
                 });
             },
         );
+    }
+    private verifySessionHandler() {
+        const lucia = LuciaService.getInstance();
+        const respData = UserValidation.selectSchema;
+        return this.factory.createHandlers(async (c) => {
+            const sessionId = getCookie(c, lucia.sessionCookieName);
+            if (!sessionId) {
+                throw new MyError.UnauthenticatedError();
+            }
+            const { user, session } = await lucia.validateSession(sessionId);
+            if (!user || !session) {
+                throw new MyError.UnauthorizedError("Invalid session");
+            }
+            return ApiResponse.WriteJSON({
+                c,
+                status: HttpStatus.OK,
+                msg: "Session verified successfully",
+                data: {
+                    user: respData.parse(user),
+                },
+            });
+        });
     }
 }

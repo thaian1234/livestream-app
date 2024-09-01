@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import Providers from "@/lib/providers/react-query-provider";
+import { SessionProvider } from "@/lib/providers/session-provider";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -23,8 +24,10 @@ export default function RootLayout({
         <html lang="en">
             <body className={inter.className}>
                 <Providers>
-                    {children}
-                    <Toaster />
+                    <SessionProvider>
+                        <Toaster />
+                        {children}
+                    </SessionProvider>
                 </Providers>
             </body>
         </html>
