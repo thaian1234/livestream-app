@@ -16,9 +16,10 @@ async function verifySession(sessionId: string, origin: string) {
 export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const sessionId = request.cookies.get("auth_session");
-    const isPublicRoute = middlewareRoutes.publicRoutes.has(pathname);
+    const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
+
     if (!sessionId) {
-        return isPublicRoute
+        return isPublicRoutes
             ? NextResponse.next()
             : NextResponse.redirect(
                   new URL(
@@ -33,7 +34,7 @@ export async function middleware(request: NextRequest) {
             new URL(middlewareRoutes.DEFAULT_SIGNIN_REDIRECT, request.url),
         );
     }
-    if (isPublicRoute) {
+    if (isPublicRoutes) {
         return NextResponse.redirect(new URL("/home", request.url));
     }
     return NextResponse.next();
@@ -41,6 +42,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        `/((?!_next|api|trpc|.*\\.(?:jpg|jpeg|gif|png|webp|svg|ico|css|js|woff|woff2)).*)`,
+        "/((?!_next|api|trpc|.*\\.(?:jpg|jpeg|gif|png|webp|svg|ico|css|js|woff|woff2)).*)",
     ],
 };

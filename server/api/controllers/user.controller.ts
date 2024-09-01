@@ -8,6 +8,7 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
+import { getCookie } from "hono/cookie";
 import { z } from "zod";
 
 export interface IUserController
@@ -64,6 +65,7 @@ export class UserController {
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
+                console.log(getCookie(c));
                 const users = await this.userService.getAllUser();
                 if (!users) {
                     throw new MyError.BadRequestError("Failed to fetch user");
