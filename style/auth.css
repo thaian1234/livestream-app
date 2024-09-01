@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #0F0F0F;
+    padding-right: 20vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
+    max-width: 100vw !important;
+}
+
+.popup {
+    background-color: rgba(0, 0, 0, 0.14);
+    height: 80vh;
+    width: 400px;
+    border-radius: 20px;
+    border-color: #4D4D4D;
+    border-width: 1px;
+}
+
