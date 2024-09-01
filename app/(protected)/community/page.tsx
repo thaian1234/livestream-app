@@ -1,10 +1,10 @@
 import { Navbar } from "@/components/navbar";
 
-export default function CommunityPage() {
+export default async function CommunityPage() {
     return (
         <div>
             <Navbar />
-            CommunityPage
+            Community page
         </div>
     );
 }

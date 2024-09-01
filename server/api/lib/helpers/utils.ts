@@ -43,4 +43,7 @@ export namespace Utils {
             return passwordHash;
         }
     }
+    export async function delay(millisecond: number) {
+        return new Promise((resolve) => setTimeout(resolve, millisecond));
+    }
 }
