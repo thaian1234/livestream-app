@@ -1,4 +1,3 @@
-// In Next.js, this file would be called: app/providers.jsx
 "use client";
 
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
@@ -45,6 +44,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     //       suspend because React will throw away the client on the initial
     //       render if it suspends and there is no boundary
     const queryClient = getQueryClient();
+
     return (
         <QueryClientProvider client={queryClient}>
             {children}

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { AuthProvider } from "@/lib/providers/auth-provider";
 import Providers from "@/lib/providers/react-query-provider";
-import { SessionProvider } from "@/lib/providers/session-provider";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -24,10 +24,10 @@ export default function RootLayout({
         <html lang="en">
             <body className={inter.className}>
                 <Providers>
-                    <SessionProvider>
+                    <AuthProvider>
                         <Toaster />
                         {children}
-                    </SessionProvider>
+                    </AuthProvider>
                 </Providers>
             </body>
         </html>

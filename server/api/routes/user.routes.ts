@@ -3,6 +3,7 @@ import {
     UserController,
 } from "../controllers/user.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { AuthMiddleware } from "../middleware/auth.middleware";
 import { UserRepository } from "../repositories/user.repository";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
