@@ -6,7 +6,7 @@ import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AuthValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
-import { AuthService, IAuthService } from "../services/auth.service";
+import { IAuthService } from "../services/auth.service";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
 
