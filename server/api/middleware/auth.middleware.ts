@@ -8,8 +8,8 @@ import { createFactory } from "hono/factory";
 const factory = createFactory<Env>();
 const lucia = LuciaService.getInstance();
 
-export namespace AuthMiddleware {
-    export const init = factory.createMiddleware(async (c, next) => {
+export class AuthMiddleware {
+    static init = factory.createMiddleware(async (c, next) => {
         const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;
         if (!sessionId) {
             c.set("user", null);
@@ -39,7 +39,8 @@ export namespace AuthMiddleware {
         c.set("session", session);
         return next();
     });
-    export const isAuthenticated = factory.createMiddleware(async (c, next) => {
+
+    static isAuthenticated = factory.createMiddleware(async (c, next) => {
         const user = c.get("user");
         const session = c.get("session");
         if (!user || !session) {

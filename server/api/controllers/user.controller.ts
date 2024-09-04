@@ -6,7 +6,7 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
-import { IUserService, UserService } from "../services/user.service";
+import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
