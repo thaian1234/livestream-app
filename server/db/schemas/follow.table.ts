@@ -16,7 +16,7 @@ export const followTable = pgTable(
         followerId: uuid("follower_id")
             .notNull()
             .references(() => userTable.id, { onDelete: "cascade" }),
-        followed: uuid("following_id")
+        followedId: uuid("following_id")
             .notNull()
             .references(() => userTable.id, { onDelete: "cascade" }),
         createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -28,16 +28,16 @@ export const followTable = pgTable(
     (table) => ({
         unq: uniqueIndex("follower_following_unq").on(
             table.followerId,
-            table.followed,
+            table.followedId,
         ),
         followerIdx: index("follower_idx").on(table.followerId),
-        followedx: index("following_idx").on(table.followed),
+        followedx: index("followed_idx").on(table.followedId),
     }),
 );
 
 export const followRelations = relations(followTable, ({ one }) => ({
     following: one(userTable, {
-        fields: [followTable.followed],
+        fields: [followTable.followedId],
         references: [userTable.id],
         relationName: "followed_users",
     }),

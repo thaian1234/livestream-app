@@ -1,6 +1,8 @@
 import { blockRelations, blockTable } from "./block.table";
 import { followRelations, followTable } from "./follow.table";
+import { notificationTable, typeEnum } from "./notification.table";
 import { sessionRelations, sessionTable } from "./session.table";
+import { settingRelations, settingTable } from "./setting.table";
 import { streamRelations, streamTable } from "./stream.table";
 import { userRelations, userTable } from "./user.table";
 
@@ -15,6 +17,10 @@ const tableSchemas = {
     streamTable,
     streamRelations,
     sessionRelations,
+    settingTable,
+    settingRelations,
+    notificationTable,
+    typeEnum,
 };
 
 export default tableSchemas;
