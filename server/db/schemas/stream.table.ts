@@ -6,9 +6,9 @@ import {
     text,
     timestamp,
     uuid,
-    varchar,
 } from "drizzle-orm/pg-core";
 
+import { settingTable } from "./setting.table";
 import { userTable } from "./user.table";
 
 export const streamTable = pgTable(
@@ -17,15 +17,7 @@ export const streamTable = pgTable(
         id: uuid("id").primaryKey().defaultRandom(),
         name: text("name").notNull(),
         thumbnailUrl: text("thumbnail_url"),
-        ingressId: varchar("ingress_id").unique(),
-        serverUrl: text("server_url"),
-        streamKey: text("stream_key"),
         isLive: boolean("is_live").default(false).notNull(),
-        isChatEnabled: boolean("is_chat_enabled").default(true).notNull(),
-        isChatDelayed: boolean("is_chat_delayed").default(false).notNull(),
-        isChatFollowersOnly: boolean("is_chat_followers_only")
-            .default(false)
-            .notNull(),
         userId: uuid("user_id")
             .notNull()
             .references(() => userTable.id, { onDelete: "cascade" })
@@ -36,8 +28,7 @@ export const streamTable = pgTable(
             .$onUpdate(() => new Date()),
     },
     (table) => ({
-        userIdx: index("user_idx").on(table.userId),
-        ingressIdx: index("ingress_idx").on(table.ingressId),
+        userIdx: index("user_stream_idx").on(table.userId),
     }),
 );
 
@@ -46,4 +37,5 @@ export const streamRelations = relations(streamTable, ({ one }) => ({
         fields: [streamTable.userId],
         references: [userTable.id],
     }),
+    setting: one(settingTable),
 }));

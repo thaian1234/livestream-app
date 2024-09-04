@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1724165441241,
-      "tag": "0000_third_machine_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1724297558001,
-      "tag": "0001_lively_harrier",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1724590187013,
-      "tag": "0002_calm_pyro",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1724828765641,
-      "tag": "0003_amazing_rogue",
+      "when": 1725452153862,
+      "tag": "0000_nappy_silhouette",
       "breakpoints": true
     }
   ]
