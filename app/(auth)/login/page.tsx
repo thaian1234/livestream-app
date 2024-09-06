@@ -10,19 +10,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { IconLogin } from "@/components/auth/iconLogin";
 import "@/style/auth.css"
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { ErrorField } from "@/components/errorField";
 import { useState } from "react";
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-const schema = yup.object().shape({
-    email: yup.string()
-        .email("Invalid email")
-        .required("Email is required"),
-    password: yup.string()
-        .required("Password is required")
-        .min(6, "Password must be at least 6 characters"),
+ const loginSchema = z.object({
+    email: z.string()
+    .min(1, { message: "Email is required" })
+    .email("Invalid email"), 
+    password: z.string()
+    .min(1, { message: "Password is required" })
+    .min(6, "Password must be at least 6 characters"),
 });
+type LoginFormValues = z.infer<typeof loginSchema>; // Infer type from schema of Zod
 export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
     const {
@@ -30,22 +31,21 @@ export default function Page() {
         handleSubmit,
         formState: { errors },
         getValues   //get values from
-    } = useForm({
-        resolver: yupResolver(schema),
+    } = useForm<LoginFormValues>({
+        resolver: zodResolver(loginSchema),
     });
     const values = getValues();
     // Hàm xử lý khi submit form
-    const submitHandler = (data) => {
+    const submitHandler = (data: LoginFormValues) => {
         console.log(data.email + " " + data.password);
     };
-
     return (
         <Card
-            style={{ justifyContent: "space-between" }}>
+            className="justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>Login</CardTitle>
-                    <CardTitle className="font-thin text-sm">Glad you’re back.!</CardTitle>
+                    <CardTitle className="font-normal text-base">Glad you’re back.!</CardTitle>
                 </CardHeader>
                 <form onSubmit={handleSubmit(submitHandler)}>
                     <CardContent>
@@ -54,39 +54,37 @@ export default function Page() {
                             id="email"
                             placeholder="Enter your email"
                             variant={errors.email ? "error" : "primary"}
-                            customSize="sm"
-                        //error={emailError}
                         />
                         {errors.email && <ErrorField>{errors.email.message}</ErrorField>}
+
                         <Input
                             type="password"
                             {...register("password")}
                             id="password"
                             placeholder="Enter your password"
                             variant={errors.password ? "error" : "primary"}
-                            customSize="sm"
                         >
                         </Input>
                         {errors.password && <ErrorField>{errors.password.message}</ErrorField>}
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
                             <Checkbox id="terms" />
-                            <CardTitle className="font-thin text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            <CardTitle className="font-normal text-base leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Remember me
                             </CardTitle>
                         </div>
                     </CardContent >
                     <CardContent className="items-center">
-                        <Button className="w-full" type="submit" variant="gradient" size="sm">
+                        <Button className="w-full" type="submit" variant="gradient">
                             Login</Button>
-                        <CardTitle className="font-thin text-sm ">
-                            <a href="/signup" className="hover:underline"> Forgot password ?</a>
+                        <CardTitle className="font-normal text-base ">
+                            <a className="hover:underline"> Forgot password ?</a>
                         </CardTitle>
                     </CardContent>
                 </form>
                 <IconLogin></IconLogin>
             </CardBody>
             <CardFooter className="items-center">
-                <CardTitle className="font-thin text-base">Don't have an account?
+                <CardTitle className="font-normal text-base">Don't have an account?
                     <a href="/signup" className="hover:underline "> Signup</a>
                 </CardTitle>
             </CardFooter>
