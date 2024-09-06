@@ -31,7 +31,7 @@ type LoginFormValues = z.infer<typeof signupSchema>; // Infer type from schema o
 
 
 export default function Page() {
-    const { 
+    const {
         register, // register field name
         handleSubmit, //pass a callback to handle successful
         formState: { errors },

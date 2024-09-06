@@ -15,13 +15,13 @@ import { useState } from "react";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
- const loginSchema = z.object({
+const loginSchema = z.object({
     email: z.string()
-    .min(1, { message: "Email is required" })
-    .email("Invalid email"), 
+        .min(1, { message: "Email is required" })
+        .email("Invalid email"),
     password: z.string()
-    .min(1, { message: "Password is required" })
-    .min(6, "Password must be at least 6 characters"),
+        .min(1, { message: "Password is required" })
+        .min(6, "Password must be at least 6 characters"),
 });
 type LoginFormValues = z.infer<typeof loginSchema>; // Infer type from schema of Zod
 export default function Page() {
