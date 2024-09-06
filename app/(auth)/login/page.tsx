@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle, CardFooter, CardBody } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { IconLogin } from "@/components/auth/iconLogin";
+import { IconLogin } from "@/components/auth/icon-login";
 import "@/style/auth.css"
 import { useForm } from "react-hook-form";
-import { ErrorField } from "@/components/errorField";
+import { ErrorField } from "@/components/error-field";
 import { useState } from "react";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

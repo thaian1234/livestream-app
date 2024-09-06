@@ -2,6 +2,7 @@
 import "@/style/auth.css"
 import logoipsum from '@/public/logoipsum-330.svg';
 import next from '@/public/next.svg';
+import Image from 'next/image';
 export default function AuthLayout({
     children,
   }: {
@@ -9,7 +10,7 @@ export default function AuthLayout({
   }) {
     return (
         <div className="container">
-            <img src={logoipsum?.src} className="logoContainer" alt="Logo"/>
+            <Image src={logoipsum?.src} className="logoContainer" width={100} height={100} alt="Logo"/>
             <div className="popup">
                 {children}
             </div>
