@@ -8,7 +8,7 @@ const ErrorField = React.forwardRef<
 	<h3
 		ref={ref}
 		className={cn(
-			" font-normal text-sm leading-none tracking-tight text-red !mt-1",
+			" font-normal text-sm leading-none tracking-tight text-red-500 !mt-1",
 			className
 		)}
 		{...props}

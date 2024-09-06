@@ -44,7 +44,7 @@ export default function Page() {
         console.log(data.username + " " + data.email + " " + data.password + " " + data.confirmPassword);
     }
     return (
-        <Card style={{ justifyContent: "space-between" }}  >
+        <Card className="justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>Signup</CardTitle>
@@ -95,7 +95,7 @@ export default function Page() {
             </CardBody>
             <CardFooter className="items-center">
                 <CardTitle className="font-normal text-base">Already Registered?
-                    <a href="/login" className="hover:underline"> Login</a>
+                    <a href="/sign-in" className="hover:underline"> Login</a>
                 </CardTitle>
             </CardFooter>
         </Card>

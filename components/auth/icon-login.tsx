@@ -5,15 +5,15 @@ export function IconLogin() {
     return (
         <CardContent className="items-center">
             <div className="flex w-full items-center">
-                <div className="h-0.5 grow bg-gray"></div>
-                <span className="px-4 font-sans text-gray"> Or </span> 
-                <div className="h-0.5 grow bg-gray"></div>
+                <div className="h-0.5 grow bg-gray-1"></div>
+                <span className="px-4 font-sans text-gray-1"> Or </span> 
+                <div className="h-0.5 grow bg-gray-1"></div>
             </div>
-            <div className="flex">  
-                <button className='mr-4'>
+            <div className="flex space-x-4">  
+                <button>
                     <FaFacebook size={35} />
                 </button>
-                <button className='mr-4'>
+                <button>
                     <FaGithub size={35} />
                 </button>
                 <button >

@@ -1,8 +1,4 @@
-* {
-    box-sizing: border-box;
-}
-
-.container {
+.containerAuth {
     background-color: #0F0F0F;
     padding-right: 10vw;    
     padding-left: 10vw;

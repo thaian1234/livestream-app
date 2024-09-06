@@ -40,8 +40,7 @@ export default function Page() {
         console.log(data.email + " " + data.password);
     };
     return (
-        <Card
-            className="justify-between text-base">
+        <Card className="justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>Login</CardTitle>
@@ -85,7 +84,7 @@ export default function Page() {
             </CardBody>
             <CardFooter className="items-center">
                 <CardTitle className="font-normal text-base">Don't have an account?
-                    <a href="/signup" className="hover:underline "> Signup</a>
+                    <a href="/sign-up" className="hover:underline "> Signup</a>
                 </CardTitle>
             </CardFooter>
         </Card>

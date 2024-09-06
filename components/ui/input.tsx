@@ -9,7 +9,7 @@ const inputVariants = cva(
 			variant: {
 				default: "border-input focus-visible:ring-ring",
 				primary: "border-white focus-visible:ring-teal-2 text-white placeholder:text-white bg-black",
-				error: "border-red focus-visible:ring-red text-red placeholder:text-white bg-black"
+				error: "border-red-500 focus-visible:ring-red-500 text-red-500 placeholder:text-white bg-black"
 			},
 			customSize: {
 				default: "h-10 px-3.5 text-base",
