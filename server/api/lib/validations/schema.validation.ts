@@ -48,9 +48,7 @@ export namespace UserValidation {
 export class FollowValidation {
     private static baseSchema = createSelectSchema(tableSchemas.followTable);
     public static selectSchema = this.baseSchema;
-    public static insertSchema = createInsertSchema(
-        tableSchemas.followTable,
-    ).merge(this.baseSchema);
+    public static insertSchema = createInsertSchema(tableSchemas.followTable);
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
@@ -59,9 +57,31 @@ export class FollowValidation {
 export class BlockValidation {
     private static baseSchema = createSelectSchema(tableSchemas.blockTable);
     public static selectSchema = this.baseSchema;
+    public static insertSchema = createInsertSchema(tableSchemas.blockTable);
+    public static deleteSchema = this.baseSchema.pick({
+        id: true,
+    });
+}
+// TODO: Add BlockTypes
+// TODO: Add FollowTypes
+export class StreamValidation {
+    private static baseSchema = createSelectSchema(tableSchemas.streamTable);
+    public static selectSchema = this.baseSchema;
+    public static insertSchema = createInsertSchema(tableSchemas.streamTable);
+    public static deleteSchema = this.baseSchema.pick({
+        id: true,
+    });
+}
+// TODO: Add BlockTypes
+// TODO: Add FollowTypes
+export class NotificationValidation {
+    private static baseSchema = createSelectSchema(
+        tableSchemas.notificationTable,
+    );
+    public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(
-        tableSchemas.blockTable,
-    ).merge(this.baseSchema);
+        tableSchemas.notificationTable,
+    );
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
