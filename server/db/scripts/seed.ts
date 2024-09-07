@@ -4,6 +4,8 @@ import { config } from "dotenv";
 import { alphabet, generateRandomString } from "oslo/crypto";
 import { z } from "zod";
 
+import { LuciaService } from "@/server/api/external-services/lucia.service";
+import { Utils } from "@/server/api/lib/helpers/utils";
 import {
     BlockValidation,
     FollowValidation,
@@ -17,6 +19,19 @@ config({
 });
 
 const db = Database.getInstance().db;
+const lucia = LuciaService.getInstance();
+
+async function signUpAllUser(users: UserValidation.Select[]) {
+    for (const user of users) {
+        const password = "123456";
+        const hashedPassword = await Utils.PasswordUtils.hashPassword(password);
+        await db.update(tableSchemas.userTable).set({
+            hashedPassword,
+        });
+        const session = await lucia.createSession(user.id, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+    }
+}
 
 const seeds = async () => {
     try {
@@ -34,17 +49,18 @@ const seeds = async () => {
         // Seeding user
         let usersData: UserValidation.Insert[] = [];
         for (let i = 0; i <= 50; i++) {
-            const password = generateRandomString(8, alphabet("0-9"));
             usersData.push({
                 email: `user${i}@test.com`,
                 username: `user_${i}`,
-                hashedPassword: password,
             });
         }
         const users = await db
             .insert(tableSchemas.userTable)
             .values(usersData)
             .returning();
+
+        // Seeding session
+        await signUpAllUser(users);
 
         // Seeding follow
         let followData: z.infer<typeof FollowValidation.insertSchema>[] = [];
