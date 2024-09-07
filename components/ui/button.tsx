@@ -5,10 +5,11 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-1",
     {
         variants: {
             variant: {
+                gradient: "bg-gradient-to-r bg-gradient-to-r from-teal-1 via-teal-2 to-teal-3",
                 default:
                     "bg-primary text-primary-foreground hover:bg-primary/90",
                 destructive:
@@ -17,13 +18,13 @@ const buttonVariants = cva(
                     "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                 secondary:
                     "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
+                ghost: "hover:bg-accent hover:text-teal-2",
                 link: "text-primary underline-offset-4 hover:underline",
             },
             size: {
-                default: "h-10 px-4 py-2",
+                default: "h-10 px-3.5 rounded-md",
                 sm: "h-9 rounded-md px-3",
-                lg: "h-11 rounded-md px-8",
+                lg: "h-11 rounded-md px-4",
                 icon: "h-10 w-10",
             },
         },
