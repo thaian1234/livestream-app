@@ -49,9 +49,40 @@ export class FollowValidation {
     private static baseSchema = createSelectSchema(tableSchemas.followTable);
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(tableSchemas.followTable);
-    public static deleteSchema = this.baseSchema.pick({
-        id: true,
+    public static deleteSchema = this.insertSchema;
+    public static selectRecommendScheme = UserValidation.selectSchema.omit({
+        bio: true,
     });
+    public static selectFollowingScheme = this.baseSchema
+        .extend({
+            following: UserValidation.selectSchema.omit({ bio: true }),
+        })
+        .omit({
+            followedId: true,
+            followerId: true,
+        });
+    public static selectFollowerScheme = this.baseSchema
+        .extend({
+            follower: UserValidation.selectSchema.omit({ bio: true }),
+        })
+        .omit({
+            followedId: true,
+            followerId: true,
+        });
+    public static parseFollowingMany(data: unknown) {
+        return this.selectFollowingScheme.array().parse(data);
+    }
+    public static parseFollowerMany(data: unknown) {
+        return this.selectFollowerScheme.array().parse(data);
+    }
+    public static parseRecommendMany(data: unknown) {
+        return this.selectRecommendScheme.array().parse(data);
+    }
+}
+export namespace FollowValidation {
+    export type Insert = z.infer<typeof FollowValidation.insertSchema>;
+    export type Select = z.infer<typeof FollowValidation.selectSchema>;
+    export type Delete = z.infer<typeof FollowValidation.deleteSchema>;
 }
 // TODO: Add FollowTypes
 export class BlockValidation {
