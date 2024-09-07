@@ -3,6 +3,7 @@ import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { authRoutes } from "../routes/auth.routes";
+import { followRoutes } from "../routes/follow.routes";
 import { userRoutes } from "../routes/user.routes";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -35,6 +36,7 @@ export class App {
         return this.app
             .basePath(AppConfig.BASE_PATH)
             .route("/", userRoutes)
+            .route("/", followRoutes)
             .route("/", authRoutes);
     }
 

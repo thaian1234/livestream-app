@@ -48,12 +48,43 @@ export namespace UserValidation {
 export class FollowValidation {
     private static baseSchema = createSelectSchema(tableSchemas.followTable);
     public static selectSchema = this.baseSchema;
-    public static insertSchema = createInsertSchema(
-        tableSchemas.followTable,
-    ).merge(this.baseSchema);
-    public static deleteSchema = this.baseSchema.pick({
-        id: true,
+    public static insertSchema = createInsertSchema(tableSchemas.followTable)
+        .merge(this.baseSchema)
+        .omit({
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+        });
+    public static deleteSchema = this.insertSchema;
+    public static selectRecommendScheme = UserValidation.selectSchema.omit({
+        bio: true,
     });
+    public static selectFollowingScheme = z.object({
+        id: z.string(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+        following: UserValidation.selectSchema.omit({ bio: true }),
+    });
+    public static selectFollowerScheme = z.object({
+        id: z.string(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+        follower: UserValidation.selectSchema.omit({ bio: true }),
+    });
+    public static parseFollowingMany(data: unknown) {
+        return this.selectFollowingScheme.array().parse(data);
+    }
+    public static parseFollowerMany(data: unknown) {
+        return this.selectFollowerScheme.array().parse(data);
+    }
+    public static parseRecommendMany(data: unknown) {
+        return this.selectRecommendScheme.array().parse(data);
+    }
+}
+export namespace FollowValidation {
+    export type Insert = z.infer<typeof FollowValidation.insertSchema>;
+    export type Select = z.infer<typeof FollowValidation.selectSchema>;
+    export type Delete = z.infer<typeof FollowValidation.deleteSchema>;
 }
 // TODO: Add FollowTypes
 export class BlockValidation {
