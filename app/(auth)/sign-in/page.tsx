@@ -3,13 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { clientAPI } from "@/lib/features";
 
 import { IconLogin } from "@/components/auth/icon-login";
 import { ErrorField } from "@/components/error-field";
-import { LoginButton } from "@/components/login-button";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -19,22 +15,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 
 import "@/style/auth.css";
+import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
-const loginSchema = z.object({
-    email: z
-        .string()
-        .min(1, { message: "Email is required" })
-        .email("Invalid email"),
-    password: z
-        .string()
-        .min(1, { message: "Password is required" })
-        .min(6, "Password must be at least 6 characters"),
-});
-type LoginFormValues = z.infer<typeof loginSchema>; // Infer type from schema of Zod
 export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
     const {
@@ -42,12 +27,12 @@ export default function Page() {
         handleSubmit,
         formState: { errors },
         getValues, //get values from
-    } = useForm<LoginFormValues>({
-        resolver: zodResolver(loginSchema),
+    } = useForm<AuthValidation.Signin>({
+        resolver: zodResolver(AuthValidation.signinSchema),
     });
     const values = getValues();
     // Hàm xử lý khi submit form
-    const submitHandler = (data: LoginFormValues) => {
+    const submitHandler = (data: AuthValidation.Signin) => {
         console.log(data.email + " " + data.password);
     };
     return (
@@ -81,12 +66,6 @@ export default function Page() {
                         {errors.password && (
                             <ErrorField>{errors.password.message}</ErrorField>
                         )}
-                        <div className="flex items-center space-x-1">
-                            <Checkbox id="terms" />
-                            <CardTitle className="text-base font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                Remember me
-                            </CardTitle>
-                        </div>
                     </CardContent>
                     <CardContent className="items-center">
                         <Button

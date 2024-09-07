@@ -3,32 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle, CardFooter, CardBody } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { IconLogin } from "@/components/auth/icon-login";
 import "@/style/auth.css"
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorField } from "@/components/error-field";
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-const signupSchema = z.object({
-    username: z.string()
-        .min(1, { message: "Username is required" }),
-    email: z.string()
-        .email("Invalid email")
-        .min(1, { message: "Email is required" }),
-    password: z.string()
-        .min(1, { message: "Passwork is required" })
-        .min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string()
-        .min(1, { message: "Confirm password is required" }),
-}).refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords must match',
-});
-type LoginFormValues = z.infer<typeof signupSchema>; // Infer type from schema of Zod
-
+import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
 export default function Page() {
     const {
@@ -36,10 +16,10 @@ export default function Page() {
         handleSubmit, //pass a callback to handle successful
         formState: { errors },
         getValues   //get values from
-    } = useForm<LoginFormValues>({
-        resolver: zodResolver(signupSchema), //handle errors
+    } = useForm<AuthValidation.Signup>({
+        resolver: zodResolver(AuthValidation.signupSchema), //handle errors
     });
-    const submitHandler = (data: LoginFormValues) => {
+    const submitHandler = (data: AuthValidation.Signup) => {
         // thêm đoạn code gửi email đăng ký
         console.log(data.username + " " + data.email + " " + data.password + " " + data.confirmPassword);
     }
