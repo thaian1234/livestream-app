@@ -9,8 +9,13 @@ import { useForm } from "react-hook-form";
 import { ErrorField } from "@/components/error-field";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Page() {
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+
     const {
         register, // register field name
         handleSubmit, //pass a callback to handle successful
@@ -47,22 +52,37 @@ export default function Page() {
                             {...register("email")}
                         />
                         {errors.email && <ErrorField>{errors.email.message}</ErrorField>}
-                        <Input
-                            type="password"
-                            id="password"
-                            placeholder="Password"
-                            variant={errors.password ? "error" : "primary"}
-                            {...register("password")}
-                        />
+                        <div className="relative flex">
+                            <Input
+                                type={showPassword1 ? "text" : "password"}
+                                id="password"
+                                placeholder="Password"
+                                variant={errors.password ? "error" : "primary"}
+                                {...register("password")}
+                            />
+                            <button className="absolute right-5 top-1/4 text-white w-3 h-3"
+                                type="button"
+                                onClick={() => { setShowPassword1(!showPassword1); }}
+                            >
+                                {showPassword1 ? <EyeOff size={22} /> : <Eye size={22} />}
+                            </button>
+                        </div>
                         {errors.password && <ErrorField>{errors.password.message}</ErrorField>}
-
-                        <Input
-                            type="password"
-                            id="confirmPassword"
-                            placeholder="Confirm Password"
-                            variant={errors.confirmPassword ? "error" : "primary"}
-                            {...register("confirmPassword")}
-                        />
+                        <div className="relative flex">
+                            <Input
+                                type={showPassword2 ? "text" : "password"}
+                                id="confirmPassword"
+                                placeholder="Confirm Password"
+                                variant={errors.confirmPassword ? "error" : "primary"}
+                                {...register("confirmPassword")}
+                            />
+                            <button className="absolute right-5 top-1/4 text-white w-3 h-3"
+                                type="button"
+                                onClick={() => { setShowPassword2(!showPassword2); }}
+                            >
+                                {showPassword2 ? <EyeOff size={22} /> : <Eye size={22} />}
+                            </button>
+                        </div>
                         {errors.confirmPassword && <ErrorField>{errors.confirmPassword.message}</ErrorField>}
 
                     </CardContent>

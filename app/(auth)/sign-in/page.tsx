@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 
 import "@/style/auth.css";
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
@@ -55,14 +56,21 @@ export default function Page() {
                         {errors.email && (
                             <ErrorField>{errors.email.message}</ErrorField>
                         )}
-
-                        <Input
-                            type="password"
-                            {...register("password")}
-                            id="password"
-                            placeholder="Enter your password"
-                            variant={errors.password ? "error" : "primary"}
-                        ></Input>
+                        <div className="relative flex">
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                {...register("password")}
+                                id="password"
+                                placeholder="Enter your password"
+                                variant={errors.password ? "error" : "primary"}
+                            />
+                            <button className="absolute right-5 top-1/4 text-white w-3 h-3"
+                                type="button"
+                                onClick={() => { setShowPassword(!showPassword); }}
+                            >
+                                {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+                            </button>
+                        </div>
                         {errors.password && (
                             <ErrorField>{errors.password.message}</ErrorField>
                         )}
