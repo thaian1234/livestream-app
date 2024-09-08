@@ -49,7 +49,10 @@ export class FollowValidation {
     private static baseSchema = createSelectSchema(tableSchemas.followTable);
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(tableSchemas.followTable);
-    public static deleteSchema = this.insertSchema;
+    public static deleteSchema = this.baseSchema.pick({
+        followedId: true,
+        followerId: true,
+    });
     public static selectRecommendScheme = UserValidation.selectSchema.omit({
         bio: true,
     });

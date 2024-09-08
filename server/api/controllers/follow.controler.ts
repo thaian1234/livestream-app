@@ -30,15 +30,18 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
+        const queries = z.object({
+            offset: z.coerce.number().min(0).default(0),
+            limit: z.coerce.number().min(0).default(10),
+        });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
+            zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const { userId } = c.req.valid("param");
+                const { offset, limit } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-                const { offset, limit } = c.req.query();
-                const offsetNumber = offset ? parseInt(offset, 10) : 0;
-                const limitNumber = limit ? parseInt(limit, 10) : 10;
 
                 if (currentUser.id !== userId) {
                     throw new MyError.UnauthorizedError();
@@ -46,8 +49,8 @@ export class FollowController implements IFollowController {
                 const followings =
                     await this.followService.findFollowingByUserId(
                         userId,
-                        offsetNumber,
-                        limitNumber,
+                        offset,
+                        limit,
                     );
                 if (!followings) {
                     throw new MyError.BadRequestError(
@@ -66,23 +69,26 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
+        const queries = z.object({
+            offset: z.coerce.number().gte(0).default(0),
+            limit: z.coerce.number().gte(0).default(10),
+        });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
+            zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const { userId } = c.req.valid("param");
+                const { offset, limit } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-                const { offset, limit } = c.req.query();
-                const offsetNumber = offset ? parseInt(offset, 10) : 0;
-                const limitNumber = limit ? parseInt(limit, 10) : 10;
 
                 if (currentUser.id !== userId) {
                     throw new MyError.UnauthorizedError();
                 }
                 const followers = await this.followService.findFollowerByUserId(
                     userId,
-                    offsetNumber,
-                    limitNumber,
+                    offset,
+                    limit,
                 );
                 if (!followers) {
                     throw new MyError.BadRequestError(
@@ -101,15 +107,18 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
+        const queries = z.object({
+            offset: z.coerce.number().gte(0).default(0),
+            limit: z.coerce.number().gte(0).default(10),
+        });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
+            zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const { userId } = c.req.valid("param");
+                const { offset, limit } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-                const { offset, limit } = c.req.query();
-                const offsetNumber = offset ? parseInt(offset, 10) : 0;
-                const limitNumber = limit ? parseInt(limit, 10) : 10;
 
                 if (currentUser.id !== userId) {
                     throw new MyError.UnauthorizedError();
@@ -117,8 +126,8 @@ export class FollowController implements IFollowController {
                 const recommends =
                     await this.followService.findRecommendedByUserId(
                         userId,
-                        offsetNumber,
-                        limitNumber,
+                        offset,
+                        limit,
                     );
                 if (!recommends) {
                     throw new MyError.BadRequestError(
