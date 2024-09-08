@@ -24,6 +24,7 @@ export class LuciaService {
                     id: attributes.id,
                     username: attributes.username,
                     email: attributes.email,
+                    emailVerified: attributes.emailVerified,
                 };
             },
         });

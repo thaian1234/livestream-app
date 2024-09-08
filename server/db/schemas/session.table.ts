@@ -3,7 +3,7 @@ import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { userTable } from "./user.table";
 
-export const sessionTable = pgTable("session", {
+export const sessionTable = pgTable("sessions", {
     id: text("id").primaryKey(),
     userId: uuid("user_id")
         .notNull()
