@@ -26,14 +26,11 @@ jobs:
     - name: Install dependencies
       run: bun install
 
-    - name: Lint changed files
-      run: |
-        git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
-        if [ -s changed_files.txt ]; then
-          bun run lint $(cat changed_files.txt)
-        else
-          echo "No files changed, skipping lint"
-        fi
+    - name: Run linters
+      uses: wearerequired/lint-action@v2
+      with:
+        eslint: true
+        prettier: true
 
     - name: Build NextJS application
       run: bun run build
