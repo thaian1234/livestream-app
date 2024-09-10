@@ -2,6 +2,7 @@ import {
     AuthController,
     IAuthController,
 } from "../controllers/auth.controller";
+import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
 import { UserRepository } from "../repositories/user.repository";
@@ -30,6 +31,7 @@ function createAuthRoutes() {
     // Service
     const userService = new UserService(userRepository);
     const authService = new AuthService(userService);
+    const nodemailService = new NodemailService();
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
@@ -39,6 +41,7 @@ function createAuthRoutes() {
         authService,
         userService,
         emailVerificationService,
+        nodemailService,
     );
     return new AuthRoutes(factory, authController);
 }

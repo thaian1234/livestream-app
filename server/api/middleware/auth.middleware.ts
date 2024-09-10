@@ -1,5 +1,6 @@
 import { LuciaService } from "../external-services/lucia.service";
 import { MyError } from "../lib/helpers/errors";
+import { getRequestExecutionContext } from "../lib/helpers/wait-util";
 import { Env } from "../lib/types/factory.type";
 import { every, some } from "hono/combine";
 import { getCookie } from "hono/cookie";
@@ -10,6 +11,7 @@ const lucia = LuciaService.getInstance();
 
 export class AuthMiddleware {
     static init = factory.createMiddleware(async (c, next) => {
+        c.set("executionCtx", getRequestExecutionContext());
         const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;
         if (!sessionId) {
             c.set("user", null);

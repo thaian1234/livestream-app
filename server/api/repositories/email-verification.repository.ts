@@ -27,6 +27,7 @@ export class EmailVerificationRepository
                 code,
                 expiresAt: createDate(new TimeSpan(15, "m")),
             });
+			return code;
         } catch (error) {}
     }
     public async create(data: EmailVerificationValidation.Insert) {

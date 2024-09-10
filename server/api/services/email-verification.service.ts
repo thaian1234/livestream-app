@@ -9,9 +9,11 @@ export class EmailVerificationService implements IEmailVerificationService {
         private readonly emailVerficationRepository: IEmailVerificationRepository,
     ) {}
     public async generateEmailVerificationCode(userId: string) {
-        return await this.emailVerficationRepository.generateEmailVerificationCode(
-            userId,
-        );
+        const code =
+            await this.emailVerficationRepository.generateEmailVerificationCode(
+                userId,
+            );
+        return code;
     }
     public async verifyCode(userId: string, code: string) {
         return await this.emailVerficationRepository.verifyCode(userId, code);

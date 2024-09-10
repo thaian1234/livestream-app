@@ -1,4 +1,5 @@
 import { LuciaService } from "../external-services/lucia.service";
+import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -24,6 +25,7 @@ export class AuthController implements IAuthController {
         private readonly authService: IAuthService,
         private readonly userService: IUserService,
         private readonly emailVerificationService: IEmailVerificationService,
+        private readonly nodemailService: INodemailService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -98,14 +100,26 @@ export class AuthController implements IAuthController {
                 if (!user) {
                     throw new MyError.BadRequestError("Failed to sign up user");
                 }
-                // Tạo và gửi mail
-                await this.emailVerificationService.generateEmailVerificationCode(
-                    user.id,
+                // Generate code
+                const code =
+                    await this.emailVerificationService.generateEmailVerificationCode(
+                        user.id,
+                    );
+                if (!code) {
+                    throw new MyError.BadRequestError(
+                        "Cannot generate your email verification code. Please try again!",
+                    );
+                }
+                c.var.executionCtx.waitUntil(
+                    this.nodemailService.sendVerifcationEmailCode(
+                        code,
+                        user.email,
+                    ),
                 );
                 return ApiResponse.WriteJSON({
                     c,
-                    status: HttpStatus.Created,
                     msg: "User registered. Please check your email for verification code.",
+                    status: HttpStatus.Created,
                     data: {
                         userId: user.id,
                     },
@@ -139,9 +153,9 @@ export class AuthController implements IAuthController {
                 });
                 return ApiResponse.WriteJSON({
                     c,
-                    status: HttpStatus.OK,
                     msg: "Email verified and logged in successfully",
-                    data: { userId },
+                    status: HttpStatus.OK,
+                    data: undefined,
                 });
             },
         );
