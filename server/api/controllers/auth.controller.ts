@@ -142,7 +142,11 @@ export class AuthController implements IAuthController {
     }
     private verifyEmailHandler() {
         return this.factory.createHandlers(
-            zValidator("json", EmailVerificationValidation.verifyEmailSchema),
+            zValidator(
+                "json",
+                EmailVerificationValidation.verifyEmailSchema,
+                Validator.handleParseError,
+            ),
             async (c) => {
                 const { code, userId } = c.req.valid("json");
                 const isVerified =
