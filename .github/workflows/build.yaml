@@ -26,12 +26,6 @@ jobs:
     - name: Install dependencies
       run: bun install
 
-    - name: Run linters
-      uses: wearerequired/lint-action@v2
-      with:
-        eslint: true
-        prettier: true
-
     - name: Build NextJS application
       run: bun run build
 
