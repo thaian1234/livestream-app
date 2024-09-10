@@ -1,0 +1,40 @@
+name: NextJS Build Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+
+    - name: Install dependencies
+      run: bun install
+
+    - name: Build NextJS application
+      run: bun run build
+
+    - name: Check build status
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "NextJS build successful"
+          exit 0
+        else
+          echo "NextJS build failed"
+          exit 1
+        fi
