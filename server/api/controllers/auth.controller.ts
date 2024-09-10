@@ -96,6 +96,19 @@ export class AuthController implements IAuthController {
             ),
             async (c) => {
                 const jsonData = c.req.valid("json");
+                const existingUser =
+                    await this.userService.getUserByEmailOrUsername(
+                        jsonData.email,
+                        jsonData.username,
+                    );
+                if (existingUser?.emailVerified) {
+                    throw new MyError.BadRequestError("User already exists");
+                }
+                if (existingUser && !existingUser.emailVerified) {
+                    throw new MyError.UnauthenticatedError(
+                        "Your email is not verified",
+                    );
+                }
                 const user = await this.authService.registerUser(jsonData);
                 if (!user) {
                     throw new MyError.BadRequestError("Failed to sign up user");
