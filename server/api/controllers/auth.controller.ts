@@ -1,12 +1,18 @@
 import { LuciaService } from "../external-services/lucia.service";
+import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { AuthValidation } from "../lib/validations/schema.validation";
+import {
+    AuthValidation,
+    EmailVerificationValidation,
+} from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IAuthService } from "../services/auth.service";
+import { IEmailVerificationService } from "../services/email-verification.service";
+import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
 
@@ -17,13 +23,17 @@ export class AuthController implements IAuthController {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly authService: IAuthService,
+        private readonly userService: IUserService,
+        private readonly emailVerificationService: IEmailVerificationService,
+        private readonly nodemailService: INodemailService,
     ) {}
     public setupHandlers() {
         return this.factory
             .createApp()
             .post("/sign-in", ...this.signInHandler())
             .post("/sign-out", ...this.signOutHandler())
-            .post("/sign-up", ...this.signUpHandler());
+            .post("/sign-up", ...this.signUpHandler())
+            .post("/verify-email", ...this.verifyEmailHandler());
     }
     private signInHandler() {
         return this.factory.createHandlers(
@@ -86,28 +96,82 @@ export class AuthController implements IAuthController {
             ),
             async (c) => {
                 const jsonData = c.req.valid("json");
-                const existingUser = await this.authService.verifyUserExistence(
-                    jsonData.email,
-                    jsonData.username,
-                );
-                if (existingUser) {
-                    throw new MyError.BadRequestError(
-                        "Email or Username already in use",
+                const existingUser =
+                    await this.userService.getUserByEmailOrUsername(
+                        jsonData.email,
+                        jsonData.username,
+                    );
+                if (existingUser?.emailVerified) {
+                    throw new MyError.BadRequestError("User already exists");
+                }
+                if (existingUser && !existingUser.emailVerified) {
+                    throw new MyError.UnauthenticatedError(
+                        "Your email is not verified",
                     );
                 }
-                const { session, sessionCookie } =
-                    await this.authService.registerUser(jsonData);
-                if (!session || !sessionCookie) {
-                    throw new MyError.UnauthorizedError("Sign up failed");
+                const user = await this.authService.registerUser(jsonData);
+                if (!user) {
+                    throw new MyError.BadRequestError("Failed to sign up user");
                 }
+                // Generate code
+                const code =
+                    await this.emailVerificationService.generateEmailVerificationCode(
+                        user.id,
+                    );
+                if (!code) {
+                    throw new MyError.BadRequestError(
+                        "Cannot generate your email verification code. Please try again!",
+                    );
+                }
+                c.var.executionCtx.waitUntil(
+                    this.nodemailService.sendVerifcationEmailCode(
+                        code,
+                        user.email,
+                    ),
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "User registered. Please check your email for verification code.",
+                    status: HttpStatus.Created,
+                    data: {
+                        userId: user.id,
+                    },
+                });
+            },
+        );
+    }
+    private verifyEmailHandler() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                EmailVerificationValidation.verifyEmailSchema,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const { code, userId } = c.req.valid("json");
+                const isVerified =
+                    await this.emailVerificationService.verifyCode(
+                        userId,
+                        code,
+                    );
+                if (!isVerified) {
+                    throw new MyError.BadRequestError(
+                        "Invalid or expired verification code",
+                    );
+                }
+                await this.userService.updateUser(userId, {
+                    emailVerified: true,
+                });
+                const { sessionCookie } =
+                    await this.authService.initiateSession(userId);
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
                     ...sessionCookie.attributes,
                     sameSite: "Strict",
                 });
                 return ApiResponse.WriteJSON({
                     c,
-                    status: HttpStatus.Created,
-                    msg: "Sign up successfully",
+                    msg: "Email verified and logged in successfully",
+                    status: HttpStatus.OK,
                     data: undefined,
                 });
             },

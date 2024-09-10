@@ -2,9 +2,12 @@ import {
     AuthController,
     IAuthController,
 } from "../controllers/auth.controller";
+import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { EmailVerificationRepository } from "../repositories/email-verification.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AuthService } from "../services/auth.service";
+import { EmailVerificationService } from "../services/email-verification.service";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 
@@ -22,11 +25,24 @@ class AuthRoutes {
 }
 function createAuthRoutes() {
     const factory = createFactory();
+    // Repository
     const userRepository = new UserRepository();
+    const emailVerificationRepository = new EmailVerificationRepository();
+    // Service
     const userService = new UserService(userRepository);
     const authService = new AuthService(userService);
-    const authController = new AuthController(factory, authService);
-
+    const nodemailService = new NodemailService();
+    const emailVerificationService = new EmailVerificationService(
+        emailVerificationRepository,
+    );
+    // Controller
+    const authController = new AuthController(
+        factory,
+        authService,
+        userService,
+        emailVerificationService,
+        nodemailService,
+    );
     return new AuthRoutes(factory, authController);
 }
 

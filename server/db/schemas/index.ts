@@ -1,4 +1,8 @@
 import { blockRelations, blockTable } from "./block.table";
+import {
+    emailVerificationRelations,
+    emailVerificationTable,
+} from "./email-verification.table";
 import { followRelations, followTable } from "./follow.table";
 import { notificationTable, typeEnum } from "./notification.table";
 import { sessionRelations, sessionTable } from "./session.table";
@@ -21,6 +25,8 @@ const tableSchemas = {
     settingRelations,
     notificationTable,
     typeEnum,
+    emailVerificationRelations,
+    emailVerificationTable,
 };
 
 export default tableSchemas;

@@ -96,8 +96,7 @@ export class BlockValidation {
         id: true,
     });
 }
-// TODO: Add BlockTypes
-// TODO: Add FollowTypes
+
 export class StreamValidation {
     private static baseSchema = createSelectSchema(tableSchemas.streamTable);
     public static selectSchema = this.baseSchema;
@@ -106,8 +105,7 @@ export class StreamValidation {
         id: true,
     });
 }
-// TODO: Add BlockTypes
-// TODO: Add FollowTypes
+
 export class NotificationValidation {
     private static baseSchema = createSelectSchema(
         tableSchemas.notificationTable,
@@ -120,7 +118,6 @@ export class NotificationValidation {
         id: true,
     });
 }
-// TODO: Add BlockTypes
 
 export class AuthValidation {
     private static baseSchema = UserValidation.insertSchema
@@ -142,4 +139,48 @@ export class AuthValidation {
 export namespace AuthValidation {
     export type Signin = z.infer<typeof AuthValidation.signinSchema>;
     export type Signup = z.infer<typeof AuthValidation.signupSchema>;
+}
+
+export class EmailVerificationValidation {
+    private static baseSchema = createSelectSchema(
+        tableSchemas.emailVerificationTable,
+        {
+            code: z
+                .string()
+                .length(8, "Verify Code must be 8 characters long")
+                .regex(/^\d+$/, "Verify Code must only contain numbers"),
+        },
+    );
+    public static selectSchema = this.baseSchema;
+    public static insertSchema = createInsertSchema(
+        tableSchemas.emailVerificationTable,
+        {
+            code: z
+                .string()
+                .length(8, "Verify Code must be 8 characters long")
+                .regex(/^\d+$/, "Verify Code must only contain numbers"),
+        },
+    );
+    public static deleteSchema = this.baseSchema.pick({
+        id: true,
+    });
+    public static verifyEmailSchema = this.baseSchema.pick({
+        code: true,
+        userId: true,
+    });
+}
+
+export namespace EmailVerificationValidation {
+    export type Insert = z.infer<
+        typeof EmailVerificationValidation.insertSchema
+    >;
+    export type Select = z.infer<
+        typeof EmailVerificationValidation.selectSchema
+    >;
+    export type Delete = z.infer<
+        typeof EmailVerificationValidation.deleteSchema
+    >;
+    export type VerifyEmail = z.infer<
+        typeof EmailVerificationValidation.verifyEmailSchema
+    >;
 }

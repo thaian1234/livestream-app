@@ -5,12 +5,12 @@ import {
 import { Utils } from "../lib/helpers/utils";
 import { AuthValidation } from "../lib/validations/schema.validation";
 
-import { IUserService, UserService } from "./user.service";
+import { IUserService } from "./user.service";
 
 export interface IAuthService extends Utils.AutoMappedClass<AuthService> {}
 
 export class AuthService implements IAuthService {
-    luciaService: LuciaService;
+    luciaService: ILuciaService;
     constructor(private readonly userService: IUserService) {
         this.luciaService = new LuciaService();
     }
@@ -44,22 +44,13 @@ export class AuthService implements IAuthService {
             ...credentials,
             hashedPassword: hashedPassword,
         });
-        if (!newUser) {
-            return {
-                session: null,
-                sessionCookie: null,
-            };
-        }
-        return await this.luciaService.initiateSession(newUser.id);
+        return newUser;
     }
     public async terminateSession(sessionId: string) {
         await this.luciaService.revokeSession(sessionId);
         return this.luciaService.getSessionCookieName();
     }
-    public async verifyUserExistence(email: string, username?: string) {
-        return !!(await this.userService.getUserByEmailOrUsername(
-            email,
-            username,
-        ));
+    public async initiateSession(userId: string) {
+        return await this.luciaService.initiateSession(userId);
     }
 }

@@ -39,6 +39,7 @@ const seeds = async () => {
 
         // Delete all tables
         await db.delete(tableSchemas.sessionTable);
+        await db.delete(tableSchemas.emailVerificationTable);
         await db.delete(tableSchemas.followTable);
         await db.delete(tableSchemas.blockTable);
         await db.delete(tableSchemas.notificationTable);
@@ -135,6 +136,7 @@ const seeds = async () => {
             .insert(tableSchemas.notificationTable)
             .values(notificationData)
             .onConflictDoNothing();
+        return;
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");

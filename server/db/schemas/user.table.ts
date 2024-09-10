@@ -1,7 +1,8 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { blockTable } from "./block.table";
+import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
 import { sessionTable } from "./session.table";
 import { streamTable } from "./stream.table";
@@ -10,6 +11,7 @@ export const userTable = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     username: text("username").notNull().unique(),
     email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").default(false),
     hashedPassword: text("hashed_password"),
     imageUrl: text("image_url"),
     bio: text("bio"),
@@ -25,6 +27,7 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     followers: many(followTable, { relationName: "followers" }),
     blocking: many(blockTable, { relationName: "blocking" }),
     blockedBy: many(blockTable, { relationName: "blocked_by" }),
+    emailVerificationCodes: many(emailVerificationTable),
     stream: one(streamTable),
     session: one(sessionTable),
 }));
