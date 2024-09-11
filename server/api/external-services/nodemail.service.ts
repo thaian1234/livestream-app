@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
+import { envServer } from "@/lib/env/env.server";
+
 export interface INodemailService
     extends Utils.AutoMappedClass<NodemailService> {}
 
@@ -11,11 +13,11 @@ export class NodemailService implements INodemailService {
     transporter;
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
+            host: envServer.SMTP_HOST,
+            port: envServer.SMTP_PORT,
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
+                user: envServer.SMTP_USER,
+                pass: envServer.SMTP_PASS,
             },
         } as SMTPTransport.MailOptions);
     }
@@ -28,7 +30,7 @@ export class NodemailService implements INodemailService {
             subject: subject,
             from: {
                 name: "Livestream Application",
-                address: process.env.SMTP_USER || "anacelol123@gmail.com",
+                address: envServer.SMTP_USER,
             },
             to: toEmail,
             text: message,

@@ -1,7 +1,5 @@
 import Database from "..";
 import tableSchemas from "../schemas";
-import { config } from "dotenv";
-import { alphabet, generateRandomString } from "oslo/crypto";
 import { z } from "zod";
 
 import { LuciaService } from "@/server/api/external-services/lucia.service";
@@ -13,10 +11,6 @@ import {
     StreamValidation,
     UserValidation,
 } from "@/server/api/lib/validations/schema.validation";
-
-config({
-    path: ".env",
-});
 
 const db = Database.getInstance().db;
 const lucia = LuciaService.getInstance();
@@ -136,7 +130,6 @@ const seeds = async () => {
             .insert(tableSchemas.notificationTable)
             .values(notificationData)
             .onConflictDoNothing();
-        return;
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");
@@ -149,4 +142,8 @@ seeds()
     })
     .catch((error) => {
         console.log(error);
+        process.exit(1);
+    })
+    .finally(() => {
+        process.exit(0);
     });
