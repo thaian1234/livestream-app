@@ -2,6 +2,8 @@ import { Utils } from "../lib/helpers/utils";
 import { UserValidation } from "../lib/validations/schema.validation";
 import { Lucia, TimeSpan } from "lucia";
 
+import { envServer } from "@/lib/env/env.server";
+
 import Database from "@/server/db";
 
 export interface ILuciaService extends Utils.AutoMappedClass<LuciaService> {}
@@ -16,7 +18,7 @@ export class LuciaService {
             sessionCookie: {
                 expires: true,
                 attributes: {
-                    secure: process.env.NODE_ENV === "production",
+                    secure: envServer.NODE_ENV === "production",
                 },
             },
             getUserAttributes(attributes) {
