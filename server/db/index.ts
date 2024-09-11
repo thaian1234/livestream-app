@@ -4,16 +4,21 @@ import postgres from "postgres";
 
 import { envServer } from "@/lib/env/env.server";
 
-import tableSchemas from "./schemas";
+import tableSchemas, { tableRelations } from "./schemas";
 
 class Database {
     private static instance: Database;
-    public db: PostgresJsDatabase<typeof tableSchemas>;
+    public db: PostgresJsDatabase<typeof tableSchemas & typeof tableRelations>;
     public adapter: DrizzlePostgreSQLAdapter;
 
     private constructor() {
         const sql = postgres(envServer.DB_URL);
-        this.db = drizzle(sql, { schema: tableSchemas });
+        this.db = drizzle(sql, {
+            schema: {
+                ...tableSchemas,
+                ...tableRelations,
+            },
+        });
         this.adapter = new DrizzlePostgreSQLAdapter(
             this.db,
             tableSchemas.sessionTable,

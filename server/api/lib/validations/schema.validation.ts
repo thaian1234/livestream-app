@@ -21,6 +21,7 @@ export class UserValidation {
     public static updateSchema = this.baseSchema.partial().omit({
         id: true,
         email: true,
+        emailVerified: true,
     });
     public static deleteSchema = this.baseSchema.pick({
         id: true,

@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { accountTable } from "./account.table";
 import { blockTable } from "./block.table";
 import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
@@ -30,4 +31,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     emailVerificationCodes: many(emailVerificationTable),
     stream: one(streamTable),
     session: one(sessionTable),
+    account: one(accountTable),
 }));
