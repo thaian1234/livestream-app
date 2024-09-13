@@ -1,7 +1,7 @@
 import {
     FollowController,
     IFollowController,
-} from "../controllers/follow.controler";
+} from "../controllers/follow.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { FollowRepository } from "../repositories/follow.repository";
 import { FollowService } from "../services/follow.service";
