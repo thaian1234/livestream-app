@@ -29,7 +29,7 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     blocking: many(blockTable, { relationName: "blocking" }),
     blockedBy: many(blockTable, { relationName: "blocked_by" }),
     emailVerificationCodes: many(emailVerificationTable),
+    accounts: many(accountTable),
     stream: one(streamTable),
     session: one(sessionTable),
-    account: one(accountTable),
 }));

@@ -55,7 +55,7 @@ export class AccountRepository implements IAccountRepository {
                         email: googleData.email,
                         username: googleData.email,
                         imageUrl: googleData.picture,
-                        emailVerified: true,
+                        emailVerified: googleData.verified_email,
                     })
                     .returning();
                 await tx.insert(tableSchemas.accountTable).values({
