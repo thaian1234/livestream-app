@@ -62,7 +62,6 @@ export default function Page() {
                 <form onSubmit={handleSubmit(submitHandler)}>
                     <CardContent>
                         <Input
-                            type="email"
                             {...register("email")}
                             id="email"
                             placeholder="Enter your email"

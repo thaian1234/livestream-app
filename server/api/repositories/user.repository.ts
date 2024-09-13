@@ -26,7 +26,7 @@ export class UserRepository implements IUserRepository {
             const user = await this.db.query.userTable.findFirst({
                 where: eq(tableSchemas.userTable.email, email),
             });
-            return UserValidation.pareBase(user);
+            return user;
         } catch (error) {}
     }
     async findAll() {

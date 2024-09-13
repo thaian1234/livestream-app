@@ -39,6 +39,7 @@ const seeds = async () => {
         await db.delete(tableSchemas.notificationTable);
         await db.delete(tableSchemas.streamTable);
         await db.delete(tableSchemas.settingTable);
+        await db.delete(tableSchemas.accountTable);
         await db.delete(tableSchemas.userTable);
 
         // Seeding user

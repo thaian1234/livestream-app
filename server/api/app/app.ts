@@ -1,4 +1,6 @@
 import { AppConfig } from "../configs/app.config";
+import { HttpStatus } from "../lib/constant/http.type";
+import { ApiResponse } from "../lib/helpers/api-response";
 import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -29,7 +31,13 @@ export class App {
 
     private setupErrorHandling(): void {
         this.app.onError(Validator.handleErrorException);
-        this.app.notFound((c) => c.text("Api not found"));
+        this.app.notFound((c) =>
+            ApiResponse.WriteErrorJSON({
+                c,
+                status: HttpStatus.NotFound,
+                msg: "API not found",
+            }),
+        );
     }
 
     public setupRoutes() {

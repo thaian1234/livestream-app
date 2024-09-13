@@ -9,14 +9,13 @@ import {
 
 import { userTable } from "./user.table";
 
-export const providerNameEnum = pgEnum("provider_name", ["google", "github"]);
+export const providerNameEnum = pgEnum("provider_id", ["google", "github"]);
 
 export const accountTable = pgTable(
-    "account",
+    "accounts",
     {
-        providerId: varchar("provider_id", { length: 255 }).notNull(),
+        providerId: providerNameEnum("provider_id").notNull(),
         providerUserId: varchar("provider_user_id", { length: 255 }).notNull(),
-        providerName: providerNameEnum("provider_name"),
         userId: uuid("user_id")
             .notNull()
             .references(() => userTable.id),
@@ -24,12 +23,15 @@ export const accountTable = pgTable(
     (table) => {
         return {
             pk: primaryKey({
-                columns: [table.providerId, table.userId],
+                columns: [table.providerId, table.providerUserId],
             }),
         };
     },
 );
 
 export const accountRelations = relations(accountTable, ({ one }) => ({
-    user: one(accountTable),
+    user: one(userTable, {
+        fields: [accountTable.userId],
+        references: [userTable.id],
+    }),
 }));
