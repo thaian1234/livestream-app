@@ -11,6 +11,9 @@ export const envServer = createEnv({
         SMTP_PORT: z.coerce.number().default(587),
         SMTP_USER: z.string().email(),
         SMTP_PASS: z.string().min(1),
+        GOOGLE_CLIENT_ID: z.string().min(1),
+        GOOGLE_CLIENT_SECRET: z.string().min(1),
+        GOOGLE_API_URL: z.string().url(),
     },
     shared: {
         NODE_ENV: z

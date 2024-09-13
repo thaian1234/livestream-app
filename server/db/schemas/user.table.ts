@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { accountTable } from "./account.table";
 import { blockTable } from "./block.table";
 import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
@@ -28,6 +29,7 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     blocking: many(blockTable, { relationName: "blocking" }),
     blockedBy: many(blockTable, { relationName: "blocked_by" }),
     emailVerificationCodes: many(emailVerificationTable),
+    accounts: many(accountTable),
     stream: one(streamTable),
     session: one(sessionTable),
 }));

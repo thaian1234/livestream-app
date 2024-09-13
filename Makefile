@@ -20,17 +20,18 @@ db-reset:
 	@docker-compose down -v --remove-orphans
 	@docker-compose up -d
 	@echo "Waiting for database to be ready..."
+	@sleep 3 > NUL
 	@echo "Running migrations..."
 	@bun run db:migrate
-	@bun run db:seed
 
 db-reset-migrate:
 	@docker-compose down -v --remove-orphans
 	@docker-compose up -d
 	@echo "Waiting for database to be ready..."
-	@timeout 3 > NUL
+	@sleep 3 > NUL
 	@echo "Generate schemas..."
 	@bun run db:generate
+	@sleep 2 > NUL
 	@echo "Running migrations..."
 	@bun run db:migrate
 

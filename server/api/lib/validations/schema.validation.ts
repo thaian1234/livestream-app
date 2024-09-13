@@ -184,3 +184,50 @@ export namespace EmailVerificationValidation {
         typeof EmailVerificationValidation.verifyEmailSchema
     >;
 }
+
+export class AccountValidation {
+    private static baseSchema = createSelectSchema(tableSchemas.accountTable);
+    public static selectSchema = this.baseSchema;
+    public static insertSchema = createInsertSchema(tableSchemas.accountTable);
+    public static updateSchema = this.baseSchema.partial().required({
+        providerId: true,
+        providerUserId: true,
+    });
+    public static deleteSchema = this.baseSchema.pick({
+        providerId: true,
+        userId: true,
+    });
+    public static findOneSchema = this.baseSchema.pick({
+        providerId: true,
+        providerUserId: true,
+        userId: true,
+    });
+    public static pareBase(data: unknown) {
+        return this.baseSchema.parse(data);
+    }
+    public static parse(data: unknown) {
+        return this.selectSchema.parse(data);
+    }
+}
+export namespace AccountValidation {
+    export type Insert = z.infer<typeof AccountValidation.insertSchema>;
+    export type Update = z.infer<typeof AccountValidation.updateSchema>;
+    export type Select = z.infer<typeof AccountValidation.selectSchema>;
+    export type Delete = z.infer<typeof AccountValidation.deleteSchema>;
+    export type FindOne = z.infer<typeof AccountValidation.findOneSchema>;
+}
+
+export class GoogleValidation {
+    private static baseSchema = z.object({
+        id: z.string(),
+        email: z.string().email(),
+        name: z.string(),
+        picture: z.string().url(),
+        verified_email: z.boolean().default(false),
+    });
+    public static responseSchema = this.baseSchema;
+}
+
+export namespace GoogleValidation {
+    export type Response = z.infer<typeof GoogleValidation.responseSchema>;
+}

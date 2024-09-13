@@ -1,3 +1,8 @@
+import {
+    accountRelations,
+    accountTable,
+    providerNameEnum,
+} from "./account.table";
 import { blockRelations, blockTable } from "./block.table";
 import {
     emailVerificationRelations,
@@ -12,21 +17,27 @@ import { userRelations, userTable } from "./user.table";
 
 const tableSchemas = {
     userTable,
-    userRelations,
     sessionTable,
-    blockRelations,
     blockTable,
     followTable,
-    followRelations,
     streamTable,
-    streamRelations,
-    sessionRelations,
     settingTable,
-    settingRelations,
     notificationTable,
-    typeEnum,
-    emailVerificationRelations,
     emailVerificationTable,
-};
+    accountTable,
+} as const;
+
+export const tableRelations = {
+    userRelations,
+    blockRelations,
+    followRelations,
+    sessionRelations,
+    settingRelations,
+    emailVerificationRelations,
+    streamRelations,
+    accountRelations,
+    typeEnum,
+    providerNameEnum,
+} as const;
 
 export default tableSchemas;

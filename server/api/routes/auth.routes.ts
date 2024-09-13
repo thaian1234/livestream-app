@@ -2,12 +2,18 @@ import {
     AuthController,
     IAuthController,
 } from "../controllers/auth.controller";
+import {
+    IOauthController,
+    OauthController,
+} from "../controllers/oauth.controller";
 import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { AccountRepository } from "../repositories/account.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AuthService } from "../services/auth.service";
 import { EmailVerificationService } from "../services/email-verification.service";
+import { GoogleService } from "../services/google.service";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 
@@ -15,12 +21,14 @@ class AuthRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly authController: IAuthController,
+        private readonly oauthController: IOauthController,
     ) {}
     setupRoutes() {
         return this.factory
             .createApp()
             .basePath("/auth")
-            .route("/", this.authController.setupHandlers());
+            .route("/", this.authController.setupHandlers())
+            .route("/", this.oauthController.setupHandlers());
     }
 }
 function createAuthRoutes() {
@@ -28,6 +36,7 @@ function createAuthRoutes() {
     // Repository
     const userRepository = new UserRepository();
     const emailVerificationRepository = new EmailVerificationRepository();
+    const accountRepository = new AccountRepository();
     // Service
     const userService = new UserService(userRepository);
     const authService = new AuthService(userService);
@@ -36,6 +45,7 @@ function createAuthRoutes() {
         emailVerificationRepository,
     );
     // Controller
+    const goolgeService = new GoogleService(accountRepository, userService);
     const authController = new AuthController(
         factory,
         authService,
@@ -43,7 +53,8 @@ function createAuthRoutes() {
         emailVerificationService,
         nodemailService,
     );
-    return new AuthRoutes(factory, authController);
+    const oauthController = new OauthController(factory, goolgeService);
+    return new AuthRoutes(factory, authController, oauthController);
 }
 
 export const authRoutes = createAuthRoutes().setupRoutes();
