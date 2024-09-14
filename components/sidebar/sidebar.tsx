@@ -47,8 +47,9 @@ export default function Sidebar() {
                         </button>
                     </CardTitle>
                     <CardContent>
-                        {avatars.map(avatar => (
+                        {avatars.map((avatar, index) => (
                             <ItemInSidebar
+                                key={index}
                                 Avatar={() => <Image src={avatar.src} alt={avatar.name} width={50} height={50} />}
                                 userName={avatar.name}
                             >
