@@ -14,6 +14,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { ItemInSidebar } from "@/components/sidebar/item"
+import { cn } from "@/lib/utils"
 
 export default function Sidebar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -32,11 +33,11 @@ export default function Sidebar() {
     ]
     return (
         <aside
-            className={`bg-gradient-to-t from-black-2 via-teal-3 to-teal-2   flex-shrink-0 overflow-x-hidden transition-all duration-300 ease-in-out rounded-tr-3xl rounded-br-3xl
-                        ${isSidebarOpen ? 'overflow-y-auto' : 'overflow-y-hidden'} 
-                        ${isSidebarOpen ? 'w-72' : 'w-16'}
-                        ${isSidebarOpen ? 'h-full' : 'h-2/4'}
-                        `}
+            className={cn(
+                "overflow-y-hidden w-16 h-2/4 bg-gradient-to-t from-black-2 via-teal-3 to-teal-2   flex-shrink-0 overflow-x-hidden transition-all duration-300 ease-in-out rounded-tr-3xl rounded-br-3xl",
+                isSidebarOpen && 'overflow-y-auto w-72 h-full',
+            )}
+
         >
             {isSidebarOpen ? (
                 <Card className="p-4 ">
@@ -50,9 +51,9 @@ export default function Sidebar() {
                         {avatars.map((avatar, index) => (
                             <ItemInSidebar
                                 key={index}
-                                Avatar={() => <Image src={avatar.src} alt={avatar.name} width={50} height={50} />}
                                 userName={avatar.name}
                             >
+                                <Image src={avatar.src} alt={avatar.name} width={50} height={50} />
                             </ItemInSidebar>
                         ))}
                     </CardContent>
@@ -67,7 +68,7 @@ export default function Sidebar() {
                                 </button>
                             </TooltipTrigger>
                             <TooltipContent side="right">
-                                {isSidebarOpen ? "Thu gọn" : "Expand"}
+                                {isSidebarOpen ? "collapse" : "Expand"}
                             </TooltipContent>
                         </Tooltip>
 
