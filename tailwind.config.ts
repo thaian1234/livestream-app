@@ -18,6 +18,9 @@ const config = {
             },
         },
         extend: {
+            height: {
+                '30vh': '30vh',
+            },
             colors: {
                 teal: {
                     1: '#94FFD8',
@@ -28,6 +31,12 @@ const config = {
                 {
                     1: '#4D4D4D',
                 },
+                black: {
+                    0: '#000000',
+                    1: '#0F0F0F',
+                    2: '#130B29'
+                },
+                search: '#F9F9F94D',
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
@@ -76,10 +85,15 @@ const config = {
                     from: { height: "var(--radix-accordion-content-height)" },
                     to: { height: "0" },
                 },
+                "caret-blink": { //input otp
+                    "0%,70%,100%": { opacity: "1" },
+                    "20%,50%": { opacity: "0" },
+                },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
+                "caret-blink": "caret-blink 1.25s ease-out infinite", //input otp
             },
         },
     },

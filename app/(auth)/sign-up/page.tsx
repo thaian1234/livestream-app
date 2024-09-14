@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function Page() {
     const [showPassword1, setShowPassword1] = useState(false);
@@ -95,7 +96,10 @@ export default function Page() {
             </CardBody>
             <CardFooter className="items-center">
                 <CardTitle className="font-normal text-base">Already Registered?
-                    <a href="/sign-in" className="hover:underline"> Login</a>
+                    <Link href="/sign-in" className="hover:underline">
+                        {" "}
+                        Login
+                    </Link>
                 </CardTitle>
             </CardFooter>
         </Card>

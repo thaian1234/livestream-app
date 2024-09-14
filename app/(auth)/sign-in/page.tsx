@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import "@/style/auth.css";
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
@@ -96,10 +97,10 @@ export default function Page() {
             <CardFooter className="items-center">
                 <CardTitle className="text-base font-normal">
                     Don&apos;t have an account?
-                    <a href="/sign-up" className="hover:underline">
+                    <Link href="/sign-up" className="hover:underline">
                         {" "}
                         Signup
-                    </a>
+                    </Link>
                 </CardTitle>
             </CardFooter>
         </Card>
