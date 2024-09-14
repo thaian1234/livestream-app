@@ -1,8 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
 import { IconLogin } from "@/components/auth/icon-login";
 import { ErrorField } from "@/components/error-field";
@@ -18,9 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 import "@/style/auth.css";
-import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
-import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
 
 export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,6 @@ export default function Page() {
                     <CardContent>
                         <Input
                             {...register("email")}
-                            id="email"
                             placeholder="Enter your email"
                             variant={errors.email ? "error" : "primary"}
                         />
@@ -61,15 +61,21 @@ export default function Page() {
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 {...register("password")}
-                                id="password"
                                 placeholder="Enter your password"
                                 variant={errors.password ? "error" : "primary"}
                             />
-                            <button className="absolute right-5 top-1/4 text-white w-3 h-3"
+                            <button
+                                className="absolute right-5 top-1/4 h-3 w-3 text-white"
                                 type="button"
-                                onClick={() => { setShowPassword(!showPassword); }}
+                                onClick={() => {
+                                    setShowPassword(!showPassword);
+                                }}
                             >
-                                {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+                                {showPassword ? (
+                                    <EyeOff size={22} />
+                                ) : (
+                                    <Eye size={22} />
+                                )}
                             </button>
                         </div>
                         {errors.password && (

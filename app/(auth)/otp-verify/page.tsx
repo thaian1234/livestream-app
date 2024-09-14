@@ -1,5 +1,11 @@
 "use client";
+
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -8,16 +14,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import "@/style/auth.css";
-import { ChevronLeft } from "lucide-react";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useRouter } from 'next/navigation';
-import { ErrorField } from "@/components/error-field";
+
+import "@/style/auth.css";
 
 export default function Page() {
     const [otp, setOtp] = useState("");
@@ -26,14 +29,12 @@ export default function Page() {
     const handleSubmit = () => {
         //handle
         router.push("/home"); //success case
-    }
+    };
     return (
         <Card className="justify-between text-base">
             <CardBody>
                 <CardContent>
-                    <button
-                        onClick={() => router.push('/sign-up')}
-                    >
+                    <button onClick={() => router.push("/sign-up")}>
                         <ChevronLeft />
                     </button>
                 </CardContent>
@@ -44,22 +45,23 @@ export default function Page() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <InputOTP maxLength={8} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                    <InputOTP
+                        maxLength={8}
+                        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                         value={otp}
                         onChange={(value) => setOtp(value)}
                     >
                         <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                            <InputOTPSlot index={6} />
-                            <InputOTPSlot index={7} />
+                            {Array.from({ length: 8 }).map(
+                                (_: unknown, i: number) => (
+                                    <InputOTPSlot index={i} key={i} />
+                                ),
+                            )}
                         </InputOTPGroup>
                     </InputOTP>
-                    {isError && <ErrorField>Wrong OTP, please try again!</ErrorField>}
+                    {isError && (
+                        <ErrorField>Wrong OTP, please try again!</ErrorField>
+                    )}
                 </CardContent>
                 <Button
                     className="mt-6"
@@ -70,6 +72,6 @@ export default function Page() {
                     Next
                 </Button>
             </CardBody>
-        </Card >
+        </Card>
     );
 }
