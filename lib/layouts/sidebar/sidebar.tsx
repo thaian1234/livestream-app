@@ -12,13 +12,14 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import { Item } from "@/lib/layouts/sidebar/item";
 import { cn } from "@/lib/utils";
 
-import { Item } from "@/components/sidebar/item";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Tooltip,
     TooltipContent,
@@ -46,29 +47,31 @@ export default function Sidebar() {
         <aside
             className={cn(
                 "h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
-                isSidebarOpen && "h-full w-72 overflow-y-auto",
+                isSidebarOpen && "h-full w-72",
             )}
         >
             {isSidebarOpen ? (
-                <Card className="p-4">
-                    <CardTitle className="flex flex-row items-center justify-between text-2xl">
+                <Card className="p-4 pr-0">
+                    <CardTitle className="mr-4 flex flex-row items-center justify-between text-2xl">
                         Sidebar Content
                         <button onClick={toggleSidebar}>
                             <Menu color="#ffffff" strokeWidth={2.25} />
                         </button>
                     </CardTitle>
-                    <CardContent>
-                        {avatars.map((avatar, index) => (
-                            <Item key={index} userName={avatar.name}>
-                                <Image
-                                    src={avatar.src}
-                                    alt={avatar.name}
-                                    width={50}
-                                    height={50}
-                                />
-                            </Item>
-                        ))}
-                    </CardContent>
+                    <ScrollArea className="h-[calc(100vh-4rem)]">
+                        <CardContent className="mr-4">
+                            {avatars.map((avatar, index) => (
+                                <Item key={index} userName={avatar.name}>
+                                    <Image
+                                        src={avatar.src}
+                                        alt={avatar.name}
+                                        width={50}
+                                        height={50}
+                                    />
+                                </Item>
+                            ))}
+                        </CardContent>
+                    </ScrollArea>
                 </Card>
             ) : (
                 <div className="flex flex-col items-center py-2">
