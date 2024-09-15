@@ -15,7 +15,7 @@
         "db:drop": "drizzle-kit drop",
         "db:introspect": "drizzle-kit introspect",
         "db:seed": "bun ./server/db/scripts/seed.ts",
-        "db:seedreset": "bun ./server/db/scripts/seed.ts"
+        "db:reset": "bun ./server/db/scripts/reset.ts"
     },
     "dependencies": {
         "@hono/zod-validator": "^0.2.2",
