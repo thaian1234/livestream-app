@@ -1,6 +1,6 @@
 .containerAuth {
-    background-color: #0F0F0F;
-    padding-right: 10vw;    
+    background-color: #0f0f0f;
+    padding-right: 10vw;
     padding-left: 10vw;
     display: flex;
     justify-content: space-between;
@@ -14,11 +14,10 @@
     height: 80vh;
     width: 400px;
     border-radius: 20px;
-    border-color: #4D4D4D;
+    border-color: #4d4d4d;
     border-width: 1px;
 }
 .logoContainer {
     height: 25vw;
     width: 25vw;
 }
-
