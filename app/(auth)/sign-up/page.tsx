@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { IconLogin } from "@/lib/features/auth/icon-login";
+
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
-import { IconLogin } from "@/components/auth/icon-login";
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
 import {
