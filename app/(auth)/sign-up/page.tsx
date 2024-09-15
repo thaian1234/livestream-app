@@ -1,104 +1,154 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent, CardTitle, CardFooter, CardBody } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { IconLogin } from "@/components/auth/icon-login";
-import "@/style/auth.css"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+
+import { IconLogin } from "@/components/auth/icon-login";
 import { ErrorField } from "@/components/error-field";
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardBody,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
-const signupSchema = z.object({
-    username: z.string()
-        .min(1, { message: "Username is required" }),
-    email: z.string()
-        .email("Invalid email")
-        .min(1, { message: "Email is required" }),
-    password: z.string()
-        .min(1, { message: "Passwork is required" })
-        .min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string()
-        .min(1, { message: "Confirm password is required" }),
-}).refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords must match',
-});
-type LoginFormValues = z.infer<typeof signupSchema>; // Infer type from schema of Zod
-
+import "@/style/auth.css";
 
 export default function Page() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showconfirmPass, setShowconfirmPass] = useState(false);
+
     const {
         register, // register field name
         handleSubmit, //pass a callback to handle successful
         formState: { errors },
-        getValues   //get values from
-    } = useForm<LoginFormValues>({
-        resolver: zodResolver(signupSchema), //handle errors
+        getValues, //get values from
+    } = useForm<AuthValidation.Signup>({
+        resolver: zodResolver(AuthValidation.signupSchema), //handle errors
     });
-    const submitHandler = (data: LoginFormValues) => {
+    const submitHandler = (data: AuthValidation.Signup) => {
         // thêm đoạn code gửi email đăng ký
-        console.log(data.username + " " + data.email + " " + data.password + " " + data.confirmPassword);
-    }
+        console.log(
+            data.username +
+                " " +
+                data.email +
+                " " +
+                data.password +
+                " " +
+                data.confirmPassword,
+        );
+    };
     return (
         <Card className="justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>Signup</CardTitle>
-                    <CardTitle className="font-normal text-base">Just some details to get you in.!</CardTitle>
+                    <CardTitle className="text-base font-normal">
+                        Just some details to get you in.!
+                    </CardTitle>
                 </CardHeader>
                 <form onSubmit={handleSubmit(submitHandler)}>
                     <CardContent>
                         <Input
-                            id="username"
                             placeholder="Username"
                             variant={errors.username ? "error" : "primary"}
                             {...register("username")}
                         />
-                        {errors.username && <ErrorField>{errors.username.message}</ErrorField>}
+                        {errors.username && (
+                            <ErrorField>{errors.username.message}</ErrorField>
+                        )}
                         <Input
-                            type="email"
-                            id="email"
                             placeholder="Email"
                             variant={errors.email ? "error" : "primary"}
                             {...register("email")}
                         />
-                        {errors.email && <ErrorField>{errors.email.message}</ErrorField>}
-                        <Input
-                            type="password"
-                            id="password"
-                            placeholder="Password"
-                            variant={errors.password ? "error" : "primary"}
-                            {...register("password")}
-                        />
-                        {errors.password && <ErrorField>{errors.password.message}</ErrorField>}
-
-                        <Input
-                            type="password"
-                            id="confirmPassword"
-                            placeholder="Confirm Password"
-                            variant={errors.confirmPassword ? "error" : "primary"}
-                            {...register("confirmPassword")}
-                        />
-                        {errors.confirmPassword && <ErrorField>{errors.confirmPassword.message}</ErrorField>}
-
+                        {errors.email && (
+                            <ErrorField>{errors.email.message}</ErrorField>
+                        )}
+                        <div className="relative flex">
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                variant={errors.password ? "error" : "primary"}
+                                {...register("password")}
+                            />
+                            <button
+                                className="absolute right-5 top-1/4 h-3 w-3 text-white"
+                                type="button"
+                                onClick={() => {
+                                    setShowPassword(!showPassword);
+                                }}
+                            >
+                                {showPassword ? (
+                                    <EyeOff size={22} />
+                                ) : (
+                                    <Eye size={22} />
+                                )}
+                            </button>
+                        </div>
+                        {errors.password && (
+                            <ErrorField>{errors.password.message}</ErrorField>
+                        )}
+                        <div className="relative flex">
+                            <Input
+                                type={showconfirmPass ? "text" : "password"}
+                                id="confirmPassword"
+                                placeholder="Confirm Password"
+                                variant={
+                                    errors.confirmPassword ? "error" : "primary"
+                                }
+                                {...register("confirmPassword")}
+                            />
+                            <button
+                                className="absolute right-5 top-1/4 h-3 w-3 text-white"
+                                type="button"
+                                onClick={() => {
+                                    setShowconfirmPass(!showconfirmPass);
+                                }}
+                            >
+                                {showconfirmPass ? (
+                                    <EyeOff size={22} />
+                                ) : (
+                                    <Eye size={22} />
+                                )}
+                            </button>
+                        </div>
+                        {errors.confirmPassword && (
+                            <ErrorField>
+                                {errors.confirmPassword.message}
+                            </ErrorField>
+                        )}
                     </CardContent>
                     <CardContent>
-                        <Button className="w-full" type="submit" variant="gradient" >
-                            Signup</Button>
+                        <Button
+                            className="w-full"
+                            type="submit"
+                            variant="gradient"
+                        >
+                            Signup
+                        </Button>
                     </CardContent>
                 </form>
                 <IconLogin></IconLogin>
             </CardBody>
             <CardFooter className="items-center">
-                <CardTitle className="font-normal text-base">Already Registered?
-                    <a href="/sign-in" className="hover:underline"> Login</a>
+                <CardTitle className="text-base font-normal">
+                    Already Registered?
+                    <Link href="/sign-in" className="hover:underline">
+                        {" "}
+                        Login
+                    </Link>
                 </CardTitle>
             </CardFooter>
         </Card>
-
-    )
-}   
+    );
+}
