@@ -1,10 +1,16 @@
-import { SignInForm } from "@/lib/cores/auth/signin-form";
-import { AuthContainer } from "@/lib/features/auth/auth-container";
+import { SignInForm } from "@/lib/cores/auth/components/signin-form";
+import { AuthLayout } from "@/lib/cores/auth/layouts/auth.layout";
 
-export default function Page() {
+import "@/style/auth.css";
+
+export default function SignInPage() {
     return (
-        <AuthContainer isSignUp={false}>
+        <AuthLayout
+            title="Sign In"
+            subTitle="Glad you’re back!"
+            isSignUp={false}
+        >
             <SignInForm />
-        </AuthContainer>
+        </AuthLayout>
     );
 }

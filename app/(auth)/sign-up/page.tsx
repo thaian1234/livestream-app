@@ -1,10 +1,14 @@
-import { SignUpForm } from "@/lib/cores/auth/signup-form";
-import { AuthContainer } from "@/lib/features/auth/auth-container";
+import { SignUpForm } from "@/lib/cores/auth/components/signup-form";
+import { AuthLayout } from "@/lib/cores/auth/layouts/auth.layout";
 
-export default function Page() {
+export default function SignUpPage() {
     return (
-        <AuthContainer isSignUp={true}>
+        <AuthLayout
+            title="Sign Up"
+            subTitle="Just some details to get you in !"
+            isSignUp
+        >
             <SignUpForm />
-        </AuthContainer>
+        </AuthLayout>
     );
 }

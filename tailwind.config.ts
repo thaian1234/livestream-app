@@ -3,11 +3,11 @@ import type { Config } from "tailwindcss";
 const config = {
     darkMode: ["class"],
     content: [
-        './pages/**/*.{ts,tsx}',
-        './components/**/*.{ts,tsx}',
-        './app/**/*.{ts,tsx}',
-        './src/**/*.{ts,tsx}',
-        './lib/**/*.{ts,tsx}',
+        "./pages/**/*.{ts,tsx}",
+        "./components/**/*.{ts,tsx}",
+        "./app/**/*.{ts,tsx}",
+        "./src/**/*.{ts,tsx}",
+        "./lib/**/*.{ts,tsx}",
     ],
     prefix: "",
     theme: {
@@ -20,24 +20,23 @@ const config = {
         },
         extend: {
             height: {
-                '30vh': '30vh',
+                "30vh": "30vh",
             },
             colors: {
                 teal: {
-                    1: '#94FFD8',
-                    2: '#00B9AE',
-                    3: '#247881',
+                    1: "#94FFD8",
+                    2: "#00B9AE",
+                    3: "#247881",
                 },
-                gray:
-                {
-                    1: '#4D4D4D',
+                gray: {
+                    1: "#4D4D4D",
                 },
                 black: {
-                    0: '#000000',
-                    1: '#0F0F0F',
-                    2: '#130B29'
+                    0: "#000000",
+                    1: "#0F0F0F",
+                    2: "#130B29",
                 },
-                search: '#F9F9F94D',
+                search: "#F9F9F94D",
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
@@ -86,7 +85,8 @@ const config = {
                     from: { height: "var(--radix-accordion-content-height)" },
                     to: { height: "0" },
                 },
-                "caret-blink": { //input otp
+                "caret-blink": {
+                    //input otp
                     "0%,70%,100%": { opacity: "1" },
                     "20%,50%": { opacity: "0" },
                 },
@@ -99,6 +99,6 @@ const config = {
         },
     },
     plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
 export default config;

@@ -3,8 +3,10 @@ import {
     UseQueryOptions,
     useMutation,
     useQuery,
+    useQueryClient,
 } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
+import { useRouter } from "next/navigation";
 
 import { HttpStatus } from "@/server/api/lib/constant/http.type";
 
@@ -45,9 +47,18 @@ export namespace Fetcher {
             "mutationFn"
         >,
     ) {
-        return useMutation<ResponseType<T>, Error, RequestType<T>>({
+        const queryClient = useQueryClient();
+        const router = useRouter();
+
+        const mutation = useMutation<ResponseType<T>, Error, RequestType<T>>({
             mutationFn: async (data) => handleResponse(await client(data)),
             ...options,
         });
+
+        return {
+            mutation,
+            queryClient,
+            router,
+        };
     }
 }
