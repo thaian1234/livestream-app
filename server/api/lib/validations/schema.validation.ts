@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import { string, z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
@@ -133,16 +133,19 @@ export class AuthValidation {
                 .max(255, "Password must not be more than 255 characters long"),
             confirmPassword: z
                 .string()
-                .min(6, "Password must be at least 6 characters long")
+                .min(6, "Password must be at least 6 characters long"),
         });
     public static signinSchema = this.baseSchema.omit({
         username: true,
         confirmPassword: true,
     });
-    public static signupSchema = this.baseSchema.refine((data) => data.password === data.confirmPassword, {
-        path: ['confirmPassword'], // Đây là trường bị lỗi khi validation không thành công
-        message: "Passwords must match",
-    });
+    public static signupSchema = this.baseSchema.refine(
+        (data) => data.password === data.confirmPassword,
+        {
+            path: ["confirmPassword"], // Đây là trường bị lỗi khi validation không thành công
+            message: "Passwords must match",
+        },
+    );
 }
 export namespace AuthValidation {
     export type Signin = z.infer<typeof AuthValidation.signinSchema>;
@@ -238,4 +241,29 @@ export class GoogleValidation {
 
 export namespace GoogleValidation {
     export type Response = z.infer<typeof GoogleValidation.responseSchema>;
+}
+
+export class R2BucketValidation {
+    private static allowedFileTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+    ] as const;
+    public static uploadFileSchema = z.object({
+        fileName: z.string().min(1),
+        fileSize: z.coerce.number(),
+        fileType: z
+            .string()
+            .refine((type) => this.allowedFileTypes.includes(type as any), {
+                message:
+                    "Invalid file type. Allowed types are: jpeg, png, gif, webp",
+            }),
+        // fileType: z.string(),
+    });
+}
+export namespace R2BucketValidation {
+    export type UploadFile = z.infer<
+        typeof R2BucketValidation.uploadFileSchema
+    >;
 }

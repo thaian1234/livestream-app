@@ -11,6 +11,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
 import { logger } from "hono/logger";
+import { uploadRoutes } from "../routes/upload.routes";
 
 export class App {
     private app: Hono;
@@ -45,7 +46,8 @@ export class App {
             .basePath(AppConfig.BASE_PATH)
             .route("/", userRoutes)
             .route("/", followRoutes)
-            .route("/", authRoutes);
+            .route("/", authRoutes)
+            .route("/", uploadRoutes);
     }
 
     public getApp() {
