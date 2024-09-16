@@ -1,12 +1,8 @@
-"use client";
-
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Link from "next/link";
 
-import { ErrorField } from "@/components/error-field";
-import { Button } from "@/components/ui/button";
+import { OtpForm } from "@/lib/cores/auth/components/otp-form";
+
 import {
     Card,
     CardBody,
@@ -14,29 +10,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from "@/components/ui/input-otp";
 
-import "@/style/auth.css";
-
-export default function Page() {
-    const [otp, setOtp] = useState("");
-    const router = useRouter();
-    const [isError, setIsError] = useState(true);
-    const handleSubmit = () => {
-        //handle
-        router.push("/home"); //success case
-    };
+export default function OtpVerifyPage() {
     return (
         <Card className="justify-between text-base">
             <CardBody>
                 <CardContent>
-                    <button onClick={() => router.push("/sign-up")}>
+                    <Link href={"/sign-up"}>
                         <ChevronLeft />
-                    </button>
+                    </Link>
                 </CardContent>
                 <CardHeader>
                     <CardTitle>OTP verification</CardTitle>
@@ -44,33 +26,7 @@ export default function Page() {
                         Enter the OTP you received to your email
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <InputOTP
-                        maxLength={8}
-                        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                        value={otp}
-                        onChange={(value) => setOtp(value)}
-                    >
-                        <InputOTPGroup>
-                            {Array.from({ length: 8 }).map(
-                                (_: unknown, i: number) => (
-                                    <InputOTPSlot index={i} key={i} />
-                                ),
-                            )}
-                        </InputOTPGroup>
-                    </InputOTP>
-                    {isError && (
-                        <ErrorField>Wrong OTP, please try again!</ErrorField>
-                    )}
-                </CardContent>
-                <Button
-                    className="mt-6"
-                    variant="gradient"
-                    disabled={otp.length !== 8}
-                    onClick={handleSubmit}
-                >
-                    Next
-                </Button>
+                <OtpForm />
             </CardBody>
         </Card>
     );
