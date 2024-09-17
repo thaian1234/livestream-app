@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
 
@@ -28,7 +29,7 @@ export const authApi = {
             const $post = client.api.auth["sign-in"].$post;
             const { mutation, router, toast } = Fetcher.useHonoMutation($post, {
                 onSuccess({ msg }) {
-                    router.replace("/home");
+                    router.replace(ROUTES.HOME_PAGE);
                     toast.success(msg);
                 },
                 onError(err) {
@@ -43,7 +44,7 @@ export const authApi = {
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ data, msg }) {
                         queryClient.setQueryData(keys.userId, data.userId);
-                        router.replace("/otp-verify");
+                        router.replace(ROUTES.OTP_VERIFY_PAGE);
                         toast.success(msg);
                     },
                     onError(err) {
@@ -56,7 +57,7 @@ export const authApi = {
             const $post = client.api.auth["verify-email"].$post;
             const { mutation, toast, router } = Fetcher.useHonoMutation($post, {
                 onSuccess({ msg }) {
-                    router.replace("/home");
+                    router.replace(ROUTES.HOME_PAGE);
                     toast.success(msg);
                 },
                 onError(err) {
@@ -83,8 +84,8 @@ export const authApi = {
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
                         toast.success(msg);
+                        router.replace(ROUTES.SIGNIN_PAGE);
                         queryClient.clear();
-                        router.replace("/sign-in");
                     },
                     onError(err) {
                         toast.error(err.message);
