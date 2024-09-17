@@ -1,6 +1,10 @@
+import { ROUTES } from "./routes.config";
+
 export const middlewareRoutes = {
-    publicRoutes: new Set(["/", "/sign-in", "/sign-up"]),
-    apiRoutes: ["/auth/sign-in", "/auth/sign-up"],
-    apiAuthPrefix: "/api/auth",
-    DEFAULT_SIGNIN_REDIRECT: "/sign-in",
+    publicRoutes: new Set([
+        ROUTES.DEFAULT_PAGE,
+        ROUTES.SIGNIN_PAGE,
+        ROUTES.SIGNUP_PAGE,
+    ]),
+    DEFAULT_SIGNIN_REDIRECT: ROUTES.SIGNIN_PAGE,
 };
