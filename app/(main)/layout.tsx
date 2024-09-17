@@ -1,7 +1,7 @@
 import React from "react";
 
-import Navbar from "@/components/navbar/navbar";
-import Sidebar from "@/components/sidebar/sidebar";
+import { Navbar } from "@/components/navbar/navbar";
+import { Sidebar } from "@/components/sidebar/sidebar";
 
 import "@/style/home.css";
 

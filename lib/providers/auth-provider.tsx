@@ -1,13 +1,13 @@
 "use client";
 
-import { clientAPI } from "../features";
+import { authApi } from "../cores/auth/apis";
 import { createContext, useContext, useMemo } from "react";
 
 import { UserValidation } from "@/server/api/lib/validations/schema.validation";
 
 type AuthContextType = {
     user: UserValidation.Select | null;
-    isLoading: boolean;
+    isPending: boolean;
     error: Error | null;
     isSignedIn: boolean;
 };
@@ -15,18 +15,17 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const { data, isLoading, error } = clientAPI.auth.useVerifySession();
+    const { data, isPending, error } = authApi.query.useVerifySession();
 
     const contextValue = useMemo(() => {
-        const isSignedIn = !isLoading && !error && !!data?.data.user;
-
+        const isSignedIn = !isPending && !error;
         return {
-            user: isSignedIn ? data.data.user : null,
-            isLoading,
+            user: data?.data.user ? data.data.user : null,
+            isPending,
             error,
             isSignedIn,
         };
-    }, [data, isLoading, error]);
+    }, [data, isPending, error]);
 
     return (
         <AuthContext.Provider value={contextValue}>

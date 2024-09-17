@@ -217,10 +217,13 @@ export class AuthController implements IAuthController {
                     );
                 }
                 c.var.executionCtx.waitUntil(
-                    this.nodemailService.sendVerifcationEmailCode(
-                        code,
-                        existingUser.email,
-                    ),
+                    this.nodemailService
+                        .sendVerifcationEmailCode(code, existingUser.email)
+                        .catch(() => {
+                            throw new MyError.ServiceUnavailableError(
+                                "Cannot send code to your email",
+                            );
+                        }),
                 );
                 return ApiResponse.WriteJSON({
                     c,

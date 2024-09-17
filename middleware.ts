@@ -1,14 +1,14 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
 import { middlewareRoutes } from "./lib/configs/middleware.config";
 
-async function verifySession(sessionId: string, origin: string) {
+async function verifySession(origin: string) {
     const response = await fetch(`${origin}/api/auth/verify-session`, {
         headers: {
-            Cookie: `auth_session=${sessionId}`,
+            Cookie: cookies().toString(),
         },
-        cache: "force-cache",
     });
     return response.ok;
 }
@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
                   ),
               );
     }
-    const isValidSession = await verifySession(sessionId.value, origin);
+    const isValidSession = await verifySession(origin);
     if (!isValidSession) {
         return NextResponse.redirect(
             new URL(middlewareRoutes.DEFAULT_SIGNIN_REDIRECT, request.url),
