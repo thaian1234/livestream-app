@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { HttpStatus } from "@/server/api/lib/constant/http.type";
 
@@ -59,6 +60,7 @@ export namespace Fetcher {
             mutation,
             queryClient,
             router,
+            toast,
         };
     }
 }
