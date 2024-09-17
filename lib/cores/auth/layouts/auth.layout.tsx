@@ -1,7 +1,7 @@
+import { OauthButton } from "../components/oauth.layout";
 import Link from "next/link";
 import React from "react";
 
-import { IconLogin } from "@/components/auth/icon-login";
 import {
     Card,
     CardBody,
@@ -36,7 +36,7 @@ export function AuthLayout({
               to: "/sign-up",
               text: "Sign Up",
           };
-		  
+
     return (
         <Card className="justify-between text-base">
             <CardBody>
@@ -49,7 +49,7 @@ export function AuthLayout({
                     )}
                 </CardHeader>
                 {children}
-                <IconLogin />
+                <OauthButton />
             </CardBody>
             <CardFooter className="items-center">
                 <CardTitle className="text-base font-normal">
