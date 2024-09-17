@@ -19,55 +19,53 @@ export const authApi = {
     mutation: {
         useSignIn() {
             const $post = client.api.auth["sign-in"].$post;
-            const { mutation, router } = Fetcher.useHonoMutation($post, {
-                onSuccess(data) {
+            const { mutation, router, toast } = Fetcher.useHonoMutation($post, {
+                onSuccess({ msg }) {
                     router.replace("/home");
+                    toast.success(msg);
                 },
                 onError(err) {
-                    console.log(err);
+                    toast.error(err.message);
                 },
             });
             return mutation;
         },
         useSignUp() {
             const $post = client.api.auth["sign-up"].$post;
-            const { mutation, router, queryClient } = Fetcher.useHonoMutation(
-                $post,
-                {
-                    onSuccess({ data, msg, status }) {
+            const { mutation, router, queryClient, toast } =
+                Fetcher.useHonoMutation($post, {
+                    onSuccess({ data, msg }) {
                         queryClient.setQueryData(keys.userId, data.userId);
                         router.replace("/otp-verify");
+                        toast.success(msg);
                     },
                     onError(err) {
-                        console.log(err);
+                        toast.error(err.message);
                     },
-                },
-            );
+                });
             return mutation;
         },
         useSendEmailVerifyCode() {
             const $post = client.api.auth["verify-email"].$post;
-            const { mutation, queryClient, router } = Fetcher.useHonoMutation(
-                $post,
-                {
-                    onSuccess(data) {
-                        router.replace("/home");
-                    },
-                    onError(err) {
-                        console.log(err);
-                    },
+            const { mutation, toast, router } = Fetcher.useHonoMutation($post, {
+                onSuccess({ msg }) {
+                    router.replace("/home");
+                    toast.success(msg);
                 },
-            );
+                onError(err) {
+                    toast.error(err.message);
+                },
+            });
             return mutation;
         },
         useSignInGoogle() {
             const $get = client.api.auth.oauth.google.$get;
-            const { mutation } = Fetcher.useHonoMutation($get, {
+            const { mutation, toast } = Fetcher.useHonoMutation($get, {
                 onSuccess({ data, msg }) {
                     window.location.href = data.redirectTo;
                 },
                 onError(err) {
-                    console.log(err);
+                    toast.error(err.message);
                 },
             });
             return mutation;
