@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/button";
 
 function useUploadImageApi(file: File | null) {
     const $post = client.api.upload.avatar.$post;
-    return Fetcher.useHonoMutation($post, {
+    const { mutation } = Fetcher.useHonoMutation($post, {
         onSuccess(data) {
             if (!file) {
                 throw new Error("Please select one file");
@@ -21,6 +21,7 @@ function useUploadImageApi(file: File | null) {
             console.log(err);
         },
     });
+    return mutation;
 }
 
 async function uploadToR2(signedUrl: string, file: File) {

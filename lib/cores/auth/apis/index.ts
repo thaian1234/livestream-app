@@ -6,7 +6,7 @@ import { client } from "@/server/api/client";
 
 const keys = {
     userId: ["userId"],
-} as const;
+};
 
 export const authApi = {
     query: {
@@ -58,6 +58,18 @@ export const authApi = {
                     },
                 },
             );
+            return mutation;
+        },
+        useSignInGoogle() {
+            const $get = client.api.auth.oauth.google.$get;
+            const { mutation } = Fetcher.useHonoMutation($get, {
+                onSuccess({ data, msg }) {
+                    window.location.href = data.redirectTo;
+                },
+                onError(err) {
+                    console.log(err);
+                },
+            });
             return mutation;
         },
     },

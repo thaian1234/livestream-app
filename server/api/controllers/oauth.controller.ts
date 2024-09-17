@@ -57,7 +57,7 @@ export class OauthController implements IOauthController {
             });
             return ApiResponse.WriteJSON({
                 c,
-                status: 200,
+                status: HttpStatus.Created,
                 data: {
                     redirectTo: url.toString(),
                 },
@@ -84,7 +84,6 @@ export class OauthController implements IOauthController {
                     !cookieState ||
                     cookieState !== state
                 ) {
-                    console.error("No code verifier or state");
                     throw new MyError.BadRequestError();
                 }
                 const { accessToken } = await this.googleSerivce.verifyCode(
@@ -115,12 +114,7 @@ export class OauthController implements IOauthController {
                     ...sessionCookie.attributes,
                     sameSite: "Strict",
                 });
-                return ApiResponse.WriteJSON({
-                    c,
-                    status: HttpStatus.OK,
-                    msg: "Sign in successfully",
-                    data: undefined,
-                });
+                return c.redirect("/home", HttpStatus.MovedPermanently);
             },
         );
     }
