@@ -3,8 +3,7 @@
 import { useState } from "react";
 
 import { Fetcher } from "@/lib/helpers/fetcher";
-
-import { client } from "@/server/api/client";
+import { client } from "@/lib/shared/client";
 
 import { Button } from "../../components/ui/button";
 

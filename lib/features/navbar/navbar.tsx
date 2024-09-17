@@ -1,20 +1,11 @@
-"use client";
-
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "../../../components/ui/avatar";
-import { Input } from "../../../components/ui/input";
-import { Bell, Heart, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
-import { AfterSignin, BeforeSignin } from "./right-navbar";
+import { Actions } from "./right-navbar";
+import { Input } from "@/components/ui/input";
 
-export default function Navbar() {
-    const [isSignin, setIsSignin] = useState(false);
+export function Navbar() {
     return (
         <div className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-black-1 to-teal-2 px-6">
             <div className="flex items-center">
@@ -27,8 +18,7 @@ export default function Navbar() {
                     />
                 </Link>
             </div>
-            <div className="flex flex-row-reverse items-center space-x-8">
-                {isSignin ? <AfterSignin /> : <BeforeSignin />}
+            <div className="flex items-center justify-between space-x-8">
                 <div className="relative">
                     <Input
                         type="search"
@@ -38,6 +28,7 @@ export default function Navbar() {
                     />
                     <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />
                 </div>
+                <Actions />
             </div>
         </div>
     );

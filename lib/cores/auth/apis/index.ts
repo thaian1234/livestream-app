@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Fetcher } from "@/lib/helpers/fetcher";
-
-import { client } from "@/server/api/client";
+import { client } from "@/lib/shared/client";
 
 const keys = {
     userId: ["userId"],
+    session: ["session"],
 };
 
 export const authApi = {
@@ -14,6 +14,13 @@ export const authApi = {
             const queryClient = useQueryClient();
             const userId = queryClient.getQueryData(keys.userId) as string;
             return userId;
+        },
+        useVerifySession() {
+            const $get = client.api.auth["verify-session"].$get;
+            return Fetcher.useHonoQuery($get, keys.session, {
+                refetchOnWindowFocus: false,
+                retry: 0,
+            });
         },
     },
     mutation: {
@@ -68,6 +75,21 @@ export const authApi = {
                     toast.error(err.message);
                 },
             });
+            return mutation;
+        },
+        useSignOut() {
+            const $post = client.api.auth["sign-out"].$post;
+            const { mutation, toast, queryClient, router } =
+                Fetcher.useHonoMutation($post, {
+                    onSuccess({ msg }) {
+                        toast.success(msg);
+                        queryClient.clear();
+                        router.replace("/sign-in");
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                });
             return mutation;
         },
     },
