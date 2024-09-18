@@ -28,6 +28,7 @@ export class BlockRepository implements IBlockRepository {
                 limit: limit,
                 orderBy: desc(tableSchemas.blockTable.createdAt),
             });
+
             return blockeds;
         } catch (error) {}
     }
