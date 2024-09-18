@@ -5,6 +5,7 @@ import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { authRoutes } from "../routes/auth.routes";
+import { blockRoutes } from "../routes/block.routes";
 import { followRoutes } from "../routes/follow.routes";
 import { userRoutes } from "../routes/user.routes";
 import { Hono } from "hono";
@@ -45,6 +46,7 @@ export class App {
             .basePath(AppConfig.BASE_PATH)
             .route("/", userRoutes)
             .route("/", followRoutes)
+            .route("/", blockRoutes)
             .route("/", authRoutes);
     }
 
