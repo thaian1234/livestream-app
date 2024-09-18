@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
@@ -21,6 +21,23 @@ export const authApi = {
             return Fetcher.useHonoQuery($get, keys.session, {
                 refetchOnWindowFocus: false,
                 retry: 0,
+            });
+        },
+        useGetUser() {
+            return useQuery({
+                queryKey: ["users"],
+                queryFn: async () => {
+                    const resp = await fetch(
+                        "http://localhost:4000/api/users",
+                        {
+                            credentials: "include",
+                        },
+                    );
+                    if (!resp.ok) {
+                        throw new Error("Failed to fetch user");
+                    }
+                    return await resp.json();
+                },
             });
         },
     },

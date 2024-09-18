@@ -5,11 +5,14 @@ import { NextRequest } from "next/server";
 import { middlewareRoutes } from "./lib/configs/middleware.config";
 
 async function verifySession(origin: string) {
-    const response = await fetch(`${origin}/api/auth/verify-session`, {
-        headers: {
-            Cookie: cookies().toString(),
+    const response = await fetch(
+        `http://localhost:4000/api/auth/verify-session`,
+        {
+            headers: {
+                Cookie: cookies().toString(),
+            },
         },
-    });
+    );
     return response.ok;
 }
 
