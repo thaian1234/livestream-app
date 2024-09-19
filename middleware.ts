@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { middlewareRoutes } from "./lib/configs/middleware.config";
+import { ROUTES } from "./lib/configs/routes.config";
 
 async function verifySession(origin: string) {
     const response = await fetch(`${origin}/api/auth/verify-session`, {
@@ -34,8 +34,8 @@ export async function middleware(request: NextRequest) {
             new URL(middlewareRoutes.DEFAULT_SIGNIN_REDIRECT, request.url),
         );
     }
-    if (isPublicRoutes) {
-        return NextResponse.redirect(new URL("/home", request.url));
+    if (isPublicRoutes && isValidSession) {
+        return NextResponse.redirect(new URL(ROUTES.HOME_PAGE, request.url));
     }
     return NextResponse.next();
 }

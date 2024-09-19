@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { string, z } from "zod";
+import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
@@ -16,7 +16,7 @@ export class UserValidation {
         hashedPassword: true,
     });
     public static insertSchema = createInsertSchema(tableSchemas.userTable, {
-        username: z.string().min(4).max(20),
+        username: z.string().min(4).max(50),
         email: z.string().email(),
     });
     public static updateSchema = this.baseSchema.partial().omit({
@@ -269,7 +269,6 @@ export class R2BucketValidation {
                 message:
                     "Invalid file type. Allowed types are: jpeg, png, gif, webp",
             }),
-        // fileType: z.string(),
     });
 }
 export namespace R2BucketValidation {

@@ -20,24 +20,7 @@ export const authApi = {
             const $get = client.api.auth["verify-session"].$get;
             return Fetcher.useHonoQuery($get, keys.session, {
                 refetchOnWindowFocus: false,
-                retry: 0,
-            });
-        },
-        useGetUser() {
-            return useQuery({
-                queryKey: ["users"],
-                queryFn: async () => {
-                    const resp = await fetch(
-                        "http://localhost:4000/api/users",
-                        {
-                            credentials: "include",
-                        },
-                    );
-                    if (!resp.ok) {
-                        throw new Error("Failed to fetch user");
-                    }
-                    return await resp.json();
-                },
+                retry: 1,
             });
         },
     },

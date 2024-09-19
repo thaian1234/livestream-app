@@ -14,6 +14,7 @@ import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
@@ -114,7 +115,10 @@ export class OauthController implements IOauthController {
                     ...sessionCookie.attributes,
                     sameSite: "Strict",
                 });
-                return c.redirect("/home", HttpStatus.MovedPermanently);
+                return c.redirect(
+                    ROUTES.HOME_PAGE,
+                    HttpStatus.MovedPermanently,
+                );
             },
         );
     }
