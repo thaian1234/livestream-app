@@ -5,13 +5,14 @@ import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { authRoutes } from "../routes/auth.routes";
+import { blockRoutes } from "../routes/block.routes";
 import { followRoutes } from "../routes/follow.routes";
+import { uploadRoutes } from "../routes/upload.routes";
 import { userRoutes } from "../routes/user.routes";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
 import { logger } from "hono/logger";
-import { uploadRoutes } from "../routes/upload.routes";
 
 export class App {
     private app: Hono;
@@ -47,7 +48,8 @@ export class App {
             .route("/", userRoutes)
             .route("/", followRoutes)
             .route("/", authRoutes)
-            .route("/", uploadRoutes);
+            .route("/", uploadRoutes)
+            .route("/", blockRoutes);
     }
 
     public getApp() {
