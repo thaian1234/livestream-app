@@ -44,28 +44,26 @@ export class BlockRepository implements IBlockRepository {
                 await tx
                     .delete(tableSchemas.followTable)
                     .where(
-                        and(
-                            eq(
-                                tableSchemas.followTable.followerId,
-                                data.blockerId,
+                        or(
+                            and(
+                                eq(
+                                    tableSchemas.followTable.followerId,
+                                    data.blockerId,
+                                ),
+                                eq(
+                                    tableSchemas.followTable.followedId,
+                                    data.blockedId,
+                                ),
                             ),
-                            eq(
-                                tableSchemas.followTable.followedId,
-                                data.blockedId,
-                            ),
-                        ),
-                    );
-                await tx
-                    .delete(tableSchemas.followTable)
-                    .where(
-                        and(
-                            eq(
-                                tableSchemas.followTable.followerId,
-                                data.blockedId,
-                            ),
-                            eq(
-                                tableSchemas.followTable.followedId,
-                                data.blockerId,
+                            and(
+                                eq(
+                                    tableSchemas.followTable.followerId,
+                                    data.blockedId,
+                                ),
+                                eq(
+                                    tableSchemas.followTable.followedId,
+                                    data.blockerId,
+                                ),
                             ),
                         ),
                     );
