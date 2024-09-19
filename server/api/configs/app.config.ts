@@ -7,7 +7,7 @@ export class AppConfig {
         origin: AppConfig.CORS_ORIGIN,
         credentials: true,
         allowHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
-        allowMethods: ["POST", "GET", "OPTIONS", "DELETE", "PATCH"],
+        allowMethods: ["POST", "GET", "DELETE", "PATCH"],
         exposeHeaders: ["Content-Length", "X-CSRF-Token"],
         maxAge: 600,
     };
