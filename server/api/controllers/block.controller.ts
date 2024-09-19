@@ -23,10 +23,7 @@ export class BlockController implements IBlockController {
             .createApp()
             .get("/:userId/blocked", ...this.getAllBlockedByUserIdHandler())
             .post("/:blockerId/:blockedId", ...this.blockToggle())
-            .get(
-                "/:userId/findBlockedByUsernameOrEmail",
-                ...this.findBlockedByUsernameOrEmail(),
-            );
+            .get("/:userId/blocked", ...this.findBlockedByUsernameOrEmail());
     }
     private getAllBlockedByUserIdHandler() {
         const params = z.object({
@@ -116,7 +113,7 @@ export class BlockController implements IBlockController {
                 (x) => (x ? x : undefined),
                 z.coerce.number().int().min(0).default(10),
             ),
-            search: z.string().optional(),
+            filterBy: z.string().optional(),
         });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
@@ -124,13 +121,7 @@ export class BlockController implements IBlockController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const { userId } = c.req.valid("param");
-                const { page, size, search } = c.req.valid("query");
-                console.log("Validated Parameters:", {
-                    userId,
-                    page,
-                    size,
-                    search,
-                });
+                const { page, size, filterBy } = c.req.valid("query");
 
                 const currentUser = c.get("getUser");
 
@@ -139,7 +130,7 @@ export class BlockController implements IBlockController {
                 }
                 const blockedQuery =
                     await this.blockService.findBlockedByEmailOrUsername(
-                        search,
+                        filterBy,
                         userId,
                         (page - 1) * size,
                         size,

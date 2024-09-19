@@ -1,9 +1,11 @@
 import { Utils } from "../lib/helpers/utils";
 import { BlockValidation } from "../lib/validations/schema.validation";
-import { and, desc, eq, like, or } from "drizzle-orm";
+import { blockRoutes } from "../routes/block.routes";
+import { and, desc, eq, inArray, like, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+import { blockRelations } from "@/server/db/schemas/block.table";
 
 export interface IBlockRepository
     extends Utils.AutoMappedClass<BlockRepository> {}
@@ -98,22 +100,38 @@ export class BlockRepository implements IBlockRepository {
     ) {
         try {
             const blockeds = await this.db.query.blockTable.findMany({
-                where: eq(tableSchemas.blockTable.blockerId, userId),
-                with: {
-                    blocked: {
-                        where: (blocked, { like, or }) =>
-                            or(
-                                like(blocked.email, `%${query}%`), // Use the alias for blocked here
-                                like(blocked.username, `%${query}%`), // Use the alias for blocked here
+                where: and(
+                    eq(tableSchemas.blockTable.blockerId, userId),
+                    inArray(
+                        tableSchemas.blockTable.blockedId,
+                        this.db
+                            .select({ id: tableSchemas.userTable.id })
+                            .from(tableSchemas.userTable)
+                            .where(
+                                or(
+                                    like(
+                                        tableSchemas.userTable.email,
+                                        `%${query}%`,
+                                    ),
+                                    like(
+                                        tableSchemas.userTable.username,
+                                        `%${query}%`,
+                                    ),
+                                ),
                             ),
-                    },
+                    ),
+                ),
+                with: {
+                    blocked: true,
                 },
                 offset: offset,
                 limit: limit,
                 orderBy: desc(tableSchemas.blockTable.createdAt),
             });
             return blockeds;
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
     }
     async findBlockedByBlockerAndBlocked(data: BlockValidation.Insert) {
         try {
