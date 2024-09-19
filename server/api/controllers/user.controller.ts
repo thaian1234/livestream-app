@@ -63,7 +63,7 @@ export class UserController {
     private getAllUserHandler() {
         const respData = UserValidation.selectSchema.array();
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
+            // AuthMiddleware.isAuthenticated,
             async (c) => {
                 console.log(getCookie(c));
                 const users = await this.userService.getAllUser();
@@ -72,7 +72,9 @@ export class UserController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: respData.parse(users),
+                    data: {
+                        users: respData.parse(users),
+                    },
                     status: HttpStatus.OK,
                 });
             },
