@@ -1,11 +1,11 @@
+import { IGitHubService } from "../external-services/github.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { GoogleValidation } from "../lib/validations/schema.validation";
+import { GitHubValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
-import { IGoogleService } from "../services/google.service";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
@@ -13,37 +13,32 @@ import { z } from "zod";
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
-export interface IOauthController
-    extends Utils.AutoMappedClass<OauthController> {}
+export interface IGitHubController
+    extends Utils.AutoMappedClass<GitHubController> {}
 
-export class OauthController implements IOauthController {
+export class GitHubController implements IGitHubController {
     cookiesName;
     constructor(
         private readonly factory: CreateFactoryType,
-        private readonly googleSerivce: IGoogleService,
+        private readonly gitHubSerivce: IGitHubService,
     ) {
         this.cookiesName = {
-            GOOGLE_STATE: "google_oauth_state",
-            GOOGLE_CODE_VERIFIER: "google_oauth_codeVerifier",
+            GitHub_STATE: "GitHub_oauth_state",
         } as const;
     }
     public setupHandlers() {
         return this.factory
             .createApp()
             .basePath("/oauth")
-            .get("/google", ...this.loginGoogleHandler())
-            .get("/google/callback", ...this.loginGoogleCallbackHandler());
+            .get("/github", ...this.loginGitHubHandler())
+            .get("/github/callback", ...this.loginGitHubCallbackHandler());
     }
-    private loginGoogleHandler() {
+    private loginGitHubHandler() {
         return this.factory.createHandlers(async (c) => {
-            const { state, url, codeVerifier } =
-                await this.googleSerivce.getOauthConsentUrl();
-            setCookie(c, this.cookiesName.GOOGLE_STATE, state, {
-                httpOnly: true,
-                maxAge: 60 * 10,
-                secure: envClient.NODE_ENV === "production",
-            });
-            setCookie(c, this.cookiesName.GOOGLE_CODE_VERIFIER, codeVerifier, {
+            const { state, url } =
+                await this.gitHubSerivce.getOauthConsentUrl();
+            console.log("state", state);
+            setCookie(c, this.cookiesName.GitHub_STATE, state, {
                 httpOnly: true,
                 maxAge: 60 * 10,
                 secure: envClient.NODE_ENV === "production",
@@ -58,7 +53,7 @@ export class OauthController implements IOauthController {
             });
         });
     }
-    private loginGoogleCallbackHandler() {
+    private loginGitHubCallbackHandler() {
         const queries = z.object({
             state: z.string().min(1),
             code: z.string().min(1),
@@ -67,41 +62,54 @@ export class OauthController implements IOauthController {
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
                 const { code, state } = c.req.valid("query");
-                const cookieCodeVerifier =
-                    getCookie(c, this.cookiesName.GOOGLE_CODE_VERIFIER) ?? null;
                 const cookieState =
-                    getCookie(c, this.cookiesName.GOOGLE_STATE) ?? null;
-                console.log("cookieState", cookieState);
-                if (
-                    !cookieCodeVerifier ||
-                    !cookieState ||
-                    cookieState !== state
-                ) {
-                    console.error("No code verifier or state");
+                    getCookie(c, this.cookiesName.GitHub_STATE) ?? null;
+                if (!cookieState || cookieState !== state) {
+                    console.error("No state");
                     throw new MyError.BadRequestError();
                 }
-                const { accessToken } = await this.googleSerivce.verifyCode(
-                    code,
-                    cookieCodeVerifier,
-                );
-                const googleResponse = await fetch(envServer.GOOGLE_API_URL, {
+                const { accessToken } =
+                    await this.gitHubSerivce.verifyCode(code);
+                const gitHubResponse = await fetch(envServer.GITHUB_API_URL, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 });
-                if (!googleResponse.ok) {
+                const gitHubEmailResponse = await fetch(
+                    `${envServer.GITHUB_API_URL}/emails`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    },
+                );
+                if (!gitHubResponse.ok || !gitHubEmailResponse) {
                     throw new MyError.BadRequestError(
-                        "Failed to fetch Goolge Information",
+                        "Failed to fetch GitHub Information",
                     );
                 }
-                const googleData = GoogleValidation.responseSchema.parse(
-                    await googleResponse.json(),
-                );
+                const gitHubData = await gitHubResponse.json();
+                const gitHubEmail = await gitHubEmailResponse.json();
+
+                if (!gitHubEmail[0].email) {
+                    throw new MyError.BadRequestError(
+                        "Github's email is not public, please public it and revoke our authorize to continue",
+                    );
+                }
+
+                const gitHubDataS = GitHubValidation.responseSchema.parse({
+                    id: gitHubData.id,
+                    email: gitHubEmail[0].email,
+                    name: gitHubData.name || gitHubData.login,
+                    avatar_url: gitHubData.avatar_url,
+                    verified_email: true,
+                });
+
                 const { session, sessionCookie } =
-                    await this.googleSerivce.authenticateUser(googleData);
+                    await this.gitHubSerivce.authenticateUser(gitHubDataS);
                 if (!session || !sessionCookie) {
                     throw new MyError.UnauthorizedError(
-                        "Something went wrong with your Google Account",
+                        "Something went wrong with your GitHub Account",
                     );
                 }
                 setCookie(c, sessionCookie.name, sessionCookie.value, {

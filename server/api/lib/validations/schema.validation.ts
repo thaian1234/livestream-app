@@ -260,6 +260,21 @@ export namespace GoogleValidation {
     export type Response = z.infer<typeof GoogleValidation.responseSchema>;
 }
 
+export class GitHubValidation {
+    private static baseSchema = z.object({
+        id: z.number().transform((num) => num.toString()),
+        email: z.string().email(),
+        name: z.string(),
+        avatar_url: z.string().url(),
+        verified_email: z.boolean().default(true),
+    });
+    public static responseSchema = this.baseSchema;
+}
+
+export namespace GitHubValidation {
+    export type Response = z.infer<typeof GitHubValidation.responseSchema>;
+}
+
 export class R2BucketValidation {
     private static allowedFileTypes = [
         "image/jpeg",

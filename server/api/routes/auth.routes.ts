@@ -3,9 +3,14 @@ import {
     IAuthController,
 } from "../controllers/auth.controller";
 import {
+    GitHubController,
+    IGitHubController,
+} from "../controllers/github.controller";
+import {
     IOauthController,
     OauthController,
 } from "../controllers/oauth.controller";
+import { GitHubService } from "../external-services/github.service";
 import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AccountRepository } from "../repositories/account.repository";
@@ -22,13 +27,15 @@ class AuthRoutes {
         private readonly factory: CreateFactoryType,
         private readonly authController: IAuthController,
         private readonly oauthController: IOauthController,
+        private readonly githubController: IGitHubController,
     ) {}
     setupRoutes() {
         return this.factory
             .createApp()
             .basePath("/auth")
             .route("/", this.authController.setupHandlers())
-            .route("/", this.oauthController.setupHandlers());
+            .route("/", this.oauthController.setupHandlers())
+            .route("/", this.githubController.setupHandlers());
     }
 }
 function createAuthRoutes() {
@@ -44,6 +51,7 @@ function createAuthRoutes() {
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
+    const githubService = new GitHubService(accountRepository, userService);
     // Controller
     const goolgeService = new GoogleService(accountRepository, userService);
     const authController = new AuthController(
@@ -54,7 +62,13 @@ function createAuthRoutes() {
         nodemailService,
     );
     const oauthController = new OauthController(factory, goolgeService);
-    return new AuthRoutes(factory, authController, oauthController);
+    const githubController = new GitHubController(factory, githubService);
+    return new AuthRoutes(
+        factory,
+        authController,
+        oauthController,
+        githubController,
+    );
 }
 
 export const authRoutes = createAuthRoutes().setupRoutes();

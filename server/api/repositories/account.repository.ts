@@ -1,6 +1,7 @@
 import { Utils } from "../lib/helpers/utils";
 import {
     AccountValidation,
+    GitHubValidation,
     GoogleValidation,
     UserValidation,
 } from "../lib/validations/schema.validation";
@@ -16,7 +17,11 @@ export interface IGoogleAccountRepository
         AccountRepository,
         "updateGoogleAccountTransaction" | "createGoogleAccountTransaction"
     > {}
-
+export interface IGitHubAccountRepository
+    extends Utils.PickMethods<
+        AccountRepository,
+        "createGitHubAccountTransaction" | "updateGitHubAccountTransaction"
+    > {}
 export class AccountRepository implements IAccountRepository {
     db;
     constructor() {
@@ -68,6 +73,63 @@ export class AccountRepository implements IAccountRepository {
         } catch (error) {}
     }
     public async updateGoogleAccountTransaction(
+        accountData: AccountValidation.Insert,
+        userData: UserValidation.Update,
+    ) {
+        try {
+            return await this.db.transaction(async (tx) => {
+                const [user] = await tx
+                    .update(tableSchemas.userTable)
+                    .set(userData)
+                    .returning();
+                await tx
+                    .insert(tableSchemas.accountTable)
+                    .values(accountData)
+                    .onConflictDoUpdate({
+                        set: accountData,
+                        target: [
+                            tableSchemas.accountTable.providerUserId,
+                            tableSchemas.accountTable.providerId,
+                        ],
+                        targetWhere: and(
+                            eq(
+                                tableSchemas.accountTable.providerId,
+                                accountData.providerId,
+                            ),
+                            eq(
+                                tableSchemas.accountTable.providerUserId,
+                                accountData.providerUserId,
+                            ),
+                        ),
+                    });
+                return user;
+            });
+        } catch (error) {}
+    }
+    public async createGitHubAccountTransaction(
+        githubData: GitHubValidation.Response,
+    ) {
+        try {
+            return await this.db.transaction(async (tx) => {
+                const [newUser] = await tx
+                    .insert(tableSchemas.userTable)
+                    .values({
+                        email: githubData.email,
+                        username: githubData.email,
+                        imageUrl: githubData.avatar_url,
+                        emailVerified: githubData.verified_email,
+                    })
+                    .returning();
+                await tx.insert(tableSchemas.accountTable).values({
+                    providerId: "github",
+                    providerUserId: githubData.id,
+                    userId: newUser.id,
+                });
+                return newUser;
+            });
+        } catch (error) {}
+    }
+    public async updateGitHubAccountTransaction(
         accountData: AccountValidation.Insert,
         userData: UserValidation.Update,
     ) {
