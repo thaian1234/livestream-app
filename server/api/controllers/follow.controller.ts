@@ -183,6 +183,10 @@ export class FollowController implements IFollowController {
                     followedId: followingId,
                 });
 
+                if (!data) {
+                    throw new MyError.BadRequestError();
+                }
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: data,

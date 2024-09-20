@@ -2,10 +2,15 @@ import { Utils } from "../lib/helpers/utils";
 import { FollowValidation } from "../lib/validations/schema.validation";
 import { IFollowRepository } from "../repositories/follow.repository";
 
+import { IBlockService } from "./block.service";
+
 export interface IFollowService extends Utils.AutoMappedClass<FollowService> {}
 
 export class FollowService implements IFollowService {
-    constructor(private followRepository: IFollowRepository) {}
+    constructor(
+        private followRepository: IFollowRepository,
+        private blockService: IBlockService,
+    ) {}
     public async followToggle(data: FollowValidation.Insert) {
         const follow = await this.findByFollowerAndFollowed(
             data.followerId,
@@ -53,6 +58,19 @@ export class FollowService implements IFollowService {
         followerId: string,
         followedId: string,
     ) {
+        const blocked = await this.blockService.findBlockedByBlockerAndBlocked(
+            followedId,
+            followerId,
+        );
+        const blocking = await this.blockService.findBlockedByBlockerAndBlocked(
+            followerId,
+            followedId,
+        );
+
+        if (blocked || blocking) {
+            return null;
+        }
+
         return await this.followRepository.findByFollowerAndFollowed(
             followerId,
             followedId,
