@@ -142,4 +142,22 @@ export class BlockRepository implements IBlockRepository {
             return block;
         } catch (error) {}
     }
+    async isBlockedOrBlocking(blockerId: string, blockedId: string) {
+        try {
+            const block = await this.db.query.blockTable.findFirst({
+                where: or(
+                    and(
+                        eq(tableSchemas.blockTable.blockerId, blockerId),
+                        eq(tableSchemas.blockTable.blockedId, blockedId),
+                    ),
+                    and(
+                        eq(tableSchemas.blockTable.blockerId, blockedId),
+                        eq(tableSchemas.blockTable.blockedId, blockerId),
+                    ),
+                ),
+            });
+            if (block) return true;
+            return false;
+        } catch (error) {}
+    }
 }

@@ -58,16 +58,12 @@ export class FollowService implements IFollowService {
         followerId: string,
         followedId: string,
     ) {
-        const blocked = await this.blockService.findBlockedByBlockerAndBlocked(
+        const isBlocked = await this.blockService.isBlockedOrBlocking(
             followedId,
             followerId,
-        );
-        const blocking = await this.blockService.findBlockedByBlockerAndBlocked(
-            followerId,
-            followedId,
         );
 
-        if (blocked || blocking) {
+        if (isBlocked) {
             return null;
         }
 
