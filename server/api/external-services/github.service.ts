@@ -74,19 +74,19 @@ export class GitHubService implements IGitHubService {
             !existingUser.emailVerified ||
             !existingUser.imageUrl
         ) {
-            const user =
-                await this.accountRepository.updateGitHubAccountTransaction(
-                    {
-                        providerId: "github",
-                        providerUserId: gitHubData.id,
-                        userId: userId,
-                    },
-                    {
-                        emailVerified: gitHubData.verified_email,
-                        hashedPassword: null,
-                        imageUrl: gitHubData.avatar_url,
-                    },
-                );
+            console.log("Vao update");
+            const user = await this.accountRepository.updateAccountTransaction(
+                {
+                    providerId: "github",
+                    providerUserId: gitHubData.id,
+                    userId: userId,
+                },
+                {
+                    emailVerified: gitHubData.verified_email,
+                    hashedPassword: null,
+                    imageUrl: gitHubData.avatar_url,
+                },
+            );
             return user?.id;
         }
         return userId;

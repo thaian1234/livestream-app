@@ -11,6 +11,7 @@ import {
     OauthController,
 } from "../controllers/oauth.controller";
 import { GitHubService } from "../external-services/github.service";
+import { GoogleService } from "../external-services/google.service";
 import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AccountRepository } from "../repositories/account.repository";
@@ -18,7 +19,6 @@ import { EmailVerificationRepository } from "../repositories/email-verification.
 import { UserRepository } from "../repositories/user.repository";
 import { AuthService } from "../services/auth.service";
 import { EmailVerificationService } from "../services/email-verification.service";
-import { GoogleService } from "../services/google.service";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 

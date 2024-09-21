@@ -104,7 +104,7 @@ export class GitHubController implements IGitHubController {
                     avatar_url: gitHubData.avatar_url,
                     verified_email: true,
                 });
-
+                console.log("CONTRLLER");
                 const { session, sessionCookie } =
                     await this.gitHubSerivce.authenticateUser(gitHubDataS);
                 if (!session || !sessionCookie) {

@@ -1,19 +1,16 @@
-import {
-    ILuciaService,
-    LuciaService,
-} from "../external-services/lucia.service";
 import { Utils } from "../lib/helpers/utils";
 import {
     GoogleValidation,
     UserValidation,
 } from "../lib/validations/schema.validation";
 import { IGoogleAccountRepository } from "../repositories/account.repository";
+import { IUserService } from "../services/user.service";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
-import { IUserService } from "./user.service";
+import { ILuciaService, LuciaService } from "./lucia.service";
 
 export interface IGoogleService extends Utils.AutoMappedClass<GoogleService> {}
 
@@ -80,19 +77,18 @@ export class GoogleService implements IGoogleService {
             !existingUser.emailVerified ||
             !existingUser.imageUrl
         ) {
-            const user =
-                await this.accountRepository.updateGoogleAccountTransaction(
-                    {
-                        providerId: "google",
-                        providerUserId: googleData.id,
-                        userId: userId,
-                    },
-                    {
-                        emailVerified: googleData.verified_email,
-                        hashedPassword: null,
-                        imageUrl: googleData.picture,
-                    },
-                );
+            const user = await this.accountRepository.updateAccountTransaction(
+                {
+                    providerId: "google",
+                    providerUserId: googleData.id,
+                    userId: userId,
+                },
+                {
+                    emailVerified: googleData.verified_email,
+                    hashedPassword: null,
+                    imageUrl: googleData.picture,
+                },
+            );
             return user?.id;
         }
         return userId;

@@ -15,12 +15,12 @@ export interface IAccountRepository
 export interface IGoogleAccountRepository
     extends Utils.PickMethods<
         AccountRepository,
-        "updateGoogleAccountTransaction" | "createGoogleAccountTransaction"
+        "updateAccountTransaction" | "createGoogleAccountTransaction"
     > {}
 export interface IGitHubAccountRepository
     extends Utils.PickMethods<
         AccountRepository,
-        "createGitHubAccountTransaction" | "updateGitHubAccountTransaction"
+        "createGitHubAccountTransaction" | "updateAccountTransaction"
     > {}
 export class AccountRepository implements IAccountRepository {
     db;
@@ -72,7 +72,7 @@ export class AccountRepository implements IAccountRepository {
             });
         } catch (error) {}
     }
-    public async updateGoogleAccountTransaction(
+    public async updateAccountTransaction(
         accountData: AccountValidation.Insert,
         userData: UserValidation.Update,
     ) {
@@ -81,6 +81,7 @@ export class AccountRepository implements IAccountRepository {
                 const [user] = await tx
                     .update(tableSchemas.userTable)
                     .set(userData)
+                    .where(eq(tableSchemas.userTable.id, accountData.userId))
                     .returning();
                 await tx
                     .insert(tableSchemas.accountTable)
@@ -126,40 +127,6 @@ export class AccountRepository implements IAccountRepository {
                     userId: newUser.id,
                 });
                 return newUser;
-            });
-        } catch (error) {}
-    }
-    public async updateGitHubAccountTransaction(
-        accountData: AccountValidation.Insert,
-        userData: UserValidation.Update,
-    ) {
-        try {
-            return await this.db.transaction(async (tx) => {
-                const [user] = await tx
-                    .update(tableSchemas.userTable)
-                    .set(userData)
-                    .returning();
-                await tx
-                    .insert(tableSchemas.accountTable)
-                    .values(accountData)
-                    .onConflictDoUpdate({
-                        set: accountData,
-                        target: [
-                            tableSchemas.accountTable.providerUserId,
-                            tableSchemas.accountTable.providerId,
-                        ],
-                        targetWhere: and(
-                            eq(
-                                tableSchemas.accountTable.providerId,
-                                accountData.providerId,
-                            ),
-                            eq(
-                                tableSchemas.accountTable.providerUserId,
-                                accountData.providerUserId,
-                            ),
-                        ),
-                    });
-                return user;
             });
         } catch (error) {}
     }
