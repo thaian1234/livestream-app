@@ -1,6 +1,7 @@
 import { Utils } from "../lib/helpers/utils";
 import {
     AccountValidation,
+    GitHubValidation,
     GoogleValidation,
     UserValidation,
 } from "../lib/validations/schema.validation";
@@ -14,9 +15,13 @@ export interface IAccountRepository
 export interface IGoogleAccountRepository
     extends Utils.PickMethods<
         AccountRepository,
-        "updateGoogleAccountTransaction" | "createGoogleAccountTransaction"
+        "updateAccountTransaction" | "createGoogleAccountTransaction"
     > {}
-
+export interface IGitHubAccountRepository
+    extends Utils.PickMethods<
+        AccountRepository,
+        "createGitHubAccountTransaction" | "updateAccountTransaction"
+    > {}
 export class AccountRepository implements IAccountRepository {
     db;
     constructor() {
@@ -67,7 +72,7 @@ export class AccountRepository implements IAccountRepository {
             });
         } catch (error) {}
     }
-    public async updateGoogleAccountTransaction(
+    public async updateAccountTransaction(
         accountData: AccountValidation.Insert,
         userData: UserValidation.Update,
     ) {
@@ -76,6 +81,7 @@ export class AccountRepository implements IAccountRepository {
                 const [user] = await tx
                     .update(tableSchemas.userTable)
                     .set(userData)
+                    .where(eq(tableSchemas.userTable.id, accountData.userId))
                     .returning();
                 await tx
                     .insert(tableSchemas.accountTable)
@@ -98,6 +104,29 @@ export class AccountRepository implements IAccountRepository {
                         ),
                     });
                 return user;
+            });
+        } catch (error) {}
+    }
+    public async createGitHubAccountTransaction(
+        githubData: GitHubValidation.Response,
+    ) {
+        try {
+            return await this.db.transaction(async (tx) => {
+                const [newUser] = await tx
+                    .insert(tableSchemas.userTable)
+                    .values({
+                        email: githubData.email,
+                        username: githubData.email,
+                        imageUrl: githubData.avatar_url,
+                        emailVerified: githubData.verified_email,
+                    })
+                    .returning();
+                await tx.insert(tableSchemas.accountTable).values({
+                    providerId: "github",
+                    providerUserId: githubData.id,
+                    userId: newUser.id,
+                });
+                return newUser;
             });
         } catch (error) {}
     }
