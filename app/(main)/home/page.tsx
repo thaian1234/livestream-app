@@ -1,8 +1,8 @@
-import LivePreviewCard from "@/lib/features/home/live-preview-card";
-
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+import LivePreviewCard from "@/cores/home/features/live-preview-card";
 
 export const cardData = [
     {

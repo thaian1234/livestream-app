@@ -6,8 +6,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { IconLogin } from "@/lib/features/auth/icon-login";
-
 import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
 import { ErrorField } from "@/components/error-field";
@@ -22,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+import { IconLogin } from "@/components/auth/icon-login";
 import "@/style/auth.css";
 
 export default function Page() {

@@ -1,8 +1,7 @@
 import React from "react";
 
-import Navbar from "@/lib/layouts/navbar/navbar";
-import Sidebar from "@/lib/layouts/sidebar/sidebar";
-
+import Navbar from "@/components/navbar/navbar";
+import Sidebar from "@/components/sidebar/sidebar";
 import "@/style/home.css";
 
 export default function HomeLayout({
