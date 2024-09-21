@@ -3,10 +3,6 @@ import {
     IAuthController,
 } from "../controllers/auth.controller";
 import {
-    GitHubController,
-    IGitHubController,
-} from "../controllers/github.controller";
-import {
     IOauthController,
     OauthController,
 } from "../controllers/oauth.controller";
@@ -27,15 +23,13 @@ class AuthRoutes {
         private readonly factory: CreateFactoryType,
         private readonly authController: IAuthController,
         private readonly oauthController: IOauthController,
-        private readonly githubController: IGitHubController,
     ) {}
     setupRoutes() {
         return this.factory
             .createApp()
             .basePath("/auth")
             .route("/", this.authController.setupHandlers())
-            .route("/", this.oauthController.setupHandlers())
-            .route("/", this.githubController.setupHandlers());
+            .route("/", this.oauthController.setupHandlers());
     }
 }
 function createAuthRoutes() {
@@ -61,14 +55,12 @@ function createAuthRoutes() {
         emailVerificationService,
         nodemailService,
     );
-    const oauthController = new OauthController(factory, goolgeService);
-    const githubController = new GitHubController(factory, githubService);
-    return new AuthRoutes(
+    const oauthController = new OauthController(
         factory,
-        authController,
-        oauthController,
-        githubController,
+        goolgeService,
+        githubService,
     );
+    return new AuthRoutes(factory, authController, oauthController);
 }
 
 export const authRoutes = createAuthRoutes().setupRoutes();
