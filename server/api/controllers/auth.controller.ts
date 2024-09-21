@@ -33,7 +33,8 @@ export class AuthController implements IAuthController {
             .post("/sign-in", ...this.signInHandler())
             .post("/sign-out", ...this.signOutHandler())
             .post("/sign-up", ...this.signUpHandler())
-            .post("/verify-email", ...this.verifyEmailHandler());
+            .post("/verify-email", ...this.verifyEmailHandler())
+            .post("/resend-verify", ...this.resendVerifyCodeHandler());
     }
     private signInHandler() {
         return this.factory.createHandlers(
@@ -172,6 +173,52 @@ export class AuthController implements IAuthController {
                     c,
                     msg: "Email verified and logged in successfully",
                     status: HttpStatus.OK,
+                    data: undefined,
+                });
+            },
+        );
+    }
+    private resendVerifyCodeHandler() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                AuthValidation.signupSchema,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const existingUser =
+                    await this.userService.getUserByEmailOrUsername(
+                        jsonData.email,
+                        jsonData.username,
+                    );
+                if (!existingUser) {
+                    throw new MyError.UnauthorizedError();
+                }
+                if (existingUser.emailVerified) {
+                    throw new MyError.UnauthorizedError(
+                        "This account is already registed",
+                    );
+                }
+                const code =
+                    await this.emailVerificationService.generateEmailVerificationCode(
+                        existingUser.id,
+                    );
+                if (!code) {
+                    throw new MyError.BadRequestError(
+                        "Cannot generate your email verification code. Please try again!",
+                    );
+                }
+                c.var.executionCtx.waitUntil(
+                    this.nodemailService.sendVerifcationEmailCode(
+                        code,
+                        existingUser.email,
+                    ),
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Please check your email for verification code.",
+                    status: HttpStatus.Created,
                     data: undefined,
                 });
             },

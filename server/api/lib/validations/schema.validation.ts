@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import { string, z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
@@ -54,10 +54,10 @@ export class FollowValidation {
         followedId: true,
         followerId: true,
     });
-    public static selectRecommendScheme = UserValidation.selectSchema.omit({
+    public static selectRecommendSchema = UserValidation.selectSchema.omit({
         bio: true,
     });
-    public static selectFollowingScheme = this.baseSchema
+    public static selectFollowingSchema = this.baseSchema
         .extend({
             following: UserValidation.selectSchema.omit({ bio: true }),
         })
@@ -65,7 +65,7 @@ export class FollowValidation {
             followedId: true,
             followerId: true,
         });
-    public static selectFollowerScheme = this.baseSchema
+    public static selectFollowerSchema = this.baseSchema
         .extend({
             follower: UserValidation.selectSchema.omit({ bio: true }),
         })
@@ -74,13 +74,13 @@ export class FollowValidation {
             followerId: true,
         });
     public static parseFollowingMany(data: unknown) {
-        return this.selectFollowingScheme.array().parse(data);
+        return this.selectFollowingSchema.array().parse(data);
     }
     public static parseFollowerMany(data: unknown) {
-        return this.selectFollowerScheme.array().parse(data);
+        return this.selectFollowerSchema.array().parse(data);
     }
     public static parseRecommendMany(data: unknown) {
-        return this.selectRecommendScheme.array().parse(data);
+        return this.selectRecommendSchema.array().parse(data);
     }
 }
 export namespace FollowValidation {
@@ -91,11 +91,28 @@ export namespace FollowValidation {
 // TODO: Add FollowTypes
 export class BlockValidation {
     private static baseSchema = createSelectSchema(tableSchemas.blockTable);
-    public static selectSchema = this.baseSchema;
+    public static selectSchema = this.baseSchema
+        .extend({
+            blocked: UserValidation.selectSchema.omit({ bio: true }),
+        })
+        .omit({
+            blockedId: true,
+            blockerId: true,
+        });
     public static insertSchema = createInsertSchema(tableSchemas.blockTable);
     public static deleteSchema = this.baseSchema.pick({
-        id: true,
+        blockedId: true,
+        blockerId: true,
     });
+    public static parseMany(data: unknown) {
+        return this.selectSchema.array().parse(data);
+    }
+}
+
+export namespace BlockValidation {
+    export type Insert = z.infer<typeof BlockValidation.insertSchema>;
+    export type Select = z.infer<typeof BlockValidation.selectSchema>;
+    export type Delete = z.infer<typeof BlockValidation.deleteSchema>;
 }
 
 export class StreamValidation {
@@ -133,16 +150,19 @@ export class AuthValidation {
                 .max(255, "Password must not be more than 255 characters long"),
             confirmPassword: z
                 .string()
-                .min(6, "Password must be at least 6 characters long")
+                .min(6, "Password must be at least 6 characters long"),
         });
     public static signinSchema = this.baseSchema.omit({
         username: true,
         confirmPassword: true,
     });
-    public static signupSchema = this.baseSchema.refine((data) => data.password === data.confirmPassword, {
-        path: ['confirmPassword'], // Đây là trường bị lỗi khi validation không thành công
-        message: "Passwords must match",
-    });
+    public static signupSchema = this.baseSchema.refine(
+        (data) => data.password === data.confirmPassword,
+        {
+            path: ["confirmPassword"], // Đây là trường bị lỗi khi validation không thành công
+            message: "Passwords must match",
+        },
+    );
 }
 export namespace AuthValidation {
     export type Signin = z.infer<typeof AuthValidation.signinSchema>;
@@ -238,4 +258,44 @@ export class GoogleValidation {
 
 export namespace GoogleValidation {
     export type Response = z.infer<typeof GoogleValidation.responseSchema>;
+}
+
+export class GitHubValidation {
+    private static baseSchema = z.object({
+        id: z.number().transform((num) => num.toString()),
+        email: z.string().email(),
+        name: z.string(),
+        avatar_url: z.string().url(),
+        verified_email: z.boolean().default(true),
+    });
+    public static responseSchema = this.baseSchema;
+}
+
+export namespace GitHubValidation {
+    export type Response = z.infer<typeof GitHubValidation.responseSchema>;
+}
+
+export class R2BucketValidation {
+    private static allowedFileTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+    ] as const;
+    public static uploadFileSchema = z.object({
+        fileName: z.string().min(1),
+        fileSize: z.coerce.number(),
+        fileType: z
+            .string()
+            .refine((type) => this.allowedFileTypes.includes(type as any), {
+                message:
+                    "Invalid file type. Allowed types are: jpeg, png, gif, webp",
+            }),
+        // fileType: z.string(),
+    });
+}
+export namespace R2BucketValidation {
+    export type UploadFile = z.infer<
+        typeof R2BucketValidation.uploadFileSchema
+    >;
 }
