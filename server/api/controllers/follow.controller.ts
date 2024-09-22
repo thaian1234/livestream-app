@@ -248,11 +248,6 @@ export class FollowController implements IFollowController {
                     (page - 1) * size,
                     size,
                 );
-                if (!recommends) {
-                    throw new MyError.BadRequestError(
-                        "Failed to fetch recommend",
-                    );
-                }
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
