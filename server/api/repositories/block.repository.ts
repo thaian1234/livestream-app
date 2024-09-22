@@ -90,7 +90,7 @@ export class BlockRepository implements IBlockRepository {
             return true;
         } catch (error) {}
     }
-    async findBlockedByUserIdAndEmailOrUsername(
+    async findBlockedByUserIdWithUsername(
         query: string,
         userId: string,
         offset: number = 0,
@@ -106,15 +106,9 @@ export class BlockRepository implements IBlockRepository {
                             .select({ id: tableSchemas.userTable.id })
                             .from(tableSchemas.userTable)
                             .where(
-                                or(
-                                    like(
-                                        tableSchemas.userTable.email,
-                                        `%${query}%`,
-                                    ),
-                                    like(
-                                        tableSchemas.userTable.username,
-                                        `%${query}%`,
-                                    ),
+                                like(
+                                    tableSchemas.userTable.username,
+                                    `%${query}%`,
                                 ),
                             ),
                     ),

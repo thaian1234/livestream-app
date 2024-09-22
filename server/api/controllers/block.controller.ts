@@ -84,7 +84,7 @@ export class BlockController implements IBlockController {
                     throw new MyError.UnauthorizedError();
                 }
                 const blockedQuery =
-                    await this.blockService.findBlockedByUserIdAndEmailOrUsername(
+                    await this.blockService.findBlockedByUserIdWithUsername(
                         filterBy,
                         userId,
                         (page - 1) * size,
