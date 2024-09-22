@@ -24,4 +24,23 @@ export class UserService implements IUserService {
     public async getUserByEmail(email: string) {
         return await this.userRepository.findByEmail(email);
     }
+    public async advancedSearchUser(
+        username: string = "",
+        dateFrom: Date = new Date("2000-01-01"),
+        dateTo: Date = new Date(),
+        isSortByCreatedAt: boolean = false,
+        sortOrder: string = "asc",
+        offset: number = 0,
+        limit: number = 10,
+    ) {
+        return await this.userRepository.advancedSearchUser(
+            username,
+            dateFrom,
+            dateTo,
+            isSortByCreatedAt,
+            sortOrder,
+            offset,
+            limit,
+        );
+    }
 }
