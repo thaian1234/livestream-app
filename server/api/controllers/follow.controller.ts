@@ -66,7 +66,10 @@ export class FollowController implements IFollowController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: FollowValidation.parseFollowingMany(followings),
+                    data: {
+                        followings:
+                            FollowValidation.parseUserOnlyMany(followings),
+                    },
                     status: HttpStatus.OK,
                 });
             },
@@ -110,7 +113,10 @@ export class FollowController implements IFollowController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: FollowValidation.parseFollowerMany(followers),
+                    data: {
+                        followers:
+                            FollowValidation.parseUserOnlyMany(followers),
+                    },
                     status: HttpStatus.OK,
                 });
             },
@@ -155,7 +161,10 @@ export class FollowController implements IFollowController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: FollowValidation.parseRecommendMany(recommends),
+                    data: {
+                        recommends:
+                            FollowValidation.parseUserOnlyMany(recommends),
+                    },
                     status: HttpStatus.OK,
                 });
             },
@@ -247,9 +256,12 @@ export class FollowController implements IFollowController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends,
-                        followings,
-                        followers,
+                        recommends:
+                            FollowValidation.parseUserOnlyMany(recommends),
+                        followings:
+                            FollowValidation.parseUserOnlyMany(followings),
+                        followers:
+                            FollowValidation.parseUserOnlyMany(followers),
                     },
                     status: HttpStatus.OK,
                 });
