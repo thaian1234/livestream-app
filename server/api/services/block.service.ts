@@ -26,13 +26,13 @@ export class BlockService implements IBlockService {
         }
         return await this.blockRepository.blockUser(data);
     }
-    public async findBlockedByEmailOrUsername(
+    public async findBlockedByUserIdAndEmailOrUsername(
         query: string = "",
         userId: string,
         offset: number = 0,
         limit: number = 10,
     ) {
-        return await this.blockRepository.findBlockedByEmailOrUsername(
+        return await this.blockRepository.findBlockedByUserIdAndEmailOrUsername(
             query,
             userId,
             offset,

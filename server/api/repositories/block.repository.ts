@@ -1,7 +1,7 @@
 import { Utils } from "../lib/helpers/utils";
 import { BlockValidation } from "../lib/validations/schema.validation";
 import { blockRoutes } from "../routes/block.routes";
-import { and, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, like, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -90,7 +90,7 @@ export class BlockRepository implements IBlockRepository {
             return true;
         } catch (error) {}
     }
-    async findBlockedByEmailOrUsername(
+    async findBlockedByUserIdAndEmailOrUsername(
         query: string,
         userId: string,
         offset: number = 0,
