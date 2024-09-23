@@ -1,6 +1,6 @@
 "use client";
 
-import { authApi } from "@/lib/cores/auth/apis";
+import { authApi } from "@/lib/features/auth/apis";
 
 import { UploadButton } from "@/components/upload-btn";
 
