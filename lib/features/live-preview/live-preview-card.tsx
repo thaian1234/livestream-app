@@ -38,7 +38,7 @@ export default function LivePreviewCard({
                         width={50}
                     />
                     <div>
-                        <div className="truncate text-xl text-white">
+                        <div className="truncate text-lg text-white">
                             {title}
                         </div>
                         <div className="truncate text-sm text-white">
@@ -53,12 +53,6 @@ export default function LivePreviewCard({
                         </div>
                     </div>
                 </div>
-                {/* <CardContent>
-                    <p className="text-2xl font-bold">{userName}</p>
-                    <CardTitle className="w-full truncate text-sm">
-                        {category}
-                    </CardTitle>
-                </CardContent> */}
             </div>
         </AspectRatio>
     );

@@ -4,8 +4,8 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "../ui/avatar";
-import { Input } from "../ui/input";
+} from "../../../components/ui/avatar";
+import { Input } from "../../../components/ui/input";
 import { Bell, Heart, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

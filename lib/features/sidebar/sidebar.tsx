@@ -12,6 +12,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import { Item } from "@/lib/features/sidebar/item";
+import useStoreSidebar from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,17 +28,18 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { Item } from "@/components/sidebar/item";
 import "@/style/home.css";
 
 export default function Sidebar() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { sidebarState, setSidebarState } = useStoreSidebar();
+
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+        // setIsSidebarOpen(!isSidebarOpen);
+        setSidebarState({ isOpen: !sidebarState.isOpen });
     };
 
     const avatars = [
-        { name: "Aliceeeeeeeeeeeeeeeeeeeeeeeee", src: "/user.svg" },
+        { name: "Aliceeeeeeeeeeeeeeeeeeeeeeeeeee", src: "/user.svg" },
         { name: "Bob", src: "/user.svg" },
         { name: "Charlie", src: "/user.svg" },
         { name: "David", src: "/user.svg" },
@@ -47,19 +50,19 @@ export default function Sidebar() {
         <aside
             className={cn(
                 "h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
-                isSidebarOpen && "h-full w-72",
+                sidebarState.isOpen && "h-full w-72",
             )}
         >
-            {isSidebarOpen ? (
-                <Card className="p-4 pr-0">
-                    <CardTitle className="mr-4 flex flex-row items-center justify-between text-2xl">
+            {sidebarState.isOpen ? (
+                <Card className="w-full p-4 pr-0">
+                    <CardTitle className="mb-2 mr-4 flex flex-row items-center justify-between text-2xl">
                         Sidebar Content
                         <button onClick={toggleSidebar}>
                             <Menu color="#ffffff" strokeWidth={2.25} />
                         </button>
                     </CardTitle>
                     <ScrollArea className="h-[calc(100vh-4rem)]">
-                        <CardContent className="mr-4">
+                        <CardContent className="pr-4">
                             {avatars.map((avatar, index) => (
                                 <Item key={index} userName={avatar.name}>
                                     <Image

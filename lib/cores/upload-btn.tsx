@@ -6,7 +6,7 @@ import { Fetcher } from "@/lib/helpers/fetcher";
 
 import { client } from "@/server/api/client";
 
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 
 function useUploadImageApi(file: File | null) {
     const $post = client.api.upload.avatar.$post;
