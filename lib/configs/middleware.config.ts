@@ -8,4 +8,5 @@ export const middlewareRoutes = {
         ROUTES.HOME_PAGE,
     ]),
     DEFAULT_SIGNIN_REDIRECT: ROUTES.SIGNIN_PAGE,
+    DEFAULT_PAGE: ROUTES.HOME_PAGE,
 };
