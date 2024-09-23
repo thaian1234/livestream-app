@@ -1,4 +1,4 @@
-import { UploadButton } from "@/components/upload-btn";
+import { UploadButton } from "@/lib/cores/upload-btn";
 
 export default function UploadPage() {
     return (
