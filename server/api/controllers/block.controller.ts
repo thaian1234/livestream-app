@@ -21,53 +21,8 @@ export class BlockController implements IBlockController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/:userId/blocked", ...this.getAllBlockedByUserIdHandler())
             .post("/:blockerId/:blockedId", ...this.blockToggle())
-            .get("/:userId/blocked", ...this.findBlockedByUsernameOrEmail());
-    }
-    private getAllBlockedByUserIdHandler() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
-        const queries = z.object({
-            page: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(1).default(1),
-            ),
-            size: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(0).default(10),
-            ),
-        });
-        return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
-            zValidator("query", queries, Validator.handleParseError),
-            AuthMiddleware.isAuthenticated,
-            async (c) => {
-                const { userId } = c.req.valid("param");
-                const { page, size } = c.req.valid("query");
-                const currentUser = c.get("getUser");
-
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
-                }
-                const blockeds = await this.blockService.findBlockedByUserId(
-                    userId,
-                    (page - 1) * size,
-                    size,
-                );
-                if (!blockeds) {
-                    throw new MyError.BadRequestError(
-                        "Failed to fetch blocking",
-                    );
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    data: BlockValidation.parseMany(blockeds),
-                    status: HttpStatus.OK,
-                });
-            },
-        );
+            .get("/:userId/blocked", ...this.findBlockedByUserId());
     }
     private blockToggle() {
         const params = z.object({
@@ -100,7 +55,7 @@ export class BlockController implements IBlockController {
             },
         );
     }
-    private findBlockedByUsernameOrEmail() {
+    private findBlockedByUserId() {
         const params = z.object({
             userId: z.string().uuid(),
         });
@@ -129,7 +84,7 @@ export class BlockController implements IBlockController {
                     throw new MyError.UnauthorizedError();
                 }
                 const blockedQuery =
-                    await this.blockService.findBlockedByEmailOrUsername(
+                    await this.blockService.findBlockedByUserIdWithUsername(
                         filterBy,
                         userId,
                         (page - 1) * size,
@@ -142,7 +97,7 @@ export class BlockController implements IBlockController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: BlockValidation.parseMany(blockedQuery),
+                    data: { blockeds: BlockValidation.parseMany(blockedQuery) },
                     status: HttpStatus.OK,
                 });
             },

@@ -1,7 +1,7 @@
 import { Utils } from "../lib/helpers/utils";
 import { BlockValidation } from "../lib/validations/schema.validation";
 import { blockRoutes } from "../routes/block.routes";
-import { and, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, like, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -90,7 +90,7 @@ export class BlockRepository implements IBlockRepository {
             return true;
         } catch (error) {}
     }
-    async findBlockedByEmailOrUsername(
+    async findBlockedByUserIdWithUsername(
         query: string,
         userId: string,
         offset: number = 0,
@@ -106,15 +106,9 @@ export class BlockRepository implements IBlockRepository {
                             .select({ id: tableSchemas.userTable.id })
                             .from(tableSchemas.userTable)
                             .where(
-                                or(
-                                    like(
-                                        tableSchemas.userTable.email,
-                                        `%${query}%`,
-                                    ),
-                                    like(
-                                        tableSchemas.userTable.username,
-                                        `%${query}%`,
-                                    ),
+                                like(
+                                    tableSchemas.userTable.username,
+                                    `%${query}%`,
                                 ),
                             ),
                     ),
