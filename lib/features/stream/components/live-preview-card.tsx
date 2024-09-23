@@ -2,7 +2,6 @@ import Image from "next/image";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DashboardCardProps {
     title: string;

@@ -1,4 +1,4 @@
-import LivePreviewCard from "@/lib/features/live-preview/live-preview-card";
+import LivePreviewCard from "./live-preview-card";
 
 export const cardData = [
     {

@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Navbar } from "@/lib/features/navbar/navbar";
-import Sidebar from "@/lib/features/sidebar/sidebar";
+import { Navbar } from "@/lib/components/navbar";
+import { Sidebar } from "@/lib/components/sidebar";
 
 import "@/style/home.css";
 

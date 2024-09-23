@@ -1,5 +1,5 @@
-import { LivesPreview } from "@/lib/cores/stream/lives-preview";
-import LivePreviewCard from "@/lib/features/live-preview/live-preview-card";
+import LivePreviewCard from "@/lib/features/stream/components/live-preview-card";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

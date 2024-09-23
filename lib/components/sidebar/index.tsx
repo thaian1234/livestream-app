@@ -1,25 +1,14 @@
 "use client";
 
-import {
-    Bell,
-    CircleChevronLeft,
-    CircleChevronRight,
-    Heart,
-    Menu,
-    Search,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 
-import { Item } from "@/lib/features/sidebar/item";
 import useStoreSidebar from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Tooltip,
@@ -28,9 +17,10 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { Item } from "./item";
 import "@/style/home.css";
 
-export default function Sidebar() {
+export function Sidebar() {
     const { sidebarState, setSidebarState } = useStoreSidebar();
 
     const toggleSidebar = () => {
