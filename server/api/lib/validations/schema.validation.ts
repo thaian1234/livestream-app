@@ -54,33 +54,11 @@ export class FollowValidation {
         followedId: true,
         followerId: true,
     });
-    public static selectRecommendSchema = UserValidation.selectSchema.omit({
+    public static selectUserOnlySchema = UserValidation.selectSchema.omit({
         bio: true,
     });
-    public static selectFollowingSchema = this.baseSchema
-        .extend({
-            following: UserValidation.selectSchema.omit({ bio: true }),
-        })
-        .omit({
-            followedId: true,
-            followerId: true,
-        });
-    public static selectFollowerSchema = this.baseSchema
-        .extend({
-            follower: UserValidation.selectSchema.omit({ bio: true }),
-        })
-        .omit({
-            followedId: true,
-            followerId: true,
-        });
-    public static parseFollowingMany(data: unknown) {
-        return this.selectFollowingSchema.array().parse(data);
-    }
-    public static parseFollowerMany(data: unknown) {
-        return this.selectFollowerSchema.array().parse(data);
-    }
-    public static parseRecommendMany(data: unknown) {
-        return this.selectRecommendSchema.array().parse(data);
+    public static parseUserOnlyMany(data: unknown) {
+        return this.selectUserOnlySchema.array().parse(data);
     }
 }
 export namespace FollowValidation {
