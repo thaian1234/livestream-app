@@ -17,7 +17,9 @@ export async function middleware(request: NextRequest) {
     const { pathname, origin } = request.nextUrl;
     const sessionId = request.cookies.get("auth_session");
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
-
+    if (pathname.startsWith(middlewareRoutes.DEFAULT_PAGE)) {
+        return NextResponse.next();
+    }
     if (!sessionId) {
         return isPublicRoutes
             ? NextResponse.next()
