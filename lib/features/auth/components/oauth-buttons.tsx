@@ -2,6 +2,7 @@ import { FaFacebook, FaGithub } from "react-icons/fa";
 
 import { CardContent } from "@/components/ui/card";
 
+import { GithubButton } from "./github-button";
 import { GoogleButton } from "./google-button";
 
 export function OauthButton() {
@@ -17,9 +18,7 @@ export function OauthButton() {
                     <FaFacebook size={35} />
                 </button>
                 <GoogleButton />
-                <button>
-                    <FaGithub size={35} />
-                </button>
+                <GithubButton />
             </div>
         </CardContent>
     );

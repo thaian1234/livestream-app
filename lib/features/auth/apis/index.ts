@@ -69,7 +69,7 @@ export const authApi = {
         useSignInGoogle() {
             const $get = client.api.auth.oauth.google.$get;
             const { mutation, toast } = Fetcher.useHonoMutation($get, {
-                onSuccess({ data, msg }) {
+                onSuccess({ data }) {
                     window.location.href = data.redirectTo;
                 },
                 onError(err) {
@@ -91,6 +91,18 @@ export const authApi = {
                         toast.error(err.message);
                     },
                 });
+            return mutation;
+        },
+        useSignInGithub() {
+            const $get = client.api.auth.oauth.github.$get;
+            const { mutation, toast } = Fetcher.useHonoMutation($get, {
+                onSuccess({ data }) {
+                    window.location.href = data.redirectTo;
+                },
+                onError(err) {
+                    toast.error(err.message);
+                },
+            });
             return mutation;
         },
     },
