@@ -1,7 +1,7 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
-import { OtpForm } from "@/lib/cores/auth/components/otp-form";
+import { OtpForm } from "@/lib/features/auth/components/otp-form";
 
 import {
     Card,

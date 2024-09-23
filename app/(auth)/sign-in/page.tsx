@@ -1,5 +1,5 @@
-import { SignInForm } from "@/lib/cores/auth/components/signin-form";
-import { AuthLayout } from "@/lib/cores/auth/layouts/auth.layout";
+import { SignInForm } from "@/lib/features/auth/components/signin-form";
+import { AuthLayout } from "@/lib/features/auth/layouts/auth.layout";
 
 export default function SignInPage() {
     return (

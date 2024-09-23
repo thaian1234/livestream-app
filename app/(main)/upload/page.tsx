@@ -1,7 +1,7 @@
 "use client";
 
-import { authApi } from "@/lib/cores/auth/apis";
-import { UploadButton } from "@/lib/cores/upload-btn";
+import { authApi } from "@/lib/features/auth/apis";
+import { UploadButton } from "@/lib/features/upload-btn";
 
 export default function UploadPage() {
     // const { data, isPending, isError, error } = authApi.query.useGetUser();
