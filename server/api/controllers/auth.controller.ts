@@ -1,4 +1,3 @@
-import { LuciaService } from "../external-services/lucia.service";
 import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -8,13 +7,15 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import {
     AuthValidation,
     EmailVerificationValidation,
+    UserValidation,
 } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
+import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IAuthService } from "../services/auth.service";
 import { IEmailVerificationService } from "../services/email-verification.service";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
-import { getCookie, setCookie } from "hono/cookie";
+import { setCookie } from "hono/cookie";
 
 export interface IAuthController
     extends Utils.PickMethods<AuthController, "setupHandlers"> {}
@@ -34,7 +35,8 @@ export class AuthController implements IAuthController {
             .post("/sign-out", ...this.signOutHandler())
             .post("/sign-up", ...this.signUpHandler())
             .post("/verify-email", ...this.verifyEmailHandler())
-            .post("/resend-verify", ...this.resendVerifyCodeHandler());
+            .post("/resend-verify", ...this.resendVerifyCodeHandler())
+            .get("/verify-session", ...this.verifySessionHandler());
     }
     private signInHandler() {
         return this.factory.createHandlers(
@@ -45,6 +47,14 @@ export class AuthController implements IAuthController {
             ),
             async (c) => {
                 const jsonData = c.req.valid("json");
+                const currentUser = c.get("user");
+                const currentSession = c.get("session");
+                const isSignedIn = currentUser && currentSession;
+                if (isSignedIn && currentUser.email === jsonData.email) {
+                    throw new MyError.ServiceUnavailableError(
+                        "You are already signed in, please sign out for more actions",
+                    );
+                }
                 const { session, sessionCookie } =
                     await this.authService.authenticateUser(jsonData);
                 if (!session || !sessionCookie) {
@@ -66,27 +76,24 @@ export class AuthController implements IAuthController {
         );
     }
     private signOutHandler() {
-        return this.factory.createHandlers(async (c) => {
-            const sessionId = getCookie(
-                c,
-                LuciaService.getInstance().sessionCookieName,
-            );
-            if (!sessionId) {
-                throw new MyError.UnauthenticatedError();
-            }
-            const sessionCookieName =
-                await this.authService.terminateSession(sessionId);
-            setCookie(c, sessionCookieName, "", {
-                expires: new Date(0),
-                sameSite: "Strict",
-            });
-            return ApiResponse.WriteJSON({
-                c,
-                msg: "Sign out successfully",
-                status: HttpStatus.OK,
-                data: undefined,
-            });
-        });
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const session = c.get("getSession");
+                const sessionCookieName =
+                    await this.authService.terminateSession(session.id);
+                setCookie(c, sessionCookieName, "", {
+                    expires: new Date(0),
+                    sameSite: "Strict",
+                });
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Sign out successfully",
+                    status: HttpStatus.OK,
+                    data: undefined,
+                });
+            },
+        );
     }
     private signUpHandler() {
         return this.factory.createHandlers(
@@ -210,10 +217,13 @@ export class AuthController implements IAuthController {
                     );
                 }
                 c.var.executionCtx.waitUntil(
-                    this.nodemailService.sendVerifcationEmailCode(
-                        code,
-                        existingUser.email,
-                    ),
+                    this.nodemailService
+                        .sendVerifcationEmailCode(code, existingUser.email)
+                        .catch(() => {
+                            throw new MyError.ServiceUnavailableError(
+                                "Cannot send code to your email",
+                            );
+                        }),
                 );
                 return ApiResponse.WriteJSON({
                     c,
@@ -223,5 +233,23 @@ export class AuthController implements IAuthController {
                 });
             },
         );
+    }
+    private verifySessionHandler() {
+        const respData = UserValidation.selectSchema;
+        return this.factory.createHandlers(async (c) => {
+            const user = c.get("user");
+            const session = c.get("session");
+            if (!user || !session) {
+                throw new MyError.UnauthorizedError("Invalid session");
+            }
+            return ApiResponse.WriteJSON({
+                c,
+                status: HttpStatus.OK,
+                msg: "Session verified successfully",
+                data: {
+                    user: respData.parse(user),
+                },
+            });
+        });
     }
 }

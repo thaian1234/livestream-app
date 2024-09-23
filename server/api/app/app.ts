@@ -1,7 +1,6 @@
 import { AppConfig } from "../configs/app.config";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
-import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { authRoutes } from "../routes/auth.routes";

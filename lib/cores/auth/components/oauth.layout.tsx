@@ -1,8 +1,10 @@
-import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
+import { FaFacebook, FaGithub } from "react-icons/fa";
 
 import { CardContent } from "@/components/ui/card";
 
-export function IconLogin() {
+import { GoogleButton } from "./google-button";
+
+export function OauthButton() {
     return (
         <CardContent className="items-center">
             <div className="flex w-full items-center">
@@ -14,11 +16,9 @@ export function IconLogin() {
                 <button>
                     <FaFacebook size={35} />
                 </button>
+                <GoogleButton />
                 <button>
                     <FaGithub size={35} />
-                </button>
-                <button>
-                    <FaGoogle size={35} />
                 </button>
             </div>
         </CardContent>

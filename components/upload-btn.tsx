@@ -3,14 +3,13 @@
 import { useState } from "react";
 
 import { Fetcher } from "@/lib/helpers/fetcher";
-
-import { client } from "@/server/api/client";
+import { client } from "@/lib/shared/client";
 
 import { Button } from "./ui/button";
 
 function useUploadImageApi(file: File | null) {
     const $post = client.api.upload.avatar.$post;
-    return Fetcher.useHonoMutation($post, {
+    const { mutation } = Fetcher.useHonoMutation($post, {
         onSuccess(data) {
             if (!file) {
                 throw new Error("Please select one file");
@@ -21,6 +20,7 @@ function useUploadImageApi(file: File | null) {
             console.log(err);
         },
     });
+    return mutation;
 }
 
 async function uploadToR2(signedUrl: string, file: File) {

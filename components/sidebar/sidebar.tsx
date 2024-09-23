@@ -28,7 +28,7 @@ import {
 
 import "@/style/home.css";
 
-export default function Sidebar() {
+export function Sidebar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
