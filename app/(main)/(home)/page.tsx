@@ -1,8 +1,5 @@
-import LivePreviewCard from "@/lib/features/stream/components/live-preview-card";
 import { LivesPreview } from "@/lib/features/stream/components/live-preview";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Page() {

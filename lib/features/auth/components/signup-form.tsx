@@ -37,6 +37,7 @@ export function SignUpForm() {
                     placeholder="Username"
                     disabled={isPending}
                     variant={errors.username ? "error" : "primary"}
+                    tabIndex={1}
                 />
                 {errors.username && (
                     <ErrorField>{errors.username.message}</ErrorField>
@@ -46,6 +47,7 @@ export function SignUpForm() {
                     placeholder="Email"
                     disabled={isPending}
                     variant={errors.email ? "error" : "primary"}
+                    tabIndex={2}
                 />
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
@@ -57,6 +59,7 @@ export function SignUpForm() {
                         placeholder="Password"
                         disabled={isPending}
                         variant={errors.password ? "error" : "primary"}
+                        tabIndex={3}
                     />
                     <button
                         className="absolute right-5 top-1/4 size-3 text-white"
@@ -84,6 +87,7 @@ export function SignUpForm() {
                         placeholder="Confirm Password"
                         disabled={isPending}
                         variant={errors.confirmPassword ? "error" : "primary"}
+                        tabIndex={4}
                     />
                     <button
                         className="absolute right-5 top-1/4 size-3 text-white"
@@ -110,6 +114,7 @@ export function SignUpForm() {
                     type="submit"
                     variant="gradient"
                     disabled={isPending}
+                    tabIndex={5}
                 >
                     Signup
                 </Button>
