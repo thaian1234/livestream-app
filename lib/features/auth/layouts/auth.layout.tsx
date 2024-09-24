@@ -1,4 +1,4 @@
-import { OauthButton } from "../components/oauth.layout";
+import { OauthButton } from "../components/oauth-buttons";
 import Link from "next/link";
 import React from "react";
 

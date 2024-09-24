@@ -1,3 +1,8 @@
+import LivePreviewCard from "@/lib/features/stream/components/live-preview-card";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview";
+
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Page() {
@@ -8,21 +13,9 @@ export default function Page() {
                     Welcome to Your Dashboard
                 </p>
                 {/* Placeholder content */}
-                {[...Array(20)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="mb-4 rounded-lg bg-white p-4 shadow"
-                    >
-                        <h3 className="mb-2 text-lg font-semibold">
-                            Content Section {i + 1}
-                        </h3>
-                        <p className="text-gray-600">
-                            This is some placeholder content to demonstrate
-                            scrolling. You can replace this with your actual
-                            content.
-                        </p>
-                    </div>
-                ))}
+                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <LivesPreview />
+                </div>
             </div>
         </ScrollArea>
     );

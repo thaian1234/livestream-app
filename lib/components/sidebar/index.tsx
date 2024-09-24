@@ -1,24 +1,15 @@
 "use client";
 
-import {
-    Bell,
-    CircleChevronLeft,
-    CircleChevronRight,
-    Heart,
-    Menu,
-    Search,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 
+import useStoreSidebar from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
-import { Item } from "@/components/sidebar/item";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Tooltip,
     TooltipContent,
@@ -26,16 +17,19 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { Item } from "./item";
 import "@/style/home.css";
 
 export function Sidebar() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { sidebarState, setSidebarState } = useStoreSidebar();
+
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+        // setIsSidebarOpen(!isSidebarOpen);
+        setSidebarState({ isOpen: !sidebarState.isOpen });
     };
 
     const avatars = [
-        { name: "Aliceeeeeeeeeeeeeeeeeeeeeeeee", src: "/user.svg" },
+        { name: "Aliceeeeeeeeeeeeeeeeeeeeeeeeeee", src: "/user.svg" },
         { name: "Bob", src: "/user.svg" },
         { name: "Charlie", src: "/user.svg" },
         { name: "David", src: "/user.svg" },
@@ -46,29 +40,31 @@ export function Sidebar() {
         <aside
             className={cn(
                 "h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
-                isSidebarOpen && "h-full w-72 overflow-y-auto",
+                sidebarState.isOpen && "h-full w-72",
             )}
         >
-            {isSidebarOpen ? (
-                <Card className="p-4">
-                    <CardTitle className="flex flex-row items-center justify-between text-2xl">
+            {sidebarState.isOpen ? (
+                <Card className="w-full p-4 pr-0">
+                    <CardTitle className="mb-2 mr-4 flex flex-row items-center justify-between text-2xl">
                         Sidebar Content
                         <button onClick={toggleSidebar}>
                             <Menu color="#ffffff" strokeWidth={2.25} />
                         </button>
                     </CardTitle>
-                    <CardContent>
-                        {avatars.map((avatar, index) => (
-                            <Item key={index} userName={avatar.name}>
-                                <Image
-                                    src={avatar.src}
-                                    alt={avatar.name}
-                                    width={50}
-                                    height={50}
-                                />
-                            </Item>
-                        ))}
-                    </CardContent>
+                    <ScrollArea className="h-[calc(100vh-4rem)]">
+                        <CardContent className="pr-4">
+                            {avatars.map((avatar, index) => (
+                                <Item key={index} userName={avatar.name}>
+                                    <Image
+                                        src={avatar.src}
+                                        alt={avatar.name}
+                                        width={50}
+                                        height={50}
+                                    />
+                                </Item>
+                            ))}
+                        </CardContent>
+                    </ScrollArea>
                 </Card>
             ) : (
                 <div className="flex flex-col items-center py-2">

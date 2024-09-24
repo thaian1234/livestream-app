@@ -205,12 +205,10 @@ export class OauthController implements IOauthController {
                     ...sessionCookie.attributes,
                     sameSite: "Strict",
                 });
-                return ApiResponse.WriteJSON({
-                    c,
-                    status: HttpStatus.OK,
-                    msg: "Sign in successfully",
-                    data: undefined,
-                });
+                return c.redirect(
+                    ROUTES.HOME_PAGE,
+                    HttpStatus.MovedPermanently,
+                );
             },
         );
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { authApi } from "../cores/auth/apis";
+import { authApi } from "../features/auth/apis";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useMemo } from "react";
 

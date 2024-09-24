@@ -1,5 +1,5 @@
-import { SignUpForm } from "@/lib/cores/auth/components/signup-form";
-import { AuthLayout } from "@/lib/cores/auth/layouts/auth.layout";
+import { SignUpForm } from "@/lib/features/auth/components/signup-form";
+import { AuthLayout } from "@/lib/features/auth/layouts/auth.layout";
 
 export default function SignUpPage() {
     return (

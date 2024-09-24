@@ -1,12 +1,13 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
 import { Bell, Heart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/lib/providers/auth-provider";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 export const AfterSignin = () => {
     return (

@@ -1,13 +1,14 @@
-import { Input } from "../ui/input";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Actions } from "./right-navbar";
+import { Input } from "@/components/ui/input";
+
+import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <div className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-black-1 to-teal-2 px-6">
+        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-black-1 to-teal-2 px-6">
             <div className="flex items-center">
                 <Link href="/home">
                     <Image
@@ -30,6 +31,6 @@ export function Navbar() {
                 </div>
                 <Actions />
             </div>
-        </div>
+        </nav>
     );
 }
