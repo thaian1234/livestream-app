@@ -39,6 +39,7 @@ export function SignInForm() {
                     placeholder="Enter your email"
                     variant={errors.email ? "error" : "primary"}
                     disabled={isPending}
+                    tabIndex={1}
                 />
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
@@ -50,6 +51,7 @@ export function SignInForm() {
                         placeholder="Enter your password"
                         variant={errors.password ? "error" : "primary"}
                         disabled={isPending}
+                        tabIndex={1}
                     />
                     <button
                         className="absolute right-5 top-1/4 size-3 text-white"
@@ -76,6 +78,7 @@ export function SignInForm() {
                     type="submit"
                     variant="gradient"
                     disabled={isPending}
+                    tabIndex={3}
                 >
                     Login
                 </Button>
