@@ -27,8 +27,11 @@ export const authApi = {
     mutation: {
         useSignIn() {
             const $post = client.api.auth["sign-in"].$post;
-            const { mutation, router, toast } = Fetcher.useHonoMutation($post, {
+            const { mutation, router, toast, queryClient } = Fetcher.useHonoMutation($post, {
                 onSuccess({ msg }) {
+                    queryClient.invalidateQueries({
+                        queryKey: keys.session,
+                    });
                     router.replace(ROUTES.HOME_PAGE);
                     toast.success(msg);
                 },

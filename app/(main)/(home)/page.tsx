@@ -2,7 +2,7 @@ import { LivesPreview } from "@/lib/features/stream/components/live-preview";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export default function Page() {
+export default function HomePage() {
     return (
         <ScrollArea className="h-[calc(100vh-5rem)] w-full">
             <div className="mx-auto p-6">
