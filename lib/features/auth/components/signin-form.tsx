@@ -2,7 +2,7 @@
 
 import { authApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -10,7 +10,7 @@ import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
 
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardTitle } from "@/components/ui/card";
+import { CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import "@/style/auth.css";
@@ -33,18 +33,23 @@ export function SignInForm() {
 
     return (
         <form onSubmit={onSubmit}>
-            <CardContent>
-                <Input
-                    {...register("email")}
-                    placeholder="Enter your email"
-                    variant={errors.email ? "error" : "primary"}
-                    disabled={isPending}
-                    tabIndex={1}
-                />
+            <CardContent className="flex flex-col space-y-4">
+                <div className="relative flex">
+                    <MailIcon className="absolute left-3 top-1/2 z-50 size-5 -translate-y-1/2 transform text-gray-500 hover:text-gray-500" />
+                    <Input
+                        {...register("email")}
+                        placeholder="Enter your email"
+                        variant={errors.email ? "error" : "primary"}
+                        disabled={isPending}
+                        tabIndex={1}
+                        className="pl-12"
+                    />
+                </div>
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
                 )}
                 <div className="relative flex">
+                    <LockIcon className="absolute left-3 top-1/2 z-50 size-5 -translate-y-1/2 transform text-gray-500" />
                     <Input
                         {...register("password")}
                         type={showPassword ? "text" : "password"}
@@ -52,6 +57,7 @@ export function SignInForm() {
                         variant={errors.password ? "error" : "primary"}
                         disabled={isPending}
                         tabIndex={1}
+                        className="pl-12"
                     />
                     <button
                         className="absolute right-5 top-1/4 size-3 text-white"
@@ -72,7 +78,7 @@ export function SignInForm() {
                     <ErrorField>{errors.password.message}</ErrorField>
                 )}
             </CardContent>
-            <CardContent className="items-center">
+            <CardFooter className="mt-8 flex flex-col items-center space-y-4">
                 <Button
                     className="w-full"
                     type="submit"
@@ -85,7 +91,7 @@ export function SignInForm() {
                 <CardTitle className="text-base font-normal">
                     <a className="hover:underline"> Forgot password ?</a>
                 </CardTitle>
-            </CardContent>
+            </CardFooter>
         </form>
     );
 }

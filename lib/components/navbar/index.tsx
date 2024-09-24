@@ -19,7 +19,7 @@ export function Navbar() {
                     />
                 </Link>
             </div>
-            <div className="flex items-center justify-between space-x-8">
+            <div className="flex items-center justify-around space-x-8">
                 <div className="relative">
                     <Input
                         type="search"
@@ -29,6 +29,7 @@ export function Navbar() {
                     />
                     <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />
                 </div>
+                <div />
                 <Actions />
             </div>
         </nav>
