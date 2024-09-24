@@ -12,9 +12,8 @@ interface FileWithPreview extends File {
     preview: string;
 }
 
-export default function UploadImageForm() {
+export function UploadImageForm() {
     const [file, setFile] = useState<FileWithPreview | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUploadAvatar(file);
@@ -105,7 +104,7 @@ export default function UploadImageForm() {
             {file && (
                 <Button
                     onClick={handleUpload}
-                    disabled={isPending || !file || isDragging}
+                    disabled={isPending || !file}
                     className="mt-4 w-full"
                 >
                     Upload Image

@@ -1,4 +1,4 @@
-import UploadImageForm from "@/lib/features/upload/components/upload-image-form";
+import { UploadImageForm } from "@/lib/features/upload/components/upload-image-form";
 
 export default function UploadPage() {
     return (
