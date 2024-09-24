@@ -8,7 +8,7 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="containerAuth">
+        <main className="containerAuth">
             <Image
                 src="/logoipsum-330.svg"
                 className="logoContainer"
@@ -16,7 +16,7 @@ export default function AuthLayout({
                 height={100}
                 alt="Logo"
             />
-            <div className="popup">{children}</div>
-        </div>
+            <section className="popup">{children}</section>
+        </main>
     );
 }
