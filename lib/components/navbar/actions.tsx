@@ -2,12 +2,14 @@
 
 import { Bell, Heart } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
+import { SignInForm } from "@/lib/features/auth/components/signin-form";
+import { SignUpForm } from "@/lib/features/auth/components/signup-form";
+import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 export const AfterSignin = () => {
     return (
@@ -29,24 +31,28 @@ export const AfterSignin = () => {
 };
 
 export const BeforeSignin = () => {
-    const router = useRouter();
-    const handleSignup = () => {
-        router.push("/sign-in");
-    };
     return (
-        <>
-            <Button
-                className="ml-8 rounded-full border border-white bg-transparent text-white"
-                onClick={handleSignup}
+        <section className="flex space-x-2">
+            <AuthDialog
+                isSignIn={true}
+                title="Sign In"
+                subTitle="Glad you're back!"
             >
-                Login
-            </Button>
-        </>
+                <SignInForm />
+            </AuthDialog>
+            <AuthDialog
+                isSignIn={false}
+                title="Sign Up"
+                subTitle="Just some details to get you in !"
+            >
+                <SignUpForm />
+            </AuthDialog>
+        </section>
     );
 };
 
 export function Actions() {
     const { isSignedIn, isPending } = useAuth();
-    if (isPending) return <p>Loading...</p>;
+    if (isPending) return <Spinner />;
     return isSignedIn ? <AfterSignin /> : <BeforeSignin />;
 }

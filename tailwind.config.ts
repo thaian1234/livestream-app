@@ -19,9 +19,6 @@ const config = {
             },
         },
         extend: {
-            height: {
-                "30vh": "30vh",
-            },
             colors: {
                 teal: {
                     1: "#94FFD8",
