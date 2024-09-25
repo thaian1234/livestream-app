@@ -14,9 +14,6 @@ export function OauthButton() {
                 <div className="h-0.5 grow bg-gray-1"></div>
             </div>
             <div className="flex space-x-4">
-                <button>
-                    <FaFacebook size={35} />
-                </button>
                 <GoogleButton />
                 <GithubButton />
             </div>

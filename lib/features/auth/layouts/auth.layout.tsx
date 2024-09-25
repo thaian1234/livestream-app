@@ -53,7 +53,7 @@ export function AuthLayout({
             </CardBody>
             <CardFooter className="items-center">
                 <CardTitle className="text-base font-normal">
-                    <p className="mr-2">{footerLink.title}</p>
+                    <span className="mr-2">{footerLink.title}</span>
                     <Link href={footerLink.to} className="hover:underline">
                         {footerLink.text}
                     </Link>
