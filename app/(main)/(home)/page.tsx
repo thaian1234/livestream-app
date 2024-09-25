@@ -1,4 +1,4 @@
-import { LivesPreview } from "@/lib/features/stream/components/live-preview";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview/live-preview";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -10,7 +10,7 @@ export default function HomePage() {
                     Welcome to Your Dashboard
                 </p>
                 {/* Placeholder content */}
-                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-6 min-[712px]:grid-cols-1 min-[840px]:grid-cols-2 min-[1096px]:grid-cols-3 min-[1352px]:grid-cols-4">
                     <LivesPreview />
                 </div>
             </div>

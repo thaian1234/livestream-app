@@ -1,14 +1,22 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { ChevronsUpDown, CloudCog, Menu } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
+import { FollowingSidebar } from "@/lib/features/following/components/sidebar/following-sidebar";
+import { LivePreviewSidebar } from "@/lib/features/stream/components/live-preview/sidebar/live-preview-sidebar";
 import useStoreSidebar from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Tooltip,
@@ -21,8 +29,9 @@ import { Item } from "./item";
 import "@/style/home.css";
 
 export function Sidebar() {
+    const [isOpen, setIsOpen] = useState(false);
     const { sidebarState, setSidebarState } = useStoreSidebar();
-
+    console.log(sidebarState);
     const toggleSidebar = () => {
         // setIsSidebarOpen(!isSidebarOpen);
         setSidebarState({ isOpen: !sidebarState.isOpen });
@@ -44,7 +53,7 @@ export function Sidebar() {
             )}
         >
             {sidebarState.isOpen ? (
-                <Card className="w-full p-4 pr-0">
+                <Card className="w-auto p-4 pr-0">
                     <CardTitle className="mb-2 mr-4 flex flex-row items-center justify-between text-2xl">
                         Sidebar Content
                         <button onClick={toggleSidebar}>
@@ -52,18 +61,8 @@ export function Sidebar() {
                         </button>
                     </CardTitle>
                     <ScrollArea className="h-[calc(100vh-4rem)]">
-                        <CardContent className="pr-4">
-                            {avatars.map((avatar, index) => (
-                                <Item key={index} userName={avatar.name}>
-                                    <Image
-                                        src={avatar.src}
-                                        alt={avatar.name}
-                                        width={50}
-                                        height={50}
-                                    />
-                                </Item>
-                            ))}
-                        </CardContent>
+                        <LivePreviewSidebar />
+                        <FollowingSidebar />
                     </ScrollArea>
                 </Card>
             ) : (
