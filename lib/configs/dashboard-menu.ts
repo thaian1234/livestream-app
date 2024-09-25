@@ -2,11 +2,10 @@ import {
     Bookmark,
     LayoutGrid,
     LucideIcon,
-    Settings,
-    SquarePen,
     Tag,
     UserRoundCog,
     Users,
+    Video,
 } from "lucide-react";
 
 import { ROUTES } from "./routes.config";
@@ -54,7 +53,7 @@ export function getDashboardMenuList(
                     href: "/stream",
                     label: "Stream",
                     active: pathname.includes("/stream"),
-                    icon: SquarePen,
+                    icon: Video,
                     submenus: [
                         {
                             href: "/posts",

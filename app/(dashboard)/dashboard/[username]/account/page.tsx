@@ -1,3 +1,3 @@
 export default function AccountPage() {
-    return <div className="h-dvh bg-slate-800">Account Page</div>;
+    return <div className="bg-slate-800">Account Page</div>;
 }

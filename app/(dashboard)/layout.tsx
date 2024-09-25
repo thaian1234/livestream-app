@@ -1,5 +1,6 @@
 "use client";
 
+import { Navbar } from "@/lib/components/dashboard/navbar";
 import { Sidebar } from "@/lib/components/dashboard/sidebar";
 import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
@@ -14,6 +15,7 @@ export default function DashboardLayout({
 
     return (
         <ThemeProvider attribute="class" defaultTheme="dark">
+            <Navbar />
             <Sidebar />
             <main
                 className={cn(
