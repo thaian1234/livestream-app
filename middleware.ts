@@ -60,7 +60,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(ROUTES.HOME_PAGE, request.url));
     }
     if (isDashboardPage) {
-        const urlUsername = pathname.split("/")[2];
+        const urlUsername = pathname.split("/")[2].trim();
         if (urlUsername !== user.username) {
             return NextResponse.redirect(
                 new URL(ROUTES.HOME_PAGE, request.url),

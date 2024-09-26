@@ -50,7 +50,9 @@ export class UserController {
                     jsonData,
                 );
                 if (!updatedUser) {
-                    throw new MyError.NotFoundError("User not found");
+                    throw new MyError.UnauthorizedError(
+                        "Username already exist",
+                    );
                 }
                 return ApiResponse.WriteJSON({
                     c,
@@ -63,7 +65,7 @@ export class UserController {
     private getAllUserHandler() {
         const respData = UserValidation.selectSchema.array();
         return this.factory.createHandlers(
-            // AuthMiddleware.isAuthenticated,
+            AuthMiddleware.isAuthenticated,
             async (c) => {
                 console.log(getCookie(c));
                 const users = await this.userService.getAllUser();

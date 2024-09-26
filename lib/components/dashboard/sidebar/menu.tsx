@@ -6,6 +6,7 @@ import { notFound, usePathname } from "next/navigation";
 
 import { getDashboardMenuList } from "@/lib/configs/dashboard-menu";
 import { ROUTES } from "@/lib/configs/routes.config";
+import { useUser } from "@/lib/hooks/use-user";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { cn } from "@/lib/utils";
 
@@ -24,15 +25,11 @@ interface MenuProps {
 }
 
 export function Menu({ isOpen }: MenuProps) {
-    const { user, isPending, error } = useAuth();
+    const { user, error } = useUser();
     const pathname = usePathname();
     if (error) {
         notFound();
     }
-    if (isPending || !user) {
-        return <p>Loading...</p>;
-    }
-
     const menuList = getDashboardMenuList(pathname, user.username);
 
     return (

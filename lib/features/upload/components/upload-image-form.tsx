@@ -36,12 +36,12 @@ export function UploadImageForm() {
         [handleFile],
     );
 
-    const removeFile = useCallback(() => {
+    const removeFile = () => {
         if (file) {
             URL.revokeObjectURL(file.preview);
             setFile(null);
         }
-    }, [file]);
+    };
 
     const handleUpload = () => {
         if (file) {
@@ -56,7 +56,7 @@ export function UploadImageForm() {
     };
 
     return (
-        <div className="mx-auto mt-8 max-w-md rounded-lg bg-white p-6 shadow-md">
+        <div className="w-full rounded-lg bg-background p-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
                     <img src={file.preview} alt={file.name} />
@@ -82,7 +82,7 @@ export function UploadImageForm() {
                 <div className="mt-6">
                     <div className="flex items-center space-x-4">
                         <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-900">
+                            <p className="truncate text-sm font-medium">
                                 {file.name}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -100,16 +100,14 @@ export function UploadImageForm() {
                     </div>
                 </div>
             )}
-
-            {file && (
-                <Button
-                    onClick={handleUpload}
-                    disabled={isPending || !file}
-                    className="mt-4 w-full"
-                >
-                    Upload Image
-                </Button>
-            )}
+            <Button
+                onClick={handleUpload}
+                disabled={isPending || !file}
+                className="mt-8 w-full"
+                variant={"gradient"}
+            >
+                Upload Image
+            </Button>
         </div>
     );
 }

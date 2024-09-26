@@ -1,5 +1,6 @@
 import { PanelsTopLeft } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,9 @@ export function Sidebar() {
                         </h1>
                     </Link>
                 </Button>
-                <Menu isOpen={sidebar?.isOpen} />
+                <Suspense fallback={<p>loading sidebar...</p>}>
+                    <Menu isOpen={sidebar?.isOpen} />
+                </Suspense>
             </div>
         </aside>
     );
