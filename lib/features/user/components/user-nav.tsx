@@ -5,6 +5,7 @@ import { LayoutGrid, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -44,9 +45,9 @@ export function UserNav() {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="relative h-8 w-8 rounded-full"
+                                className="relative size-10 rounded-full"
                             >
-                                <Avatar className="h-8 w-8">
+                                <Avatar className="size-10">
                                     <AvatarImage
                                         src={
                                             user?.imageUrl ? user.imageUrl : "#"
@@ -84,7 +85,10 @@ export function UserNav() {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link href="/account" className="flex items-center">
+                        <Link
+                            href={ROUTES.ACCOUNT_PAGE(user.username)}
+                            className="flex items-center"
+                        >
                             <User className="mr-3 h-4 w-4 text-muted-foreground" />
                             Account
                         </Link>

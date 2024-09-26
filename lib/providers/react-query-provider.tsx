@@ -1,6 +1,7 @@
 "use client";
 
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
+import { useIsClient } from "../helpers/hooks/use-is-client";
 import {
     QueryClient,
     QueryClientProvider,
@@ -39,11 +40,9 @@ function getQueryClient() {
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-    // NOTE: Avoid useState when initializing the query client if you don't
-    //       have a suspense boundary between this and the code that may
-    //       suspend because React will throw away the client on the initial
-    //       render if it suspends and there is no boundary
     const queryClient = getQueryClient();
+    // const isClient = useIsClient();
+    // if (!isClient) return null;
 
     return (
         <QueryClientProvider client={queryClient}>

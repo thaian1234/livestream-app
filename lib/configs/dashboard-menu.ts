@@ -35,18 +35,6 @@ export function getDashboardMenuList(
 ): Group[] {
     return [
         {
-            groupLabel: "Dashboard",
-            menus: [
-                {
-                    href: "/dashboard",
-                    label: "Dashboard",
-                    active: pathname.includes("/dashboard"),
-                    icon: LayoutGrid,
-                    submenus: [],
-                },
-            ],
-        },
-        {
             groupLabel: "Streams",
             menus: [
                 {
@@ -96,7 +84,7 @@ export function getDashboardMenuList(
                 {
                     href: ROUTES.ACCOUNT_PAGE(username),
                     label: "Account",
-                    active: pathname.includes("/account"),
+                    active: pathname === ROUTES.ACCOUNT_PAGE(username),
                     icon: UserRoundCog,
                     submenus: [],
                 },

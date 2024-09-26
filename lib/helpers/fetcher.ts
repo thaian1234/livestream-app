@@ -1,9 +1,11 @@
 import {
     UseMutationOptions,
     UseQueryOptions,
+    UseSuspenseQueryOptions,
     useMutation,
     useQuery,
     useQueryClient,
+    useSuspenseQuery,
 } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 import { useRouter } from "next/navigation";
@@ -35,9 +37,24 @@ export namespace Fetcher {
         >,
     ) {
         return useQuery<RequestType<T>, Error, ResponseType<T>>({
+            ...options,
             queryKey,
             queryFn: async (data) => handleResponse(await client(data)),
+        });
+    }
+
+    export function useHonoSuspenseQuery<T extends ClientType>(
+        client: T,
+        queryKey: string[],
+        options?: Omit<
+            UseSuspenseQueryOptions<RequestType<T>, Error, ResponseType<T>>,
+            "queryKey" | "queryFn"
+        >,
+    ) {
+        return useSuspenseQuery<RequestType<T>, Error, ResponseType<T>>({
             ...options,
+            queryKey,
+            queryFn: async (data) => handleResponse(await client(data)),
         });
     }
 

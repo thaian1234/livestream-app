@@ -1,3 +1,10 @@
+import { AccountLayout } from "@/lib/components/dashboard/account/account.layout";
+import { ProfileUpdateForm } from "@/lib/features/user/components/profile-update.form";
+
 export default function AccountPage() {
-    return <div className="bg-slate-800">Account Page</div>;
+    return (
+        <AccountLayout title="Account" subTitle="Update your account settings.">
+            <ProfileUpdateForm />
+        </AccountLayout>
+    );
 }

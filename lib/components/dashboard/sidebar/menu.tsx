@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 
 import { getDashboardMenuList } from "@/lib/configs/dashboard-menu";
+import { ROUTES } from "@/lib/configs/routes.config";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { cn } from "@/lib/utils";
 
@@ -134,33 +135,34 @@ export function Menu({ isOpen }: MenuProps) {
                     <TooltipProvider disableHoverableContent>
                         <Tooltip delayDuration={100}>
                             <TooltipTrigger asChild>
-                                <Button
-                                    onClick={() => {}}
-                                    variant="outline"
-                                    className="mt-5 h-10 w-full justify-center"
-                                >
-                                    <span
-                                        className={cn(
-                                            isOpen === false ? "" : "mr-4",
-                                        )}
+                                <Link href={ROUTES.HOME_PAGE}>
+                                    <Button
+                                        variant="outline"
+                                        className="mt-5 h-10 w-full justify-center"
                                     >
-                                        <LogOut size={18} />
-                                    </span>
-                                    <p
-                                        className={cn(
-                                            "whitespace-nowrap",
-                                            isOpen === false
-                                                ? "hidden opacity-0"
-                                                : "opacity-100",
-                                        )}
-                                    >
-                                        Sign out
-                                    </p>
-                                </Button>
+                                        <span
+                                            className={cn(
+                                                isOpen === false ? "" : "mr-4",
+                                            )}
+                                        >
+                                            <LogOut size={18} />
+                                        </span>
+                                        <p
+                                            className={cn(
+                                                "whitespace-nowrap",
+                                                isOpen === false
+                                                    ? "hidden opacity-0"
+                                                    : "opacity-100",
+                                            )}
+                                        >
+                                            Back to home
+                                        </p>
+                                    </Button>
+                                </Link>
                             </TooltipTrigger>
                             {isOpen === false && (
                                 <TooltipContent side="right">
-                                    Sign out
+                                    Back to home
                                 </TooltipContent>
                             )}
                         </Tooltip>
