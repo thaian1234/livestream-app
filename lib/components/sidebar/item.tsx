@@ -1,12 +1,17 @@
-interface ItemProps {
+import { title } from "process";
+import { Children } from "react";
+
+import { CardContent, CardTitle } from "@/components/ui/card";
+
+interface Props {
     children: React.ReactNode; // Chỉ nhận các component React
-    userName: String;
+    title: String;
 }
-export function Item({ children, userName }: ItemProps) {
+export function Item({ children, title }: Props) {
     return (
-        <div className="flex w-full items-center overflow-x-hidden">
-            <span className="mr-2">{children}</span>
-            <span className="w-full truncate">{userName}</span>
-        </div>
+        <CardContent className="space-y-0 border-t border-white/40">
+            <CardTitle className="py-2 text-lg font-medium">{title}</CardTitle>
+            {children}
+        </CardContent>
     );
 }
