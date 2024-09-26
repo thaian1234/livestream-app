@@ -26,13 +26,8 @@ const followingData = [
         userName: "John",
         avatar: "/user.svg",
     },
-    {
-        id: "1",
-        userName: "John",
-        avatar: "/user.svg",
-    },
 ];
-export function FollowingSidebar() {
+export function Following() {
     const handleNavigate = (userId: String) => {
         console.log("Navigate to user profile");
     };

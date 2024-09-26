@@ -30,15 +30,8 @@ export const livePreviewData = [
         userName: "Customer Satisfactionnnnn",
         viewers: "200",
     },
-    {
-        id: "5",
-        avatar: "/user.svg",
-        title: "Customer Satisfaction",
-        userName: "Customer Satisfactionnnnn",
-        viewers: "90",
-    },
 ];
-export function LivePreviewSidebar() {
+export function Recommended() {
     const handleNavigate = (liveId: String) => {
         // Navigate to the live page
     };

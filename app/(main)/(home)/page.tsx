@@ -5,12 +5,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function HomePage() {
     return (
         <ScrollArea className="h-[calc(100vh-5rem)] w-full">
-            <div className="mx-auto p-6">
-                <p className="mb-6 text-2xl font-bold text-white">
+            <div className="mx-auto px-10 md:max-w-screen-md lg:max-w-screen-xl 2xl:max-w-screen-2xl 2xl:px-4">
+                <h2 className="mb-6 text-2xl font-bold text-white">
                     Welcome to Your Dashboard
-                </p>
+                </h2>
                 {/* Placeholder content */}
-                <div className="grid gap-6 min-[712px]:grid-cols-1 min-[840px]:grid-cols-2 min-[1096px]:grid-cols-3 min-[1352px]:grid-cols-4">
+                <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
                     <LivesPreview />
                 </div>
             </div>

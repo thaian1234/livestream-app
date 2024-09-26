@@ -25,7 +25,7 @@ export default function LivePreviewCard({
     return (
         //khung ảnh 16:9, khung Card 5:4
         <AspectRatio ratio={5 / 4} className="overflow-y-hidden">
-            <div className="bg-black-3 h-full w-full font-sans text-black-0">
+            <div className="h-full w-full font-sans">
                 {/* thumnail */}
                 <AspectRatio
                     ratio={16 / 9}
