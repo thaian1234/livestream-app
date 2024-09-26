@@ -40,10 +40,10 @@ export function Sidebar() {
                             </button>
                         </TooltipModel>
                     </CardTitle>
-                    <ItemLayout title="Following Channel">
+                    <ItemLayout title="Following Channel" link="/home">
                         <Following followings={data.data.followings} />
                     </ItemLayout>
-                    <ItemLayout title="Recommended Channel">
+                    <ItemLayout title="Recommended Channel" link="/">
                         <Recommended />
                     </ItemLayout>
                 </Card>
