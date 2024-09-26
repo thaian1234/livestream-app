@@ -40,10 +40,10 @@ export function Sidebar() {
                         </TooltipModel>
                     </CardTitle>
                     <ScrollArea className="h-[calc(100vh-4rem)]">
-                        <Item title="Live Previews">
+                        <Item title="Live Previews" link="/">
                             <LivePreviewSidebar />
                         </Item>
-                        <Item title="Following">
+                        <Item title="Following" link="/following">
                             <FollowingSidebar />
                         </Item>
                     </ScrollArea>
