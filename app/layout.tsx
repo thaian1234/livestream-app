@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 
 import { AuthProvider } from "@/lib/providers/auth-provider";
 import Providers from "@/lib/providers/react-query-provider";

@@ -2,6 +2,7 @@
 
 import { Bell, Heart } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";
@@ -12,12 +13,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Spinner } from "@/components/ui/spinner";
 
 export const AfterSignin = () => {
+    const { user } = useAuth();
+    if (!user) {
+        notFound();
+    }
     return (
         <>
             <button>
                 <Bell size={28} color="#ffffff" strokeWidth={2.5} />
             </button>
-            <Link href="/home">
+            <Link href={`/dashboard/${user.username}`}>
                 <Heart size={28} color="#ffffff" strokeWidth={2.5} />
             </Link>
             <button className="ml-8">

@@ -20,25 +20,33 @@ export const authApi = {
             const $get = client.api.auth["verify-session"].$get;
             return Fetcher.useHonoQuery($get, keys.session, {
                 refetchOnWindowFocus: false,
-                retry: 1,
+                retry: 0,
+            });
+        },
+        useSuspenseVerifySession() {
+            const $get = client.api.auth["verify-session"].$get;
+            return Fetcher.useHonoSuspenseQuery($get, keys.session, {
+                refetchOnWindowFocus: false,
+                retry: 0,
             });
         },
     },
     mutation: {
         useSignIn() {
             const $post = client.api.auth["sign-in"].$post;
-            const { mutation, router, toast, queryClient } = Fetcher.useHonoMutation($post, {
-                onSuccess({ msg }) {
-                    queryClient.invalidateQueries({
-                        queryKey: keys.session,
-                    });
-                    router.replace(ROUTES.HOME_PAGE);
-                    toast.success(msg);
-                },
-                onError(err) {
-                    toast.error(err.message);
-                },
-            });
+            const { mutation, router, toast, queryClient } =
+                Fetcher.useHonoMutation($post, {
+                    onSuccess({ msg }) {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.session,
+                        });
+                        router.replace(ROUTES.HOME_PAGE);
+                        toast.success(msg);
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                });
             return mutation;
         },
         useSignUp() {

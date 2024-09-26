@@ -2,7 +2,7 @@
 
 import { uploadApi } from "../apis";
 import { Upload, X } from "lucide-react";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +14,6 @@ interface FileWithPreview extends File {
 
 export function UploadImageForm() {
     const [file, setFile] = useState<FileWithPreview | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUploadAvatar(file);
 
@@ -27,21 +26,12 @@ export function UploadImageForm() {
         }
     }, []);
 
-    const onFileInputChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files && e.target.files[0]) {
-                handleFile(e.target.files[0]);
-            }
-        },
-        [handleFile],
-    );
-
-    const removeFile = useCallback(() => {
+    const removeFile = () => {
         if (file) {
             URL.revokeObjectURL(file.preview);
             setFile(null);
         }
-    }, [file]);
+    };
 
     const handleUpload = () => {
         if (file) {
@@ -56,33 +46,26 @@ export function UploadImageForm() {
     };
 
     return (
-        <div className="mx-auto mt-8 max-w-md rounded-lg bg-white p-6 shadow-md">
+        <div className="flex w-full flex-col justify-between rounded-lg bg-background p-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
                     <img src={file.preview} alt={file.name} />
                 ) : (
-                    <div>
+                    <div className="flex aspect-video h-full flex-col items-center justify-center">
                         <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                        <p className="mt-2 text-sm text-gray-600">
+                        <p className="mt-2 text-sm text-gray-400">
                             Drag and drop your image here, or click to select a
                             file
                         </p>
                     </div>
                 )}
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={onFileInputChange}
-                    accept="image/*"
-                    className="hidden"
-                />
             </DragDropArea>
 
             {file && (
                 <div className="mt-6">
                     <div className="flex items-center space-x-4">
                         <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-900">
+                            <p className="truncate text-sm font-medium">
                                 {file.name}
                             </p>
                             <p className="text-sm text-gray-500">
@@ -100,16 +83,14 @@ export function UploadImageForm() {
                     </div>
                 </div>
             )}
-
-            {file && (
-                <Button
-                    onClick={handleUpload}
-                    disabled={isPending || !file}
-                    className="mt-4 w-full"
-                >
-                    Upload Image
-                </Button>
-            )}
+            <Button
+                onClick={handleUpload}
+                disabled={isPending || !file}
+                className="mt-8 w-full"
+                variant={"gradient"}
+            >
+                Upload Image
+            </Button>
         </div>
     );
 }
