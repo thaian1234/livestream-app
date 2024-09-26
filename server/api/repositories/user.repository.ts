@@ -104,7 +104,6 @@ export class UserRepository implements IUserRepository {
                 ? asc(tableSchemas.userTable.createdAt)
                 : desc(tableSchemas.userTable.createdAt);
         }
-        console.log(orderBy);
         const result = await this.db.query.userTable.findMany({
             where: and(...conditions),
             limit: limit,

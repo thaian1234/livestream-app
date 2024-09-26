@@ -100,6 +100,9 @@ export class StreamValidation {
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
+    public static parseMany(data: unknown) {
+        return this.selectSchema.array().parse(data);
+    }
 }
 
 export class NotificationValidation {
