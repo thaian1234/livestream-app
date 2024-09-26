@@ -8,7 +8,6 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
-import { getCookie } from "hono/cookie";
 import { z } from "zod";
 
 export interface IUserController
@@ -23,7 +22,8 @@ export class UserController {
         return this.factory
             .createApp()
             .get("/", ...this.getAllUserHandler())
-            .patch("/:id", ...this.updateUserHandler());
+            .patch("/:id", ...this.updateUserHandler())
+            .patch("/:id/update-password", ...this.changeUserPasswordHandler());
     }
     private updateUserHandler() {
         const params = z.object({
@@ -67,7 +67,6 @@ export class UserController {
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                console.log(getCookie(c));
                 const users = await this.userService.getAllUser();
                 if (!users) {
                     throw new MyError.BadRequestError("Failed to fetch user");
@@ -78,6 +77,53 @@ export class UserController {
                         users: respData.parse(users),
                     },
                     status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private changeUserPasswordHandler() {
+        const params = z.object({
+            id: z.string().uuid(),
+        });
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            zValidator(
+                "json",
+                UserValidation.updatePasswordSchema,
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const { id } = c.req.valid("param");
+                const currentUser = c.get("getUser");
+                if (id !== currentUser.id) {
+                    throw new MyError.UnauthorizedError();
+                }
+                const isMatchedPassword =
+                    await this.userService.isMatchedPassword(
+                        currentUser.id,
+                        jsonData.currentPassword,
+                    );
+                if (!isMatchedPassword) {
+                    throw new MyError.UnauthorizedError(
+                        "Your current password is not match, please try again!",
+                    );
+                }
+                const updatedUser = await this.userService.updatePassword(
+                    id,
+                    jsonData.newPassword,
+                );
+                if (!updatedUser) {
+                    throw new MyError.ServiceUnavailableError(
+                        "Cannot update your Password",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.OK,
+                    msg: "Password updated successfully",
                 });
             },
         );

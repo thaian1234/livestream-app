@@ -112,4 +112,15 @@ export class UserRepository implements IUserRepository {
         });
         return result;
     }
+    async findUserWithAccount(userId: string) {
+        try {
+            const userWithAccount = await this.db.query.userTable.findFirst({
+                where: eq(tableSchemas.userTable.id, userId),
+                with: {
+                    accounts: true,
+                },
+            });
+            return userWithAccount;
+        } catch (error) {}
+    }
 }
