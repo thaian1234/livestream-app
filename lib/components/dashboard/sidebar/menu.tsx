@@ -4,7 +4,7 @@ import { Ellipsis, LogOut } from "lucide-react";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
 
-import { getDashboardMenuList } from "@/lib/configs/dashboard-menu";
+import { getDashboardMenuList } from "@/lib/configs/dashboard-menu.config";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { useUser } from "@/lib/hooks/use-user";
 import { useAuth } from "@/lib/providers/auth-provider";

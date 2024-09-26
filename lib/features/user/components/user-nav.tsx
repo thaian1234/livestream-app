@@ -86,7 +86,7 @@ export function UserNav() {
                     </DropdownMenuItem>
                     <DropdownMenuItem className="hover:cursor-pointer" asChild>
                         <Link
-                            href={ROUTES.ACCOUNT_PAGE(user.username)}
+                            href={ROUTES.PROFILE_PAGE(user.username)}
                             className="flex items-center"
                         >
                             <User className="mr-3 h-4 w-4 text-muted-foreground" />

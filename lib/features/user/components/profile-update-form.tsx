@@ -18,6 +18,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ProfileUpdateForm() {
@@ -86,5 +87,21 @@ export function ProfileUpdateForm() {
                 </Button>
             </form>
         </Form>
+    );
+}
+
+export function ProfileUpdateFormSkeleton() {
+    return (
+        <div className="flex flex-col space-y-8">
+            {Array.from({
+                length: 2,
+            }).map((_, i) => (
+                <div key={i} className="space-y-4">
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-10 w-full" />
+                </div>
+            ))}
+            <Skeleton className="h-12 w-28" />
+        </div>
     );
 }

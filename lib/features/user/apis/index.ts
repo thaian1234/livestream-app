@@ -18,7 +18,7 @@ export const userApi = {
                         queryClient.invalidateQueries({
                             queryKey: keys.session,
                         });
-                        router.replace(ROUTES.ACCOUNT_PAGE(data.username));
+                        router.replace(ROUTES.PROFILE_PAGE(data.username));
                     },
                     onError(err) {
                         toast.error(err.message);

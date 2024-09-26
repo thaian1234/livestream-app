@@ -4,6 +4,7 @@ import {
     LucideIcon,
     Tag,
     UserRoundCog,
+    UserRoundPenIcon,
     Users,
     Video,
 } from "lucide-react";
@@ -72,20 +73,13 @@ export function getDashboardMenuList(
             ],
         },
         {
-            groupLabel: "Settings",
+            groupLabel: "Accounts",
             menus: [
                 {
-                    href: "/users",
-                    label: "Users",
-                    active: pathname.includes("/users"),
-                    icon: Users,
-                    submenus: [],
-                },
-                {
-                    href: ROUTES.ACCOUNT_PAGE(username),
-                    label: "Account",
-                    active: pathname === ROUTES.ACCOUNT_PAGE(username),
-                    icon: UserRoundCog,
+                    href: ROUTES.PROFILE_PAGE(username),
+                    label: "Profile",
+                    active: pathname === ROUTES.PROFILE_PAGE(username),
+                    icon: UserRoundPenIcon,
                     submenus: [],
                 },
             ],
