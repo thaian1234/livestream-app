@@ -1,9 +1,10 @@
 "use client";
 
+import { authApi } from "../../auth/apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { useAuth } from "@/lib/providers/auth-provider";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { UserValidation } from "@/server/api/lib/validations/schema.validation";
 
@@ -20,12 +21,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ProfileUpdateForm() {
-    const { user } = useAuth();
+    const { user } = useUser();
     const form = useForm<UserValidation.Update>({
         resolver: zodResolver(UserValidation.updateSchema),
         defaultValues: {
-            bio: user?.bio,
-            username: user?.username,
+            bio: user.bio,
+            username: user.username,
         },
     });
 

@@ -41,8 +41,8 @@ function getQueryClient() {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     const queryClient = getQueryClient();
-    // const isClient = useIsClient();
-    // if (!isClient) return null;
+    const isClient = useIsClient();
+    if (!isClient) return null;
 
     return (
         <QueryClientProvider client={queryClient}>
