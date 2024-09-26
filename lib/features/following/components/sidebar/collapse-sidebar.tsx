@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { TooltipModel } from "@/components/tooltip-model";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const followingData = [
     {
@@ -32,29 +33,29 @@ const followingData = [
         avatar: "/user.svg",
     },
 ];
-export function FollowingSidebar() {
+
+export function CollapseSidebar() {
     const handleNavigate = (userId: String) => {
         console.log("Navigate to user profile");
     };
     return (
         <>
             {followingData.map((following, index) => (
-                <button
-                    onClick={() => handleNavigate(following.id)}
+                <TooltipModel
                     key={index}
-                    className="flex w-full items-center space-x-4 rounded-sm bg-transparent py-2 pr-4 hover:bg-search"
+                    content={following.userName}
+                    side="right"
                 >
-                    <Image
-                        className="object-full flex-shrink-0"
-                        src={following.avatar}
-                        alt={following.userName}
-                        height={40}
-                        width={40}
-                    />
-                    <div className="w-auto truncate text-base">
-                        {following.userName}
-                    </div>
-                </button>
+                    <button onClick={() => handleNavigate(following.id)}>
+                        <Avatar className="mx-auto mb-2 h-10 w-10">
+                            <AvatarImage
+                                src={following.avatar}
+                                alt={following.userName}
+                            />
+                            <AvatarFallback>User</AvatarFallback>
+                        </Avatar>
+                    </button>
+                </TooltipModel>
             ))}
         </>
     );
