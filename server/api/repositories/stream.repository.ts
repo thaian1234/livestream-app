@@ -23,13 +23,11 @@ export class StreamRepository implements IStreamRepository {
     ) {
         const conditions = [];
         let orderBy;
-        console.log("1");
         if (name) {
             conditions.push(
                 sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ to_tsquery(${name})`,
             );
         }
-        console.log("2");
 
         if (dateFrom) {
             conditions.push(gte(tableSchemas.streamTable.createdAt, dateFrom));
@@ -37,14 +35,12 @@ export class StreamRepository implements IStreamRepository {
         if (dateTo) {
             conditions.push(lte(tableSchemas.streamTable.createdAt, dateTo));
         }
-        console.log("3");
 
         if (isSortByCreatedAt) {
             orderBy = sortOrder.toLowerCase().localeCompare("asc")
                 ? asc(tableSchemas.streamTable.createdAt)
                 : desc(tableSchemas.streamTable.createdAt);
         }
-        console.log(orderBy);
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
             limit: limit,
