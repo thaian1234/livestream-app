@@ -72,4 +72,7 @@ export class FollowService implements IFollowService {
             followedId,
         );
     }
+    public async findRecommended(offset: number = 0, limit: number = 10) {
+        return await this.followRepository.findRecommend(offset, limit);
+    }
 }
