@@ -32,6 +32,7 @@ export class BlockController implements IBlockController {
             blockerId: z.string().uuid(),
             blockedId: z.string().uuid(),
         });
+
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
