@@ -1,6 +1,6 @@
 import { Utils } from "../lib/helpers/utils";
 import { UserValidation } from "../lib/validations/schema.validation";
-import { and, asc, desc, eq, gte, like, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, like, lte, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -90,7 +90,7 @@ export class UserRepository implements IUserRepository {
         let orderBy;
         if (username) {
             conditions.push(
-                like(tableSchemas.userTable.username, `%${username}%`),
+                ilike(tableSchemas.userTable.username, `%${username}%`),
             );
         }
         if (dateFrom) {
