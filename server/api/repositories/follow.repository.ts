@@ -3,7 +3,7 @@ import {
     FollowValidation,
     UserValidation,
 } from "../lib/validations/schema.validation";
-import { and, desc, eq, inArray, ne, notInArray } from "drizzle-orm";
+import { and, desc, eq, inArray, ne, notInArray, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -162,6 +162,7 @@ export class FollowRepository implements IFollowRepository {
                 ),
                 offset: offset,
                 limit: limit,
+                orderBy: sql`RANDOM()`,
             });
             return recommends;
         } catch (error) {}
@@ -210,6 +211,17 @@ export class FollowRepository implements IFollowRepository {
                 ),
             });
             return followings;
+        } catch (error) {}
+    }
+
+    async findRecommend(offset: number = 0, limit: number = 10) {
+        try {
+            const recommends = await this.db.query.userTable.findMany({
+                offset: offset,
+                limit: limit,
+                orderBy: sql`RANDOM()`,
+            });
+            return recommends;
         } catch (error) {}
     }
 }
