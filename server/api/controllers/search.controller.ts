@@ -4,6 +4,7 @@ import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import {
+    QueryValidation,
     StreamValidation,
     UserValidation,
 } from "../lib/validations/schema.validation";
@@ -26,36 +27,7 @@ export class SearchController implements ISearchController {
         return this.factory.createApp().get("/", ...this.search());
     }
     private search() {
-        const queries = z.object({
-            page: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(1).default(1),
-            ),
-            size: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(0).default(10),
-            ),
-            filterBy: z.string().optional(),
-            dateFrom: z.preprocess((x) => {
-                if (typeof x === "string" || x instanceof Date) {
-                    const parsedDate = new Date(x);
-                    return isNaN(parsedDate.getTime()) ? undefined : parsedDate;
-                }
-                return undefined;
-            }, z.date().optional()),
-            dateTo: z.preprocess((x) => {
-                if (typeof x === "string" || x instanceof Date) {
-                    const parsedDate = new Date(x);
-                    return isNaN(parsedDate.getTime()) ? undefined : parsedDate;
-                }
-                return undefined;
-            }, z.date().optional()),
-            isSortByCreatedAt: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.boolean(),
-            ),
-            sortOrder: z.string().optional(),
-        });
+        const queries = QueryValidation.createAdvancedSchema();
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
@@ -86,11 +58,6 @@ export class SearchController implements ISearchController {
                     (page - 1) * size,
                     size,
                 );
-                if (!users) {
-                    throw new MyError.BadRequestError(
-                        "Failed to fetch search result",
-                    );
-                }
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
