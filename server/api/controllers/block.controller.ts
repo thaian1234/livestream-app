@@ -3,7 +3,10 @@ import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { BlockValidation } from "../lib/validations/schema.validation";
+import {
+    BlockValidation,
+    QueryValidation,
+} from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IBlockService } from "../services/block.service";
@@ -29,6 +32,7 @@ export class BlockController implements IBlockController {
             blockerId: z.string().uuid(),
             blockedId: z.string().uuid(),
         });
+
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
@@ -59,17 +63,7 @@ export class BlockController implements IBlockController {
         const params = z.object({
             userId: z.string().uuid(),
         });
-        const queries = z.object({
-            page: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(1).default(1),
-            ),
-            size: z.preprocess(
-                (x) => (x ? x : undefined),
-                z.coerce.number().int().min(0).default(10),
-            ),
-            filterBy: z.string().optional(),
-        });
+        const queries = QueryValidation.createFilterSchema();
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
