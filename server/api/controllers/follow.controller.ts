@@ -27,7 +27,7 @@ export class FollowController implements IFollowController {
             .get("/:userId/following", ...this.getAllFollowingByUserIdHandler())
             .get("/:userId/follower", ...this.getAllFollwerByUserIdHandler())
             .get("/:userId/recommend", ...this.getRecommendByUserId())
-            .get("/:userId/follow", ...this.getAllFollowHandler())
+            .get("/follow", ...this.getAllFollowHandler())
             .post("/:followerId/:followingId", ...this.followToggle());
     }
     private getAllFollowingByUserIdHandler() {
@@ -182,36 +182,41 @@ export class FollowController implements IFollowController {
         );
     }
     private getAllFollowHandler() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryValidation.createPaginationSchema(1, 5);
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
-            AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { userId } = c.req.valid("param");
                 const { page, size } = c.req.valid("query");
-                const currentUser = c.get("getUser");
+                const currentUser = c.get("user");
 
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
+                if (!currentUser) {
+                    const recommends = await this.followService.findRecommended(
+                        (page - 1) * size,
+                        size,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        data: {
+                            recommends:
+                                FollowValidation.parseUserOnlyMany(recommends),
+                        },
+                        status: HttpStatus.OK,
+                    });
                 }
                 const recommends =
                     await this.followService.findRecommendedByUserId(
-                        userId,
+                        currentUser.id,
                         (page - 1) * size,
                         size,
                     );
                 const followings =
                     await this.followService.findFollowingByUserId(
-                        userId,
+                        currentUser.id,
                         (page - 1) * size,
                         size,
                     );
                 const followers = await this.followService.findFollowerByUserId(
-                    userId,
+                    currentUser.id,
                     (page - 1) * size,
                     size,
                 );
