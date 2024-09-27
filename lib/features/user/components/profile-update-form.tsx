@@ -97,11 +97,11 @@ export function ProfileUpdateFormSkeleton() {
                 length: 2,
             }).map((_, i) => (
                 <div key={i} className="space-y-4">
-                    <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-6 w-24 bg-slate-700" />
+                    <Skeleton className="h-10 w-full bg-slate-700" />
                 </div>
             ))}
-            <Skeleton className="h-12 w-28" />
+            <Skeleton className="h-10 w-28 bg-slate-700" />
         </div>
     );
 }

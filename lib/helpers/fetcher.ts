@@ -46,6 +46,7 @@ export namespace Fetcher {
     export function useHonoSuspenseQuery<T extends ClientType>(
         client: T,
         queryKey: string[],
+        request?: RequestType<T>,
         options?: Omit<
             UseSuspenseQueryOptions<RequestType<T>, Error, ResponseType<T>>,
             "queryKey" | "queryFn"
@@ -54,7 +55,7 @@ export namespace Fetcher {
         return useSuspenseQuery<RequestType<T>, Error, ResponseType<T>>({
             ...options,
             queryKey,
-            queryFn: async (data) => handleResponse(await client(data)),
+            queryFn: async () => handleResponse(await client(request)),
         });
     }
 

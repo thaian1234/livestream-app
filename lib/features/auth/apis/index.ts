@@ -18,17 +18,27 @@ export const authApi = {
         },
         useVerifySession() {
             const $get = client.api.auth["verify-session"].$get;
-            return Fetcher.useHonoQuery($get, keys.session, {
-                refetchOnWindowFocus: false,
-                retry: 0,
-            });
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.session,
+                {},
+                {
+                    refetchOnWindowFocus: false,
+                    retry: 0,
+                },
+            );
         },
         useSuspenseVerifySession() {
             const $get = client.api.auth["verify-session"].$get;
-            return Fetcher.useHonoSuspenseQuery($get, keys.session, {
-                refetchOnWindowFocus: false,
-                retry: 0,
-            });
+            return Fetcher.useHonoSuspenseQuery(
+                $get,
+                keys.session,
+                {},
+                {
+                    refetchOnWindowFocus: false,
+                    retry: 0,
+                },
+            );
         },
     },
     mutation: {

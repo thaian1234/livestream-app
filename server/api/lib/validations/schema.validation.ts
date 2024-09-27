@@ -58,7 +58,11 @@ export class FollowValidation {
         bio: true,
     });
     public static parseUserOnlyMany(data: unknown) {
-        return this.selectUserOnlySchema.array().parse(data);
+        try {
+            return this.selectUserOnlySchema.array().parse(data);
+        } catch (error) {
+            return undefined;
+        }
     }
 }
 export namespace FollowValidation {
