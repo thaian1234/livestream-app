@@ -2,20 +2,27 @@
 
 import { Menu } from "lucide-react";
 
+import { followApi } from "@/lib/features/follow/apis";
 import { Following } from "@/lib/features/follow/components/following";
 import { Recommended } from "@/lib/features/follow/components/recommended";
-import { useSiderbar } from "@/lib/stores/store-sidebar";
+import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
 import { Card, CardTitle } from "@/components/ui/card";
 
+import { CollapseSidebar } from "./collapse-sidebar";
 import { ItemLayout } from "./item-layout";
 import "@/style/home.css";
 
 export function Sidebar() {
-    const { isOpen, onCollapse, onExpand } = useSiderbar();
+    const { isOpen, onCollapse, onExpand } = useSidebar();
+    // TODO: Fix this shietttttt
+    const { data, isPending } = followApi.query.useFollow();
 
+    if (data === undefined || isPending) {
+        return <div>Loading...</div>;
+    }
     return (
         <aside
             className={cn(
@@ -34,7 +41,7 @@ export function Sidebar() {
                         </TooltipModel>
                     </CardTitle>
                     <ItemLayout title="Following Channel">
-                        <Following />
+                        <Following followings={data.data.followings} />
                     </ItemLayout>
                     <ItemLayout title="Recommended Channel">
                         <Recommended />
@@ -51,6 +58,7 @@ export function Sidebar() {
                             />
                         </button>
                     </TooltipModel>
+                    <CollapseSidebar />
                 </div>
             )}
         </aside>
