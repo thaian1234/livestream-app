@@ -63,7 +63,7 @@ export function OtpForm() {
                     )}
                 </div>
             </CardContent>
-            <Button className="mt-6" variant="gradient" type="submit">
+            <Button className="mt-6 w-full" variant="gradient" type="submit">
                 Send
             </Button>
         </form>
