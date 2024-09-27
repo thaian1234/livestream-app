@@ -148,10 +148,16 @@ export class AuthValidation {
             message: "Passwords must match",
         },
     );
+    public static usernameSchema = this.baseSchema.omit({
+        email: true,
+        password: true,
+        confirmPassword: true,
+    });
 }
 export namespace AuthValidation {
     export type Signin = z.infer<typeof AuthValidation.signinSchema>;
     export type Signup = z.infer<typeof AuthValidation.signupSchema>;
+    export type Username = z.infer<typeof AuthValidation.usernameSchema>;
 }
 
 export class EmailVerificationValidation {
