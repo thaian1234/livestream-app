@@ -9,7 +9,7 @@ const keys = {
 export const userApi = {
     query: {},
     mutation: {
-        useUpdateProfile(userId: string) {
+        useUpdateProfile() {
             const $patch = client.api.users[":id"].$patch;
             const { mutation, toast, queryClient, router } =
                 Fetcher.useHonoMutation($patch, {
