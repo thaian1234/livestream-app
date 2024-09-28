@@ -8,7 +8,6 @@ import { notFound } from "next/navigation";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { useAuth } from "@/lib/providers/auth-provider";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -26,10 +25,10 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { UserAvatar } from "@/components/user-avatar";
 
 export function UserNav() {
     const { user, isPending, error } = useAuth();
-
     if (error) {
         notFound();
     }
@@ -47,17 +46,7 @@ export function UserNav() {
                                 variant="outline"
                                 className="relative size-10 rounded-full"
                             >
-                                <Avatar className="size-10">
-                                    <AvatarImage
-                                        src={
-                                            user?.imageUrl ? user.imageUrl : "#"
-                                        }
-                                        alt="Avatar"
-                                    />
-                                    <AvatarFallback className="bg-transparent">
-                                        JD
-                                    </AvatarFallback>
-                                </Avatar>
+                                <UserAvatar imageUrl={user.imageUrl} />
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>

@@ -199,6 +199,9 @@ export class FollowController implements IFollowController {
                         data: {
                             recommends:
                                 FollowValidation.parseUserOnlyMany(recommends),
+                            followings:
+                                FollowValidation.parseUserOnlyMany(null),
+                            followers: FollowValidation.parseUserOnlyMany(null),
                         },
                         status: HttpStatus.OK,
                     });

@@ -8,9 +8,9 @@ import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-black-1 to-teal-2 px-6">
+        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r to-black-1 from-teal-2 px-6">
             <div className="flex items-center">
-                <Link href="/home">
+                <Link href="/">
                     <Image
                         src="/logoipsum-330.svg"
                         alt="logo"

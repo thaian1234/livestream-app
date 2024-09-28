@@ -14,7 +14,7 @@ export default function DashboardLayout({
     const sidebar = useSidebarToggle((state) => state);
 
     return (
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <Navbar />
             <Sidebar />
             <main
