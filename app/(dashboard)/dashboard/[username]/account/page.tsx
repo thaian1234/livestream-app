@@ -1,6 +1,8 @@
+import { Suspense } from "react";
+
 import { AccountLayout } from "@/lib/components/dashboard/account/account.layout";
-import { ChangePasswordForm } from "@/lib/features/auth/components/change-password-form";
 import { ConnectedAccount } from "@/lib/features/auth/components/connected-account";
+import { ChangePasswordForm } from "@/lib/features/user/components/change-password-form";
 import { ProfileInfo } from "@/lib/features/user/components/profile-info";
 import { SocialLinks } from "@/lib/features/user/components/social-links";
 
@@ -10,7 +12,9 @@ export default function AccountPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <ProfileInfo />
                 <ConnectedAccount />
-                <ChangePasswordForm />
+                <Suspense fallback={<p>Loading...</p>}>
+                    <ChangePasswordForm />
+                </Suspense>
                 <SocialLinks />
             </div>
         </AccountLayout>
