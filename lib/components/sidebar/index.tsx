@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 
 import { followApi } from "@/lib/features/follow/apis";
 import { Following } from "@/lib/features/follow/components/following";
-import { Recommended } from "@/lib/features/follow/components/recommended";
+import { Recommend } from "@/lib/features/follow/components/recommended";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
@@ -18,13 +18,15 @@ import "@/style/home.css";
 
 export function Sidebar() {
     const { isOpen, onCollapse, onExpand } = useSidebar();
-    const { data, isPending } = followApi.query.useFollow();
-    const following = data?.data.followings;
-    const recommends = data?.data.recommends;
-
+    const { data, isPending, error } = followApi.query.useFollow();
     if (data === undefined || isPending) {
         return <SidebarSkeleton />;
     }
+    if (error) {
+        return <p>Some thing went wrong</p>;
+    }
+    const following = data?.data.followings;
+    const recommends = data?.data.recommends;
 
     return (
         <div
@@ -47,7 +49,7 @@ export function Sidebar() {
                         {following && <Following followings={following} />}
                     </ItemLayout>
                     <ItemLayout title="Recommended Channel" link="/">
-                        {recommends && <Recommended />}
+                        {recommends && <Recommend recommends={recommends} />}
                     </ItemLayout>
                 </Card>
             ) : (
