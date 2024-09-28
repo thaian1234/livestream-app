@@ -12,7 +12,7 @@ export const userTable = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     username: text("username").notNull().unique(),
     email: text("email").notNull().unique(),
-    emailVerified: boolean("email_verified").default(false),
+    emailVerified: boolean("email_verified").notNull().default(false),
     hashedPassword: text("hashed_password"),
     imageUrl: text("image_url"),
     bio: text("bio"),

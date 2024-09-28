@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { UserAvatar } from "@/components/user-avatar";
 
 interface RecommendProps {
     recommends: {
@@ -21,16 +21,10 @@ export function Recommend({ recommends }: RecommendProps) {
                     className="flex w-full items-center justify-between rounded-sm bg-transparent py-2 pr-4 hover:bg-search"
                 >
                     <div className="flex items-center space-x-4">
-                        <Image
-                            className="flex-shrink-0 rounded-full"
-                            src={recommend.imageUrl || ""}
-                            alt={recommend.username}
-                            height={40}
-                            width={40}
-                        />
-                        <div className="w-auto truncate text-base">
+                        <UserAvatar imageUrl={recommend.imageUrl} />
+                        <p className="w-auto truncate text-base">
                             {recommend.username}
-                        </div>
+                        </p>
                     </div>
                 </button>
             ))}
