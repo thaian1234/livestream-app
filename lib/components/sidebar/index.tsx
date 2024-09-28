@@ -18,7 +18,6 @@ import "@/style/home.css";
 
 export function Sidebar() {
     const { isOpen, onCollapse, onExpand } = useSidebar();
-    // TODO: Fix this shietttttt
     const { data, isPending } = followApi.query.useFollow();
     const following = data?.data.followings;
     const recommends = data?.data.recommends;

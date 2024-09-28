@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
@@ -47,9 +47,7 @@ export const authApi = {
             const { mutation, router, toast, queryClient } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
-                        queryClient.invalidateQueries({
-                            queryKey: keys.session,
-                        });
+                        queryClient.invalidateQueries();
                         router.replace(ROUTES.HOME_PAGE);
                         toast.success(msg);
                     },
@@ -80,9 +78,7 @@ export const authApi = {
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
                         router.replace(ROUTES.HOME_PAGE);
-                        queryClient.invalidateQueries({
-                            queryKey: keys.session,
-                        });
+                        queryClient.invalidateQueries();
                         toast.success(msg);
                     },
                     onError(err) {
