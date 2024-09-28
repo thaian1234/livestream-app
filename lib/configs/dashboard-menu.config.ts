@@ -1,11 +1,9 @@
 import {
     Bookmark,
-    LayoutGrid,
     LucideIcon,
     Tag,
-    UserRoundCog,
+    UserCog2Icon,
     UserRoundPenIcon,
-    Users,
     Video,
 } from "lucide-react";
 
@@ -80,6 +78,13 @@ export function getDashboardMenuList(
                     label: "Profile",
                     active: pathname === ROUTES.PROFILE_PAGE(username),
                     icon: UserRoundPenIcon,
+                    submenus: [],
+                },
+                {
+                    href: ROUTES.ACCOUNT_PAGE(username),
+                    label: "Account",
+                    active: pathname === ROUTES.ACCOUNT_PAGE(username),
+                    icon: UserCog2Icon,
                     submenus: [],
                 },
             ],

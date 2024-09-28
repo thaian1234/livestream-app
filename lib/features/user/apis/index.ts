@@ -26,5 +26,17 @@ export const userApi = {
                 });
             return mutation;
         },
+        useChangePassword() {
+            const $patch = client.api.users[":id"]["update-password"].$patch;
+            const { mutation, toast } = Fetcher.useHonoMutation($patch, {
+                onSuccess({ msg }) {
+                    toast.success(msg);
+                },
+                onError(err) {
+                    toast.error(err.message);
+                },
+            });
+            return mutation;
+        },
     },
 };

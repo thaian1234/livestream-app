@@ -1,5 +1,7 @@
+import { max, min } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import path from "path";
+import { string, z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
@@ -26,6 +28,25 @@ export class UserValidation {
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
+    public static updatePasswordSchema = z
+        .object({
+            currentPassword: z
+                .string()
+                .min(6, "Password must be at least 6 characters long")
+                .max(255, "Password must not be more than 255 characters long"),
+            newPassword: z
+                .string()
+                .min(6, "Password must be at least 6 characters long")
+                .max(255, "Password must not be more than 255 characters long"),
+            confirmPassword: z
+                .string()
+                .min(6, "Password must be at least 6 characters long")
+                .max(255, "Password must not be more than 255 characters long"),
+        })
+        .refine((data) => data.newPassword === data.confirmPassword, {
+            message: "Confirm password must match new password",
+            path: ["confirmPassword"],
+        });
     public static pareBase(data: unknown) {
         return this.baseSchema.parse(data);
     }
@@ -44,6 +65,9 @@ export namespace UserValidation {
     export type Update = z.infer<typeof UserValidation.updateSchema>;
     export type Select = z.infer<typeof UserValidation.selectSchema>;
     export type Delete = z.infer<typeof UserValidation.deleteSchema>;
+    export type UpdatePassword = z.infer<
+        typeof UserValidation.updatePasswordSchema
+    >;
 }
 
 export class FollowValidation {

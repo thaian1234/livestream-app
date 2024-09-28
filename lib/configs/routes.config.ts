@@ -4,4 +4,5 @@ export const ROUTES = {
     SIGNUP_PAGE: "/sign-up",
     OTP_VERIFY_PAGE: "/otp-verify",
     PROFILE_PAGE: (username: string) => `/dashboard/${username}/profile`,
+    ACCOUNT_PAGE: (username: string) => `/dashboard/${username}/account`,
 };

@@ -43,4 +43,27 @@ export class UserService implements IUserService {
             limit,
         );
     }
+    public async updatePassword(userId: string, newPassword: string) {
+        const hashedPassword =
+            await Utils.PasswordUtils.hashPassword(newPassword);
+        const updatedUser = await this.userRepository.update(userId, {
+            hashedPassword: hashedPassword,
+        });
+        return updatedUser;
+    }
+    public async isMatchedPassword(userId: string, currentPassword: string) {
+        const existingUser =
+            await this.userRepository.findUserWithAccount(userId);
+        if (
+            !existingUser ||
+            !existingUser.hashedPassword ||
+            existingUser.accounts.length > 0
+        ) {
+            return false;
+        }
+        return Utils.PasswordUtils.verifyHash(
+            existingUser.hashedPassword,
+            currentPassword,
+        );
+    }
 }
