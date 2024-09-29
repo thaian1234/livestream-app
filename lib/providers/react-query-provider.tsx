@@ -1,7 +1,7 @@
 "use client";
 
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
-import { useIsClient } from "../helpers/hooks/use-is-client";
+import { useIsClient } from "../hooks/use-is-client";
 import {
     QueryClient,
     QueryClientProvider,
@@ -39,7 +39,11 @@ function getQueryClient() {
     }
 }
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function ReactQueryProvider({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     const queryClient = getQueryClient();
     const isClient = useIsClient();
     if (!isClient) return null;

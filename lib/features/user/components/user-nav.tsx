@@ -1,11 +1,12 @@
 "use client";
 
-import { SignOutButton } from "../../auth/components/signout-button";
 import { LayoutGrid, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
+import { getUserNavConfig } from "@/lib/configs/user-nav.config";
+import { SignOutButton } from "@/lib/features/auth/components/signout-button";
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
@@ -53,10 +54,9 @@ export function UserNav() {
                     <TooltipContent side="bottom">Profile</TooltipContent>
                 </Tooltip>
             </TooltipProvider>
-
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
+                    <div className="flex flex-col space-y-2">
                         <p className="text-sm font-medium leading-none">
                             {user.username}
                         </p>
@@ -65,28 +65,30 @@ export function UserNav() {
                         </p>
                     </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-white/30" />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link href="/dashboard" className="flex items-center">
-                            <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
-                            Dashboard
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link
-                            href={ROUTES.PROFILE_PAGE(user.username)}
-                            className="flex items-center"
-                        >
-                            <User className="mr-3 h-4 w-4 text-muted-foreground" />
-                            Account
-                        </Link>
-                    </DropdownMenuItem>
+                    {getUserNavConfig(user.username).map(
+                        ({ href, icon: Icon, label }) => (
+                            <DropdownMenuItem
+                                key={user.id}
+                                className="hover:cursor-pointer"
+                                asChild
+                            >
+                                <Link
+                                    href={href}
+                                    className="flex items-center py-3"
+                                >
+                                    <Icon className="mr-3 h-4 w-4" />
+                                    {label}
+                                </Link>
+                            </DropdownMenuItem>
+                        ),
+                    )}
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-white/30" />
                 <SignOutButton>
                     <DropdownMenuItem className="hover:cursor-pointer">
-                        <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
+                        <LogOut className="mr-3 h-4 w-4" />
                         Sign Out
                     </DropdownMenuItem>
                 </SignOutButton>

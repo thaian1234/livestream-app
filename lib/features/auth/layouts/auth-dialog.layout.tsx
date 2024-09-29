@@ -31,7 +31,7 @@ export function AuthDialog({
                     {isSignIn ? "Sign In" : "Sign Up"}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-black-1 text-white">
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="text-2xl">{title}</DialogTitle>
                     <DialogDescription>{subTitle}</DialogDescription>

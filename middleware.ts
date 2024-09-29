@@ -3,35 +3,27 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { middlewareRoutes } from "./lib/configs/middleware.config";
 import { ROUTES } from "./lib/configs/routes.config";
-import { UserValidation } from "./server/api/lib/validations/schema.validation";
+import { clientCookie } from "./lib/shared/client";
 
-async function verifySession(origin: string) {
-    const response = await fetch(`${origin}/api/auth/verify-session`, {
-        headers: {
-            Cookie: cookies().toString(),
-        },
-    });
-    if (!response.ok) {
+async function verifySession() {
+    const $get = clientCookie(cookies().toString()).api.auth["verify-session"]
+        .$get;
+    const resp = await $get();
+    if (!resp.ok) {
         return {
             user: null,
             isValidSession: false,
         };
     }
-    const user = (await response.json()) as {
-        msg?: string;
-        data?: {
-            user: UserValidation.Select;
-        };
-        status: number;
-    };
+    const data = await resp.json();
     return {
-        user: user.data?.user,
+        user: data.data.user,
         isValidSession: true,
     };
 }
 
 export async function middleware(request: NextRequest) {
-    const { pathname, origin } = request.nextUrl;
+    const { pathname } = request.nextUrl;
     const sessionId = request.cookies.get("auth_session");
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
     const isDefaultPage = middlewareRoutes.DEFAULT_PAGE.startsWith(pathname);
@@ -50,7 +42,7 @@ export async function middleware(request: NextRequest) {
                   ),
               );
     }
-    const { isValidSession, user } = await verifySession(origin);
+    const { isValidSession, user } = await verifySession();
     if (!isValidSession || !user) {
         return NextResponse.redirect(
             new URL(middlewareRoutes.DEFAULT_SIGNIN_REDIRECT, request.url),
