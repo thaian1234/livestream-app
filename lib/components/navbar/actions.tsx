@@ -1,6 +1,22 @@
 "use client";
 
 import { Bell, Heart } from "lucide-react";
+import {
+    Cloud,
+    CreditCard,
+    Github,
+    Keyboard,
+    LifeBuoy,
+    LogOut,
+    Mail,
+    MessageSquare,
+    Plus,
+    PlusCircle,
+    Settings,
+    User,
+    UserPlus,
+    Users,
+} from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -10,6 +26,20 @@ import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const AfterSignin = () => {
@@ -25,12 +55,50 @@ export const AfterSignin = () => {
             <Link href={`/dashboard/${user.username}`}>
                 <Heart size={28} color="#ffffff" strokeWidth={2.5} />
             </Link>
-            <button className="ml-8">
-                <Avatar>
-                    <AvatarImage src="/user.svg" alt="user" />
-                    <AvatarFallback>user</AvatarFallback>
-                </Avatar>
-            </button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button className="ml-8">
+                        <Avatar>
+                            <AvatarImage src="/user.svg" alt="user" />
+                            <AvatarFallback>user</AvatarFallback>
+                        </Avatar>
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 border-0 bg-zinc-900 text-white">
+                    <DropdownMenuLabel>User name</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-white/30" />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            <span>Billing</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-white/30" />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <Users className="mr-2 h-4 w-4" />
+                            <span>Team</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Plus className="mr-2 h-4 w-4" />
+                            <span>New Team</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-white/30" />
+                    <DropdownMenuItem>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </>
     );
 };
