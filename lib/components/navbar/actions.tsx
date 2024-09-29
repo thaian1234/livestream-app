@@ -1,38 +1,7 @@
 "use client";
 
 import { Bell, Heart } from "lucide-react";
-import {
-    Cloud,
-    CreditCard,
-    Github,
-    Keyboard,
-    LifeBuoy,
-    LogOut,
-    Mail,
-    MessageSquare,
-    Plus,
-    PlusCircle,
-    Settings,
-    User,
-    UserPlus,
-    Users,
-} from "lucide-react";
-import {
-    Cloud,
-    CreditCard,
-    Github,
-    Keyboard,
-    LifeBuoy,
-    LogOut,
-    Mail,
-    MessageSquare,
-    Plus,
-    PlusCircle,
-    Settings,
-    User,
-    UserPlus,
-    Users,
-} from "lucide-react";
+import { CreditCard, LogOut, Plus, Settings, User, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
