@@ -1,15 +1,26 @@
 "use client";
 
 import { Bell, Heart } from "lucide-react";
+import { CreditCard, LogOut, Plus, Settings, User, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";
 import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
+import { UserNav } from "@/lib/features/user/components/user-nav";
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const AfterSignin = () => {
@@ -25,19 +36,14 @@ export const AfterSignin = () => {
             <Link href={`/dashboard/${user.username}`}>
                 <Heart size={28} color="#ffffff" strokeWidth={2.5} />
             </Link>
-            <button className="ml-8">
-                <Avatar>
-                    <AvatarImage src="/user.svg" alt="user" />
-                    <AvatarFallback>user</AvatarFallback>
-                </Avatar>
-            </button>
+            <UserNav />
         </>
     );
 };
 
 export const BeforeSignin = () => {
     return (
-        <section className="flex space-x-2">
+        <section className="flex space-x-3">
             <AuthDialog
                 isSignIn={true}
                 title="Sign In"

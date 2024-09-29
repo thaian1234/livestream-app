@@ -2,7 +2,6 @@
 
 import { Navbar } from "@/lib/components/dashboard/navbar";
 import { Sidebar } from "@/lib/components/dashboard/sidebar";
-import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +13,7 @@ export default function DashboardLayout({
     const sidebar = useSidebarToggle((state) => state);
 
     return (
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <>
             <Navbar />
             <Sidebar />
             <main
@@ -25,6 +24,6 @@ export default function DashboardLayout({
             >
                 {children}
             </main>
-        </ThemeProvider>
+        </>
     );
 }

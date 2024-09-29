@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Suspense } from "react";
+import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/lib/providers/auth-provider";
-import Providers from "@/lib/providers/react-query-provider";
-
-import { Toaster } from "@/components/ui/sonner";
+import ReactQueryProvider from "@/lib/providers/react-query-provider";
+import { ThemeProvider } from "@/lib/providers/theme-provider";
 
 import "./globals.css";
 
@@ -24,12 +23,18 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                <Providers>
+                <ReactQueryProvider>
                     <AuthProvider>
-                        <Toaster />
-                        {children}
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="dark"
+                            enableSystem
+                        >
+                            <Toaster theme="light" />
+                            {children}
+                        </ThemeProvider>
                     </AuthProvider>
-                </Providers>
+                </ReactQueryProvider>
             </body>
         </html>
     );

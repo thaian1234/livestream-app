@@ -8,7 +8,7 @@ import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r to-black-1 from-teal-2 px-6">
+        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-6">
             <div className="flex items-center">
                 <Link href="/">
                     <Image
@@ -24,7 +24,7 @@ export function Navbar() {
                     <Input
                         type="search"
                         placeholder="Search"
-                        className="rounded-full border-0 bg-search pr-10 text-white placeholder-white focus-visible:ring-white"
+                        className="rounded-full border-0 bg-search pr-10 text-white placeholder:text-white/70 focus-visible:ring-white"
                         customSize="sm"
                     />
                     <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />

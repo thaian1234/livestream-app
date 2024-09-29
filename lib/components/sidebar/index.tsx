@@ -45,12 +45,16 @@ export function Sidebar() {
                             </button>
                         </TooltipModel>
                     </CardTitle>
-                    <ItemLayout title="Following Channel" link="/home">
-                        {following && <Following followings={following} />}
-                    </ItemLayout>
-                    <ItemLayout title="Recommended Channel" link="/">
-                        {recommends && <Recommend recommends={recommends} />}
-                    </ItemLayout>
+                    {following && (
+                        <ItemLayout title="Following Channel" link="/home">
+                            <Following followings={following} />
+                        </ItemLayout>
+                    )}
+                    {recommends && (
+                        <ItemLayout title="Recommended Channel" link="/">
+                            <Recommend recommends={recommends} />
+                        </ItemLayout>
+                    )}
                 </Card>
             ) : (
                 <div className="flex flex-col items-center py-3">
