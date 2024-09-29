@@ -13,6 +13,7 @@ export default function HomePage() {
                 </h2>
                 <FollowButton followerId="123" followingId="123"></FollowButton>
                 <BlockButton blockedId="123" blockerId="123"></BlockButton>
+
                 {/* Placeholder content */}
                 <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
                     <LivesPreview />
