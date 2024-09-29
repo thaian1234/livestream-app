@@ -1,14 +1,13 @@
-import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Input } from "@/components/ui/input";
+import { SearchBar } from "@/lib/features/search/components/search-bar";
 
 import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r to-black-1 from-teal-2 px-6">
+        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-6">
             <div className="flex items-center">
                 <Link href="/">
                     <Image
@@ -20,15 +19,7 @@ export function Navbar() {
                 </Link>
             </div>
             <div className="flex items-center justify-around space-x-8">
-                <div className="relative">
-                    <Input
-                        type="search"
-                        placeholder="Search"
-                        className="rounded-full border-0 bg-search pr-10 text-white placeholder-white focus-visible:ring-white"
-                        customSize="sm"
-                    />
-                    <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />
-                </div>
+                <SearchBar />
                 <div />
                 <Actions />
             </div>
