@@ -20,6 +20,7 @@ export function SearchBar() {
         const search = e.target.value;
         console.log(e.target.value);
         setSearch(search);
+
         console.log("Waiting for 500ms");
     }
 
