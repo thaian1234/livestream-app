@@ -44,9 +44,14 @@ export async function middleware(request: NextRequest) {
     }
     const { isValidSession, user } = await verifySession();
     if (!isValidSession || !user) {
-        return NextResponse.redirect(
-            new URL(middlewareRoutes.DEFAULT_SIGNIN_REDIRECT, request.url),
-        );
+        return isPublicRoutes
+            ? NextResponse.next()
+            : NextResponse.redirect(
+                  new URL(
+                      middlewareRoutes.DEFAULT_SIGNIN_REDIRECT,
+                      request.url,
+                  ),
+              );
     }
     if (isPublicRoutes) {
         return NextResponse.redirect(new URL(ROUTES.HOME_PAGE, request.url));
