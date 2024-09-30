@@ -7,7 +7,7 @@ import {
     ProfileUpdateFormSkeleton,
 } from "@/lib/features/user/components/profile-update-form";
 
-import { Label } from "@/components/ui/label";
+import { CardSection } from "@/components/card-section";
 
 export default function AccountPage() {
     return (
@@ -17,14 +17,23 @@ export default function AccountPage() {
         >
             {/* TODO: Adding Profile uploading */}
             <section className="grid lg:grid-cols-12 lg:space-x-8">
-                <div className="space-y-4 lg:col-span-7 lg:border-r-2 lg:border-slate-500 lg:pr-8">
-                    <Label>Update your Avatar</Label>
-                    <UploadImageForm />
+                <div className="space-y-4 lg:col-span-7">
+                    <CardSection
+                        title="Your avatar"
+                        description="Upload your avatar"
+                    >
+                        <UploadImageForm />
+                    </CardSection>
                 </div>
                 <div className="lg:col-span-5">
-                    <Suspense fallback={<ProfileUpdateFormSkeleton />}>
-                        <ProfileUpdateForm />
-                    </Suspense>
+                    <CardSection
+                        title="Personal Information"
+                        description="Update your personal details"
+                    >
+                        <Suspense fallback={<ProfileUpdateFormSkeleton />}>
+                            <ProfileUpdateForm />
+                        </Suspense>
+                    </CardSection>
                 </div>
             </section>
         </AccountLayout>
