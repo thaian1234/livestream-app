@@ -1,12 +1,10 @@
+import { FollowDTO } from "../dtos/follow.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import {
-    FollowValidation,
-    QueryValidation,
-} from "../lib/validations/schema.validation";
+import { QueryValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IFollowService } from "../services/follow.service";
@@ -61,8 +59,7 @@ export class FollowController implements IFollowController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        followings:
-                            FollowValidation.parseUserOnlyMany(followings),
+                        followings: FollowDTO.parseUserOnlyMany(followings),
                     },
                     status: HttpStatus.OK,
                 });
@@ -99,8 +96,7 @@ export class FollowController implements IFollowController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        followers:
-                            FollowValidation.parseUserOnlyMany(followers),
+                        followers: FollowDTO.parseUserOnlyMany(followers),
                     },
                     status: HttpStatus.OK,
                 });
@@ -138,8 +134,7 @@ export class FollowController implements IFollowController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends:
-                            FollowValidation.parseUserOnlyMany(recommends),
+                        recommends: FollowDTO.parseUserOnlyMany(recommends),
                     },
                     status: HttpStatus.OK,
                 });
@@ -197,11 +192,9 @@ export class FollowController implements IFollowController {
                     return ApiResponse.WriteJSON({
                         c,
                         data: {
-                            recommends:
-                                FollowValidation.parseUserOnlyMany(recommends),
-                            followings:
-                                FollowValidation.parseUserOnlyMany(null),
-                            followers: FollowValidation.parseUserOnlyMany(null),
+                            recommends: FollowDTO.parseUserOnlyMany(recommends),
+                            followings: FollowDTO.parseUserOnlyMany(null),
+                            followers: FollowDTO.parseUserOnlyMany(null),
                         },
                         status: HttpStatus.OK,
                     });
@@ -226,12 +219,9 @@ export class FollowController implements IFollowController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends:
-                            FollowValidation.parseUserOnlyMany(recommends),
-                        followings:
-                            FollowValidation.parseUserOnlyMany(followings),
-                        followers:
-                            FollowValidation.parseUserOnlyMany(followers),
+                        recommends: FollowDTO.parseUserOnlyMany(recommends),
+                        followings: FollowDTO.parseUserOnlyMany(followings),
+                        followers: FollowDTO.parseUserOnlyMany(followers),
                     },
                     status: HttpStatus.OK,
                 });

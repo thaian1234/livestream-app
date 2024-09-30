@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 
 import { useUser } from "@/lib/hooks/use-user";
 
-import { UserValidation } from "@/server/api/lib/validations/schema.validation";
+import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,8 +34,8 @@ export function ChangePasswordForm() {
     const { mutate: handleChangePassword, isPending } =
         userApi.mutation.useChangePassword();
     const { user } = useUser();
-    const form = useForm<UserValidation.UpdatePassword>({
-        resolver: zodResolver(UserValidation.updatePasswordSchema),
+    const form = useForm<UserDTO.UpdatePassword>({
+        resolver: zodResolver(UserDTO.updatePasswordSchema),
         defaultValues: {
             confirmPassword: "",
             currentPassword: "",

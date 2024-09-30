@@ -1,5 +1,5 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { UserValidation } from "../lib/validations/schema.validation";
 import { and, asc, desc, eq, gte, ilike, like, lte, or } from "drizzle-orm";
 
 import Database from "@/server/db";
@@ -35,7 +35,7 @@ export class UserRepository implements IUserRepository {
             return users;
         } catch (error) {}
     }
-    async create(data: UserValidation.Insert) {
+    async create(data: UserDTO.Insert) {
         try {
             const user = await this.db
                 .insert(tableSchemas.userTable)
@@ -44,7 +44,7 @@ export class UserRepository implements IUserRepository {
             return user[0];
         } catch (error) {}
     }
-    async update(id: string, data: UserValidation.Update) {
+    async update(id: string, data: UserDTO.Update) {
         try {
             const user = await this.db
                 .update(tableSchemas.userTable)

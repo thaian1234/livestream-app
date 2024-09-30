@@ -1,3 +1,4 @@
+import { UserDTO } from "../dtos/user.dto";
 import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -7,7 +8,6 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import {
     AuthValidation,
     EmailVerificationValidation,
-    UserValidation,
 } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -235,7 +235,7 @@ export class AuthController implements IAuthController {
         );
     }
     private verifySessionHandler() {
-        const respData = UserValidation.selectSchema;
+        const respData = UserDTO.selectSchema;
         return this.factory.createHandlers(async (c) => {
             const user = c.get("user");
             const session = c.get("session");

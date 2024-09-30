@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { useUser } from "@/lib/hooks/use-user";
 
-import { UserValidation } from "@/server/api/lib/validations/schema.validation";
+import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +23,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 export function ProfileUpdateForm() {
     const { user } = useUser();
-    const form = useForm<UserValidation.Update>({
-        resolver: zodResolver(UserValidation.updateSchema),
+    const form = useForm<UserDTO.Update>({
+        resolver: zodResolver(UserDTO.updateSchema),
         defaultValues: {
             username: user.username,
             bio: user.bio,

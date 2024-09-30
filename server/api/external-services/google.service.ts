@@ -1,8 +1,6 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import {
-    GoogleValidation,
-    UserValidation,
-} from "../lib/validations/schema.validation";
+import { GoogleValidation } from "../lib/validations/schema.validation";
 import { IGoogleAccountRepository } from "../repositories/account.repository";
 import { IUserService } from "../services/user.service";
 import { Google, generateCodeVerifier, generateState } from "arctic";
@@ -69,7 +67,7 @@ export class GoogleService implements IGoogleService {
 
     private async updateExistingUser(
         userId: string,
-        existingUser: UserValidation.Update,
+        existingUser: UserDTO.Update,
         googleData: GoogleValidation.Response,
     ) {
         if (

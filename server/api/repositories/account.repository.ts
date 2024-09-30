@@ -1,9 +1,9 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import {
     AccountValidation,
     GitHubValidation,
     GoogleValidation,
-    UserValidation,
 } from "../lib/validations/schema.validation";
 import { and, eq } from "drizzle-orm";
 
@@ -74,7 +74,7 @@ export class AccountRepository implements IAccountRepository {
     }
     public async updateAccountTransaction(
         accountData: AccountValidation.Insert,
-        userData: UserValidation.Update,
+        userData: UserDTO.Update,
     ) {
         try {
             return await this.db.transaction(async (tx) => {

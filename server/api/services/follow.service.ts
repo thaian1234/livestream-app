@@ -1,5 +1,5 @@
+import { FollowDTO } from "../dtos/follow.dto";
 import { Utils } from "../lib/helpers/utils";
-import { FollowValidation } from "../lib/validations/schema.validation";
 import { IFollowRepository } from "../repositories/follow.repository";
 
 import { IBlockService } from "./block.service";
@@ -11,7 +11,7 @@ export class FollowService implements IFollowService {
         private followRepository: IFollowRepository,
         private blockService: IBlockService,
     ) {}
-    public async followToggle(data: FollowValidation.Insert) {
+    public async followToggle(data: FollowDTO.Insert) {
         const follow = await this.findByFollowerAndFollowed(
             data.followerId,
             data.followedId,

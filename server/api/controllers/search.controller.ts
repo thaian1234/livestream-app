@@ -1,3 +1,4 @@
+import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -6,7 +7,6 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import {
     QueryValidation,
     StreamValidation,
-    UserValidation,
 } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IStreamService } from "../services/stream.service";
@@ -61,7 +61,7 @@ export class SearchController implements ISearchController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        users: UserValidation.parseMany(users),
+                        users: UserDTO.parseMany(users),
                         streams: StreamValidation.parseMany(streams),
                     },
                     status: HttpStatus.OK,

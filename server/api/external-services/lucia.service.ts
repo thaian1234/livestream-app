@@ -1,5 +1,5 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { UserValidation } from "../lib/validations/schema.validation";
 import { Lucia, TimeSpan } from "lucia";
 
 import { envServer } from "@/lib/env/env.server";
@@ -55,6 +55,6 @@ export class LuciaService {
 declare module "lucia" {
     interface Register {
         Lucia: ReturnType<typeof LuciaService.getInstance>;
-        DatabaseUserAttributes: UserValidation.Select;
+        DatabaseUserAttributes: UserDTO.Select;
     }
 }

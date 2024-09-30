@@ -2,20 +2,20 @@ import Database from "..";
 import tableSchemas from "../schemas";
 import { z } from "zod";
 
+import { FollowDTO } from "@/server/api/dtos/follow.dto";
+import { UserDTO } from "@/server/api/dtos/user.dto";
 import { LuciaService } from "@/server/api/external-services/lucia.service";
 import { Utils } from "@/server/api/lib/helpers/utils";
 import {
     BlockValidation,
-    FollowValidation,
     NotificationValidation,
     StreamValidation,
-    UserValidation,
 } from "@/server/api/lib/validations/schema.validation";
 
 const db = Database.getInstance().db;
 const lucia = LuciaService.getInstance();
 
-async function signUpAllUser(users: UserValidation.Select[]) {
+async function signUpAllUser(users: UserDTO.Select[]) {
     for (const user of users) {
         const password = "123456";
         const hashedPassword = await Utils.PasswordUtils.hashPassword(password);
@@ -43,7 +43,7 @@ const seeds = async () => {
         await db.delete(tableSchemas.userTable);
 
         // Seeding user
-        let usersData: UserValidation.Insert[] = [];
+        let usersData: UserDTO.Insert[] = [];
         for (let i = 0; i <= 50; i++) {
             usersData.push({
                 email: `user${i}@test.com`,
@@ -59,7 +59,7 @@ const seeds = async () => {
         await signUpAllUser(users);
 
         // Seeding follow
-        let followData: z.infer<typeof FollowValidation.insertSchema>[] = [];
+        let followData: z.infer<typeof FollowDTO.insertSchema>[] = [];
         for (let i = 0; i <= 400; i++) {
             const randomIndex1 = Math.floor(Math.random() * users.length);
             const randomIndex2 = Math.floor(Math.random() * users.length);
