@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
 export function ChangePasswordForm() {
@@ -60,7 +61,7 @@ export function ChangePasswordForm() {
     });
 
     return (
-        <Card className="rounded-lg border-2">
+        <Card className="rounded-lg border-4 border-slate-700">
             <div className="flex items-start justify-between">
                 <CardHeader>
                     <CardTitle>Change Password</CardTitle>
@@ -145,6 +146,33 @@ export function ChangePasswordForm() {
                         </Button>
                     </form>
                 </Form>
+            </CardContent>
+        </Card>
+    );
+}
+
+export function ChangePasswordFormSkeleton() {
+    return (
+        <Card className="rounded-lg border-4 border-slate-700">
+            <div className="flex items-start justify-between">
+                <CardHeader>
+                    <CardTitle>Change Password</CardTitle>
+                    <CardDescription>Update your password</CardDescription>
+                </CardHeader>
+                <div className="flex items-center space-x-4">
+                    <Label htmlFor="change-password" className="underline">
+                        I want to change my password
+                    </Label>
+                    <Switch disabled />
+                </div>
+            </div>
+            <CardContent>
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="space-y-4">
+                        <Skeleton className="h-6 w-28" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+                ))}
             </CardContent>
         </Card>
     );

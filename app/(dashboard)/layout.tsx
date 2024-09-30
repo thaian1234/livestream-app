@@ -18,7 +18,7 @@ export default function DashboardLayout({
             <Sidebar />
             <main
                 className={cn(
-                    "min-h-dvh bg-slate-900 pl-14 transition-[margin-left] duration-300 ease-in-out",
+                    "min-h-dvh bg-muted pl-14 transition-[margin-left] duration-300 ease-in-out",
                     sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72",
                 )}
             >
