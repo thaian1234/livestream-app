@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
+import { AccountDTO } from "./account.dto";
+
 export class UserDTO {
     private static baseSchema = createSelectSchema(tableSchemas.userTable, {
         email: z.string().email(),
@@ -45,6 +47,9 @@ export class UserDTO {
             message: "Confirm password must match new password",
             path: ["confirmPassword"],
         });
+    public static userWithAccountsSchema = this.selectSchema.extend({
+        accounts: AccountDTO.selectSchema.array(),
+    });
     public static pareBase(data: unknown) {
         return this.baseSchema.parse(data);
     }
@@ -64,4 +69,7 @@ export namespace UserDTO {
     export type Select = z.infer<typeof UserDTO.selectSchema>;
     export type Delete = z.infer<typeof UserDTO.deleteSchema>;
     export type UpdatePassword = z.infer<typeof UserDTO.updatePasswordSchema>;
+    export type UserWithAccounts = z.infer<
+        typeof UserDTO.userWithAccountsSchema
+    >;
 }

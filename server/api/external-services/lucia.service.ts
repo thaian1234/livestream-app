@@ -22,14 +22,7 @@ export class LuciaService {
                 },
             },
             getUserAttributes(attributes) {
-                return {
-                    id: attributes.id,
-                    username: attributes.username,
-                    email: attributes.email,
-                    imageUrl: attributes.imageUrl,
-                    bio: attributes.bio,
-                    emailVerified: attributes.emailVerified,
-                };
+                return attributes;
             },
         });
     }
@@ -55,6 +48,6 @@ export class LuciaService {
 declare module "lucia" {
     interface Register {
         Lucia: ReturnType<typeof LuciaService.getInstance>;
-        DatabaseUserAttributes: UserDTO.Select;
+        DatabaseUserAttributes: UserDTO.UserWithAccounts;
     }
 }
