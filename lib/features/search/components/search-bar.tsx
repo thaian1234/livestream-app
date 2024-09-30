@@ -1,20 +1,28 @@
 "use client";
 
+import { searchApi } from "../apis";
 import { Search } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { Input } from "@/components/ui/input";
 
 export function SearchBar() {
     const debounced = useDebounceCallback(handleChange, 500);
-    // useEffect(() => {
-    //     console.log(debounced);
-    // }, [debounced]);
+    const [search, setSearch] = useState("");
+    const { data, isPending, error } = searchApi.query.useSearch(
+        "1",
+        "10",
+        search,
+    );
+    if (!isPending) console.log(data);
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const search = e.target.value;
         console.log(e.target.value);
+        setSearch(search);
         console.log("Waiting for 500ms");
     }
+
     return (
         <div className="relative">
             <Input
