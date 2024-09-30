@@ -1,3 +1,5 @@
+import { AuthDTO } from "../dtos/auth.dto";
+import { EmailVerificationDTO } from "../dtos/email-verification.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
@@ -5,10 +7,6 @@ import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import {
-    AuthValidation,
-    EmailVerificationValidation,
-} from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IAuthService } from "../services/auth.service";
@@ -42,7 +40,7 @@ export class AuthController implements IAuthController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                AuthValidation.signinSchema,
+                AuthDTO.signinSchema,
                 Validator.handleParseError,
             ),
             async (c) => {
@@ -99,7 +97,7 @@ export class AuthController implements IAuthController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                AuthValidation.signupSchema,
+                AuthDTO.signupSchema,
                 Validator.handleParseError,
             ),
             async (c) => {
@@ -152,7 +150,7 @@ export class AuthController implements IAuthController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                EmailVerificationValidation.verifyEmailSchema,
+                EmailVerificationDTO.verifyEmailSchema,
                 Validator.handleParseError,
             ),
             async (c) => {
@@ -189,7 +187,7 @@ export class AuthController implements IAuthController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                AuthValidation.signupSchema,
+                AuthDTO.signupSchema,
                 Validator.handleParseError,
             ),
             async (c) => {

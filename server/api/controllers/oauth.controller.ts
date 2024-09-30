@@ -1,3 +1,5 @@
+import { GithubDTO } from "../dtos/github.dto";
+import { GoogleDTO } from "../dtos/google.dto";
 import { IGitHubService } from "../external-services/github.service";
 import { IGoogleService } from "../external-services/google.service";
 import { HttpStatus } from "../lib/constant/http.type";
@@ -5,10 +7,6 @@ import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import {
-    GitHubValidation,
-    GoogleValidation,
-} from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
@@ -101,7 +99,7 @@ export class OauthController implements IOauthController {
                         "Failed to fetch Goolge Information",
                     );
                 }
-                const googleData = GoogleValidation.responseSchema.parse(
+                const googleData = GoogleDTO.responseSchema.parse(
                     await googleResponse.json(),
                 );
                 const { session, sessionCookie } =
@@ -186,7 +184,7 @@ export class OauthController implements IOauthController {
                     );
                 }
 
-                const gitHubDataS = GitHubValidation.responseSchema.parse({
+                const gitHubDataS = GithubDTO.responseSchema.parse({
                     id: gitHubData.id,
                     email: gitHubEmail[0].email,
                     name: gitHubData.name || gitHubData.login,

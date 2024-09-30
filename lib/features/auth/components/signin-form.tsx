@@ -6,7 +6,7 @@ import { Eye, EyeOff, LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,8 @@ export function SignInForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<AuthValidation.Signin>({
-        resolver: zodResolver(AuthValidation.signinSchema),
+    } = useForm<AuthDTO.Signin>({
+        resolver: zodResolver(AuthDTO.signinSchema),
     });
     const { mutate: handleSignIn, isPending } = authApi.mutation.useSignIn();
     const onSubmit = handleSubmit((data) => {

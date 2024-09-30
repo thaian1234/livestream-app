@@ -1,10 +1,10 @@
+import { R2BucketDTO } from "../dtos/r2-bucket.dto";
 import { IR2BucketService } from "../external-services/r2-bucket.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { R2BucketValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IUserService } from "../services/user.service";
@@ -28,7 +28,7 @@ export class UploadController implements IUploadController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                R2BucketValidation.uploadFileSchema,
+                R2BucketDTO.uploadFileSchema,
                 Validator.handleParseError,
             ),
             AuthMiddleware.isAuthenticated,

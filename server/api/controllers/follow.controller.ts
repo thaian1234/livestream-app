@@ -1,10 +1,10 @@
 import { FollowDTO } from "../dtos/follow.dto";
+import { QueryDTO } from "../dtos/query.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { QueryValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IFollowService } from "../services/follow.service";
@@ -32,7 +32,7 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
-        const queries = QueryValidation.createPaginationSchema();
+        const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
@@ -70,7 +70,7 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
-        const queries = QueryValidation.createPaginationSchema();
+        const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
@@ -107,7 +107,7 @@ export class FollowController implements IFollowController {
         const params = z.object({
             userId: z.string().uuid(),
         });
-        const queries = QueryValidation.createPaginationSchema();
+        const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
@@ -177,7 +177,7 @@ export class FollowController implements IFollowController {
         );
     }
     private getAllFollowHandler() {
-        const queries = QueryValidation.createPaginationSchema(1, 5);
+        const queries = QueryDTO.createPaginationSchema(1, 5);
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {

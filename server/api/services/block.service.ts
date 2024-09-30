@@ -1,5 +1,5 @@
+import { BlockDTO } from "../dtos/block.dto";
 import { Utils } from "../lib/helpers/utils";
-import { BlockValidation } from "../lib/validations/schema.validation";
 import { IBlockRepository } from "../repositories/block.repository";
 
 export interface IBlockService extends Utils.AutoMappedClass<BlockService> {}
@@ -17,7 +17,7 @@ export class BlockService implements IBlockService {
             limit,
         );
     }
-    public async blockToggle(data: BlockValidation.Insert) {
+    public async blockToggle(data: BlockDTO.Insert) {
         console.log(data);
         const block =
             await this.blockRepository.findBlockedByBlockerAndBlocked(data);

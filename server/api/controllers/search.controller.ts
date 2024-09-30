@@ -1,13 +1,11 @@
+import { QueryDTO } from "../dtos/query.dto";
+import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import {
-    QueryValidation,
-    StreamValidation,
-} from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
@@ -27,7 +25,7 @@ export class SearchController implements ISearchController {
         return this.factory.createApp().get("/", ...this.search());
     }
     private search() {
-        const queries = QueryValidation.createAdvancedSchema();
+        const queries = QueryDTO.createAdvancedSchema();
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
@@ -62,7 +60,7 @@ export class SearchController implements ISearchController {
                     c,
                     data: {
                         users: UserDTO.parseMany(users),
-                        streams: StreamValidation.parseMany(streams),
+                        streams: StreamDTO.parseMany(streams),
                     },
                     status: HttpStatus.OK,
                 });

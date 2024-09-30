@@ -1,9 +1,9 @@
+import { AuthDTO } from "../dtos/auth.dto";
 import {
     ILuciaService,
     LuciaService,
 } from "../external-services/lucia.service";
 import { Utils } from "../lib/helpers/utils";
-import { AuthValidation } from "../lib/validations/schema.validation";
 
 import { IUserService } from "./user.service";
 
@@ -14,7 +14,7 @@ export class AuthService implements IAuthService {
     constructor(private readonly userService: IUserService) {
         this.luciaService = new LuciaService();
     }
-    public async authenticateUser(credentials: AuthValidation.Signin) {
+    public async authenticateUser(credentials: AuthDTO.Signin) {
         const existingUser = await this.userService.getUserByEmailOrUsername(
             credentials.email,
         );
@@ -36,7 +36,7 @@ export class AuthService implements IAuthService {
         }
         return await this.luciaService.initiateSession(existingUser.id);
     }
-    public async registerUser(credentials: AuthValidation.Signup) {
+    public async registerUser(credentials: AuthDTO.Signup) {
         const hashedPassword = await Utils.PasswordUtils.hashPassword(
             credentials.password,
         );

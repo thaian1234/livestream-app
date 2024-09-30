@@ -1,5 +1,5 @@
+import { BlockDTO } from "../dtos/block.dto";
 import { Utils } from "../lib/helpers/utils";
-import { BlockValidation } from "../lib/validations/schema.validation";
 import { blockRoutes } from "../routes/block.routes";
 import { and, desc, eq, ilike, inArray, like, or } from "drizzle-orm";
 
@@ -34,7 +34,7 @@ export class BlockRepository implements IBlockRepository {
             return blockeds;
         } catch (error) {}
     }
-    async blockUser(data: BlockValidation.Insert) {
+    async blockUser(data: BlockDTO.Insert) {
         try {
             return await this.db.transaction(async (tx) => {
                 const [newBlock] = await tx
@@ -73,7 +73,7 @@ export class BlockRepository implements IBlockRepository {
             console.log(error);
         }
     }
-    async unblockUser(data: BlockValidation.Delete) {
+    async unblockUser(data: BlockDTO.Delete) {
         try {
             const rows = await this.db
                 .delete(tableSchemas.blockTable)
@@ -125,7 +125,7 @@ export class BlockRepository implements IBlockRepository {
             console.log(error);
         }
     }
-    async findBlockedByBlockerAndBlocked(data: BlockValidation.Insert) {
+    async findBlockedByBlockerAndBlocked(data: BlockDTO.Insert) {
         try {
             const block = await this.db.query.blockTable.findFirst({
                 where: and(

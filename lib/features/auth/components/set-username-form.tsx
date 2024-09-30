@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPen } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,8 @@ export function SetUsernameForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<AuthValidation.Username>({
-        resolver: zodResolver(AuthValidation.usernameSchema),
+    } = useForm<AuthDTO.Username>({
+        resolver: zodResolver(AuthDTO.usernameSchema),
     });
     const onSubmit = handleSubmit((data) => {
         console.log(data);

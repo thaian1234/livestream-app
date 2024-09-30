@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useForm } from "react-hook-form";
 
-import { EmailVerificationValidation } from "@/server/api/lib/validations/schema.validation";
+import { EmailVerificationDTO } from "@/server/api/dtos/email-verification.dto";
 
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,8 @@ export function OtpForm() {
         handleSubmit,
         setValue,
         formState: { errors },
-    } = useForm<EmailVerificationValidation.VerifyEmail>({
-        resolver: zodResolver(EmailVerificationValidation.verifyEmailSchema),
+    } = useForm<EmailVerificationDTO.VerifyEmail>({
+        resolver: zodResolver(EmailVerificationDTO.verifyEmailSchema),
         defaultValues: {
             code: "",
             userId: userId,
