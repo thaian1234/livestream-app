@@ -1,5 +1,5 @@
+import { R2BucketDTO } from "../dtos/r2-bucket.dto";
 import { Utils } from "../lib/helpers/utils";
-import { R2BucketValidation } from "../lib/validations/schema.validation";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { generateIdFromEntropySize } from "lucia";
@@ -22,7 +22,7 @@ export class R2BucketService implements IR2BucketService {
             },
         });
     }
-    public async generateSignedUrl(file: R2BucketValidation.UploadFile) {
+    public async generateSignedUrl(file: R2BucketDTO.UploadFile) {
         if (file.fileSize > this.maxSize) {
             return {
                 signedUrl: null,

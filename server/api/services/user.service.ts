@@ -1,15 +1,15 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { UserValidation } from "../lib/validations/schema.validation";
 import { IUserRepository } from "../repositories/user.repository";
 
 export interface IUserService extends Utils.AutoMappedClass<UserService> {}
 
 export class UserService implements IUserService {
     constructor(private userRepository: IUserRepository) {}
-    public async createUser(data: UserValidation.Insert) {
+    public async createUser(data: UserDTO.Insert) {
         return await this.userRepository.create(data);
     }
-    public async updateUser(id: string, data: UserValidation.Update) {
+    public async updateUser(id: string, data: UserDTO.Update) {
         return await this.userRepository.update(id, data);
     }
     public async getAllUser() {

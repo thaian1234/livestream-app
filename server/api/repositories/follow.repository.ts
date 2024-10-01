@@ -1,8 +1,6 @@
+import { FollowDTO } from "../dtos/follow.dto";
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import {
-    FollowValidation,
-    UserValidation,
-} from "../lib/validations/schema.validation";
 import { and, desc, eq, inArray, ne, notInArray, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
@@ -168,7 +166,7 @@ export class FollowRepository implements IFollowRepository {
         } catch (error) {}
     }
 
-    async create(data: FollowValidation.Insert) {
+    async create(data: FollowDTO.Insert) {
         try {
             const follow = await this.db
                 .insert(tableSchemas.followTable)
@@ -178,7 +176,7 @@ export class FollowRepository implements IFollowRepository {
         } catch (error) {}
     }
 
-    async delete(data: FollowValidation.Delete) {
+    async delete(data: FollowDTO.Delete) {
         try {
             const rows = await this.db
                 .delete(tableSchemas.followTable)

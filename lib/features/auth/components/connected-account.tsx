@@ -18,7 +18,7 @@ export function ConnectedAccount() {
                 disabled={isSigning}
                 onClick={handleGoogleSignIn}
                 type="button"
-                variant="outline"
+                variant="default"
                 className="w-full justify-start"
             >
                 <FaGoogle className="mr-4 size-4" />
@@ -28,7 +28,7 @@ export function ConnectedAccount() {
                 disabled={isSigning}
                 onClick={handleGithubSignIn}
                 type="button"
-                variant="outline"
+                variant="default"
                 className="w-full justify-start"
             >
                 <FaGithub className="mr-4 size-4" />

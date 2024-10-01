@@ -1,9 +1,9 @@
+import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
-import { UserValidation } from "../lib/validations/schema.validation";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IUserService } from "../services/user.service";
@@ -29,11 +29,11 @@ export class UserController {
         const params = z.object({
             id: z.string().uuid(),
         });
-        const respSchema = UserValidation.selectSchema;
+        const respSchema = UserDTO.selectSchema;
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                UserValidation.updateSchema,
+                UserDTO.updateSchema,
                 Validator.handleParseError,
             ),
             zValidator("param", params, Validator.handleParseError),
@@ -63,7 +63,7 @@ export class UserController {
         );
     }
     private getAllUserHandler() {
-        const respData = UserValidation.selectSchema.array();
+        const respData = UserDTO.selectSchema.array();
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
@@ -89,7 +89,7 @@ export class UserController {
             zValidator("param", params, Validator.handleParseError),
             zValidator(
                 "json",
-                UserValidation.updatePasswordSchema,
+                UserDTO.updatePasswordSchema,
                 Validator.handleParseError,
             ),
             AuthMiddleware.isAuthenticated,

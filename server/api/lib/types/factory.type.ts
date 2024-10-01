@@ -1,12 +1,12 @@
-import { UserValidation } from "../validations/schema.validation";
+import { UserDTO } from "../../dtos/user.dto";
 import { getRequestExecutionContext } from "../helpers/wait-util";
 import { createFactory } from "hono/factory";
 import type { Session } from "lucia";
 
 type ContextVariables = {
-    user: UserValidation.Select | null;
+    user: UserDTO.UserWithAccounts | null;
     session: Session | null;
-    getUser: UserValidation.Select;
+    getUser: UserDTO.UserWithAccounts;
     getSession: Session;
     executionCtx: ReturnType<typeof getRequestExecutionContext>;
 };

@@ -4,10 +4,10 @@ import { authApi } from "../features/auth/apis";
 import { createContext, useContext } from "react";
 import React, { useMemo } from "react";
 
-import { UserValidation } from "@/server/api/lib/validations/schema.validation";
+import { UserDTO } from "@/server/api/dtos/user.dto";
 
 type AuthContextType = {
-    user?: UserValidation.Select;
+    user?: UserDTO.Select;
     isPending: boolean;
     error: Error | null;
     isSignedIn: boolean;

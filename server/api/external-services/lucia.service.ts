@@ -1,5 +1,5 @@
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { UserValidation } from "../lib/validations/schema.validation";
 import { Lucia, TimeSpan } from "lucia";
 
 import { envServer } from "@/lib/env/env.server";
@@ -22,14 +22,7 @@ export class LuciaService {
                 },
             },
             getUserAttributes(attributes) {
-                return {
-                    id: attributes.id,
-                    username: attributes.username,
-                    email: attributes.email,
-                    imageUrl: attributes.imageUrl,
-                    bio: attributes.bio,
-                    emailVerified: attributes.emailVerified,
-                };
+                return attributes;
             },
         });
     }
@@ -55,6 +48,6 @@ export class LuciaService {
 declare module "lucia" {
     interface Register {
         Lucia: ReturnType<typeof LuciaService.getInstance>;
-        DatabaseUserAttributes: UserValidation.Select;
+        DatabaseUserAttributes: UserDTO.UserWithAccounts;
     }
 }

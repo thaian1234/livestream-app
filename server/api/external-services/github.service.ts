@@ -1,8 +1,6 @@
+import { GithubDTO } from "../dtos/github.dto";
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import {
-    GitHubValidation,
-    UserValidation,
-} from "../lib/validations/schema.validation";
 import { IGitHubAccountRepository } from "../repositories/account.repository";
 import { IUserService } from "../services/user.service";
 import { GitHub, generateState } from "arctic";
@@ -44,7 +42,7 @@ export class GitHubService implements IGitHubService {
         return this.gitHubClient.validateAuthorizationCode(code);
     }
 
-    public async authenticateUser(gitHubData: GitHubValidation.Response) {
+    public async authenticateUser(gitHubData: GithubDTO.Response) {
         const existingUser = await this.userService.getUserByEmailOrUsername(
             gitHubData.email,
         );
@@ -66,8 +64,8 @@ export class GitHubService implements IGitHubService {
 
     private async updateExistingUser(
         userId: string,
-        existingUser: UserValidation.Update,
-        gitHubData: GitHubValidation.Response,
+        existingUser: UserDTO.Update,
+        gitHubData: GithubDTO.Response,
     ) {
         if (
             existingUser.hashedPassword ||
@@ -92,7 +90,7 @@ export class GitHubService implements IGitHubService {
         return userId;
     }
 
-    private async createNewUser(gitHubData: GitHubValidation.Response) {
+    private async createNewUser(gitHubData: GithubDTO.Response) {
         const newAccount =
             await this.accountRepository.createGitHubAccountTransaction(
                 gitHubData,

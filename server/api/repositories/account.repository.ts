@@ -1,10 +1,8 @@
+import { AccountDTO } from "../dtos/account.dto";
+import { GithubDTO } from "../dtos/github.dto";
+import { GoogleDTO } from "../dtos/google.dto";
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import {
-    AccountValidation,
-    GitHubValidation,
-    GoogleValidation,
-    UserValidation,
-} from "../lib/validations/schema.validation";
 import { and, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
@@ -27,7 +25,7 @@ export class AccountRepository implements IAccountRepository {
     constructor() {
         this.db = Database.getInstance().db;
     }
-    public async create(data: AccountValidation.Insert) {
+    public async create(data: AccountDTO.Insert) {
         try {
             const account = await this.db
                 .insert(tableSchemas.accountTable)
@@ -35,7 +33,7 @@ export class AccountRepository implements IAccountRepository {
             return account;
         } catch (error) {}
     }
-    public async findOne(fields: AccountValidation.FindOne) {
+    public async findOne(fields: AccountDTO.FindOne) {
         try {
             const account = await this.db.query.accountTable.findFirst({
                 where: and(
@@ -50,7 +48,7 @@ export class AccountRepository implements IAccountRepository {
         } catch (error) {}
     }
     public async createGoogleAccountTransaction(
-        googleData: GoogleValidation.Response,
+        googleData: GoogleDTO.Response,
     ) {
         try {
             return await this.db.transaction(async (tx) => {
@@ -73,8 +71,8 @@ export class AccountRepository implements IAccountRepository {
         } catch (error) {}
     }
     public async updateAccountTransaction(
-        accountData: AccountValidation.Insert,
-        userData: UserValidation.Update,
+        accountData: AccountDTO.Insert,
+        userData: UserDTO.Update,
     ) {
         try {
             return await this.db.transaction(async (tx) => {
@@ -108,7 +106,7 @@ export class AccountRepository implements IAccountRepository {
         } catch (error) {}
     }
     public async createGitHubAccountTransaction(
-        githubData: GitHubValidation.Response,
+        githubData: GithubDTO.Response,
     ) {
         try {
             return await this.db.transaction(async (tx) => {

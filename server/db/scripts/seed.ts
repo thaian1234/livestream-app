@@ -2,20 +2,18 @@ import Database from "..";
 import tableSchemas from "../schemas";
 import { z } from "zod";
 
+import { BlockDTO } from "@/server/api/dtos/block.dto";
+import { FollowDTO } from "@/server/api/dtos/follow.dto";
+import { NotificationDTO } from "@/server/api/dtos/notification.dto";
+import { StreamDTO } from "@/server/api/dtos/stream.dto";
+import { UserDTO } from "@/server/api/dtos/user.dto";
 import { LuciaService } from "@/server/api/external-services/lucia.service";
 import { Utils } from "@/server/api/lib/helpers/utils";
-import {
-    BlockValidation,
-    FollowValidation,
-    NotificationValidation,
-    StreamValidation,
-    UserValidation,
-} from "@/server/api/lib/validations/schema.validation";
 
 const db = Database.getInstance().db;
 const lucia = LuciaService.getInstance();
 
-async function signUpAllUser(users: UserValidation.Select[]) {
+async function signUpAllUser(users: UserDTO.Select[]) {
     for (const user of users) {
         const password = "123456";
         const hashedPassword = await Utils.PasswordUtils.hashPassword(password);
@@ -43,7 +41,7 @@ const seeds = async () => {
         await db.delete(tableSchemas.userTable);
 
         // Seeding user
-        let usersData: UserValidation.Insert[] = [];
+        let usersData: UserDTO.Insert[] = [];
         for (let i = 0; i <= 50; i++) {
             usersData.push({
                 email: `user${i}@test.com`,
@@ -59,7 +57,7 @@ const seeds = async () => {
         await signUpAllUser(users);
 
         // Seeding follow
-        let followData: z.infer<typeof FollowValidation.insertSchema>[] = [];
+        let followData: z.infer<typeof FollowDTO.insertSchema>[] = [];
         for (let i = 0; i <= 400; i++) {
             const randomIndex1 = Math.floor(Math.random() * users.length);
             const randomIndex2 = Math.floor(Math.random() * users.length);
@@ -76,7 +74,7 @@ const seeds = async () => {
             .onConflictDoNothing();
 
         // Seeding blocks
-        let blockData: z.infer<typeof BlockValidation.insertSchema>[] = [];
+        let blockData: z.infer<typeof BlockDTO.insertSchema>[] = [];
         for (let i = 0; i < 75; i++) {
             const randomIndex1 = Math.floor(Math.random() * users.length);
             const randomIndex2 = Math.floor(Math.random() * users.length);
@@ -93,7 +91,7 @@ const seeds = async () => {
             .onConflictDoNothing();
 
         // Seeding streams
-        let streamData: z.infer<typeof StreamValidation.insertSchema>[] = [];
+        let streamData: z.infer<typeof StreamDTO.insertSchema>[] = [];
         for (const user of users) {
             streamData.push({
                 userId: user.id,
@@ -108,9 +106,8 @@ const seeds = async () => {
             .returning();
 
         // Seeding notifications
-        let notificationData: z.infer<
-            typeof NotificationValidation.insertSchema
-        >[] = [];
+        let notificationData: z.infer<typeof NotificationDTO.insertSchema>[] =
+            [];
         for (const stream of streams) {
             for (const user of users) {
                 if (user.id !== stream.userId) {

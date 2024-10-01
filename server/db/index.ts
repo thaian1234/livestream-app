@@ -1,3 +1,4 @@
+import { CustomAdapter } from "../api/configs/adapter.config";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -9,7 +10,7 @@ import tableSchemas, { tableRelations } from "./schemas";
 class Database {
     private static instance: Database;
     public db: PostgresJsDatabase<typeof tableSchemas & typeof tableRelations>;
-    public adapter: DrizzlePostgreSQLAdapter;
+    public adapter: CustomAdapter;
 
     private constructor() {
         const sql = postgres(envServer.DB_URL);
@@ -19,7 +20,7 @@ class Database {
                 ...tableRelations,
             },
         });
-        this.adapter = new DrizzlePostgreSQLAdapter(
+        this.adapter = new CustomAdapter(
             this.db,
             tableSchemas.sessionTable,
             tableSchemas.userTable,

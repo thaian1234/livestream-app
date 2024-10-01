@@ -1,8 +1,6 @@
+import { GoogleDTO } from "../dtos/google.dto";
+import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import {
-    GoogleValidation,
-    UserValidation,
-} from "../lib/validations/schema.validation";
 import { IGoogleAccountRepository } from "../repositories/account.repository";
 import { IUserService } from "../services/user.service";
 import { Google, generateCodeVerifier, generateState } from "arctic";
@@ -47,7 +45,7 @@ export class GoogleService implements IGoogleService {
         return this.googleClient.validateAuthorizationCode(code, codeVerifier);
     }
 
-    public async authenticateUser(googleData: GoogleValidation.Response) {
+    public async authenticateUser(googleData: GoogleDTO.Response) {
         const existingUser = await this.userService.getUserByEmailOrUsername(
             googleData.email,
         );
@@ -69,8 +67,8 @@ export class GoogleService implements IGoogleService {
 
     private async updateExistingUser(
         userId: string,
-        existingUser: UserValidation.Update,
-        googleData: GoogleValidation.Response,
+        existingUser: UserDTO.Update,
+        googleData: GoogleDTO.Response,
     ) {
         if (
             existingUser.hashedPassword ||
@@ -94,7 +92,7 @@ export class GoogleService implements IGoogleService {
         return userId;
     }
 
-    private async createNewUser(googleData: GoogleValidation.Response) {
+    private async createNewUser(googleData: GoogleDTO.Response) {
         const newAccount =
             await this.accountRepository.createGoogleAccountTransaction(
                 googleData,

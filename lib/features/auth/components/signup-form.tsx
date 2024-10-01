@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { AuthValidation } from "@/server/api/lib/validations/schema.validation";
+import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
 import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,8 @@ export function SignUpForm() {
         register, // register field name
         handleSubmit, //pass a callback to handle successful
         formState: { errors },
-    } = useForm<AuthValidation.Signup>({
-        resolver: zodResolver(AuthValidation.signupSchema), //handle errors
+    } = useForm<AuthDTO.Signup>({
+        resolver: zodResolver(AuthDTO.signupSchema), //handle errors
     });
     const { mutate: handleSignUp, isPending } = authApi.mutation.useSignUp();
     const onSubmit = handleSubmit((data) => {

@@ -1,5 +1,5 @@
+import { EmailVerificationDTO } from "../dtos/email-verification.dto";
 import { Utils } from "../lib/helpers/utils";
-import { EmailVerificationValidation } from "../lib/validations/schema.validation";
 import { eq } from "drizzle-orm";
 import { TimeSpan, createDate } from "oslo";
 import { isWithinExpirationDate } from "oslo";
@@ -27,10 +27,10 @@ export class EmailVerificationRepository
                 code,
                 expiresAt: createDate(new TimeSpan(15, "m")),
             });
-			return code;
+            return code;
         } catch (error) {}
     }
-    public async create(data: EmailVerificationValidation.Insert) {
+    public async create(data: EmailVerificationDTO.Insert) {
         try {
             return await this.db
                 .insert(tableSchemas.emailVerificationTable)
