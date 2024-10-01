@@ -22,6 +22,7 @@ export const envServer = createEnv({
         GITHUB_CLIENT_ID: z.string().min(1),
         GITHUB_CLIENT_SECRET: z.string().min(1),
         GITHUB_API_URL: z.string().url(),
+        GETSTREAM_PRIVATE_API_KEY: z.string().min(1),
     },
     shared: {
         NODE_ENV: z
