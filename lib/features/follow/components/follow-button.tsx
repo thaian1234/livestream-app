@@ -39,10 +39,9 @@ export function FollowButton({ followerId, followingId }: FollowButtonProps) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             disabled={isPending}
-            className={cn(
-                "group relative flex h-10 items-center justify-center overflow-hidden transition-all duration-300 ease-in-out hover:bg-primary-foreground/90",
-                "w-32 px-4",
-            )}
+            className={
+                "group relative flex h-10 w-32 items-center justify-center overflow-hidden px-4 transition-all duration-300 ease-in-out hover:bg-primary-foreground/90"
+            }
         >
             <div
                 className={cn(
@@ -54,18 +53,14 @@ export function FollowButton({ followerId, followingId }: FollowButtonProps) {
             >
                 {isHovering ? (
                     <>
-                        <UserMinus
-                            className={`h-6 w-6 fill-red-500 text-red-500 transition-all duration-300 ease-in-out`}
-                        />
+                        <UserMinus className="h-6 w-6 fill-red-500 text-red-500 transition-all duration-300 ease-in-out" />
                         <span className="fill-red-500 text-red-500 transition-all duration-300 ease-in-out">
                             UnFollow
                         </span>
                     </>
                 ) : (
                     <>
-                        <UserCheck
-                            className={`h-6 w-6 fill-primary text-primary transition-all duration-300 ease-in-out`}
-                        />
+                        <UserCheck className="h-6 w-6 fill-primary text-primary transition-all duration-300 ease-in-out" />
                         <span className="transition-all duration-300 ease-in-out">
                             Followed!
                         </span>
