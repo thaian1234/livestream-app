@@ -24,6 +24,9 @@ export const searchApi = {
                         filterBy,
                     },
                 },
+                {
+                    enabled: filterBy !== "",
+                },
             );
         },
     },
