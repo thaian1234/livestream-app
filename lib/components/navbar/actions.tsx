@@ -3,6 +3,7 @@
 import { Bell, Heart } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import React from "react";
 
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";

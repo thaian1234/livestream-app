@@ -1,3 +1,5 @@
+import React from "react";
+
 import { TooltipModel } from "@/components/tooltip-model";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
