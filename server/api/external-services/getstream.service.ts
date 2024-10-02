@@ -39,6 +39,7 @@ export class GetStreamService implements IGetStreamService {
             id: user.id,
             image: imageUrl,
             name: user.username,
+            role: "admin",
         };
     }
     public async upsertUser(user: UserRequest) {
@@ -51,7 +52,7 @@ export class GetStreamService implements IGetStreamService {
             this.callType.livestream,
             callId,
         );
-        return await call.getOrCreate({
+        return call.getOrCreate({
             data: {
                 created_by: user,
             },

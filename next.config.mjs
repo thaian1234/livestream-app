@@ -3,7 +3,7 @@ const nextConfig = {
     experimental: {
         serverComponentsExternalPackages: ["@node-rs/argon2"],
     },
-    reactStrictMode: true,
+    reactStrictMode: false,
 };
 
 export default nextConfig;

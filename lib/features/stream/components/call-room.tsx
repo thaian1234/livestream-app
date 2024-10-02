@@ -1,6 +1,6 @@
 import { streamApi } from "../apis";
 import { useVideoClient } from "../hooks/use-stream-video";
-import { Call, StreamCall } from "@stream-io/video-react-sdk";
+import { Call, LivestreamPlayer, StreamCall } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
 import { Spinner } from "@/components/ui/spinner";
@@ -22,6 +22,11 @@ export function CallRoom({ children }: CallRoomProps) {
             data.data.room.call.type,
             data.data.room.call.id,
         );
+        myCall.join({ create: false, data: data.data.room.call }).then(
+            () => setCall(myCall),
+            () => console.error("Failed to join the call"),
+        );
+
         return () => {
             myCall
                 .leave()
