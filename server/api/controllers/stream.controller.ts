@@ -16,6 +16,8 @@ export class StreamController implements IStreamController {
     setupHandlers() {
         return this.factory
             .createApp()
+            .get("/generate-token", ...this.generateUserToken())
+            .get("/", ...this.upsertLivestreamRoom())
             .post("/", ...this.createLivestreamRoom())
             .post("/generate-token", ...this.generateUserToken());
     }
@@ -28,6 +30,35 @@ export class StreamController implements IStreamController {
                     this.getStreamService.convertUserToUserRequest(currentUser);
                 const call =
                     await this.getStreamService.createLivestreamRoom(
+                        getStreamUser,
+                    );
+                if (!call.created) {
+                    return ApiResponse.WriteErrorJSON({
+                        c,
+                        status: HttpStatus.ServiceUnavailable,
+                        msg: "Cannot create Livestream room",
+                    });
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Livestream room created !",
+                    status: HttpStatus.Created,
+                    data: {
+                        room: call,
+                    },
+                });
+            },
+        );
+    }
+    private upsertLivestreamRoom() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const getStreamUser =
+                    this.getStreamService.convertUserToUserRequest(currentUser);
+                const call =
+                    await this.getStreamService.upsertLivestreamRoom(
                         getStreamUser,
                     );
                 if (!call.created) {

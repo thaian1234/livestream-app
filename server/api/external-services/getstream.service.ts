@@ -57,4 +57,16 @@ export class GetStreamService implements IGetStreamService {
             },
         });
     }
+    public async upsertLivestreamRoom(user: UserRequest) {
+        const callId = generateIdFromEntropySize(10);
+        const call = this.streamClient.video.call(
+            this.callType.livestream,
+            callId,
+        );
+        return await call.getOrCreate({
+            data: {
+                created_by: user,
+            },
+        });
+    }
 }
