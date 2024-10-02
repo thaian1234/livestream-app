@@ -1,9 +1,14 @@
+import { StreamDTO } from "../dtos/stream.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
+import { IStreamService } from "../services/stream.service";
+import { zValidator } from "@hono/zod-validator";
 
 export interface IStreamController
     extends Utils.AutoMappedClass<StreamController> {}
@@ -11,6 +16,7 @@ export interface IStreamController
 export class StreamController implements IStreamController {
     constructor(
         private readonly factory: CreateFactoryType,
+        private readonly streamService: IStreamService,
         private readonly getStreamService: IGetStreamService,
     ) {}
     setupHandlers() {
@@ -19,7 +25,9 @@ export class StreamController implements IStreamController {
             .get("/generate-token", ...this.generateUserToken())
             .get("/", ...this.upsertLivestreamRoom())
             .post("/", ...this.createLivestreamRoom())
-            .post("/generate-token", ...this.generateUserToken());
+            .post("/generate-token", ...this.generateUserToken())
+            .post("/create", ...this.createStream())
+            .get("/my-stream", ...this.getStream());
     }
     private createLivestreamRoom() {
         return this.factory.createHandlers(
@@ -93,6 +101,62 @@ export class StreamController implements IStreamController {
                     status: HttpStatus.Created,
                     data: {
                         token,
+                    },
+                });
+            },
+        );
+    }
+    private createStream() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            zValidator(
+                "json",
+                StreamDTO.insertSchema,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const jsonData = c.req.valid("json");
+                if (currentUser.id !== jsonData.userId) {
+                    throw new MyError.UnauthorizedError();
+                }
+                const newStream = await this.streamService.createOne(jsonData);
+                if (!newStream) {
+                    throw new MyError.BadRequestError("Cannot create Stream");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Stream created",
+                    data: {
+                        stream: newStream,
+                    },
+                    status: HttpStatus.Created,
+                });
+            },
+        );
+    }
+    public getStream() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const stream = await this.streamService.getStreamWithSetting(
+                    currentUser.id,
+                );
+                if (!stream) {
+                    return ApiResponse.WriteJSON({
+                        c,
+                        msg: "Please create a Stream",
+                        data: undefined,
+                        status: HttpStatus.OK,
+                    });
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Get stream successfully",
+                    status: HttpStatus.OK,
+                    data: {
+                        stream: stream,
                     },
                 });
             },

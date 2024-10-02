@@ -4,6 +4,7 @@ import { client } from "@/lib/shared/client";
 const keys = {
     stream: ["stream"],
     call: ["call"],
+    myStream: ["my-stream"],
 };
 
 export const streamApi = {
@@ -29,6 +30,10 @@ export const streamApi = {
                     retry: 1,
                 },
             );
+        },
+        useGetMyStream() {
+            const $get = client.api.streams["my-stream"].$get;
+            return Fetcher.useHonoQuery($get, keys.myStream, {}, {});
         },
     },
     mutation: {

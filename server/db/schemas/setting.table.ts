@@ -7,6 +7,7 @@ export const settingTable = pgTable("settings", {
     id: uuid("id").primaryKey().defaultRandom(),
     streamId: uuid("stream_id")
         .notNull()
+        .unique()
         .references(() => streamTable.id, { onDelete: "cascade" }),
     isChatDelayed: boolean("is_chat_delayed").default(false).notNull(),
     isChatFollowersOnly: boolean("is_chat_followers_only")

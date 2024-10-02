@@ -1,5 +1,6 @@
 import {
     Bookmark,
+    KeyIcon,
     LucideIcon,
     Tag,
     UserCog2Icon,
@@ -55,10 +56,10 @@ export function getDashboardMenuList(
                     ],
                 },
                 {
-                    href: "/categories",
-                    label: "Categories",
-                    active: pathname.includes("/categories"),
-                    icon: Bookmark,
+                    href: ROUTES.KEY_PAGE(username),
+                    label: "Key",
+                    active: pathname === ROUTES.KEY_PAGE(username),
+                    icon: KeyIcon,
                     submenus: [],
                 },
                 {
