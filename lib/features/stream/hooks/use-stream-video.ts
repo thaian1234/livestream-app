@@ -32,6 +32,6 @@ export function useVideoClient() {
             setVideoClient(undefined);
         };
     }, [user.id, user.username, isPending, tokenData]);
-
+	
     return videoClient;
 }

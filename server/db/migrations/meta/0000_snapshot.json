@@ -1,5 +1,5 @@
 {
-  "id": "0bd65827-77c9-44d8-a678-918250a7d76b",
+  "id": "8791de66-a0ae-4993-8213-d833565bb048",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -563,12 +563,6 @@
           "notNull": true,
           "default": false
         },
-        "ingress_id": {
-          "name": "ingress_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "server_url": {
           "name": "server_url",
           "type": "text",
@@ -582,23 +576,7 @@
           "notNull": false
         }
       },
-      "indexes": {
-        "ingress_idx": {
-          "name": "ingress_idx",
-          "columns": [
-            {
-              "expression": "ingress_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "settings_stream_id_streams_id_fk": {
           "name": "settings_stream_id_streams_id_fk",
@@ -615,15 +593,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "settings_ingress_id_unique": {
-          "name": "settings_ingress_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "ingress_id"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.streams": {
       "name": "streams",
@@ -745,7 +715,7 @@
           "name": "email_verified",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "hashed_password": {

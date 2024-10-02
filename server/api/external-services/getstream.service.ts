@@ -24,7 +24,7 @@ export class GetStreamService implements IGetStreamService {
         } as const;
     }
     public generateUserToken(userId: string) {
-        const expirationTime = Math.floor(Date.now() / 1000) + 3600;
+        const expirationTime = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 1 week
         const issuedAt = Math.floor(Date.now() / 1000) - 60;
         const token = this.streamClient.generateUserToken({
             user_id: userId,

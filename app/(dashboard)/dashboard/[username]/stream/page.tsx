@@ -47,40 +47,29 @@ const LivestreamView = () => {
     }
 
     return (
-        <StreamCall call={call}>
-            <div
-                style={{ display: "flex", flexDirection: "column", gap: "4px" }}
-            >
-                <div>
-                    {isLive ? `Live: ${participantCount}` : `In Backstage`}
-                </div>
-                {firstParticipant ? (
-                    <LivestreamPlayer
-                        callId={call.id}
-                        callType={"livestream"}
-                    />
-                ) : (
-                    <div>The host hasnt joined yet</div>
-                )}
-                <div style={{ display: "flex", gap: "4px" }}>
-                    <Button
-                        onClick={() =>
-                            isLive ? call.stopLive() : call.goLive()
-                        }
-                    >
-                        {isLive ? "Stop Live" : "Go Live"}
-                    </Button>
-                    <Button onClick={() => cam.toggle()}>
-                        {isCamEnabled ? "Disable camera" : "Enable camera"}
-                    </Button>
-                    <Button onClick={() => mic.toggle()}>
-                        {isMicEnabled ? "Mute Mic" : "Unmute Mic"}
-                    </Button>
-                    <Button onClick={() => screenShare.toggle()}>
-                        {status === "enabled" ? "active" : "inactive"}
-                    </Button>
-                </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div>{isLive ? `Live: ${participantCount}` : `In Backstage`}</div>
+            {firstParticipant ? (
+                <LivestreamPlayer callId={call.id} callType={"livestream"} />
+            ) : (
+                <div>The host hasnt joined yet</div>
+            )}
+            <div style={{ display: "flex", gap: "4px" }}>
+                <Button
+                    onClick={() => (isLive ? call.stopLive() : call.goLive())}
+                >
+                    {isLive ? "Stop Live" : "Go Live"}
+                </Button>
+                <Button onClick={() => cam.toggle()}>
+                    {isCamEnabled ? "Disable camera" : "Enable camera"}
+                </Button>
+                <Button onClick={() => mic.toggle()}>
+                    {isMicEnabled ? "Mute Mic" : "Unmute Mic"}
+                </Button>
+                <Button onClick={() => screenShare.toggle()}>
+                    {status === "enabled" ? "active" : "inactive"}
+                </Button>
             </div>
-        </StreamCall>
+        </div>
     );
 };

@@ -65,10 +65,8 @@ CREATE TABLE IF NOT EXISTS "settings" (
 	"stream_id" uuid NOT NULL,
 	"is_chat_delayed" boolean DEFAULT false NOT NULL,
 	"is_chat_followers_only" boolean DEFAULT false NOT NULL,
-	"ingress_id" varchar,
 	"server_url" text,
-	"stream_key" text,
-	CONSTRAINT "settings_ingress_id_unique" UNIQUE("ingress_id")
+	"stream_key" text
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "streams" (
@@ -86,7 +84,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"username" text NOT NULL,
 	"email" text NOT NULL,
-	"email_verified" boolean DEFAULT false,
+	"email_verified" boolean DEFAULT false NOT NULL,
 	"hashed_password" text,
 	"image_url" text,
 	"bio" text,
@@ -170,5 +168,4 @@ CREATE INDEX IF NOT EXISTS "follower_idx" ON "follows" USING btree ("follower_id
 CREATE INDEX IF NOT EXISTS "followed_idx" ON "follows" USING btree ("following_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_notification_idx" ON "notifications" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "stream_notification_idx" ON "notifications" USING btree ("stream_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "ingress_idx" ON "settings" USING btree ("ingress_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_stream_idx" ON "streams" USING btree ("user_id");
