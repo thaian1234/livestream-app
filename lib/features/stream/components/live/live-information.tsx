@@ -41,7 +41,10 @@ export function LiveInformation() {
                 Follow
             </Button>
 
-            <Button size="sm" className="ml-2 rounded-xl bg-white/10">
+            <Button
+                size="sm"
+                className="ml-2 rounded-xl bg-white/10 text-white"
+            >
                 <Forward className="mr-1" />
                 Share
             </Button>
