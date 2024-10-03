@@ -48,6 +48,6 @@ export class LuciaService implements ILuciaService {
 declare module "lucia" {
     interface Register {
         Lucia: ReturnType<typeof LuciaService.getInstance>;
-        DatabaseUserAttributes: UserDTO.UserWithAccounts;
+        DatabaseUserAttributes: UserDTO.UserWithAccountsAndStream;
     }
 }

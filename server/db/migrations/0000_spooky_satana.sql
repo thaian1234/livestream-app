@@ -66,7 +66,10 @@ CREATE TABLE IF NOT EXISTS "settings" (
 	"is_chat_delayed" boolean DEFAULT false NOT NULL,
 	"is_chat_followers_only" boolean DEFAULT false NOT NULL,
 	"server_url" text,
-	"stream_key" text
+	"stream_key" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp NOT NULL,
+	CONSTRAINT "setting_stream_unq" UNIQUE("stream_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "streams" (
@@ -76,8 +79,7 @@ CREATE TABLE IF NOT EXISTS "streams" (
 	"is_live" boolean DEFAULT false NOT NULL,
 	"user_id" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp NOT NULL,
-	CONSTRAINT "streams_user_id_unique" UNIQUE("user_id")
+	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
@@ -168,4 +170,4 @@ CREATE INDEX IF NOT EXISTS "follower_idx" ON "follows" USING btree ("follower_id
 CREATE INDEX IF NOT EXISTS "followed_idx" ON "follows" USING btree ("following_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_notification_idx" ON "notifications" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "stream_notification_idx" ON "notifications" USING btree ("stream_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "user_stream_idx" ON "streams" USING btree ("user_id");
+CREATE INDEX IF NOT EXISTS "user_stream_unq" ON "streams" USING btree ("user_id");

@@ -22,14 +22,25 @@ export class SettingRepository implements ISettingRepository {
             return setting;
         } catch (error) {}
     }
-    public async updateByStreamId(streamId: string, data: SettingDTO.Update) {
+    public async upsertByStreamId(streamId: string, data: SettingDTO.Update) {
         try {
             const [updatedSetting] = await this.db
-                .update(tableSchemas.settingTable)
-                .set(data)
-                .where(eq(tableSchemas.settingTable.streamId, streamId))
+                .insert(tableSchemas.settingTable)
+                .values({ ...data, streamId })
+                .onConflictDoUpdate({
+                    target: tableSchemas.settingTable.streamId,
+                    set: data,
+                })
                 .returning();
             return updatedSetting;
+        } catch (error) {}
+    }
+    public async getSettingByStreamId(streamId: string) {
+        try {
+            const setting = await this.db.query.settingTable.findFirst({
+                where: eq(tableSchemas.settingTable.streamId, streamId),
+            });
+            return setting;
         } catch (error) {}
     }
 }

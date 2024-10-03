@@ -66,6 +66,10 @@ export class AccountRepository implements IAccountRepository {
                     providerUserId: googleData.id,
                     userId: newUser.id,
                 });
+                await tx.insert(tableSchemas.streamTable).values({
+                    name: `${newUser.username}'s stream`,
+                    userId: newUser.id,
+                });
                 return newUser;
             });
         } catch (error) {}
@@ -122,6 +126,10 @@ export class AccountRepository implements IAccountRepository {
                 await tx.insert(tableSchemas.accountTable).values({
                     providerId: "github",
                     providerUserId: githubData.id,
+                    userId: newUser.id,
+                });
+                await tx.insert(tableSchemas.streamTable).values({
+                    name: `${newUser.username}'s stream`,
                     userId: newUser.id,
                 });
                 return newUser;

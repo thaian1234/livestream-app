@@ -1,4 +1,4 @@
-import { KeyForm } from "@/lib/features/stream/components/key-form";
+import { KeyForm } from "@/lib/features/setting/components/key-update-form";
 
 export default function KeyPage() {
     return (

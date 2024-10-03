@@ -1,7 +1,7 @@
+import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { StreamClient, UserRequest } from "@stream-io/node-sdk";
-import { generateIdFromEntropySize } from "lucia";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
@@ -10,7 +10,8 @@ export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
 export class GetStreamService implements IGetStreamService {
     private readonly streamClient: StreamClient;
-    private callType;
+    private readonly callType;
+    private readonly roles;
     constructor() {
         this.streamClient = new StreamClient(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
@@ -21,6 +22,13 @@ export class GetStreamService implements IGetStreamService {
             audio_room: "audio_room",
             livestream: "livestream",
             development: "development",
+        } as const;
+        this.roles = {
+            user: "user",
+            moderator: "moderator",
+            host: "host",
+            admin: "admin",
+            call_member: "call-member",
         } as const;
     }
     public generateUserToken(userId: string) {
@@ -33,41 +41,76 @@ export class GetStreamService implements IGetStreamService {
         });
         return token;
     }
+    public generateStreamKey(streamId: string) {
+        const expirationTime = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 1 week
+        const issuedAt = Math.floor(Date.now() / 1000) - 60;
+        const token = this.streamClient.generateUserToken({
+            user_id: streamId,
+            exp: expirationTime,
+            iat: issuedAt,
+        });
+        return token;
+    }
     public convertUserToUserRequest(user: UserDTO.Select): UserRequest {
         const imageUrl = user.imageUrl !== null ? user.imageUrl : undefined;
         return {
             id: user.id,
             image: imageUrl,
             name: user.username,
-            role: "admin",
+        };
+    }
+    public convertStreamToUserRequest(stream: StreamDTO.Select): UserRequest {
+        const imageUrl =
+            stream.thumbnailUrl !== null ? stream.thumbnailUrl : undefined;
+        return {
+            id: stream.id,
+            name: stream.name,
+            image: imageUrl,
+            role: this.roles.user,
         };
     }
     public async upsertUser(user: UserRequest) {
         const newUser = await this.streamClient.upsertUsers([user]);
         return newUser;
     }
-    public async createLivestreamRoom(user: UserRequest) {
-        const callId = generateIdFromEntropySize(10);
+    public async createLivestreamRoom(user: UserRequest, streamId: string) {
+        const callId = streamId;
         const call = this.streamClient.video.call(
             this.callType.livestream,
             callId,
         );
         return call.getOrCreate({
             data: {
-                created_by: user,
+                created_by: {
+                    ...user,
+                    role: this.roles.host,
+                },
+                members: [
+                    {
+                        user_id: user.id,
+                        role: this.roles.host,
+                    },
+                ],
             },
         });
     }
-    public async upsertLivestreamRoom(user: UserRequest) {
-        const callId = generateIdFromEntropySize(10);
+    public async upsertLivestreamRoom(user: UserRequest, streamId: string) {
+        const callId = streamId;
         const call = this.streamClient.video.call(
             this.callType.livestream,
             callId,
         );
-        return await call.getOrCreate({
+        const callRoom = await call.getOrCreate({
             data: {
                 created_by: user,
+                members: [
+                    {
+                        user_id: user.id,
+                        role: this.roles.host,
+                    },
+                ],
             },
         });
+        return callRoom;
     }
 }

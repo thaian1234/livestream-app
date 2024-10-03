@@ -27,7 +27,7 @@ export class StreamController implements IStreamController {
             .post("/", ...this.createLivestreamRoom())
             .post("/generate-token", ...this.generateUserToken())
             .post("/create", ...this.createStream())
-            .get("/my-stream", ...this.getStream());
+            .get("/my-stream", ...this.getSelfStream());
     }
     private createLivestreamRoom() {
         return this.factory.createHandlers(
@@ -135,7 +135,7 @@ export class StreamController implements IStreamController {
             },
         );
     }
-    public getStream() {
+    public getSelfStream() {
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
@@ -143,14 +143,6 @@ export class StreamController implements IStreamController {
                 const stream = await this.streamService.getStreamWithSetting(
                     currentUser.id,
                 );
-                if (!stream) {
-                    return ApiResponse.WriteJSON({
-                        c,
-                        msg: "Please create a Stream",
-                        data: undefined,
-                        status: HttpStatus.OK,
-                    });
-                }
                 return ApiResponse.WriteJSON({
                     c,
                     msg: "Get stream successfully",

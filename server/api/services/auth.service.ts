@@ -1,4 +1,5 @@
 import { AuthDTO } from "../dtos/auth.dto";
+import { IGetStreamService } from "../external-services/getstream.service";
 import {
     ILuciaService,
     LuciaService,
@@ -11,7 +12,10 @@ export interface IAuthService extends Utils.AutoMappedClass<AuthService> {}
 
 export class AuthService implements IAuthService {
     luciaService: ILuciaService;
-    constructor(private readonly userService: IUserService) {
+    constructor(
+        private readonly userService: IUserService,
+        private readonly getStreamService: IGetStreamService,
+    ) {
         this.luciaService = new LuciaService();
     }
     public async authenticateUser(credentials: AuthDTO.Signin) {
@@ -43,6 +47,12 @@ export class AuthService implements IAuthService {
         const newUser = await this.userService.createUser({
             ...credentials,
             hashedPassword: hashedPassword,
+        });
+        if (!newUser) return;
+        await this.getStreamService.upsertUser({
+            id: newUser.id,
+            name: newUser.username,
+            image: newUser.imageUrl || "",
         });
         return newUser;
     }

@@ -1,5 +1,5 @@
 {
-  "id": "8791de66-a0ae-4993-8213-d833565bb048",
+  "id": "ae1da2df-bdab-4193-81ae-7090040c1e6d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -574,6 +574,19 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -593,7 +606,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "setting_stream_unq": {
+          "name": "setting_stream_unq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "stream_id"
+          ]
+        }
+      }
     },
     "public.streams": {
       "name": "streams",
@@ -646,8 +667,8 @@
         }
       },
       "indexes": {
-        "user_stream_idx": {
-          "name": "user_stream_idx",
+        "user_stream_unq": {
+          "name": "user_stream_unq",
           "columns": [
             {
               "expression": "user_id",
@@ -678,15 +699,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "streams_user_id_unique": {
-          "name": "streams_user_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.users": {
       "name": "users",
