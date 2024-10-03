@@ -1,10 +1,16 @@
 import { AppWindow } from "lucide-react";
 
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
+
 import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 
 export function MiniplayerButton() {
-    const handleMiniPlayer = () => {};
+    const { setLiveScreenStatus } = useLiveInfor();
+
+    const handleMiniPlayer = () => {
+        setLiveScreenStatus("miniPlayer");
+    };
 
     return (
         <TooltipModel content="Miniplayer" side="bottom">

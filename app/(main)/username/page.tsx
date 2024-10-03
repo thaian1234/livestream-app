@@ -7,6 +7,7 @@ import { LivesPreview } from "@/lib/features/stream/components/live-preview/live
 import { Chat } from "@/lib/features/stream/components/live/chat";
 import { LiveInformation } from "@/lib/features/stream/components/live/live-information";
 import { LiveScreen } from "@/lib/features/stream/components/live/live-screen";
+import { Miniplayer } from "@/lib/features/stream/components/live/miniplayer";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 
@@ -44,6 +45,7 @@ export default function LivePage() {
                 )}
             </ScrollArea>
             {isChatComponent && <Chat />}
+            {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </div>
     );
 }
