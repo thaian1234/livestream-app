@@ -6,6 +6,7 @@ interface SidebarStore {
     onExpandSidebar: () => void;
     onCollapseSidebar: () => void;
     onHideSidebar: () => void;
+    onShowSidebar: () => void;
 }
 
 export const useSidebar = create<SidebarStore>((set) => ({
@@ -16,6 +17,9 @@ export const useSidebar = create<SidebarStore>((set) => ({
         set(() => ({ isOpenSidebar: true }));
     },
     onHideSidebar: () => {
-        set((state) => ({ isHideSidebar: !state.isHideSidebar }));
+        set(() => ({ isHideSidebar: true }));
+    },
+    onShowSidebar: () => {
+        set(() => ({ isHideSidebar: false }));
     },
 }));

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 
 export function LiveInformation() {
     const { infor, setViewer } = useLiveInfor();
-    console.log(infor);
     return (
         <div className="mt-2 flex justify-between">
             <div className="w-full space-y-1 truncate text-white">
