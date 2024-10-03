@@ -35,7 +35,7 @@ export function LiveScreen() {
             <div
                 onClick={handlePlayLive}
                 className={cn(
-                    "max-w-auto max-h-[calc(100vh-10rem)] w-full cursor-pointer rounded-xl bg-gray-1",
+                    "max-w-auto max-h-[calc(100vh-10rem)] w-full cursor-pointer rounded-xl bg-white/5",
                     isOpenSidebar === false ? "aspect-[2/1]" : "aspect-[16/9]",
                     isHideSidebar && "aspect-[16/9] max-h-[calc(100vh-5rem)]", //cinema mode
                 )}
