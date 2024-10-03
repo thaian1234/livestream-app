@@ -1,7 +1,6 @@
 "use client";
 
 import { Bell, Heart } from "lucide-react";
-import { CreditCard, LogOut, Plus, Settings, User, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -12,16 +11,6 @@ import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
 import { UserNav } from "@/lib/features/user/components/user-nav";
 import { useAuth } from "@/lib/providers/auth-provider";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const AfterSignin = () => {

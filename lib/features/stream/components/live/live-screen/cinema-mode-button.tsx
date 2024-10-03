@@ -1,4 +1,5 @@
 import { PanelRight } from "lucide-react";
+import { useCallback } from "react";
 
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebar } from "@/lib/stores/store-sidebar";
@@ -9,16 +10,17 @@ import { Button } from "@/components/ui/button";
 export function CinemaModeButton() {
     const { setLiveScreenStatus, liveSrceenStatus, resetLiveScreenStatus } =
         useLiveInfor();
+    const { onHideSidebar, onShowSidebar } = useSidebar();
 
     const handleCinemaMode = () => {
-        onHideSidebar();
         if (liveSrceenStatus.cinemaMode === true) {
             resetLiveScreenStatus();
+            onShowSidebar();
         } else {
             setLiveScreenStatus("cinemaMode");
+            onHideSidebar();
         }
     };
-    const { onHideSidebar } = useSidebar();
 
     return (
         <TooltipModel
