@@ -49,11 +49,10 @@ export class SettingController implements ISettingController {
                 const streamKey = this.getStreamService.generateUserToken(
                     currentUser.id,
                 );
-                const convertedUser =
-                    this.getStreamService.convertUserToUserRequest(currentUser);
+
                 const livestreamRoom =
                     await this.getStreamService.upsertLivestreamRoom(
-                        convertedUser,
+                        currentUser,
                         currentUser.stream.id,
                     );
                 const updatedSetting =
