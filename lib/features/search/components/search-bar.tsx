@@ -2,33 +2,24 @@
 
 import { searchApi } from "../apis";
 import { Search, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { Input } from "@/components/ui/input";
 
 export function SearchBar() {
-    const debounced = useDebounceCallback(searchText, 500);
-    const [search, setSearch] = useState("");
-    const [input, setInput] = useState("");
-    const { data, isPending, error } = searchApi.query.useSearch(
-        "1",
-        "10",
-        search,
-    );
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value);
-        debounced(e.target.value);
-    };
-
-    //search
-    function searchText(value: string) {
-        setSearch(value);
-        console.log("Waiting for 500ms  " + value);
+    const debounced = useDebounceCallback(handleChange, 500);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const { data, isPending, error } = searchApi.query.useSearch("1", "10", "");
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        console.log("From debounced: ", e.target.value);
+        console.log("From Ref: ", inputRef.current?.value);
     }
 
-    const deleteSearchInput = () => {
-        setInput("");
+    const handleDeleteSearch = () => {
+        if (inputRef.current?.value) {
+            inputRef.current.value = "";
+        }
     };
 
     return (
@@ -38,17 +29,16 @@ export function SearchBar() {
                 placeholder="Search"
                 className="rounded-full border-0 bg-search px-10 text-white placeholder:text-white/70 focus-visible:ring-white"
                 customSize="sm"
-                value={input}
-                onChange={handleChange}
+                onChange={debounced}
+                ref={inputRef}
             />
-            {input !== "" && (
-                <button
-                    className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white"
-                    onClick={deleteSearchInput}
-                >
-                    <X size={20} />
-                </button>
-            )}
+            <button
+                className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white"
+                onClick={handleDeleteSearch}
+                type="button"
+            >
+                <X size={20} />
+            </button>
         </div>
     );
 }
