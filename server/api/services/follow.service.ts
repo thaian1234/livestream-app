@@ -64,7 +64,7 @@ export class FollowService implements IFollowService {
         );
 
         if (isBlocked) {
-            return null;
+            return undefined;
         }
 
         return await this.followRepository.findByFollowerAndFollowed(

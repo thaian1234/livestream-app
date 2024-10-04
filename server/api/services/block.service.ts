@@ -9,7 +9,7 @@ export class BlockService implements IBlockService {
     public async findBlockedByUserId(
         userId: string,
         offset: number = 0,
-        limit: number = 0,
+        limit: number = 10,
     ) {
         return await this.blockRepository.findBlockedByUserId(
             userId,

@@ -123,4 +123,12 @@ export class UserRepository implements IUserRepository {
             return userWithAccount;
         } catch (error) {}
     }
+    async findByUsername(username: string) {
+        try {
+            const user = await this.db.query.userTable.findFirst({
+                where: eq(tableSchemas.userTable.username, username),
+            });
+            return user;
+        } catch (error) {}
+    }
 }

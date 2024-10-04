@@ -89,7 +89,9 @@ export class BlockController implements IBlockController {
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: { blockeds: BlockDTO.parseMany(blockedQuery) },
+                    data: {
+                        blockeds: BlockDTO.parseUserOnlyMany(blockedQuery),
+                    },
                     status: HttpStatus.OK,
                 });
             },

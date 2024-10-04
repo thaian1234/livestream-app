@@ -12,4 +12,7 @@ export class StreamDTO {
     public static parseMany(data: unknown) {
         return this.selectSchema.array().parse(data);
     }
+    public static parse(data: unknown) {
+        return this.selectSchema.parse(data);
+    }
 }

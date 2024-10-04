@@ -24,4 +24,7 @@ export class StreamService implements IStreamService {
             limit,
         );
     }
+    public async getStreamByUserId(userId: string) {
+        return await this.streamRepository.getStreamByUserId(userId);
+    }
 }
