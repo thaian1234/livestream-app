@@ -16,6 +16,9 @@ export class GetStreamService implements IGetStreamService {
         this.streamClient = new StreamClient(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
             envServer.GETSTREAM_PRIVATE_API_KEY,
+            {
+                timeout: 10000,
+            },
         );
         this.callType = {
             default: "default",
@@ -69,8 +72,9 @@ export class GetStreamService implements IGetStreamService {
             role: this.roles.user,
         };
     }
-    public async upsertUser(user: UserRequest) {
-        const newUser = await this.streamClient.upsertUsers([user]);
+    public async upsertUser(user: UserDTO.Select) {
+        const convertedUser = this.convertUserToUserRequest(user);
+        const newUser = await this.streamClient.upsertUsers([convertedUser]);
         return newUser;
     }
     public async createLivestreamRoom(user: UserRequest, streamId: string) {
@@ -94,7 +98,8 @@ export class GetStreamService implements IGetStreamService {
             },
         });
     }
-    public async upsertLivestreamRoom(user: UserRequest, streamId: string) {
+    public async upsertLivestreamRoom(user: UserDTO.Select, streamId: string) {
+        const convertedUser = this.convertUserToUserRequest(user);
         const callId = streamId;
         const call = this.streamClient.video.call(
             this.callType.livestream,
@@ -102,13 +107,7 @@ export class GetStreamService implements IGetStreamService {
         );
         const callRoom = await call.getOrCreate({
             data: {
-                created_by: user,
-                // members: [
-                //     {
-                //         user_id: user.id,
-                //         role: this.roles.host,
-                //     },
-                // ],
+                created_by: convertedUser,
             },
         });
         return callRoom;

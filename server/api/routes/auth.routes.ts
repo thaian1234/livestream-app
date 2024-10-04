@@ -47,9 +47,14 @@ function createAuthRoutes() {
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
+    const getStreamService = new GetStreamService();
     const githubService = new GitHubService(accountRepository, userService);
     // Controller
-    const goolgeService = new GoogleService(accountRepository, userService);
+    const goolgeService = new GoogleService(
+        accountRepository,
+        userService,
+        getstreamService,
+    );
     const authController = new AuthController(
         factory,
         authService,

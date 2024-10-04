@@ -32,6 +32,7 @@ export class AuthService implements IAuthService {
             existingUser.hashedPassword,
             credentials.password,
         );
+        await this.getStreamService.upsertUser(existingUser);
         if (!validPassword) {
             return {
                 session: null,
@@ -49,11 +50,7 @@ export class AuthService implements IAuthService {
             hashedPassword: hashedPassword,
         });
         if (!newUser) return;
-        await this.getStreamService.upsertUser({
-            id: newUser.id,
-            name: newUser.username,
-            image: newUser.imageUrl || "",
-        });
+        await this.getStreamService.upsertUser(newUser);
         return newUser;
     }
     public async terminateSession(sessionId: string) {
