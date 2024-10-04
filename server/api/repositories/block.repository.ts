@@ -124,29 +124,6 @@ export class BlockRepository implements IBlockRepository {
                 offset: offset,
                 limit: limit,
             });
-            // const test = await this.db.query.blockTable.findMany({
-            //     where: and(
-            //         eq(tableSchemas.blockTable.blockerId, userId),
-            //         inArray(
-            //             tableSchemas.blockTable.blockedId,
-            //             this.db
-            //                 .select({ id: tableSchemas.userTable.id })
-            //                 .from(tableSchemas.userTable)
-            //                 .where(
-            //                     like(
-            //                         tableSchemas.userTable.username,
-            //                         `%${query}%`,
-            //                     ),
-            //                 ),
-            //         ),
-            //     ),
-            //     with: {
-            //         blocked: true,
-            //     },
-            //     offset: offset,
-            //     limit: limit,
-            //     orderBy: desc(tableSchemas.blockTable.createdAt),
-            // });
             return blockeds;
         } catch (error) {
             console.log(error);
