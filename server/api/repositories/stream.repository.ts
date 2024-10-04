@@ -1,5 +1,5 @@
 import { Utils } from "../lib/helpers/utils";
-import { and, asc, desc, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -46,6 +46,12 @@ export class StreamRepository implements IStreamRepository {
             limit: limit,
             offset: offset,
             orderBy: orderBy,
+        });
+        return result;
+    }
+    async getStreamByUserId(userId: string) {
+        const result = this.db.query.streamTable.findFirst({
+            where: eq(tableSchemas.streamTable.userId, userId),
         });
         return result;
     }

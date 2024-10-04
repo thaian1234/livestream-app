@@ -66,4 +66,7 @@ export class UserService implements IUserService {
             currentPassword,
         );
     }
+    public async findByUsername(username: string) {
+        return this.userRepository.findByUsername(username);
+    }
 }

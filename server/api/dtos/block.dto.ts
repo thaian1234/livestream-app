@@ -23,6 +23,16 @@ export class BlockDTO {
     public static parseMany(data: unknown) {
         return this.selectSchema.array().parse(data);
     }
+    public static selectUserOnlySchema = UserDTO.selectSchema.omit({
+        bio: true,
+    });
+    public static parseUserOnlyMany(data: unknown) {
+        try {
+            return this.selectUserOnlySchema.array().parse(data);
+        } catch (error) {
+            return undefined;
+        }
+    }
 }
 
 export namespace BlockDTO {
