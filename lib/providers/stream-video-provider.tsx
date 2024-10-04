@@ -1,7 +1,6 @@
 "use client";
 
 import { CustomCall } from "../features/stream/components/custom-call";
-import { CustomLivestreamPlayer } from "../features/stream/components/custom-livestream-player";
 import { useVideoClient } from "../features/stream/hooks/use-stream-video";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
 import React from "react";
