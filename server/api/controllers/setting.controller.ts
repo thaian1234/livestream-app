@@ -46,8 +46,8 @@ export class SettingController implements ISettingController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const currentUser = c.get("getUser");
-                const streamKey = this.getStreamService.generateStreamKey(
-                    currentUser.stream.id,
+                const streamKey = this.getStreamService.generateUserToken(
+                    currentUser.id,
                 );
                 const convertedUser =
                     this.getStreamService.convertUserToUserRequest(currentUser);

@@ -91,43 +91,43 @@ const seeds = async () => {
             .onConflictDoNothing();
 
         // Seeding streams
-        // let streamData: z.infer<typeof StreamDTO.insertSchema>[] = [];
-        // for (const user of users) {
-        //     streamData.push({
-        //         userId: user.id,
-        //         name: `${user.username}'s Stream`,
-        //         isLive: Math.random() > 0.5,
-        //     });
-        // }
-        // const streams = await db
-        //     .insert(tableSchemas.streamTable)
-        //     .values(streamData)
-        //     .onConflictDoNothing()
-        //     .returning();
+        let streamData: z.infer<typeof StreamDTO.insertSchema>[] = [];
+        for (const user of users) {
+            streamData.push({
+                userId: user.id,
+                name: `${user.username}'s Stream`,
+                isLive: Math.random() > 0.5,
+            });
+        }
+        const streams = await db
+            .insert(tableSchemas.streamTable)
+            .values(streamData)
+            .onConflictDoNothing()
+            .returning();
 
-        // // Seeding notifications
-        // let notificationData: z.infer<typeof NotificationDTO.insertSchema>[] =
-        //     [];
-        // for (const stream of streams) {
-        //     for (const user of users) {
-        //         if (user.id !== stream.userId) {
-        //             if (notificationData.length === 150) break;
-        //             notificationData.push({
-        //                 userId: user.id,
-        //                 streamId: stream.id,
-        //                 message: `${stream.name} is now live!`,
-        //                 type:
-        //                     Math.random() > 0.5 ? "stream_start" : "stream_end",
-        //                 isRead: Math.random() > 0.5,
-        //             });
-        //         }
-        //     }
-        // }
-        // // Insert all the data
-        // await db
-        //     .insert(tableSchemas.notificationTable)
-        //     .values(notificationData)
-        //     .onConflictDoNothing();
+        // Seeding notifications
+        let notificationData: z.infer<typeof NotificationDTO.insertSchema>[] =
+            [];
+        for (const stream of streams) {
+            for (const user of users) {
+                if (user.id !== stream.userId) {
+                    if (notificationData.length === 150) break;
+                    notificationData.push({
+                        userId: user.id,
+                        streamId: stream.id,
+                        message: `${stream.name} is now live!`,
+                        type:
+                            Math.random() > 0.5 ? "stream_start" : "stream_end",
+                        isRead: Math.random() > 0.5,
+                    });
+                }
+            }
+        }
+        // Insert all the data
+        await db
+            .insert(tableSchemas.notificationTable)
+            .values(notificationData)
+            .onConflictDoNothing();
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");

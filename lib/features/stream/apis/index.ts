@@ -9,8 +9,8 @@ const keys = {
 
 export const streamApi = {
     query: {
-        useGetGeneratedToken() {
-            const $get = client.api.streams["generate-token"].$get;
+        useGetStreamToken() {
+            const $get = client.api.streams["stream-token"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream,
@@ -20,32 +20,6 @@ export const streamApi = {
                 },
             );
         },
-        useGetLivestreamRoom() {
-            const $get = client.api.streams.$get;
-            return Fetcher.useHonoQuery(
-                $get,
-                keys.call,
-                {},
-                {
-                    retry: 1,
-                },
-            );
-        },
-        useGetMyStream() {
-            const $get = client.api.streams["my-stream"].$get;
-            return Fetcher.useHonoQuery($get, keys.myStream, {}, {});
-        },
     },
-    mutation: {
-        useCreateStreamRoom() {
-            const $post = client.api.streams.$post;
-            const { mutation } = Fetcher.useHonoMutation($post, {});
-            return mutation;
-        },
-        useGenerateUserToken() {
-            const $post = client.api.streams["generate-token"].$post;
-            const { mutation } = Fetcher.useHonoMutation($post, {});
-            return mutation;
-        },
-    },
+    mutation: {},
 };

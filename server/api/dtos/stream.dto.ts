@@ -4,7 +4,12 @@ import { z } from "zod";
 import tableSchemas from "@/server/db/schemas";
 
 export class StreamDTO {
-    private static baseSchema = createSelectSchema(tableSchemas.streamTable);
+    private static baseSchema = createSelectSchema(
+        tableSchemas.streamTable,
+    ).omit({
+        createdAt: true,
+        updatedAt: true,
+    });
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(tableSchemas.streamTable);
     public static deleteSchema = this.baseSchema.pick({

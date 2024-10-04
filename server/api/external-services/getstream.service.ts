@@ -103,12 +103,12 @@ export class GetStreamService implements IGetStreamService {
         const callRoom = await call.getOrCreate({
             data: {
                 created_by: user,
-                members: [
-                    {
-                        user_id: user.id,
-                        role: this.roles.host,
-                    },
-                ],
+                // members: [
+                //     {
+                //         user_id: user.id,
+                //         role: this.roles.host,
+                //     },
+                // ],
             },
         });
         return callRoom;

@@ -8,8 +8,7 @@ import { useUser } from "@/lib/hooks/use-user";
 export function useVideoClient() {
     const [videoClient, setVideoClient] = useState<StreamVideoClient>();
     const { user } = useUser();
-    const { data: tokenData, isPending } =
-        streamApi.query.useGetGeneratedToken();
+    const { data: tokenData, isPending } = streamApi.query.useGetStreamToken();
 
     useEffect(() => {
         if (tokenData === undefined || isPending) {
@@ -21,7 +20,10 @@ export function useVideoClient() {
                 id: user.id,
                 name: user.username,
             },
-            token: tokenData.data.token,
+            token:
+                tokenData.data.token !== null
+                    ? tokenData.data.token
+                    : undefined,
             options: {
                 enableWSFallback: true,
             },
@@ -32,6 +34,6 @@ export function useVideoClient() {
             setVideoClient(undefined);
         };
     }, [user.id, user.username, isPending, tokenData]);
-	
+
     return videoClient;
 }

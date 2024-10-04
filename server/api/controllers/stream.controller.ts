@@ -22,120 +22,9 @@ export class StreamController implements IStreamController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/generate-token", ...this.generateUserToken())
-            .get("/", ...this.upsertLivestreamRoom())
-            .post("/", ...this.createLivestreamRoom())
-            .post("/generate-token", ...this.generateUserToken())
-            .post("/create", ...this.createStream())
-            .get("/my-stream", ...this.getSelfStream());
+            .get("/stream-token", ...this.getStreamToken());
     }
-    private createLivestreamRoom() {
-        return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
-            async (c) => {
-                const currentUser = c.get("getUser");
-                const getStreamUser =
-                    this.getStreamService.convertUserToUserRequest(currentUser);
-                const call =
-                    await this.getStreamService.createLivestreamRoom(
-                        getStreamUser,
-                    );
-                if (!call.created) {
-                    return ApiResponse.WriteErrorJSON({
-                        c,
-                        status: HttpStatus.ServiceUnavailable,
-                        msg: "Cannot create Livestream room",
-                    });
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    msg: "Livestream room created !",
-                    status: HttpStatus.Created,
-                    data: {
-                        room: call,
-                    },
-                });
-            },
-        );
-    }
-    private upsertLivestreamRoom() {
-        return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
-            async (c) => {
-                const currentUser = c.get("getUser");
-                const getStreamUser =
-                    this.getStreamService.convertUserToUserRequest(currentUser);
-                const call =
-                    await this.getStreamService.upsertLivestreamRoom(
-                        getStreamUser,
-                    );
-                if (!call.created) {
-                    return ApiResponse.WriteErrorJSON({
-                        c,
-                        status: HttpStatus.ServiceUnavailable,
-                        msg: "Cannot create Livestream room",
-                    });
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    msg: "Livestream room created !",
-                    status: HttpStatus.Created,
-                    data: {
-                        room: call,
-                    },
-                });
-            },
-        );
-    }
-    private generateUserToken() {
-        return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
-            async (c) => {
-                const currentUser = c.get("getUser");
-                const token = this.getStreamService.generateUserToken(
-                    currentUser.id,
-                );
-                return ApiResponse.WriteJSON({
-                    c,
-                    msg: "Token generated",
-                    status: HttpStatus.Created,
-                    data: {
-                        token,
-                    },
-                });
-            },
-        );
-    }
-    private createStream() {
-        return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
-            zValidator(
-                "json",
-                StreamDTO.insertSchema,
-                Validator.handleParseError,
-            ),
-            async (c) => {
-                const currentUser = c.get("getUser");
-                const jsonData = c.req.valid("json");
-                if (currentUser.id !== jsonData.userId) {
-                    throw new MyError.UnauthorizedError();
-                }
-                const newStream = await this.streamService.createOne(jsonData);
-                if (!newStream) {
-                    throw new MyError.BadRequestError("Cannot create Stream");
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    msg: "Stream created",
-                    data: {
-                        stream: newStream,
-                    },
-                    status: HttpStatus.Created,
-                });
-            },
-        );
-    }
-    public getSelfStream() {
+    private getStreamToken() {
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
@@ -143,12 +32,15 @@ export class StreamController implements IStreamController {
                 const stream = await this.streamService.getStreamWithSetting(
                     currentUser.id,
                 );
+                if (!stream || !stream.setting) {
+                    throw new MyError.NotFoundError();
+                }
                 return ApiResponse.WriteJSON({
                     c,
-                    msg: "Get stream successfully",
-                    status: HttpStatus.OK,
+                    msg: "Get token successfully",
+                    status: HttpStatus.Created,
                     data: {
-                        stream: stream,
+                        token: stream.setting.streamKey,
                     },
                 });
             },

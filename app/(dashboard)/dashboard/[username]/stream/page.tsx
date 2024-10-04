@@ -7,6 +7,7 @@ import {
     useCallStateHooks,
 } from "@stream-io/video-react-sdk";
 
+import { CustomLivestreamPlayer } from "@/lib/features/stream/components/custom-livestream-player";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,8 @@ import { Spinner } from "@/components/ui/spinner";
 export default function StreamPage() {
     return (
         <StreamVideoProvider>
-            <LivestreamView />
+            <p>This is livestream page</p>
+            <CustomLivestreamPlayer />
         </StreamVideoProvider>
     );
 }
@@ -36,7 +38,6 @@ const LivestreamView = () => {
     const call = useCall();
     const { screenShare, status } = useScreenShareState();
     const ingress = useCallIngress();
-    console.log("----> Ingress: ", ingress?.rtmp.address);
 
     const participantCount = useParticipantCount();
     const isLive = useIsCallLive();
