@@ -35,4 +35,7 @@ export class StreamService implements IStreamService {
     public async getStreamWithSetting(userId: string) {
         return this.streamRepository.getStreamWithSetting(userId);
     }
+    public async updateStream(id: string, data: StreamDTO.Update) {
+        return await this.streamRepository.update(id, data);
+    }
 }

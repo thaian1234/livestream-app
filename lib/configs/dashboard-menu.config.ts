@@ -53,6 +53,11 @@ export function getDashboardMenuList(
                             label: "New Post",
                             active: pathname === "/posts/new",
                         },
+                        {
+                            href: "/thumbnail",
+                            label: "Thumbnail",
+                            active: pathname === "/thumbnail",
+                        },
                     ],
                 },
                 {
