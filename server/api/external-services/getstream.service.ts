@@ -7,10 +7,10 @@ import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
 const getStreamApiKey = !!process.env.CI
-    ? ""
+    ? "process.env.NEXT_PUBLIC_GETSTREAM_API_KEY"
     : envClient.NEXT_PUBLIC_GETSTREAM_API_KEY;
 const getStreamSecretKey = !!process.env.CI
-    ? ""
+    ? "process.env.NEXT_PUBLIC_GETSTREAM_API_KEY"
     : envServer.GETSTREAM_PRIVATE_API_KEY;
 
 export interface IGetStreamService
