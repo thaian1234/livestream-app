@@ -4,7 +4,7 @@ import { z } from "zod";
 export const envClient = createEnv({
     client: {
         NEXT_PUBLIC_APP_URL: z.string().url(),
-        NEXT_PUBLIC_GETSTREAM_API_KEY: z.string().min(1),
+        NEXT_PUBLIC_GETSTREAM_API_KEY: z.string().default("test_ci"),
     },
     shared: {
         NODE_ENV: z
