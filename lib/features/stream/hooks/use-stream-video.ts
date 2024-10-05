@@ -1,10 +1,14 @@
 import { StreamVideoClient } from "@stream-io/video-react-sdk";
+import { config } from "dotenv";
 import { useEffect, useState } from "react";
 
 import { envClient } from "@/lib/env/env.client";
 import { streamApi } from "@/lib/features/stream/apis";
 import { useUser } from "@/lib/hooks/use-user";
 
+config({
+    path: ".env",
+});
 export function useVideoClient() {
     const [videoClient, setVideoClient] = useState<StreamVideoClient>();
     const { user } = useUser();
@@ -15,7 +19,7 @@ export function useVideoClient() {
             return undefined;
         }
         const client = StreamVideoClient.getOrCreateInstance({
-            apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
+            apiKey: process.env.NEXT_PUBLIC_GETSTREAM_API_KEY!,
             user: {
                 id: user.id,
                 name: user.username,
