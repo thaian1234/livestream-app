@@ -2,9 +2,11 @@ import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { StreamClient, UserRequest } from "@stream-io/node-sdk";
+import { config } from "dotenv";
 
-import { envClient } from "@/lib/env/env.client";
-import { envServer } from "@/lib/env/env.server";
+config({
+    path: ".env",
+});
 
 export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
@@ -14,8 +16,8 @@ export class GetStreamService implements IGetStreamService {
     private readonly roles;
     constructor() {
         this.streamClient = new StreamClient(
-            envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-            envServer.GETSTREAM_PRIVATE_API_KEY,
+            process.env.NEXT_PUBLIC_GETSTREAM_API_KEY!,
+            process.env.GETSTREAM_PRIVATE_API_KEY!,
             {
                 timeout: 10000,
             },
