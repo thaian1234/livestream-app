@@ -39,5 +39,34 @@ export const uploadApi = {
             );
             return mutation;
         },
+        useUploadThumbnail(file: File | null) {
+            const $post = client.api.upload.thumbnail.$post;
+            const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onSuccess({ data }) {
+                        if (!file) {
+                            throw new Error(
+                                "Please select one file for uploading!",
+                            );
+                        }
+                        toast.promise(uploadToR2Bucket(data.signedUrl, file), {
+                            loading: "Uploading...",
+                            success: () => {
+                                queryClient.invalidateQueries({
+                                    queryKey: keys.session,
+                                });
+                                return "Image uploaded successfully";
+                            },
+                            error: "Failed to upload image",
+                        });
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                },
+            );
+            return mutation;
+        },
     },
 };
