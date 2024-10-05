@@ -6,9 +6,6 @@ import { envClient } from "@/lib/env/env.client";
 import { streamApi } from "@/lib/features/stream/apis";
 import { useUser } from "@/lib/hooks/use-user";
 
-config({
-    path: ".env",
-});
 export function useVideoClient() {
     const [videoClient, setVideoClient] = useState<StreamVideoClient>();
     const { user } = useUser();
@@ -18,7 +15,7 @@ export function useVideoClient() {
         if (tokenData === undefined || isPending) {
             return undefined;
         }
-        const client = StreamVideoClient.getOrCreateInstance({
+        const client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_GETSTREAM_API_KEY!,
             user: {
                 id: user.id,
