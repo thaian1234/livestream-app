@@ -1,39 +1,36 @@
 import { StreamVideoClient } from "@stream-io/video-react-sdk";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { envClient } from "@/lib/env/env.client";
 import { streamApi } from "@/lib/features/stream/apis";
-import { useUser } from "@/lib/hooks/use-user";
+import { useAuth } from "@/lib/providers/auth-provider";
 
 export function useVideoClient() {
-    const [videoClient, setVideoClient] = useState<StreamVideoClient>();
-    const { user } = useUser();
-    const { data: tokenData, isPending } = streamApi.query.useGetStreamToken();
+    const { user } = useAuth();
+    const { data: tokenData } = streamApi.query.useGetStreamToken();
 
-    useEffect(() => {
-        if (tokenData === undefined || isPending) {
-            return undefined;
-        }
-        const client = new StreamVideoClient({
-            apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-            user: {
-                id: user.id,
-                name: user.username,
-            },
-            token:
-                tokenData.data.token !== null
-                    ? tokenData.data.token
-                    : undefined,
-            options: {
-                enableWSFallback: true,
-            },
-        });
-        setVideoClient(client);
-        return () => {
-            client.disconnectUser().catch(console.error);
-            setVideoClient(undefined);
-        };
-    }, [user.id, user.username, isPending, tokenData]);
+    return useQuery<StreamVideoClient | null, Error>({
+        queryKey: ["videoClient", user?.id],
+        queryFn: () => {
+            if (!user || !tokenData) {
+                return null;
+            }
 
-    return videoClient;
+            return StreamVideoClient.getOrCreateInstance({
+                apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
+                user: {
+                    id: user.id,
+                    name: user.username,
+                },
+                token: tokenData.data.token,
+                options: {
+                    enableWSFallback: true,
+                    timeout: 10000,
+                },
+            });
+        },
+        enabled: !!user && !!tokenData,
+        refetchOnMount: true,
+        staleTime: 0,
+    });
 }

@@ -2,7 +2,7 @@
 
 import { CustomCall } from "../features/stream/components/custom-call";
 import { useVideoClient } from "../features/stream/hooks/use-stream-video";
-import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
+import { StreamVideo } from "@stream-io/video-react-sdk";
 import React from "react";
 
 import { Spinner } from "@/components/ui/spinner";
@@ -15,9 +15,13 @@ interface StreamProviderProps {
 
 export function StreamVideoProvider({ children }: StreamProviderProps) {
     const { isPending, stream } = useAuth();
-    const videoClient = useVideoClient();
-    if (!videoClient || stream === undefined || isPending) {
+    const { data: videoClient, isError } = useVideoClient();
+    if (stream === undefined || isPending) {
         return <Spinner size="large" />;
+    }
+
+    if (isError || !videoClient) {
+        return <p>Something went wrong</p>;
     }
 
     return (
