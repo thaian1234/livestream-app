@@ -22,14 +22,13 @@ export const envServer = createEnv({
         GITHUB_CLIENT_ID: z.string().min(1),
         GITHUB_CLIENT_SECRET: z.string().min(1),
         GITHUB_API_URL: z.string().url(),
-        GETSTREAM_PRIVATE_API_KEY: z.string().default("test_ci"),
+        GETSTREAM_PRIVATE_API_KEY: z.string().min(1),
     },
     shared: {
         NODE_ENV: z
             .enum(["development", "production", "test"])
             .default("development"),
     },
-    // experimental__runtimeEnv: process.env,
     runtimeEnv: {
         GETSTREAM_PRIVATE_API_KEY: process.env.GETSTREAM_PRIVATE_API_KEY,
         CLOUD_FLARE_BUCKET_URL: process.env.CLOUD_FLARE_BUCKET_URL,
