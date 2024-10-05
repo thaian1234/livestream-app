@@ -21,8 +21,8 @@ export class GetStreamService implements IGetStreamService {
     private readonly roles;
     constructor() {
         this.streamClient = new StreamClient(
-            envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-            envServer.GETSTREAM_PRIVATE_API_KEY,
+            getStreamApiKey,
+            getStreamSecretKey,
             {
                 timeout: 10000,
             },
