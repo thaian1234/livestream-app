@@ -28,7 +28,6 @@ export async function middleware(request: NextRequest) {
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
     const isDefaultPage = middlewareRoutes.DEFAULT_PAGE.startsWith(pathname);
     const isDashboardPage = pathname.startsWith("/dashboard/");
-    const isSetUsernamePage = pathname.localeCompare("/set-username");
     if (isDefaultPage) {
         return NextResponse.next();
     }
@@ -66,11 +65,6 @@ export async function middleware(request: NextRequest) {
                 new URL(ROUTES.HOME_PAGE, request.url),
             );
         }
-    }
-    if (isSetUsernamePage) {
-        return NextResponse.redirect(
-            new URL(ROUTES.SET_USERNAME_PAGE, request.url),
-        );
     }
     return NextResponse.next();
 }
