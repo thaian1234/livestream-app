@@ -1,8 +1,12 @@
 "use client";
 
+import { userApi } from "../../user/apis";
+import { authApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPen } from "lucide-react";
 import { useForm } from "react-hook-form";
+
+import { useUser } from "@/lib/hooks/use-user";
 
 import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
@@ -14,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import "@/style/auth.css";
 
 export function SetUsernameForm() {
+    const { user } = useUser();
     const {
         register,
         handleSubmit,
@@ -21,8 +26,17 @@ export function SetUsernameForm() {
     } = useForm<AuthDTO.Username>({
         resolver: zodResolver(AuthDTO.usernameSchema),
     });
+    const { mutate: handleUpdateUsername, isPending } =
+        authApi.mutation.useSetUsername();
     const onSubmit = handleSubmit((data) => {
-        console.log(data);
+        handleUpdateUsername({
+            param: {
+                id: user.id,
+            },
+            json: {
+                username: data.username,
+            },
+        });
     });
 
     return (
@@ -34,7 +48,7 @@ export function SetUsernameForm() {
                         {...register("username")}
                         placeholder="Enter your username"
                         variant={errors.username ? "error" : "primary"}
-                        //disabled={isPending}
+                        disabled={isPending}
                         tabIndex={1}
                         className="pl-12"
                     />
@@ -43,7 +57,12 @@ export function SetUsernameForm() {
                     <ErrorField>{errors.username.message}</ErrorField>
                 )}
             </CardContent>
-            <Button className="mt-6 w-full" variant="gradient" type="submit">
+            <Button
+                className="mt-6 w-full"
+                variant="gradient"
+                type="submit"
+                disabled={isPending}
+            >
                 Send
             </Button>
         </form>

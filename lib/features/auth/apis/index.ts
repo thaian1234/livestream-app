@@ -91,6 +91,7 @@ export const authApi = {
             const $get = client.api.auth.oauth.google.$get;
             const { mutation, toast } = Fetcher.useHonoMutation($get, {
                 onSuccess({ data }) {
+                    console.log("Debug ", data.redirectTo);
                     window.location.href = data.redirectTo;
                 },
                 onError(err) {
@@ -124,6 +125,23 @@ export const authApi = {
                     toast.error(err.message);
                 },
             });
+            return mutation;
+        },
+        useSetUsername() {
+            const $patch = client.api.users[":id"].$patch;
+            const { mutation, toast, queryClient, router } =
+                Fetcher.useHonoMutation($patch, {
+                    onSuccess() {
+                        toast.success("Set username successfully");
+                        queryClient.invalidateQueries({
+                            queryKey: keys.session,
+                        });
+                        router.replace(ROUTES.HOME_PAGE);
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                });
             return mutation;
         },
     },

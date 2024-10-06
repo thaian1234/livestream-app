@@ -10,6 +10,7 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
+import { generateIdFromEntropySize } from "lucia";
 import { z } from "zod";
 
 import { ROUTES } from "@/lib/configs/routes.config";
@@ -77,7 +78,6 @@ export class OauthController implements IOauthController {
                     getCookie(c, this.cookiesName.OAUTH_CODE_VERIFIER) ?? null;
                 const cookieState =
                     getCookie(c, this.cookiesName.OAUTH_STATE) ?? null;
-                console.log("cookieState", cookieState);
                 if (
                     !cookieCodeVerifier ||
                     !cookieState ||
@@ -102,7 +102,8 @@ export class OauthController implements IOauthController {
                 const googleData = GoogleDTO.responseSchema.parse(
                     await googleResponse.json(),
                 );
-                const { session, sessionCookie } =
+                googleData.name = `user_${generateIdFromEntropySize(10)}`;
+                const { session, sessionCookie, isNew } =
                     await this.googleSerivce.authenticateUser(googleData);
                 if (!session || !sessionCookie) {
                     throw new MyError.UnauthorizedError(
@@ -111,8 +112,13 @@ export class OauthController implements IOauthController {
                 }
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
                     ...sessionCookie.attributes,
-                    sameSite: "Strict",
                 });
+                if (isNew) {
+                    return c.redirect(
+                        ROUTES.SET_USERNAME_PAGE,
+                        HttpStatus.MovedPermanently,
+                    );
+                }
                 return c.redirect(
                     ROUTES.HOME_PAGE,
                     HttpStatus.MovedPermanently,
@@ -187,12 +193,11 @@ export class OauthController implements IOauthController {
                 const gitHubDataS = GithubDTO.responseSchema.parse({
                     id: gitHubData.id,
                     email: gitHubEmail[0].email,
-                    name: gitHubData.name || gitHubData.login,
+                    name: `user_${generateIdFromEntropySize(10)}`,
                     avatar_url: gitHubData.avatar_url,
                     verified_email: true,
                 });
-                console.log("CONTRLLER");
-                const { session, sessionCookie } =
+                const { session, sessionCookie, isNew } =
                     await this.gitHubSerivce.authenticateUser(gitHubDataS);
                 if (!session || !sessionCookie) {
                     throw new MyError.UnauthorizedError(
@@ -201,8 +206,13 @@ export class OauthController implements IOauthController {
                 }
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
                     ...sessionCookie.attributes,
-                    sameSite: "Strict",
                 });
+                if (isNew) {
+                    return c.redirect(
+                        ROUTES.SET_USERNAME_PAGE,
+                        HttpStatus.MovedPermanently,
+                    );
+                }
                 return c.redirect(
                     ROUTES.HOME_PAGE,
                     HttpStatus.MovedPermanently,

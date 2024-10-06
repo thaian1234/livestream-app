@@ -47,7 +47,7 @@ export class GitHubService implements IGitHubService {
             gitHubData.email,
         );
         let userId: string | undefined;
-
+        let isNew = false;
         if (existingUser) {
             userId = await this.updateExistingUser(
                 existingUser.id,
@@ -56,10 +56,11 @@ export class GitHubService implements IGitHubService {
             );
         } else {
             userId = await this.createNewUser(gitHubData);
+            isNew = true;
         }
         return userId
-            ? this.initiateSession(userId)
-            : { session: null, sessionCookie: null };
+            ? { ...(await this.initiateSession(userId)), isNew }
+            : { session: null, sessionCookie: null, isNew };
     }
 
     private async updateExistingUser(
