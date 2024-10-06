@@ -68,9 +68,9 @@ export function UserNav() {
                 <DropdownMenuSeparator className="bg-white/30" />
                 <DropdownMenuGroup>
                     {getUserNavConfig(user.username).map(
-                        ({ href, icon: Icon, label }) => (
+                        ({ href, icon: Icon, label }, i) => (
                             <DropdownMenuItem
-                                key={user.id}
+                                key={i}
                                 className="hover:cursor-pointer"
                                 asChild
                             >

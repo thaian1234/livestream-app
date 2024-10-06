@@ -69,4 +69,5 @@ export class UserService implements IUserService {
     public async findByUsername(username: string) {
         return this.userRepository.findByUsername(username);
     }
+    public async createUserWithStreamAndSetting() {}
 }

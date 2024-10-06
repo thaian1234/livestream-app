@@ -4,9 +4,9 @@ import { createFactory } from "hono/factory";
 import type { Session } from "lucia";
 
 type ContextVariables = {
-    user: UserDTO.UserWithAccounts | null;
+    user: UserDTO.UserWithAccountsAndStream | null;
     session: Session | null;
-    getUser: UserDTO.UserWithAccounts;
+    getUser: UserDTO.UserWithAccountsAndStream;
     getSession: Session;
     executionCtx: ReturnType<typeof getRequestExecutionContext>;
 };

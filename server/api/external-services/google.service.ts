@@ -8,6 +8,7 @@ import { Google, generateCodeVerifier, generateState } from "arctic";
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
+import { IGetStreamService } from "./getstream.service";
 import { ILuciaService, LuciaService } from "./lucia.service";
 
 export interface IGoogleService extends Utils.AutoMappedClass<GoogleService> {}
@@ -19,6 +20,7 @@ export class GoogleService implements IGoogleService {
     constructor(
         private readonly accountRepository: IGoogleAccountRepository,
         private readonly userService: IUserService,
+        private readonly getStreamService: IGetStreamService,
     ) {
         this.googleClient = new Google(
             envServer.GOOGLE_CLIENT_ID,
@@ -87,6 +89,9 @@ export class GoogleService implements IGoogleService {
                     imageUrl: googleData.picture,
                 },
             );
+            if (user) {
+                await this.getStreamService.upsertUser(UserDTO.parse(user));
+            }
             return user?.id;
         }
         return userId;
@@ -97,6 +102,7 @@ export class GoogleService implements IGoogleService {
             await this.accountRepository.createGoogleAccountTransaction(
                 googleData,
             );
+        await this.getStreamService.upsertUser(UserDTO.parse(newAccount));
         return newAccount?.id;
     }
 

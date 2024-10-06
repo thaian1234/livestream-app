@@ -233,7 +233,7 @@ export class AuthController implements IAuthController {
         );
     }
     private verifySessionHandler() {
-        const respData = UserDTO.userWithAccountsSchema;
+        const respData = UserDTO.userWithAccountsAndStreamSchema;
         return this.factory.createHandlers(async (c) => {
             const user = c.get("user");
             const session = c.get("session");

@@ -37,11 +37,17 @@ export class UserRepository implements IUserRepository {
     }
     async create(data: UserDTO.Insert) {
         try {
-            const user = await this.db
-                .insert(tableSchemas.userTable)
-                .values(data)
-                .returning();
-            return user[0];
+            return await this.db.transaction(async (tx) => {
+                const [user] = await tx
+                    .insert(tableSchemas.userTable)
+                    .values(data)
+                    .returning();
+                await tx.insert(tableSchemas.streamTable).values({
+                    name: `${user.username}'s stream`,
+                    userId: user.id,
+                });
+                return user;
+            });
         } catch (error) {}
     }
     async update(id: string, data: UserDTO.Update) {

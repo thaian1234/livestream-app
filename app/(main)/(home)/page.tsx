@@ -3,7 +3,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 
-import { LivesPreview } from "@/lib/features/stream/components/live-preview/live-preview";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";

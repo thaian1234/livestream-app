@@ -1,3 +1,4 @@
+import { StreamDTO } from "../dtos/stream.dto";
 import { Utils } from "../lib/helpers/utils";
 import { IStreamRepository } from "../repositories/stream.repository";
 
@@ -26,5 +27,15 @@ export class StreamService implements IStreamService {
     }
     public async getStreamByUserId(userId: string) {
         return await this.streamRepository.getStreamByUserId(userId);
+    }
+    public async createOne(streamData: StreamDTO.Insert) {
+        const newStream = await this.streamRepository.createOne(streamData);
+        return newStream;
+    }
+    public async getStreamWithSetting(userId: string) {
+        return this.streamRepository.getStreamWithSetting(userId);
+    }
+    public async updateStream(id: string, data: StreamDTO.Update) {
+        return await this.streamRepository.update(id, data);
     }
 }

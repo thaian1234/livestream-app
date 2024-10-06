@@ -4,10 +4,12 @@ import { authApi } from "../features/auth/apis";
 import { createContext, useContext } from "react";
 import React, { useMemo } from "react";
 
+import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
 type AuthContextType = {
     user?: UserDTO.Select;
+    stream?: StreamDTO.Select;
     isPending: boolean;
     error: Error | null;
     isSignedIn: boolean;
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isPending,
             isSignedIn,
             user: data?.data.user,
+            stream: data?.data.user.stream,
         }),
         [error, isPending, isSignedIn, data?.data.user],
     );

@@ -6,6 +6,7 @@ import {
     IOauthController,
     OauthController,
 } from "../controllers/oauth.controller";
+import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
 import { NodemailService } from "../external-services/nodemail.service";
@@ -40,14 +41,20 @@ function createAuthRoutes() {
     const accountRepository = new AccountRepository();
     // Service
     const userService = new UserService(userRepository);
-    const authService = new AuthService(userService);
+    const getstreamService = new GetStreamService();
+    const authService = new AuthService(userService, getstreamService);
     const nodemailService = new NodemailService();
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
+    const getStreamService = new GetStreamService();
     const githubService = new GitHubService(accountRepository, userService);
     // Controller
-    const goolgeService = new GoogleService(accountRepository, userService);
+    const goolgeService = new GoogleService(
+        accountRepository,
+        userService,
+        getstreamService,
+    );
     const authController = new AuthController(
         factory,
         authService,
