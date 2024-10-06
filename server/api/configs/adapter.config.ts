@@ -20,6 +20,7 @@ export class CustomAdapter extends DrizzlePostgreSQLAdapter {
                 user: {
                     with: {
                         accounts: true,
+                        stream: true,
                     },
                 },
             },

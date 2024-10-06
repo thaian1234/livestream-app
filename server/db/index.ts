@@ -1,5 +1,4 @@
 import { CustomAdapter } from "../api/configs/adapter.config";
-import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 

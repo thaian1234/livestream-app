@@ -8,7 +8,7 @@ import Database from "@/server/db";
 
 export interface ILuciaService extends Utils.AutoMappedClass<LuciaService> {}
 
-export class LuciaService {
+export class LuciaService implements ILuciaService {
     private static instance: LuciaService;
     private lucia;
     constructor() {
@@ -48,6 +48,6 @@ export class LuciaService {
 declare module "lucia" {
     interface Register {
         Lucia: ReturnType<typeof LuciaService.getInstance>;
-        DatabaseUserAttributes: UserDTO.UserWithAccounts;
+        DatabaseUserAttributes: UserDTO.UserWithAccountsAndStream;
     }
 }

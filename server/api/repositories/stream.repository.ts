@@ -1,5 +1,7 @@
+import { StreamDTO } from "../dtos/stream.dto";
 import { Utils } from "../lib/helpers/utils";
 import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { Stream } from "stream";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -50,9 +52,60 @@ export class StreamRepository implements IStreamRepository {
         return result;
     }
     async getStreamByUserId(userId: string) {
-        const result = this.db.query.streamTable.findFirst({
+        const result = await this.db.query.streamTable.findFirst({
             where: eq(tableSchemas.streamTable.userId, userId),
         });
         return result;
+    }
+    public async createOne(streamData: StreamDTO.Insert) {
+        try {
+            return this.db.transaction(async (tx) => {
+                const [stream] = await this.db
+                    .insert(tableSchemas.streamTable)
+                    .values(streamData)
+                    .onConflictDoUpdate({
+                        set: streamData,
+                        target: tableSchemas.streamTable.id,
+                    })
+                    .returning();
+
+                if (!stream) {
+                    tx.rollback();
+                    return;
+                }
+                const [setting] = await this.db
+                    .insert(tableSchemas.settingTable)
+                    .values({
+                        streamId: stream.id,
+                    })
+                    .returning();
+                if (!setting) {
+                    tx.rollback();
+                    return;
+                }
+                return stream;
+            });
+        } catch (error) {}
+    }
+    public async getStreamWithSetting(userId: string) {
+        try {
+            const stream = await this.db.query.streamTable.findFirst({
+                where: eq(tableSchemas.streamTable.userId, userId),
+                with: {
+                    setting: true,
+                },
+            });
+            return stream;
+        } catch (error) {}
+    }
+    async update(id: string, data: StreamDTO.Update) {
+        try {
+            const [stream] = await this.db
+                .update(tableSchemas.streamTable)
+                .set(data)
+                .where(eq(tableSchemas.streamTable.id, id))
+                .returning();
+            return stream;
+        } catch (error) {}
     }
 }

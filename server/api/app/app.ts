@@ -7,6 +7,8 @@ import { authRoutes } from "../routes/auth.routes";
 import { blockRoutes } from "../routes/block.routes";
 import { followRoutes } from "../routes/follow.routes";
 import { searchRoutes } from "../routes/search.routes";
+import { settingRoutes } from "../routes/setting.routes";
+import { streamRoutes } from "../routes/stream.routes";
 import { uploadRoutes } from "../routes/upload.routes";
 import { userRoutes } from "../routes/user.routes";
 import { Hono } from "hono";
@@ -50,7 +52,9 @@ export class App {
             .route("/", authRoutes)
             .route("/", uploadRoutes)
             .route("/", blockRoutes)
-            .route("/", searchRoutes);
+            .route("/", searchRoutes)
+            .route("/", streamRoutes)
+            .route("/", settingRoutes);
     }
 
     public getApp() {

@@ -20,15 +20,14 @@ export const streamTable = pgTable(
         isLive: boolean("is_live").default(false).notNull(),
         userId: uuid("user_id")
             .notNull()
-            .references(() => userTable.id, { onDelete: "cascade" })
-            .unique(),
+            .references(() => userTable.id, { onDelete: "cascade" }),
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at")
             .notNull()
             .$onUpdate(() => new Date()),
     },
     (table) => ({
-        userIdx: index("user_stream_idx").on(table.userId),
+        userUnq: index("user_stream_unq").on(table.userId),
     }),
 );
 
