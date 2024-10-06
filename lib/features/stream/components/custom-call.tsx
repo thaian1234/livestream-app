@@ -1,6 +1,6 @@
-import { useVideoClient } from "../hooks/use-stream-video";
-import { Call, StreamCall } from "@stream-io/video-react-sdk";
-import { useEffect, useState } from "react";
+import { useJoinCall } from "../hooks/use-join-call";
+import { StreamCall } from "@stream-io/video-react-sdk";
+import { useEffect } from "react";
 
 import { Spinner } from "@/components/ui/spinner";
 
@@ -10,29 +10,23 @@ interface CustomCallProps {
 }
 
 export function CustomCall({ streamId, children }: CustomCallProps) {
-    const videoClient = useVideoClient();
-    const [call, setCall] = useState<Call>();
+    const { data: call, isPending, isError } = useJoinCall(streamId);
 
     useEffect(() => {
-        if (!videoClient) return;
-
-        const myCall = videoClient.call("livestream", streamId);
-        myCall
-            .join({
-                create: false,
-            })
-            .then(() => setCall(myCall));
-
         return () => {
-            myCall
-                .leave()
-                .catch(() => console.error("Failed to leave the call"));
-            setCall(undefined);
+            if (call) {
+                call.leave().catch(() =>
+                    console.error("Failed to leave the call"),
+                );
+            }
         };
-    }, [streamId, videoClient]);
+    }, [call]);
 
-    if (!call) {
+    if (isPending) {
         return <Spinner />;
+    }
+    if (!call || isError) {
+        return <p>Cannot join the call</p>;
     }
 
     return <StreamCall call={call}>{children}</StreamCall>;

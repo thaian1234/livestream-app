@@ -51,16 +51,6 @@ export class GetStreamService implements IGetStreamService {
         });
         return token;
     }
-    public generateStreamKey(streamId: string) {
-        const expirationTime = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 1 week
-        const issuedAt = Math.floor(Date.now() / 1000) - 60;
-        const token = this.streamClient.generateUserToken({
-            user_id: streamId,
-            exp: expirationTime,
-            iat: issuedAt,
-        });
-        return token;
-    }
     public convertUserToUserRequest(user: UserDTO.Select): UserRequest {
         const imageUrl = user.imageUrl !== null ? user.imageUrl : undefined;
         return {
@@ -83,27 +73,6 @@ export class GetStreamService implements IGetStreamService {
         const convertedUser = this.convertUserToUserRequest(user);
         const newUser = await this.streamClient.upsertUsers([convertedUser]);
         return newUser;
-    }
-    public async createLivestreamRoom(user: UserRequest, streamId: string) {
-        const callId = streamId;
-        const call = this.streamClient.video.call(
-            this.callType.livestream,
-            callId,
-        );
-        return call.getOrCreate({
-            data: {
-                created_by: {
-                    ...user,
-                    role: this.roles.host,
-                },
-                members: [
-                    {
-                        user_id: user.id,
-                        role: this.roles.host,
-                    },
-                ],
-            },
-        });
     }
     public async upsertLivestreamRoom(user: UserDTO.Select, streamId: string) {
         const convertedUser = this.convertUserToUserRequest(user);

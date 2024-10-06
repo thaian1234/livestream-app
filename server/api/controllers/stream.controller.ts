@@ -32,15 +32,28 @@ export class StreamController implements IStreamController {
                 const stream = await this.streamService.getStreamWithSetting(
                     currentUser.id,
                 );
+                const token = this.getStreamService.generateUserToken(
+                    currentUser.id,
+                );
                 if (!stream || !stream.setting) {
-                    throw new MyError.NotFoundError();
+                    return ApiResponse.WriteJSON({
+                        c,
+                        msg: "Get token successfully",
+                        data: {
+                            token: token,
+                        },
+                        status: HttpStatus.Created,
+                    });
                 }
                 return ApiResponse.WriteJSON({
                     c,
                     msg: "Get token successfully",
                     status: HttpStatus.Created,
                     data: {
-                        token: stream.setting.streamKey,
+                        token:
+                            stream.setting.streamKey !== null
+                                ? stream.setting.streamKey
+                                : token,
                     },
                 });
             },
