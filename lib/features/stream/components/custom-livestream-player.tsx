@@ -1,6 +1,8 @@
 import {
+    CallControls,
     LivestreamLayout,
     ParticipantView,
+    StreamTheme,
     useCall,
     useCallStateHooks,
 } from "@stream-io/video-react-sdk";
@@ -8,6 +10,10 @@ import "@stream-io/video-react-sdk/dist/css/styles.css";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+
+import { AudioVolumeIndicator } from "./audio-indicator";
+import { CustomParticipantViewUI } from "./custom-participant-view";
+import { LocalParticipantVideo } from "./local-participant-video";
 
 interface CustomLivestreamPlayerProps {
     callId: string;
@@ -29,32 +35,17 @@ export const CustomLivestreamPlayer = () => {
     };
     const handleStopLive = async () => {
         await call.stopLive();
-    };
+    };	
 
     return (
-        <div className="container aspect-video">
-            {/* <LivestreamPlayer
-                callId={call.id}
-                callType={call.type}
-                layoutProps={{
-                    showDuration: false,
-                    showParticipantCount: false,
-                    enableFullScreen: true,
-                    showLiveBadge: false,
-                    showSpeakerName: false,
-                }}
-            /> */}
-            <LivestreamLayout
-                showDuration={false}
-                showLiveBadge={false}
-                showParticipantCount={false}
-            />
+        <>
+            <StreamTheme autoPlay={true}>
+                <ParticipantView
+                    ParticipantViewUI={CustomParticipantViewUI}
+                    participant={participants[0]}
+                />
+            </StreamTheme>
             <div>Live: {participants.length}</div>
-            {/* {firstParticipant ? (
-                <ParticipantView participant={firstParticipant} />
-            ) : (
-                <div>The host hasnt joined yet</div>
-            )} */}
             <div>
                 {participants.map((item, i) => (
                     <div key={i}>{item.name}</div>
@@ -63,7 +54,7 @@ export const CustomLivestreamPlayer = () => {
             <Button onClick={() => (isLive ? handleStopLive() : handleLive())}>
                 {isLive ? "Stop Live" : "Go Live"}
             </Button>
-        </div>
+        </>
     );
 };
 

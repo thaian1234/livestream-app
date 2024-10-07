@@ -2,7 +2,6 @@
 
 import {
     LivestreamPlayer,
-    StreamCall,
     useCall,
     useCallStateHooks,
 } from "@stream-io/video-react-sdk";

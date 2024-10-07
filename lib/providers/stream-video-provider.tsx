@@ -2,8 +2,9 @@
 
 import { CustomCall } from "../features/stream/components/custom-call";
 import { useVideoClient } from "../features/stream/hooks/use-stream-video";
-import { StreamVideo } from "@stream-io/video-react-sdk";
-import React from "react";
+import { StreamTheme, StreamVideo } from "@stream-io/video-react-sdk";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+import React, { useEffect } from "react";
 
 import { Spinner } from "@/components/ui/spinner";
 
@@ -14,19 +15,30 @@ interface StreamProviderProps {
 }
 
 export function StreamVideoProvider({ children }: StreamProviderProps) {
-    const { isPending, stream } = useAuth();
+    const auth = useAuth();
     const { data: videoClient, isError } = useVideoClient();
-    if (stream === undefined || isPending) {
+
+    useEffect(() => {
+        return () => {
+            if (videoClient) {
+                videoClient.disconnectUser().catch(() => {
+                    console.error("Cannot disconnect user");
+                });
+            }
+        };
+    }, [videoClient]);
+
+    if (auth.isPending) {
         return <Spinner size="large" />;
     }
 
-    if (isError || !videoClient) {
+    if (isError || !videoClient || !auth.stream || auth.error) {
         return <p>Something went wrong</p>;
     }
 
     return (
         <StreamVideo client={videoClient}>
-            <CustomCall streamId={stream.id}>{children}</CustomCall>
+            <CustomCall streamId={auth.stream.id}>{children}</CustomCall>
         </StreamVideo>
     );
 }
