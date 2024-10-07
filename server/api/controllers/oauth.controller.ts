@@ -21,7 +21,7 @@ export interface IOauthController
     extends Utils.AutoMappedClass<OauthController> {}
 
 export class OauthController implements IOauthController {
-    cookiesName;
+    private cookiesName;
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly googleSerivce: IGoogleService,

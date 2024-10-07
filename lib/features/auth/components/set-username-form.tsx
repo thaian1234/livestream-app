@@ -63,7 +63,7 @@ export function SetUsernameForm() {
                 type="submit"
                 disabled={isPending}
             >
-                Send
+                Submit
             </Button>
         </form>
     );
