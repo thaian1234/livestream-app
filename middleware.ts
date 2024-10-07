@@ -28,10 +28,10 @@ export async function middleware(request: NextRequest) {
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
     const isDefaultPage = middlewareRoutes.DEFAULT_PAGE.startsWith(pathname);
     const isDashboardPage = pathname.startsWith("/dashboard/");
-
     if (isDefaultPage) {
         return NextResponse.next();
     }
+
     if (!sessionId) {
         return isPublicRoutes
             ? NextResponse.next()
@@ -43,6 +43,7 @@ export async function middleware(request: NextRequest) {
               );
     }
     const { isValidSession, user } = await verifySession();
+
     if (!isValidSession || !user) {
         return isPublicRoutes
             ? NextResponse.next()
@@ -53,6 +54,7 @@ export async function middleware(request: NextRequest) {
                   ),
               );
     }
+
     if (isPublicRoutes) {
         return NextResponse.redirect(new URL(ROUTES.HOME_PAGE, request.url));
     }

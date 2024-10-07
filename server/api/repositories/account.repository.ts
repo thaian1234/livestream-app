@@ -56,7 +56,7 @@ export class AccountRepository implements IAccountRepository {
                     .insert(tableSchemas.userTable)
                     .values({
                         email: googleData.email,
-                        username: googleData.email,
+                        username: googleData.name,
                         imageUrl: googleData.picture,
                         emailVerified: googleData.verified_email,
                     })
@@ -118,7 +118,7 @@ export class AccountRepository implements IAccountRepository {
                     .insert(tableSchemas.userTable)
                     .values({
                         email: githubData.email,
-                        username: githubData.email,
+                        username: githubData.name,
                         imageUrl: githubData.avatar_url,
                         emailVerified: githubData.verified_email,
                     })

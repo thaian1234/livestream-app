@@ -52,6 +52,7 @@ export class GoogleService implements IGoogleService {
             googleData.email,
         );
         let userId: string | undefined;
+        let isNew = false;
 
         if (existingUser) {
             userId = await this.updateExistingUser(
@@ -61,10 +62,11 @@ export class GoogleService implements IGoogleService {
             );
         } else {
             userId = await this.createNewUser(googleData);
+            isNew = true;
         }
         return userId
-            ? this.initiateSession(userId)
-            : { session: null, sessionCookie: null };
+            ? { ...(await this.initiateSession(userId)), isNew }
+            : { session: null, sessionCookie: null, isNew };
     }
 
     private async updateExistingUser(

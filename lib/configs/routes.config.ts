@@ -8,5 +8,6 @@ export const ROUTES = {
     ACCOUNT_PAGE: (username: string) => `/dashboard/${username}/account`,
     STREAM_PAGE: (username: string) => `/dashboard/${username}/stream`,
     SETTINGS_PAGE: (username: string) => `/dashboard/${username}/settings`,
+    SET_USERNAME_PAGE: "/set-username",
     KEY_PAGE: (username: string) => `/dashboard/${username}/key`,
 };

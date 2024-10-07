@@ -28,10 +28,8 @@ export class AuthDTO {
             message: "Passwords must match",
         },
     );
-    public static usernameSchema = this.baseSchema.omit({
-        email: true,
-        password: true,
-        confirmPassword: true,
+    public static usernameSchema = this.baseSchema.pick({
+        username: true,
     });
 }
 export namespace AuthDTO {
