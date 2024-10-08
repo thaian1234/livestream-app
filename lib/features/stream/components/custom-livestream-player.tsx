@@ -2,18 +2,18 @@ import {
     CallControls,
     LivestreamLayout,
     ParticipantView,
+    ParticipantViewContext,
     StreamTheme,
     useCall,
     useCallStateHooks,
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
+import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { AudioVolumeIndicator } from "./audio-indicator";
 import { CustomParticipantViewUI } from "./custom-participant-view";
-import { LocalParticipantVideo } from "./local-participant-video";
 
 interface CustomLivestreamPlayerProps {
     callId: string;
@@ -35,13 +35,13 @@ export const CustomLivestreamPlayer = () => {
     };
     const handleStopLive = async () => {
         await call.stopLive();
-    };	
+    };
 
     return (
         <>
-            <StreamTheme autoPlay={true}>
+            <StreamTheme allowFullScreen as="section" autoPlay>
                 <ParticipantView
-                    ParticipantViewUI={CustomParticipantViewUI}
+                    ParticipantViewUI={<CustomParticipantViewUI />}
                     participant={participants[0]}
                 />
             </StreamTheme>

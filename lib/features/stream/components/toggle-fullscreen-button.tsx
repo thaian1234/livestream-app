@@ -1,5 +1,5 @@
 import { useParticipantViewContext } from "@stream-io/video-react-sdk";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -17,6 +17,7 @@ export function ToggleFullScreenButton({}: ToggleFullScreenButtonProps) {
         setIsFullscreenElement(true);
         return participantViewElement?.requestFullscreen();
     };
+
     return (
         <Button onClick={toggleFullscreen} variant={"ghost"}>
             {isFullsreenElement ? "Leave" : "Enter"} fullscreen
