@@ -1,14 +1,14 @@
 "use client";
 
-import { LayoutGrid, LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ROUTES } from "@/lib/configs/routes.config";
 import { getUserNavConfig } from "@/lib/configs/user-nav.config";
 import { SignOutButton } from "@/lib/features/auth/components/signout-button";
 import { useAuth } from "@/lib/providers/auth-provider";
 
+import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -20,12 +20,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { UserAvatar } from "@/components/user-avatar";
 
 export function UserNav() {
@@ -39,22 +33,15 @@ export function UserNav() {
 
     return (
         <DropdownMenu>
-            <TooltipProvider disableHoverableContent>
-                <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="relative size-10 rounded-full"
-                            >
-                                <UserAvatar imageUrl={user.imageUrl} />
-                            </Button>
-                        </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">Profile</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
+            <TooltipModel content="Profile" side="bottom">
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="size-10 rounded-full">
+                        <UserAvatar imageUrl={user.imageUrl} />
+                    </Button>
+                </DropdownMenuTrigger>
+            </TooltipModel>
+
+            <DropdownMenuContent className="w-56" align="center" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-2">
                         <p className="text-sm font-medium leading-none">
