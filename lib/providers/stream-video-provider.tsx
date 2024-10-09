@@ -1,9 +1,16 @@
 "use client";
 
+import { envClient } from "../env/env.client";
+import { streamApi } from "../features/stream/apis";
 import { CustomCall } from "../features/stream/components/custom-call";
 import { useVideoClient } from "../features/stream/hooks/use-stream-video";
-import { StreamVideo } from "@stream-io/video-react-sdk";
-import React from "react";
+import {
+    StreamTheme,
+    StreamVideo,
+    StreamVideoClient,
+} from "@stream-io/video-react-sdk";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+import React, { useEffect, useState } from "react";
 
 import { Spinner } from "@/components/ui/spinner";
 
@@ -14,19 +21,14 @@ interface StreamProviderProps {
 }
 
 export function StreamVideoProvider({ children }: StreamProviderProps) {
-    const { isPending, stream } = useAuth();
-    const { data: videoClient, isError } = useVideoClient();
-    if (stream === undefined || isPending) {
-        return <Spinner size="large" />;
+    const { videoClient, isError, isPending } = useVideoClient();
+    if (isPending) {
+        return <Spinner />;
     }
 
-    if (isError || !videoClient) {
-        return <p>Something went wrong</p>;
+    if (!videoClient || isError) {
+        return <p>Stream video failed</p>;
     }
 
-    return (
-        <StreamVideo client={videoClient}>
-            <CustomCall streamId={stream.id}>{children}</CustomCall>
-        </StreamVideo>
-    );
+    return <StreamVideo client={videoClient}>{children}</StreamVideo>;
 }
