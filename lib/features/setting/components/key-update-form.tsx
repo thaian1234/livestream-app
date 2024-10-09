@@ -7,9 +7,20 @@ import { toast } from "sonner";
 
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-clipboard";
 
+import { IconInput, LeftIcon, RightIcon } from "@/components/icon-input";
 import { TooltipModel } from "@/components/tooltip-model";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 interface KeyFormProps {}
@@ -55,31 +66,35 @@ export function KeyForm({}: KeyFormProps) {
         setShowKey(!showKey);
     };
     return (
-        <div className="container space-y-2 py-4">
-            <div className="relative">
-                <button
-                    className="absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
-                    onClick={onShowUrl}
-                    type="button"
-                >
-                    {showUrl ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-                <Input
-                    disabled
-                    type={showUrl ? "text" : "password"}
-                    className="px-10 hover:text-white focus-visible:ring-white"
-                    value={data.url}
-                />
-                <TooltipModel content="Copy" side="right">
+        <div className="container space-y-2 py-8">
+            <IconInput
+                disabled
+                type={showUrl ? "text" : "password"}
+                className="px-10 hover:text-white focus-visible:ring-white"
+                value={data.url}
+            >
+                <LeftIcon>
                     <button
-                        className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
-                        onClick={handleCopyServerUrl}
+                        className="text-white/50 hover:text-white"
+                        onClick={onShowUrl}
                         type="button"
                     >
-                        <Copy size={20} />
+                        {showUrl ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
-                </TooltipModel>
-            </div>
+                </LeftIcon>
+                <RightIcon>
+                    <TooltipModel content="Copy" side="bottom">
+                        <button
+                            className="text-white/50 hover:text-white"
+                            onClick={handleCopyServerUrl}
+                            type="button"
+                        >
+                            <Copy size={20} />
+                        </button>
+                    </TooltipModel>
+                </RightIcon>
+            </IconInput>
+
             <div className="relative">
                 <button
                     className="absolute left-3 top-5 z-10 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
@@ -93,7 +108,7 @@ export function KeyForm({}: KeyFormProps) {
                     value={showKey ? data.key : data.key.replace(/./g, "•")}
                     className="resize-none px-10 text-base"
                 />
-                <TooltipModel content="Copy" side="right">
+                <TooltipModel content="Copy" side="bottom">
                     <button
                         className="absolute right-3 top-5 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
                         onClick={handleCopyStreamKey}
@@ -103,16 +118,35 @@ export function KeyForm({}: KeyFormProps) {
                     </button>
                 </TooltipModel>
             </div>
-            <div className="flex justify-end">
-                <Button
-                    variant="gradient"
-                    onClick={onSubmit}
-                    disabled={isUpdating}
-                    className="text-black-0"
-                >
-                    Generate
-                </Button>
-            </div>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <div className="flex justify-end">
+                        <Button
+                            variant="gradient"
+                            disabled={isUpdating}
+                            className="text-black-0"
+                        >
+                            Generate
+                        </Button>
+                    </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            cái này ghi gì z?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>No</AlertDialogCancel>
+                        <AlertDialogAction onClick={onSubmit}>
+                            Yes
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

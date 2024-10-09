@@ -13,17 +13,19 @@ export default function DashboardLayout({
     const sidebar = useSidebarToggle((state) => state);
 
     return (
-        <>
+        <div className="flex min-h-screen flex-col">
             <Navbar />
-            <Sidebar />
-            <main
-                className={cn(
-                    "min-h-dvh bg-muted pl-14 transition-[margin-left] duration-300 ease-in-out",
-                    sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72",
-                )}
-            >
-                {children}
-            </main>
-        </>
+            <div className="flex flex-grow">
+                <Sidebar />
+                <main
+                    className={cn(
+                        "flex-grow bg-muted pl-14 transition-[margin-left] duration-300 ease-in-out",
+                        sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72",
+                    )}
+                >
+                    {children}
+                </main>
+            </div>
+        </div>
     );
 }
