@@ -1,12 +1,13 @@
 "use client";
 
 import { settingApi } from "../apis";
-import { ClipboardCopyIcon, Copy, Eye, EyeOff, Search } from "lucide-react";
-import { useState } from "react";
+import { Copy, Eye, EyeOff } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-clipboard";
 
+import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,32 +16,49 @@ interface KeyFormProps {}
 
 export function KeyForm({}: KeyFormProps) {
     const [showUrl, setShowUrl] = useState(false);
+    const [showKey, setShowKey] = useState(false);
+    const [data, setData] = useState({ key: "", url: "" });
 
     const { data: setting } = settingApi.query.useGetSetting();
     const { mutate: handleUpdateSetting, isPending: isUpdating } =
         settingApi.mutation.useUpdateSetting();
+    useEffect(() => {
+        if (setting.data) {
+            setData((pre) => ({
+                ...pre,
+                url: setting.data.setting?.serverUrl || "url",
+                key: setting.data.setting?.streamKey || "key",
+            }));
+        }
+    }, []);
+
     const [_, copy] = useCopyToClipboard();
     const onSubmit = () => {
         handleUpdateSetting({});
     };
+
     const handleCopyServerUrl = () => {
-        copy(setting.data.setting?.serverUrl || "").then(() => {
+        copy(data.url).then(() => {
             toast.success("Copied successfully");
         });
     };
     const handleCopyStreamKey = () => {
-        copy(setting.data.setting?.streamKey || "").then(() => {
+        copy(data.url).then(() => {
             toast.success("Copied successfully");
         });
     };
+
     const onShowUrl = () => {
         setShowUrl(!showUrl);
+    };
+    const onShowKey = () => {
+        setShowKey(!showKey);
     };
     return (
         <div className="container space-y-2 py-4">
             <div className="relative">
                 <button
-                    className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform cursor-pointer text-white/50 hover:text-white"
+                    className="absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
                     onClick={onShowUrl}
                     type="button"
                 >
@@ -49,31 +67,52 @@ export function KeyForm({}: KeyFormProps) {
                 <Input
                     disabled
                     type={showUrl ? "text" : "password"}
-                    className="px-10"
-                    placeholder={setting.data.setting?.serverUrl || ""}
+                    className="px-10 hover:text-white focus-visible:ring-white"
+                    value={data.url}
                 />
-
+                <TooltipModel content="Copy" side="right">
+                    <button
+                        className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
+                        onClick={handleCopyServerUrl}
+                        type="button"
+                    >
+                        <Copy size={20} />
+                    </button>
+                </TooltipModel>
+            </div>
+            <div className="relative">
                 <button
-                    className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
-                    onClick={handleCopyServerUrl}
+                    className="absolute left-3 top-5 z-10 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
+                    onClick={onShowKey}
                     type="button"
                 >
-                    <Copy size={20} />
+                    {showKey ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-            </div>
-            <div className="flex space-x-4">
                 <Textarea
                     disabled
-                    placeholder={setting.data.setting?.streamKey || ""}
-                    className="resize-none"
+                    value={showKey ? data.key : data.key.replace(/./g, "•")}
+                    className="resize-none px-10 text-base"
                 />
-                <Button onClick={handleCopyStreamKey}>
-                    <ClipboardCopyIcon />
+                <TooltipModel content="Copy" side="right">
+                    <button
+                        className="absolute right-3 top-5 h-5 w-5 -translate-y-1/2 transform text-white/50 hover:text-white"
+                        onClick={handleCopyStreamKey}
+                        type="button"
+                    >
+                        <Copy size={20} />
+                    </button>
+                </TooltipModel>
+            </div>
+            <div className="flex justify-end">
+                <Button
+                    variant="gradient"
+                    onClick={onSubmit}
+                    disabled={isUpdating}
+                    className="text-black-0"
+                >
+                    Generate
                 </Button>
             </div>
-            <Button onClick={onSubmit} disabled={isUpdating}>
-                Generate
-            </Button>
         </div>
     );
 }
