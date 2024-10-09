@@ -28,7 +28,6 @@ export const LocalLivestreamPlayer = () => {
     const { useParticipants, useIsCallLive, useLocalParticipant } =
         useCallStateHooks();
     const participants = useParticipants();
-    const localParticipant = useLocalParticipant();
     const isLive = useIsCallLive();
 
     if (!call) {
@@ -50,21 +49,11 @@ export const LocalLivestreamPlayer = () => {
 
     return (
         <>
-            {/* {localParticipant && (
-                <ParticipantView
-                    // ParticipantViewUI={CustomParticipantViewUI}
-                    participant={localParticipant}
-                    trackType="videoTrack"
-                    // VideoPlaceholder={<div>My</div>}
-                />
-            )} */}
             <MyLivestreamLayout
-                enableFullScreen={false}
+                enableFullScreen={true}
                 mirrorLocalParticipantVideo={false}
                 showLiveBadge
             />
-            {/* <LivestreamLayout /> */}
-            <CallControls />
             <div>Live: {participants.length}</div>
             <div>
                 {participants.map((item, i) => (
@@ -77,7 +66,6 @@ export const LocalLivestreamPlayer = () => {
             <Button onClick={() => (isLive ? handleStopLive() : handleLive())}>
                 {isLive ? "Stop Live" : "Go Live"}
             </Button>
-            <Button onClick={handleJoin}>Join</Button>
         </>
     );
 };

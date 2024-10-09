@@ -1,32 +1,15 @@
-import { hasScreenShare } from "@stream-io/video-client";
-import {
-    useCall,
-    useCallStateHooks,
-    useI18n,
-} from "@stream-io/video-react-bindings";
-import {
-    Call,
-    CallTypes,
-    Comparator,
-    StreamVideoParticipant,
-    combineComparators,
-    defaultSortPreset,
-    paginatedLayoutSortPreset,
-    screenSharing,
-    speakerLayoutSortPreset,
-} from "@stream-io/video-react-sdk";
-import {
-    ParticipantView,
-    ParticipantsAudio,
-    useParticipantViewContext,
-} from "@stream-io/video-react-sdk";
-import clsx from "clsx";
-import { useCallback, useEffect, useState } from "react";
+import { usePaginatedLayoutSortPreset } from "../hooks/use-paginated-layout";
+import { useCall, useCallStateHooks } from "@stream-io/video-react-bindings";
+import { ParticipantView, ParticipantsAudio } from "@stream-io/video-react-sdk";
+
+import { cn } from "@/lib/utils";
+
+import { ParticipantOverlay } from "./participant-overlay";
 
 /**
  * The props for the {@link MyLivestreamLayout} component.
  */
-export type LivestreamLayoutProps = {
+interface LivestreamLayoutProps {
     /**
      * Whether the livestream is muted. Defaults to `false`.
      */
@@ -72,53 +55,9 @@ export type LivestreamLayoutProps = {
          */
         position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
     };
-};
+}
 
-export const useSpeakerLayoutSortPreset = (
-    call: Call | undefined,
-    isOneOnOneCall: boolean,
-) => {
-    useEffect(() => {
-        if (!call) return;
-        // always show the remote participant in the spotlight
-        if (isOneOnOneCall) {
-            call.setSortParticipantsBy(
-                combineComparators(screenSharing, loggedIn),
-            );
-        } else {
-            call.setSortParticipantsBy(speakerLayoutSortPreset);
-        }
-        return () => {
-            resetSortPreset(call);
-        };
-    }, [call, isOneOnOneCall]);
-};
-
-const resetSortPreset = (call: Call) => {
-    // reset the sorting to the default for the call type
-    const callConfig = CallTypes.get(call.type);
-    call.setSortParticipantsBy(
-        callConfig.options.sortParticipantsBy || defaultSortPreset,
-    );
-};
-
-const loggedIn: Comparator<StreamVideoParticipant> = (a, b) => {
-    if (a.isLocalParticipant) return 1;
-    if (b.isLocalParticipant) return -1;
-    return 0;
-};
-
-export const usePaginatedLayoutSortPreset = (call: Call | undefined) => {
-    useEffect(() => {
-        if (!call) return;
-        call.setSortParticipantsBy(paginatedLayoutSortPreset);
-        return () => {
-            resetSortPreset(call);
-        };
-    }, [call]);
-};
-
-export const MyLivestreamLayout = (props: LivestreamLayoutProps) => {
+export function MyLivestreamLayout(props: LivestreamLayoutProps) {
     const { useParticipants, useRemoteParticipants, useHasOngoingScreenShare } =
         useCallStateHooks();
     const call = useCall();
@@ -126,9 +65,6 @@ export const MyLivestreamLayout = (props: LivestreamLayoutProps) => {
     const [currentSpeaker] = participants;
     const remoteParticipants = useRemoteParticipants();
     const hasOngoingScreenShare = useHasOngoingScreenShare();
-    const presenter = hasOngoingScreenShare
-        ? participants.find(hasScreenShare)
-        : undefined;
 
     usePaginatedLayoutSortPreset(call);
 
@@ -138,6 +74,7 @@ export const MyLivestreamLayout = (props: LivestreamLayoutProps) => {
             showDuration={props.showDuration}
             showLiveBadge={props.showLiveBadge}
             showSpeakerName={props.showSpeakerName}
+            enableFullScreen={props.enableFullScreen}
         />
     );
 
@@ -151,29 +88,18 @@ export const MyLivestreamLayout = (props: LivestreamLayoutProps) => {
             showDuration={floatingParticipantProps?.showDuration ?? false}
             showLiveBadge={floatingParticipantProps?.showLiveBadge ?? false}
             showSpeakerName={floatingParticipantProps?.showSpeakerName ?? true}
-            enableFullScreen={
-                floatingParticipantProps?.enableFullScreen ?? false
-            }
+            enableFullScreen={false}
         />
     );
 
     return (
-        <div className="str-video__livestream-layout__wrapper">
+        <div className="str-video__livestream-layout__wrapper container aspect-video">
             <ParticipantsAudio participants={remoteParticipants} />
-            {hasOngoingScreenShare && presenter && (
-                <ParticipantView
-                    className="str-video__livestream-layout__screen-share"
-                    participant={presenter}
-                    ParticipantViewUI={Overlay}
-                    trackType="screenShareTrack"
-                    muteAudio // audio is rendered by ParticipantsAudio
-                />
-            )}
             {currentSpeaker && (
                 <ParticipantView
-                    className={clsx(
+                    className={cn(
                         hasOngoingScreenShare &&
-                            clsx(
+                            cn(
                                 "str-video__livestream-layout__floating-participant",
                                 `str-video__livestream-layout__floating-participant--${
                                     floatingParticipantProps?.position ??
@@ -193,112 +119,4 @@ export const MyLivestreamLayout = (props: LivestreamLayoutProps) => {
             )}
         </div>
     );
-};
-
-const ParticipantOverlay = (props: {
-    enableFullScreen?: boolean;
-    showParticipantCount?: boolean;
-    showDuration?: boolean;
-    showLiveBadge?: boolean;
-    showSpeakerName?: boolean;
-}) => {
-    const {
-        enableFullScreen = true,
-        showParticipantCount = true,
-        showDuration = true,
-        showLiveBadge = true,
-        showSpeakerName = false,
-    } = props;
-    const { participant } = useParticipantViewContext();
-    const { useParticipantCount } = useCallStateHooks();
-    const participantCount = useParticipantCount();
-    const duration = useUpdateCallDuration();
-    const toggleFullScreen = useToggleFullScreen();
-    const { t } = useI18n();
-    return (
-        <div className="str-video__livestream-layout__overlay">
-            <div className="str-video__livestream-layout__overlay__bar">
-                {showLiveBadge && (
-                    <span className="str-video__livestream-layout__live-badge">
-                        {t("Live")}
-                    </span>
-                )}
-                {showParticipantCount && (
-                    <span className="str-video__livestream-layout__viewers-count">
-                        {participantCount}
-                    </span>
-                )}
-                {showSpeakerName && (
-                    <span
-                        className="str-video__livestream-layout__speaker-name"
-                        title={participant.name || participant.userId || ""}
-                    >
-                        {participant.name || participant.userId || ""}
-                    </span>
-                )}
-                {showDuration && (
-                    <span className="str-video__livestream-layout__duration">
-                        {formatDuration(duration)}
-                    </span>
-                )}
-                {/* {enableFullScreen && (
-                    <span
-                        className="str-video__livestream-layout__go-fullscreen"
-                        onClick={toggleFullScreen}
-                    />
-                )} */}
-            </div>
-        </div>
-    );
-};
-
-MyLivestreamLayout.displayName = "MyLivestreamLayout";
-
-const useUpdateCallDuration = () => {
-    const { useIsCallLive, useCallSession } = useCallStateHooks();
-    const isCallLive = useIsCallLive();
-    const session = useCallSession();
-    const [duration, setDuration] = useState(() => {
-        if (!session || !session.live_started_at) return 0;
-        const liveStartTime = new Date(session.live_started_at);
-        const now = new Date();
-        return Math.floor((now.getTime() - liveStartTime.getTime()) / 1000);
-    });
-
-    useEffect(() => {
-        if (!isCallLive) return;
-        const interval = setInterval(() => {
-            setDuration((d) => d + 1);
-        }, 1000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, [isCallLive]);
-
-    return duration;
-};
-
-const useToggleFullScreen = () => {
-    const { participantViewElement } = useParticipantViewContext();
-    const [isFullscreen, setIsFullscreen] = useState(false);
-    return useCallback(() => {
-        if (isFullscreen) {
-            setIsFullscreen(false);
-            document.exitFullscreen().catch(() => {});
-        } else {
-            setIsFullscreen(true);
-            participantViewElement?.requestFullscreen().catch(() => {});
-        }
-    }, [isFullscreen, participantViewElement]);
-};
-
-const formatDuration = (durationInMs: number) => {
-    const days = Math.floor(durationInMs / 86400);
-    const hours = Math.floor(durationInMs / 3600);
-    const minutes = Math.floor((durationInMs % 3600) / 60);
-    const seconds = durationInMs % 60;
-
-    return `${days ? days + " " : ""}${hours ? hours + ":" : ""}${
-        minutes < 10 ? "0" : ""
-    }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-};
+}
