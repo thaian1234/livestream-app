@@ -21,36 +21,13 @@ interface StreamProviderProps {
 }
 
 export function StreamVideoProvider({ children }: StreamProviderProps) {
-    const { user } = useAuth();
-    const { data: tokenData } = streamApi.query.useGetStreamToken();
-    const [videoClient, setVideoClient] = useState<StreamVideoClient>();
+    const { videoClient, isError, isPending } = useVideoClient();
+    if (isPending) {
+        return <Spinner />;
+    }
 
-    useEffect(() => {
-        if (user === undefined || tokenData === undefined) {
-            return;
-        }
-        const client = StreamVideoClient.getOrCreateInstance({
-            apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-            user: {
-                id: user.id,
-                name: user.username,
-            },
-            token: tokenData.data.token,
-            options: {
-                enableWSFallback: true,
-                timeout: 10000,
-            },
-        });
-        setVideoClient(client);
-        return () => {
-            client.disconnectUser().catch(() => {
-                console.error("Cannot disconnect user");
-            });
-        };
-    }, [user, tokenData]);
-
-    if (!videoClient) {
-        return <p>Loading...</p>;
+    if (!videoClient || isError) {
+        return <p>Stream video failed</p>;
     }
 
     return <StreamVideo client={videoClient}>{children}</StreamVideo>;

@@ -15,7 +15,7 @@ type StreamParams = {
 
 export default function StreamPage() {
     const params = useParams<StreamParams>();
-    const { data: videoClient, isPending, isError } = useVideoClient();
+    const { videoClient, isPending, isError } = useVideoClient();
     if (isPending) {
         return <Spinner size={"large"} />;
     }

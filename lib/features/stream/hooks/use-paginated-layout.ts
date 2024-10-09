@@ -1,8 +1,14 @@
 import {
     Call,
     CallTypes,
+    combineComparators,
     defaultSortPreset,
+    dominantSpeaker,
     paginatedLayoutSortPreset,
+    publishingAudio,
+    publishingVideo,
+    role,
+    speaking,
 } from "@stream-io/video-react-sdk";
 import { useEffect } from "react";
 
@@ -17,7 +23,14 @@ const resetSortPreset = (call: Call) => {
 export const usePaginatedLayoutSortPreset = (call: Call | undefined) => {
     useEffect(() => {
         if (!call) return;
-        call.setSortParticipantsBy(paginatedLayoutSortPreset);
+        const livestreamComparator = combineComparators(
+            role("host", "speaker"),
+            dominantSpeaker,
+            speaking,
+            publishingVideo,
+            publishingAudio,
+        );
+        call.setSortParticipantsBy(livestreamComparator);
         return () => {
             resetSortPreset(call);
         };
