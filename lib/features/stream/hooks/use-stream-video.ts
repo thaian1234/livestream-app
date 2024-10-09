@@ -15,8 +15,7 @@ export function useVideoClient() {
             if (!user || !tokenData) {
                 return null;
             }
-
-            return StreamVideoClient.getOrCreateInstance({
+            const videoClient = StreamVideoClient.getOrCreateInstance({
                 apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
                 user: {
                     id: user.id,
@@ -28,9 +27,10 @@ export function useVideoClient() {
                     timeout: 10000,
                 },
             });
+            return videoClient;
         },
         enabled: !!user && !!tokenData,
-        refetchOnMount: true,
+        refetchOnMount: "always",
         staleTime: 0,
     });
 }

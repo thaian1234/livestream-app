@@ -1,8 +1,13 @@
 import { useJoinCall } from "../hooks/use-join-call";
-import { StreamCall } from "@stream-io/video-react-sdk";
-import { useEffect } from "react";
+import { useVideoClient } from "../hooks/use-stream-video";
+import {
+    Call,
+    StreamCall,
+    useStreamVideoClient,
+} from "@stream-io/video-react-sdk";
+import { useEffect, useState } from "react";
 
-import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/lib/providers/auth-provider";
 
 interface CustomCallProps {
     streamId: string;
@@ -10,24 +15,30 @@ interface CustomCallProps {
 }
 
 export function CustomCall({ streamId, children }: CustomCallProps) {
-    const { data: call, isPending, isError } = useJoinCall(streamId);
+    // const { data: call, isPending, isError } = useJoinCall(streamId);
+    const videoClient = useStreamVideoClient();
+    const [call, setCall] = useState<Call>();
+    const { user } = useAuth();
 
     useEffect(() => {
-        return () => {
-            if (call) {
-                call.leave().catch(() =>
-                    console.error("Failed to leave the call"),
-                );
-            }
-        };
-    }, [call]);
+        if (!videoClient || user === undefined) return;
 
-    if (isPending) {
-        return <Spinner />;
-    }
-    if (!call || isError) {
-        return <p>Cannot join the call</p>;
-    }
+        const myCall = videoClient.call("livestream", streamId);
+        setCall(myCall);
+        myCall
+            .join({
+                create: false,
+            })
+            .catch(console.error);
+        return () => {
+            myCall
+                .leave()
+                .catch(() => console.error("Failed to leave the call"));
+            setCall(undefined);
+        };
+    }, [streamId, videoClient, user]);
+
+    if (!call) return <p>Loading..</p>;
 
     return <StreamCall call={call}>{children}</StreamCall>;
 }

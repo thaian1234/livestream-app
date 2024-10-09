@@ -1,4 +1,4 @@
-import { Call } from "@stream-io/video-react-sdk";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useQuery } from "@tanstack/react-query";
 
 import { useVideoClient } from "./use-stream-video";
@@ -10,13 +10,12 @@ export function useJoinCall(streamId: string) {
         queryKey: ["call"],
         queryFn: async () => {
             if (!videoClient) return null;
+
             const myCall = videoClient.call("livestream", streamId);
-            await myCall.join({ create: false });
+            await myCall.join({ create: false }).catch(console.error);
             return myCall;
         },
-        enabled: !!videoClient || isPending,
-        refetchInterval: (data) => (!data ? 5000 : false),
-        retry: 1,
+        enabled: !!videoClient,
         refetchOnMount: true,
         staleTime: 0,
     });
