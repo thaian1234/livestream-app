@@ -1,6 +1,6 @@
 import React from "react";
 
-import LivePreviewCard from "./live-preview-card";
+import { LivePreviewCard } from "./live-preview-card";
 
 export const cardData = [
     {

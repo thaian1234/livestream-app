@@ -1,5 +1,5 @@
-import { ToggleFullScreenButton } from "./toggle-fullscreen-button";
-import { VolumeControl } from "./volumn-control";
+import { ToggleFullScreenButton } from "./controls/toggle-fullscreen-button";
+import { VolumeControl } from "./controls/volumn-control";
 
 export function CustomParticipantViewUI() {
     return (

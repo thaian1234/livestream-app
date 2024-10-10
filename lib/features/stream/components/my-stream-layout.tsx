@@ -4,7 +4,7 @@ import { ParticipantView, ParticipantsAudio } from "@stream-io/video-react-sdk";
 
 import { cn } from "@/lib/utils";
 
-import { ParticipantOverlay } from "./participant-overlay";
+import { ParticipantOverlay } from "./controls/participant-overlay";
 
 /**
  * The props for the {@link MyLivestreamLayout} component.
