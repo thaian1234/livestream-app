@@ -19,7 +19,7 @@ export function InstructionGuide({}: InstructionGuideProps) {
                     <InfoIcon className="mr-3" size={28} />
                     OBS Integration Guide
                 </CardTitle>
-                <CardDescription className="text-slate-100">
+                <CardDescription>
                     Follow these steps to configure OBS for streaming
                 </CardDescription>
             </CardHeader>
