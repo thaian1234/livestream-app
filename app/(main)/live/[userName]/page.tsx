@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { LivesPreview } from "@/lib/features/stream/components/live-preview/live-preview";
+import { LivePreviewCarousel } from "@/lib/features/stream/components/live-preview/live-preview-carousel";
 import { Chat } from "@/lib/features/stream/components/live/chat";
 import { LiveInformation } from "@/lib/features/stream/components/live/live-information";
 import { LiveScreen } from "@/lib/features/stream/components/live/live-screen";
@@ -33,12 +33,12 @@ export default function LivePage() {
                 {!liveSrceenStatus.cinemaMode && (
                     <div className="space-y-10">
                         <LiveInformation />
-                        <div>
+                        <div className="">
                             <p className="mb-4 text-lg text-white">
                                 Recommended
                             </p>
-                            <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
-                                <LivesPreview />
+                            <div className="flex w-full justify-center">
+                                <LivePreviewCarousel />
                             </div>
                         </div>
                     </div>
