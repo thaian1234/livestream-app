@@ -51,6 +51,7 @@
         "dotenv": "^16.4.5",
         "drizzle-orm": "^0.33.0",
         "drizzle-zod": "^0.5.1",
+        "embla-carousel-react": "^8.3.0",
         "hono": "^4.6.3",
         "input-otp": "^1.2.4",
         "lucide-react": "^0.436.0",

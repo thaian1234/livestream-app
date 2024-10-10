@@ -34,8 +34,7 @@ export default function LivePreviewCard({
 
     const handleNavigateLive = () => {
         // Navigate to live room
-        //router.push(`/${userName}`);
-        router.push("/username");
+        router.push(`/live/${userName.replace(/\s+/g, "-")}`);
         // get one API and setLiveInfor
         setLiveInfor({
             id,
