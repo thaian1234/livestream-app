@@ -35,13 +35,15 @@ export function LiveScreen() {
             <div
                 onClick={handlePlayLive}
                 className={cn(
-                    "max-w-auto max-h-[calc(100vh-10rem)] w-full cursor-pointer rounded-xl bg-white/5",
+                    "max-w-auto max-h-[calc(100vh-10rem)] w-full cursor-pointer rounded-xl bg-white/30",
                     isOpenSidebar === false ? "aspect-[2/1]" : "aspect-[16/9]",
                     isHideSidebar && "aspect-[16/9] max-h-[calc(100vh-5rem)]", //cinema mode
                 )}
             ></div>
             {isHovered && (
                 <>
+                    <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black-0 to-transparent opacity-60" />
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black-0 to-transparent opacity-60" />
                     <div className="absolute right-0 top-0 flex items-center justify-between space-x-2 p-4">
                         <Button
                             size="sm"

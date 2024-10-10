@@ -21,8 +21,7 @@ export function Miniplayer() {
         resetLiveScreenStatus();
     };
     const navigateLivePage = () => {
-        // router.push(`/${infor.userName}`);
-        router.push("/username");
+        router.push(`/live/${infor.userName.replace(/\s+/g, "-")}`);
         resetLiveScreenStatus();
     };
     return (
