@@ -2,7 +2,7 @@ import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-li
 
 export default function StreamPage() {
     return (
-        <div className="container">
+        <div className="container mb-10">
             <p>This is livestream page</p>
             <LocalLivestreamPlayer />
         </div>
