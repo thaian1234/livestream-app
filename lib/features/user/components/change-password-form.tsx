@@ -2,7 +2,7 @@
 
 import { userApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, KeyIcon, LockIcon, PencilLine } from "lucide-react";
+import { LockIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -10,7 +10,6 @@ import { useUser } from "@/lib/hooks/use-user";
 
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
-import { IconInput, LeftIcon, RightIcon } from "@/components/icon-input";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -28,13 +27,11 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
+import { SecretInput } from "@/components/ui/secret-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
 export function ChangePasswordForm() {
-    const [showCurrent, setShowCurrent] = useState(false);
-    const [showNew, setShowNew] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
     const { mutate: handleChangePassword, isPending } =
         userApi.mutation.useChangePassword();
     const { user } = useUser();
@@ -92,40 +89,15 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>Current Password</FormLabel>
                                     <FormControl>
-                                        <IconInput
-                                            className="px-10"
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type={
-                                                showCurrent
-                                                    ? "text"
-                                                    : "password"
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
                                             }
-                                            {...field}
-                                        >
-                                            <LeftIcon>
-                                                <LockIcon className="size-5 text-gray-500" />
-                                            </LeftIcon>
-                                            <RightIcon>
-                                                <button
-                                                    className="size-5 text-white"
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setShowCurrent(
-                                                            !showCurrent,
-                                                        );
-                                                    }}
-                                                    disabled={isPending}
-                                                >
-                                                    {showCurrent ? (
-                                                        <EyeOff size={22} />
-                                                    ) : (
-                                                        <Eye size={22} />
-                                                    )}
-                                                </button>
-                                            </RightIcon>
-                                        </IconInput>
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -138,34 +110,15 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>New Password</FormLabel>
                                     <FormControl>
-                                        <IconInput
-                                            className="px-10"
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type={showNew ? "text" : "password"}
-                                            {...field}
-                                        >
-                                            <LeftIcon>
-                                                <PencilLine className="size-5 text-gray-500" />
-                                            </LeftIcon>
-                                            <RightIcon>
-                                                <button
-                                                    className="size-5 text-white"
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setShowNew(!showNew);
-                                                    }}
-                                                    disabled={isPending}
-                                                >
-                                                    {showNew ? (
-                                                        <EyeOff size={22} />
-                                                    ) : (
-                                                        <Eye size={22} />
-                                                    )}
-                                                </button>
-                                            </RightIcon>
-                                        </IconInput>
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
+                                            }
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -178,40 +131,15 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>Confirm Password</FormLabel>
                                     <FormControl>
-                                        <IconInput
-                                            className="px-10"
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type={
-                                                showConfirm
-                                                    ? "text"
-                                                    : "password"
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
                                             }
-                                            {...field}
-                                        >
-                                            <LeftIcon>
-                                                <KeyIcon className="size-5 text-gray-500" />
-                                            </LeftIcon>
-                                            <RightIcon>
-                                                <button
-                                                    className="size-5 text-white"
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setShowConfirm(
-                                                            !showConfirm,
-                                                        );
-                                                    }}
-                                                    disabled={isPending}
-                                                >
-                                                    {showConfirm ? (
-                                                        <EyeOff size={22} />
-                                                    ) : (
-                                                        <Eye size={22} />
-                                                    )}
-                                                </button>
-                                            </RightIcon>
-                                        </IconInput>
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
