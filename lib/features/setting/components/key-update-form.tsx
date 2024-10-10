@@ -1,14 +1,26 @@
 "use client";
 
 import { settingApi } from "../apis";
-import { ClipboardCopyIcon } from "lucide-react";
+import {
+    ClipboardPasteIcon,
+    KeySquareIcon,
+    RadioTowerIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-clipboard";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { TooltipModel } from "@/components/tooltip-model";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { SecretInput } from "@/components/ui/secret-input";
+
+import { GenerateKeyAlert } from "./generate-key-alert";
 
 interface KeyFormProps {}
 
@@ -16,44 +28,82 @@ export function KeyForm({}: KeyFormProps) {
     const { data: setting } = settingApi.query.useGetSetting();
     const { mutate: handleUpdateSetting, isPending: isUpdating } =
         settingApi.mutation.useUpdateSetting();
+
     const [_, copy] = useCopyToClipboard();
     const onSubmit = () => {
         handleUpdateSetting({});
     };
+
     const handleCopyServerUrl = () => {
-        copy(setting.data.setting?.serverUrl || "").then(() => {
-            toast.success("Copied successfully");
-        });
+        if (setting.data.setting?.serverUrl) {
+            copy(setting.data.setting.serverUrl).then(() => {
+                toast.success("Copied successfully");
+            });
+        }
     };
     const handleCopyStreamKey = () => {
-        copy(setting.data.setting?.streamKey || "").then(() => {
-            toast.success("Copied successfully");
-        });
+        if (setting.data.setting?.streamKey) {
+            copy(setting.data.setting?.streamKey).then(() => {
+                toast.success("Copied successfully");
+            });
+        }
     };
+
     return (
-        <div className="container">
-            <div className="flex space-x-4">
-                <Input
+        <Card className="rounded-md border border-slate-300">
+            <CardHeader>
+                <CardTitle className="text-xl">RMTP URL</CardTitle>
+                <CardDescription>
+                    Real-Time Messaging Protocol (RTMP) URL for streaming
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <SecretInput
                     disabled
-                    placeholder={setting.data.setting?.serverUrl || ""}
+                    value={setting.data.setting?.serverUrl || ""}
+                    leftIcon={<RadioTowerIcon size={20} />}
+                    className="truncate"
+                    rightIcon={
+                        <TooltipModel content="Copy" side="bottom">
+                            <button
+                                className="text-white/50 hover:text-white"
+                                onClick={handleCopyServerUrl}
+                                type="button"
+                            >
+                                <ClipboardPasteIcon size={20} />
+                            </button>
+                        </TooltipModel>
+                    }
                 />
-                <Button onClick={handleCopyServerUrl}>
-                    <ClipboardCopyIcon />
-                </Button>
-            </div>
-            <div className="flex space-y-4">
-                <Textarea
+            </CardContent>
+            <CardHeader className="mt-8">
+                <CardTitle className="text-xl">STREAM KEY</CardTitle>
+                <CardDescription>
+                    Securely manage these sensitive keys. Do not share them with
+                    anyone. If you suspect that one of your secret keys has been
+                    compromised
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="mb-8">
+                <SecretInput
                     disabled
-                    placeholder={setting.data.setting?.streamKey || ""}
-                    className="resize-none"
+                    value={setting.data.setting?.streamKey || ""}
+                    leftIcon={<KeySquareIcon size={20} />}
+                    className="truncate"
+                    rightIcon={
+                        <TooltipModel content="Copy" side="bottom">
+                            <button
+                                className="text-white/50 hover:text-white"
+                                onClick={handleCopyStreamKey}
+                                type="button"
+                            >
+                                <ClipboardPasteIcon size={20} />
+                            </button>
+                        </TooltipModel>
+                    }
                 />
-                <Button onClick={handleCopyStreamKey}>
-                    <ClipboardCopyIcon />
-                </Button>
-            </div>
-            <Button onClick={onSubmit} disabled={isUpdating}>
-                Generate
-            </Button>
-        </div>
+            </CardContent>
+            <GenerateKeyAlert isPending={isUpdating} onSubmit={onSubmit} />
+        </Card>
     );
 }

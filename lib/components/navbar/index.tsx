@@ -7,7 +7,7 @@ import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-6">
+        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-12">
             <div className="flex items-center">
                 <Link href="/">
                     <Image
@@ -20,7 +20,6 @@ export function Navbar() {
             </div>
             <div className="flex items-center justify-around space-x-8">
                 <SearchBar />
-                <div />
                 <Actions />
             </div>
         </nav>

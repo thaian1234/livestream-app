@@ -2,6 +2,7 @@
 
 import { userApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LockIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -25,8 +26,8 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SecretInput } from "@/components/ui/secret-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
@@ -88,12 +89,14 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>Current Password</FormLabel>
                                     <FormControl>
-                                        <Input
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type="password"
-                                            {...field}
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -107,12 +110,14 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>New Password</FormLabel>
                                     <FormControl>
-                                        <Input
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type="password"
-                                            {...field}
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -126,12 +131,14 @@ export function ChangePasswordForm() {
                                 <FormItem>
                                     <FormLabel>Confirm Password</FormLabel>
                                     <FormControl>
-                                        <Input
+                                        <SecretInput
+                                            {...field}
                                             disabled={
                                                 !changePassword || isPending
                                             }
-                                            type="password"
-                                            {...field}
+                                            leftIcon={
+                                                <LockIcon className="size-5" />
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />

@@ -9,9 +9,9 @@ import { useForm } from "react-hook-form";
 import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
 import { ErrorField } from "@/components/error-field";
+import { IconInput, LeftIcon, RightIcon } from "@/components/icon-input";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 
 import "@/style/auth.css";
 
@@ -34,46 +34,50 @@ export function SignInForm() {
     return (
         <form onSubmit={onSubmit}>
             <CardContent className="flex flex-col space-y-4">
-                <div className="relative flex">
-                    <MailIcon className="absolute left-3 top-1/2 z-50 size-5 -translate-y-1/2 transform text-gray-500 hover:text-gray-500" />
-                    <Input
-                        {...register("email")}
-                        placeholder="Enter your email"
-                        variant={errors.email ? "error" : "primary"}
-                        disabled={isPending}
-                        tabIndex={1}
-                        className="pl-12"
-                    />
-                </div>
+                <IconInput
+                    {...register("email")}
+                    placeholder="Enter your email"
+                    variant={errors.email ? "error" : "primary"}
+                    disabled={isPending}
+                    tabIndex={1}
+                    className="pl-12"
+                >
+                    <LeftIcon>
+                        <MailIcon className="size-5 text-gray-500" />
+                    </LeftIcon>
+                </IconInput>
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
                 )}
-                <div className="relative flex">
-                    <LockIcon className="absolute left-3 top-1/2 z-50 size-5 -translate-y-1/2 transform text-gray-500" />
-                    <Input
-                        {...register("password")}
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        variant={errors.password ? "error" : "primary"}
-                        disabled={isPending}
-                        tabIndex={1}
-                        className="pl-12"
-                    />
-                    <button
-                        className="absolute right-5 top-1/4 size-3 text-white"
-                        type="button"
-                        onClick={() => {
-                            setShowPassword(!showPassword);
-                        }}
-                        disabled={isPending}
-                    >
-                        {showPassword ? (
-                            <EyeOff size={22} />
-                        ) : (
-                            <Eye size={22} />
-                        )}
-                    </button>
-                </div>
+                <IconInput
+                    {...register("password")}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    variant={errors.password ? "error" : "primary"}
+                    disabled={isPending}
+                    tabIndex={1}
+                    className="px-12"
+                >
+                    <LeftIcon>
+                        <LockIcon className="size-5 text-gray-500" />
+                    </LeftIcon>
+                    <RightIcon>
+                        <button
+                            className="size-5 text-white"
+                            type="button"
+                            onClick={() => {
+                                setShowPassword(!showPassword);
+                            }}
+                            disabled={isPending}
+                        >
+                            {showPassword ? (
+                                <EyeOff size={22} />
+                            ) : (
+                                <Eye size={22} />
+                            )}
+                        </button>
+                    </RightIcon>
+                </IconInput>
                 {errors.password && (
                     <ErrorField>{errors.password.message}</ErrorField>
                 )}
