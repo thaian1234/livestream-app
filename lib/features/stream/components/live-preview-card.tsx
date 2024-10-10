@@ -1,10 +1,16 @@
+"use client";
+
 import { UsersRound } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 
 interface DashboardCardProps {
+    id: string;
     title: string;
     userName: string;
     category?: string;
@@ -14,7 +20,8 @@ interface DashboardCardProps {
     // Add more props if needed...
 }
 
-export default function LivePreviewCard({
+export function LivePreviewCard({
+    id,
     title,
     userName,
     category,
@@ -22,14 +29,32 @@ export default function LivePreviewCard({
     viewers,
     avatar,
 }: DashboardCardProps) {
+    const { setLiveInfor } = useLiveInfor();
+    const router = useRouter();
+
+    const handleNavigateLive = () => {
+        // Navigate to live room
+        router.push(`/live/${userName.replace(/\s+/g, "-")}`);
+        // get one API and setLiveInfor
+        setLiveInfor({
+            id,
+            title,
+            userName,
+            category,
+            viewers,
+            avatar,
+            followers: "122000",
+        });
+    };
     return (
         //khung ảnh 16:9, khung Card 5:4
         <AspectRatio ratio={5 / 4} className="overflow-y-hidden">
             <div className="h-full w-full font-sans">
                 {/* thumnail */}
                 <AspectRatio
+                    onClick={handleNavigateLive}
                     ratio={16 / 9}
-                    className="rounded-xl bg-gray-1"
+                    className="cursor-pointer rounded-xl bg-gray-1"
                 ></AspectRatio>
                 <div className="flex items-center">
                     <Image

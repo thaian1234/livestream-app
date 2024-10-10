@@ -1,15 +1,25 @@
 import { create } from "zustand";
 
 interface SidebarStore {
-    isOpen: boolean;
-    onExpand: () => void;
-    onCollapse: () => void;
+    isOpenSidebar: boolean;
+    isHideSidebar: boolean;
+    onExpandSidebar: () => void;
+    onCollapseSidebar: () => void;
+    onHideSidebar: () => void;
+    onShowSidebar: () => void;
 }
 
 export const useSidebar = create<SidebarStore>((set) => ({
-    isOpen: true,
-    onExpand: () => set(() => ({ isOpen: false })),
-    onCollapse() {
-        set(() => ({ isOpen: true }));
+    isOpenSidebar: false,
+    isHideSidebar: false,
+    onExpandSidebar: () => set(() => ({ isOpenSidebar: false })),
+    onCollapseSidebar: () => {
+        set(() => ({ isOpenSidebar: true }));
+    },
+    onHideSidebar: () => {
+        set(() => ({ isHideSidebar: true }));
+    },
+    onShowSidebar: () => {
+        set(() => ({ isHideSidebar: false }));
     },
 }));
