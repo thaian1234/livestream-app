@@ -34,7 +34,7 @@ export const ParticipantOverlay = ({
     const { t } = useI18n();
     return (
         <div className="str-video__livestream-layout__overlay">
-            <div className="str-video__livestream-layout__overlay__bar">
+            <div className="flex items-center">
                 {showLiveBadge && (
                     <span className="str-video__livestream-layout__live-badge">
                         {t("Live")}
@@ -64,7 +64,7 @@ export const ParticipantOverlay = ({
                         onClick={toggleFullScreen}
                     />
                 )}
-                {/* <VolumeControl /> */}
+                <VolumeControl />
             </div>
         </div>
     );
