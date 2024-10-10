@@ -11,6 +11,8 @@ import {
     useParticipantViewContext,
 } from "@stream-io/video-react-sdk";
 
+import { cn } from "@/lib/utils";
+
 import { LiveBadge } from "@/components/live-badge";
 
 import { PlayButton } from "./play-button";
@@ -23,7 +25,6 @@ interface ParticipantOverlayProps {
     showDuration?: boolean;
     showLiveBadge?: boolean;
     showSpeakerName?: boolean;
-    isLive?: boolean;
 }
 
 export const ParticipantOverlay = ({
@@ -32,10 +33,17 @@ export const ParticipantOverlay = ({
     showLiveBadge,
     showParticipantCount,
     showSpeakerName,
-    isLive,
 }: ParticipantOverlayProps) => {
+    const { useIsCallLive } = useCallStateHooks();
+    const isLive = useIsCallLive();
+
     return (
-        <section className="str-video__livestream-layout__overlay">
+        <section
+            className={cn(
+                "str-video__livestream-layout__overlay",
+                "m-0 aspect-video w-full p-0",
+            )}
+        >
             {isLive && (
                 <span className="absolute right-2 top-2">
                     <LiveBadge className="text-lg font-normal" />

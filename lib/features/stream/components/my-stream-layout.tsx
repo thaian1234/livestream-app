@@ -93,7 +93,12 @@ export function MyLivestreamLayout(props: LivestreamLayoutProps) {
     );
 
     return (
-        <div className="str-video__livestream-layout__wrapper container aspect-video">
+        <div
+            className={cn(
+                "str-video__livestream-layout__wrapper",
+                "m-0 aspect-video w-full p-0",
+            )}
+        >
             <ParticipantsAudio participants={remoteParticipants} />
             {currentSpeaker && (
                 <ParticipantView

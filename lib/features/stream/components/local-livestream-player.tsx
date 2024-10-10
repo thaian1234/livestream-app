@@ -1,27 +1,13 @@
 "use client";
 
-import {
-    CallControls,
-    LivestreamLayout,
-    LivestreamPlayer,
-    ParticipantView,
-    StreamTheme,
-    useCall,
-    useCallStateHooks,
-} from "@stream-io/video-react-sdk";
+import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { CustomParticipantViewUI } from "./custom-participant-view";
+import { LiveInformation } from "./livescreen/live-information";
 import { MyLivestreamLayout } from "./my-stream-layout";
-
-interface CustomLivestreamPlayerProps {
-    callId: string;
-    callType: string;
-}
 
 export const LocalLivestreamPlayer = () => {
     const call = useCall();
@@ -48,13 +34,16 @@ export const LocalLivestreamPlayer = () => {
     };
 
     return (
-        <>
+        <div className="space-y-4">
             <MyLivestreamLayout
                 enableFullScreen={true}
                 mirrorLocalParticipantVideo={false}
                 showLiveBadge
             />
-            <div>Live: {participants.length}</div>
+            <div className="2xl:px-8">
+                <LiveInformation />
+            </div>
+            {/* <div>Live: {participants.length}</div>
             <div>
                 {participants.map((item, i) => (
                     <div key={i}>
@@ -62,10 +51,10 @@ export const LocalLivestreamPlayer = () => {
                         <p>{item.roles}</p>
                     </div>
                 ))}
-            </div>
+            </div> */}
             <Button onClick={() => (isLive ? handleStopLive() : handleLive())}>
                 {isLive ? "Stop Live" : "Go Live"}
             </Button>
-        </>
+        </div>
     );
 };
