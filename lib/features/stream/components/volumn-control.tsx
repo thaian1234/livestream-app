@@ -10,17 +10,16 @@ import { Slider } from "@/components/ui/slider";
 
 export const VolumeControl = () => {
     const { videoElement } = useParticipantViewContext();
-    const { useMicrophoneState } = useCallStateHooks();
-    const { isMute } = useMicrophoneState();
     const [volume, setVolume] = useState(50);
 
-    const isMuted = isMute && volume === 0;
+    const isMuted = volume === 0 || !videoElement;
 
     const updateVideoVolume = useCallback(
         (newVolume: number) => {
             if (videoElement) {
                 videoElement.volume = newVolume / 100;
                 videoElement.muted = newVolume === 0;
+                setVolume(newVolume);
             }
         },
         [videoElement],
@@ -35,15 +34,10 @@ export const VolumeControl = () => {
     const handleVolumeChange = useCallback(
         (value: number[]) => {
             const newVolume = value[0];
-            setVolume(newVolume);
             updateVideoVolume(newVolume);
         },
         [updateVideoVolume],
     );
-
-    useEffect(() => {
-        updateVideoVolume(volume);
-    }, [volume, updateVideoVolume]);
 
     return (
         <div className="flex items-center space-x-4">
