@@ -22,7 +22,8 @@ export class StreamController implements IStreamController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/stream-token", ...this.getStreamToken());
+            .get("/stream-token", ...this.getStreamToken())
+            .patch("/", ...this.updateStream());
     }
     private getStreamToken() {
         return this.factory.createHandlers(
@@ -55,6 +56,35 @@ export class StreamController implements IStreamController {
                                 ? stream.setting.streamKey
                                 : token,
                     },
+                });
+            },
+        );
+    }
+    private updateStream() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                StreamDTO.updateSchema,
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const jsonData = c.req.valid("json");
+                if (!currentUser) {
+                    throw new MyError.UnauthorizedError();
+                }
+                const updatedStream = await this.streamService.updateStream(
+                    currentUser.stream.id,
+                    jsonData,
+                );
+                if (!updatedStream) {
+                    throw new MyError.BadRequestError("Stream updates fail");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: StreamDTO.parse(updatedStream),
+                    status: HttpStatus.OK,
                 });
             },
         );
