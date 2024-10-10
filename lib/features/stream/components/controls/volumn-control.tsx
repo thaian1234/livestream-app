@@ -2,14 +2,16 @@ import { useParticipantViewContext } from "@stream-io/video-react-sdk";
 import { Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useState } from "react";
 
+import { useControlVideoStore } from "@/lib/stores/use-control-video-store";
+
 import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
 export const VolumeControl = () => {
     const { videoElement } = useParticipantViewContext();
-    const [volume, setVolume] = useState(50);
     const [isVolumeHovered, setIsVolumeHovered] = useState(false);
+    const { handleVolumeChange, volume } = useControlVideoStore();
 
     const isMuted = volume === 0 && !!videoElement;
 
@@ -18,25 +20,16 @@ export const VolumeControl = () => {
             if (videoElement) {
                 videoElement.volume = newVolume / 100;
                 videoElement.muted = newVolume === 0;
-                setVolume(newVolume);
+                handleVolumeChange(videoElement, newVolume);
             }
         },
-        [videoElement],
+        [handleVolumeChange, videoElement],
     );
 
     const handleToggleMute = useCallback(() => {
         const newVolume = isMuted ? 50 : 0;
-        setVolume(newVolume);
         updateVideoVolume(newVolume);
     }, [isMuted, updateVideoVolume]);
-
-    const handleVolumeChange = useCallback(
-        (value: number[]) => {
-            const newVolume = value[0];
-            updateVideoVolume(newVolume);
-        },
-        [updateVideoVolume],
-    );
 
     return (
         <span
@@ -60,7 +53,9 @@ export const VolumeControl = () => {
                 <div className="bg-black absolute left-10 w-40 transform rounded-md bg-opacity-50 p-2">
                     <Slider
                         value={[volume]}
-                        onValueChange={handleVolumeChange}
+                        onValueChange={(value) =>
+                            handleVolumeChange(videoElement, value[0])
+                        }
                         max={100}
                         step={1}
                         className="h-1 w-full"
