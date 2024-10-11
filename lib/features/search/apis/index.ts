@@ -8,11 +8,12 @@ const keys = {
         size,
         filterBy,
     ],
+    session: ["session"],
 };
 
 export const searchApi = {
     query: {
-        useSearch(page = "1", size = "10", filterBy = "") {
+        useSearch(page: string, size: string, filterBy: string) {
             const $get = client.api.search.$get;
             return Fetcher.useHonoQuery(
                 $get,
