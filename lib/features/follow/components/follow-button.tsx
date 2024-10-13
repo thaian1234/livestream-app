@@ -53,7 +53,7 @@ export function FollowButton({ followerId, followingId }: FollowButtonProps) {
                     <>
                         <UserMinus className="h-6 w-6 fill-red-500 text-red-500 transition-all duration-300 ease-in-out" />
                         <span className="fill-red-500 text-red-500 transition-all duration-300 ease-in-out">
-                            UnFollow
+                            Unfollow
                         </span>
                     </>
                 ) : (
