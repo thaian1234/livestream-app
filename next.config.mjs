@@ -7,6 +7,9 @@ const nextConfig = {
         ],
     },
     reactStrictMode: false,
+    images: {
+        domains: ["lh3.googleusercontent.com"], // Thêm domain của Google cho phép dùng trong src của next/image
+    },
 };
 
 export default nextConfig;

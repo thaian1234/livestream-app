@@ -39,8 +39,8 @@ export function Sidebar() {
                     )}
                 >
                     {isOpenSidebar ? (
-                        <Card className="w-auto p-4 pr-0">
-                            <CardTitle className="mb-2 mr-4 flex flex-row items-center justify-between text-xl">
+                        <Card className="w-auto divide-y divide-white/40 p-4">
+                            <CardTitle className="mb-2 flex flex-row items-center justify-between text-xl">
                                 Channels
                                 <TooltipModel content="Collapse" side="right">
                                     <button onClick={onExpandSidebar}>
