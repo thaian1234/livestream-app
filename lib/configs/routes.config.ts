@@ -10,4 +10,5 @@ export const ROUTES = {
     SETTINGS_PAGE: (username: string) => `/dashboard/${username}/settings`,
     SET_USERNAME_PAGE: "/set-username",
     KEY_PAGE: (username: string) => `/dashboard/${username}/key`,
+    COMMUNITY_PAGE: (username: string) => `/dashboard/${username}/community`,
 };
