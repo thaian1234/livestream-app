@@ -1,10 +1,9 @@
 import {
-    Bookmark,
     KeyIcon,
     LucideIcon,
-    Tag,
     UserCog2Icon,
     UserRoundPenIcon,
+    Users,
     Video,
 } from "lucide-react";
 
@@ -52,10 +51,10 @@ export function getDashboardMenuList(
                     submenus: [],
                 },
                 {
-                    href: "/tags",
-                    label: "Tags",
-                    active: pathname.includes("/tags"),
-                    icon: Tag,
+                    href: ROUTES.COMMUNITY_PAGE(username),
+                    label: "Community",
+                    active: pathname === ROUTES.COMMUNITY_PAGE(username),
+                    icon: Users,
                     submenus: [],
                 },
             ],
