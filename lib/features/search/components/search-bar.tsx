@@ -44,7 +44,11 @@ export function SearchBar() {
                 onClick={handleDeleteSearch}
                 type="button"
             >
-                {isPending ? <Spinner size={"small"} /> : <X size={20} />}
+                {isPending && search !== "" ? (
+                    <Spinner size={"small"} />
+                ) : (
+                    <X size={20} />
+                )}
             </button>
         </div>
     );
