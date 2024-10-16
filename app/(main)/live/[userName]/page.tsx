@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { LivePreviewCarousel } from "@/lib/features/stream/components/live-preview-carousel";
+import { LivePreviewCarousel } from "@/lib/features/stream/components/live-preview/live-preview-carousel";
 import { Chat } from "@/lib/features/stream/components/live/chat";
 import { LiveInformation } from "@/lib/features/stream/components/live/live-information";
 import { LiveScreen } from "@/lib/features/stream/components/live/live-screen";

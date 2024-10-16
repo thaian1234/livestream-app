@@ -5,33 +5,34 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { UserPreview } from "@/lib/components/profile/search/user-preview";
-import { LivesPreview } from "@/lib/features/stream/components/live-preview";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview/search/live-preview";
+import { useSidebar } from "@/lib/stores/store-sidebar";
+import { cn } from "@/lib/utils";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SearchPage() {
     const searchParams = useSearchParams();
-    const [activeTab, setActiveTab] = useState("General");
+    const [activeTab, setActiveTab] = useState("All");
     //  giá trị của 'search_query' là tham số tìm kiếm
     const searchQuery = searchParams.get("search_query");
 
-    const handleTabChange = (value: string) => {
-        setActiveTab(value);
-    };
+    const { isOpenSidebar } = useSidebar();
     return (
-        <ScrollArea className="h-[calc(100vh-5rem)] w-full">
-            <Tabs
-                value={activeTab}
-                onValueChange={handleTabChange}
-                className="w-full px-10"
-            >
+        <ScrollArea
+            className={cn(
+                "h-[calc(100vh-5rem)] w-full",
+                isOpenSidebar ? "" : "ml-20",
+            )}
+        >
+            <Tabs defaultValue="All" className="w-full px-10">
                 <TabsList className="mb-8 grid w-[300px] grid-cols-3 space-x-4 bg-black-1">
                     <TabsTrigger
                         className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
-                        value="General"
+                        value="All"
                     >
-                        General
+                        All
                     </TabsTrigger>
                     <TabsTrigger
                         className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
@@ -46,42 +47,27 @@ export default function SearchPage() {
                         Channel
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="General">
-                    <div className="flex justify-between py-2">
+                <TabsContent value="All">
+                    <div className="space-y-4">
                         <p className="text-2xl">Channel</p>
-                        <button
-                            className="flex items-center text-base hover:text-lg"
-                            onClick={() => handleTabChange("Channel")}
-                        >
-                            <p>Show all</p>
-                            <ChevronRight />
-                        </button>
-                    </div>
-                    <div className="grid gap-6 min-[712px]:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                        <UserPreview limit={4} />
-                    </div>
+                        <div className="flex flex-col space-y-4">
+                            <UserPreview limit={4} />
+                        </div>
 
-                    <div className="flex justify-between py-2">
                         <p className="text-2xl">Live</p>
-                        <button
-                            className="flex items-center text-base hover:text-lg"
-                            onClick={() => handleTabChange("Live")}
-                        >
-                            <p>Show all</p>
-                            <ChevronRight />
-                        </button>
-                    </div>
-                    <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
-                        <LivesPreview limit={3} />
+                        <div className="flex flex-col space-y-4">
+                            <LivesPreview />
+                        </div>
                     </div>
                 </TabsContent>
+
                 <TabsContent value="Live">
-                    <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
+                    <div className="flex flex-col space-y-4">
                         <LivesPreview />
                     </div>
                 </TabsContent>
                 <TabsContent value="Channel">
-                    <div className="grid gap-10 min-[712px]:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                    <div className="flex flex-col space-y-4">
                         <UserPreview />
                     </div>
                 </TabsContent>
