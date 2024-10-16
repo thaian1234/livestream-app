@@ -1,6 +1,7 @@
 import { useParticipantViewContext } from "@stream-io/video-react-sdk";
 import { Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import { useControlVideoStore } from "@/lib/stores/use-control-video-store";
 
@@ -11,7 +12,12 @@ import { Slider } from "@/components/ui/slider";
 export const VolumeControl = () => {
     const { videoElement } = useParticipantViewContext();
     const [isVolumeHovered, setIsVolumeHovered] = useState(false);
-    const { handleVolumeChange, volume } = useControlVideoStore();
+    const { handleVolumeChange, volume } = useControlVideoStore(
+        useShallow((state) => ({
+            handleVolumeChange: state.handleVolumeChange,
+            volume: state.volume,
+        })),
+    );
 
     const isMuted = volume === 0 && !!videoElement;
 
