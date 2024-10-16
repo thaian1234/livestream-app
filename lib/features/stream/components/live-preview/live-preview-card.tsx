@@ -9,7 +9,7 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 
-interface DashboardCardProps {
+interface LivePreviewCardProps {
     id: string;
     title: string;
     userName: string;
@@ -28,7 +28,7 @@ export default function LivePreviewCard({
     thumnail,
     viewers,
     avatar,
-}: DashboardCardProps) {
+}: LivePreviewCardProps) {
     const { setLiveInfor } = useLiveInfor();
     const router = useRouter();
 

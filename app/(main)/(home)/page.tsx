@@ -4,7 +4,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 
-import { LivesPreview } from "@/lib/features/stream/components/live-preview";
+import { LivesPreview } from "@/lib/features/stream/components/live-preview/live-preview";
 import { Miniplayer } from "@/lib/features/stream/components/live/miniplayer";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
