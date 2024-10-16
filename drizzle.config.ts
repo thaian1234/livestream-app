@@ -19,4 +19,5 @@ export default defineConfig({
         url: process.env.DB_URL || "",
         ssl: false,
     },
+    casing: "snake_case",
 });

@@ -1,6 +1,5 @@
 import { CustomAdapter } from "../api/configs/adapter.config";
-import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 
 import { envServer } from "@/lib/env/env.server";
 
@@ -8,16 +7,16 @@ import tableSchemas, { tableRelations } from "./schemas";
 
 class Database {
     private static instance: Database;
-    public db: PostgresJsDatabase<typeof tableSchemas & typeof tableRelations>;
+    public db;
     public adapter: CustomAdapter;
-
     private constructor() {
-        const sql = postgres(envServer.DB_URL);
-        this.db = drizzle(sql, {
+        this.db = drizzle({
+            connection: envServer.DB_URL,
             schema: {
                 ...tableSchemas,
                 ...tableRelations,
             },
+            casing: "snake_case",
         });
         this.adapter = new CustomAdapter(
             this.db,
