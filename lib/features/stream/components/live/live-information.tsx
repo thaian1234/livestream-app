@@ -1,5 +1,6 @@
 import { Forward, Heart, UsersRound } from "lucide-react";
 
+import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,10 +36,8 @@ export function LiveInformation() {
                 </div>
             </div>
             <div className="space-x-2"></div>
-            <Button size="sm" className="rounded-xl bg-teal-2 text-black-0">
-                <Heart size={20} className="mr-1" />
-                Follow
-            </Button>
+
+            <FollowButton followerId="" followingId="" />
 
             <Button
                 size="sm"
