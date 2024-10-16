@@ -1,3 +1,4 @@
+import { useParticipantViewContext } from "@stream-io/video-react-sdk";
 import { PanelRight } from "lucide-react";
 import { useCallback } from "react";
 
@@ -11,6 +12,7 @@ export function CinemaModeButton() {
     const { setLiveScreenStatus, liveSrceenStatus, resetLiveScreenStatus } =
         useLiveInfor();
     const { onHideSidebar, onShowSidebar } = useSidebar();
+    // const { participantViewElement } = useParticipantViewContext();
 
     const handleCinemaMode = () => {
         if (liveSrceenStatus.cinemaMode === true) {

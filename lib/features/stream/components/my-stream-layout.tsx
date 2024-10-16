@@ -4,7 +4,7 @@ import { ParticipantView, ParticipantsAudio } from "@stream-io/video-react-sdk";
 
 import { cn } from "@/lib/utils";
 
-import { ParticipantOverlay } from "./participant-overlay";
+import { ParticipantOverlay } from "./controls/participant-overlay";
 
 /**
  * The props for the {@link MyLivestreamLayout} component.
@@ -93,7 +93,12 @@ export function MyLivestreamLayout(props: LivestreamLayoutProps) {
     );
 
     return (
-        <div className="str-video__livestream-layout__wrapper container aspect-video">
+        <div
+            className={cn(
+                "str-video__livestream-layout__wrapper",
+                "m-0 aspect-video w-full p-0",
+            )}
+        >
             <ParticipantsAudio participants={remoteParticipants} />
             {currentSpeaker && (
                 <ParticipantView

@@ -4,6 +4,7 @@ import { client } from "@/lib/shared/client";
 
 const keys = {
     stream_token: ["stream_token"],
+    stream_information: (username: string) => ["stream_information", username],
 };
 
 export const streamApi = {
@@ -16,6 +17,18 @@ export const streamApi = {
                 {},
                 {
                     retry: 1,
+                },
+            );
+        },
+        useGetStreamInformation(username: string) {
+            const $get = client.api.users[":username"].$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.stream_information(username),
+                {
+                    param: {
+                        username,
+                    },
                 },
             );
         },

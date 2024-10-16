@@ -26,8 +26,9 @@ export default function LivePage() {
         resetLiveScreenStatus();
         onShowSidebar();
     }, []);
+
     return (
-        <div className="flex w-screen pr-4">
+        <div className="flex w-screen space-x-4 px-4">
             <ScrollArea className="h-[calc(100vh-5rem)] w-full pl-4 pr-2">
                 <LiveScreen />
                 {!liveSrceenStatus.cinemaMode && (

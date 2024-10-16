@@ -20,7 +20,7 @@ interface DashboardCardProps {
     // Add more props if needed...
 }
 
-export default function LivePreviewCard({
+export function LivePreviewCard({
     id,
     title,
     userName,

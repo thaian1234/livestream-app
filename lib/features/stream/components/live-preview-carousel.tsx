@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/carousel";
 
 import { cardData } from "./live-preview";
-import LivePreviewCard from "./live-preview-card";
+import { LivePreviewCard } from "./live-preview-card";
 
 export function LivePreviewCarousel() {
     const { isOpenSidebar } = useSidebar();
