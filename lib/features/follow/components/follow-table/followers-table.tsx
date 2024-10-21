@@ -1,8 +1,11 @@
 import { followApi } from "../../apis";
 
 import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { useUser } from "@/lib/hooks/use-user";
 
-import { FollowItem } from "./follow-item";
+import { DataTable } from "@/components/data-table";
+
+import { columns } from "./columns";
 
 const dummyDataFollowers = [
     { id: "1", username: "Channel 1", imageUrl: "/user.svg" },
@@ -20,7 +23,9 @@ const dummyDataFollowers = [
     { id: "10", username: "Channel 10", imageUrl: "/user.svg" },
     { id: "10", username: "Channel 10", imageUrl: "/user.svg" },
 ];
-export function FollowersList() {
+export function FollowersTable() {
+    const { user } = useUser();
+    const isFollowerState = true;
     const { data, isPending, error } = followApi.query.useFollow();
     if (data === undefined || isPending) {
         return <ListSkeleton />;
@@ -30,8 +35,12 @@ export function FollowersList() {
     }
     const followers = data?.data.followers;
     return (
-        <div className="flex h-full flex-col py-4 text-card-foreground shadow-sm">
-            {followers && <FollowItem followings={followers} />}
+        <div className="container mx-auto py-10">
+            <DataTable
+                columns={columns(user.id, isFollowerState)}
+                data={dummyDataFollowers}
+                isHeader={false}
+            />
         </div>
     );
 }
