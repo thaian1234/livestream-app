@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useAuth } from "@/lib/providers/auth-provider";
 
+import { UserAvatar } from "@/components/user-avatar";
+
 interface UserPreviewCardProps {
     id: string;
     username: string;
@@ -27,13 +29,7 @@ export function UserPreviewCard({
             <div className="flex space-x-4">
                 <div className="flex min-w-72 justify-center">
                     <button onClick={navigateUserProfile}>
-                        <Image
-                            className="rounded-full object-cover"
-                            src={imageUrl || "/user.svg"}
-                            alt={username}
-                            height={120}
-                            width={120}
-                        />
+                        <UserAvatar imageUrl={"/user.svg"} size={"xl"} />
                     </button>
                 </div>
                 <p className="flex flex-col space-y-1">

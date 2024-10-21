@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { UserPreview } from "@/lib/components/profile/search/user-preview";
-import { LivesPreview } from "@/lib/features/stream/components/live-preview/search/live-preview";
+import { LivesPreview } from "@/lib/features/search/components/live-preview";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
