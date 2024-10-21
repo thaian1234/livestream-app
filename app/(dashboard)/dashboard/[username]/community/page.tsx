@@ -1,9 +1,9 @@
 "use client";
 
 import { Profile } from "@/lib/components/profile/profile";
-import { BlockList } from "@/lib/features/block/components/block-list";
-import { FollowersList } from "@/lib/features/follow/components/community/followers-list";
-import { FollowingsList } from "@/lib/features/follow/components/community/followings-list";
+import { BlockTable } from "@/lib/features/block/components/block-table";
+import { FollowersTable } from "@/lib/features/follow/components/follow-table/followers-table";
+import { FollowingsTable } from "@/lib/features/follow/components/follow-table/followings-table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -21,13 +21,13 @@ export default function CommunityPage() {
                         <TabsTrigger value="Block">Block</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Following">
-                        <FollowersList />
+                        <FollowingsTable />
                     </TabsContent>
                     <TabsContent value="Followers">
-                        <FollowingsList />
+                        <FollowersTable />
                     </TabsContent>
                     <TabsContent value="Block">
-                        <BlockList />
+                        <BlockTable />
                     </TabsContent>
                 </Tabs>
             </div>
