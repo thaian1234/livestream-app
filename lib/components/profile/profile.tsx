@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { UserAvatar } from "@/components/user-avatar";
 
 import ProfileSkeleton from "./profile-skeleton";
 
@@ -28,14 +29,8 @@ export function Profile() {
 
     return (
         <div className="flex w-[350px] flex-col items-center space-y-4">
-            <button className="">
-                <Image
-                    className="rounded-full object-cover"
-                    src={user.imageUrl || "/user.svg"}
-                    alt={user.username}
-                    height={150}
-                    width={150}
-                />
+            <button>
+                <UserAvatar imageUrl={"/user.svg"} size={"xxl"} />
             </button>
             <p className="max-w-full break-words text-2xl">{user.username}</p>
             <div className="flex w-full justify-around">
