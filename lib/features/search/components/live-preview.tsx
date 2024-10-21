@@ -112,11 +112,13 @@ export const cardData = [
         viewers: "5",
     },
 ];
-
-export function LivesPreview() {
+interface LivesPreviewProps {
+    limit?: number;
+}
+export function LivesPreview({ limit }: LivesPreviewProps) {
     return (
         <>
-            {cardData.map((card, index) => (
+            {cardData.slice(0, limit || cardData.length).map((card, index) => (
                 <LivePreviewCard
                     key={index}
                     id={card.id}
