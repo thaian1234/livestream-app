@@ -1,10 +1,10 @@
-import { followApi } from "../../apis";
+import { useUser } from "@/lib/hooks/use-user";
 
-import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { DataTable } from "@/components/data-table";
 
-import { FollowItem } from "./follow-item";
+import { columns } from "./columns";
 
-const dummyDataFollowings = [
+const dataBlock = [
     { id: "1", username: "Channel 1", imageUrl: "/user.svg" },
     { id: "2", username: "Channel 2", imageUrl: "/user.svg" },
     { id: "3", username: "Channel 3", imageUrl: "/user.svg" },
@@ -20,18 +20,16 @@ const dummyDataFollowings = [
     { id: "10", username: "Channel 10", imageUrl: "/user.svg" },
     { id: "10", username: "Channel 10", imageUrl: "/user.svg" },
 ];
-export function FollowingsList() {
-    const { data, isPending, error } = followApi.query.useFollow();
-    if (data === undefined || isPending) {
-        return <ListSkeleton />;
-    }
-    if (error) {
-        return <p>Some thing went wrong</p>;
-    }
-    const following = data?.data.followings;
+export function BlockTable() {
+    const { user } = useUser();
+
     return (
-        <div className="flex h-full flex-col py-4 text-card-foreground shadow-sm">
-            {following && <FollowItem followings={following} />}
+        <div className="container mx-auto py-10">
+            <DataTable
+                columns={columns(user.id)}
+                data={dataBlock}
+                isHeader={false}
+            />
         </div>
     );
 }
