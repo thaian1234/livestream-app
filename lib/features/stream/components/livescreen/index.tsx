@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CinemaModeButton } from "./cinema-mode-button";
 import { FullScreenButton } from "./full-screen-button";
 import { MiniplayerButton } from "./miniplayer-button";
+import { VideoQualitySelectorDemo } from "./video-quality-selector-demo";
 import { VolumnButton } from "./volumn-button";
 
 export function LiveScreen() {
@@ -73,11 +74,15 @@ export function LiveScreen() {
                                     {isPaused ? <Play /> : <Pause />}
                                 </Button>
                             </TooltipModel>
+                            {/* thay bằng <VolumnControl/> */}
                             <VolumnButton />
                         </div>
-                        <div>
+                        <div className="flex">
+                            <VideoQualitySelectorDemo />
+                            {/* thay bằng <PiPButton /> */}
                             <MiniplayerButton />
                             <CinemaModeButton />
+                            {/* thay bằng <ToggleFullScreenButton/> */}
                             <FullScreenButton />
                         </div>
                     </div>
