@@ -15,6 +15,7 @@ import { CinemaModeButton } from "./cinema-mode-button";
 import { FullScreenButton } from "./full-screen-button";
 import { LivestreamPlayer } from "./livestream-player";
 import { MiniplayerButton } from "./miniplayer-button";
+import { VideoQualitySelectorDemo } from "./video-quality-selector-demo";
 import { VolumnButton } from "./volumn-button";
 
 export function LiveScreen() {
@@ -76,10 +77,13 @@ export function LiveScreen() {
         //                     </TooltipModel>
         //                     <VolumnButton />
         //                 </div>
-        //                 <div>
-        //                     <MiniplayerButton />
-        //                     <CinemaModeButton />
-        //                     <FullScreenButton />
+        //                 <div className="flex">
+        //                     <VideoQualitySelectorDemo />
+        // thay bằng <PiPButton />
+        // <MiniplayerButton />
+        // <CinemaModeButton />
+        //  thay bằng <ToggleFullScreenButton/>
+        // <FullScreenButton />
         //                 </div>
         //             </div>
         //         </>
