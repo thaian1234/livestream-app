@@ -1,3 +1,5 @@
+import { streamApi } from "../../apis";
+import { StreamSectionLayout } from "../../layouts/stream-section.layout";
 import React from "react";
 
 import { LivePreviewCard } from "./live-preview-card";
@@ -114,20 +116,52 @@ export const cardData = [
 ];
 
 export function LivesPreview() {
+    const { data, isPending, isError } = streamApi.query.useGetDefaultStreams(); // TODO: Add pagination
+    if (isPending) {
+        return <p>Loading stream...</p>;
+    }
+    if (!data || isError) {
+        return <p>Cannot fetch Streams</p>;
+    }
+    const recommendStreams = data.data.recommends;
+    const followingStreams = data.data.followings;
+
     return (
-        <>
-            {cardData.map((card, index) => (
-                <LivePreviewCard
-                    key={index}
-                    id={card.id}
-                    title={card.title}
-                    userName={card.userName}
-                    thumnail={card.thumnail}
-                    category={card.category}
-                    viewers={card.viewers}
-                    avatar={card.avatar}
-                />
-            ))}
-        </>
+        <section className="flex w-full flex-col">
+            {!!recommendStreams && (
+                <StreamSectionLayout title="Recommends">
+                    <div className="grid grid-cols-3 gap-x-8">
+                        {recommendStreams.map((card, index) => (
+                            <LivePreviewCard
+                                key={index}
+                                id={card.id}
+                                isLive={card.isLive}
+                                name={card.name}
+                                thumbnailUrl={card.thumbnailUrl}
+                                userId={card.userId}
+                                user={card.user}
+                            />
+                        ))}
+                    </div>
+                </StreamSectionLayout>
+            )}
+            {!!followingStreams && (
+                <StreamSectionLayout title="Followings">
+                    <div className="grid grid-cols-3 gap-x-8">
+                        {followingStreams.map((card, index) => (
+                            <LivePreviewCard
+                                key={index}
+                                id={card.id}
+                                isLive={card.isLive}
+                                name={card.name}
+                                thumbnailUrl={card.thumbnailUrl}
+                                userId={card.userId}
+                                user={card.user}
+                            />
+                        ))}
+                    </div>
+                </StreamSectionLayout>
+            )}
+        </section>
     );
 }

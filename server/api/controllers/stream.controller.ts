@@ -1,3 +1,4 @@
+import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
@@ -22,10 +23,11 @@ export class StreamController implements IStreamController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/stream-token", ...this.getStreamToken())
-            .patch("/", ...this.updateStream());
+            .get("/stream-token", ...this.getStreamTokenHandler())
+            .patch("/", ...this.updateStreamHandler())
+            .get("/", ...this.getAllStreamHandler());
     }
-    private getStreamToken() {
+    private getStreamTokenHandler() {
         return this.factory.createHandlers(
             AuthMiddleware.isAuthenticated,
             async (c) => {
@@ -60,7 +62,7 @@ export class StreamController implements IStreamController {
             },
         );
     }
-    private updateStream() {
+    private updateStreamHandler() {
         return this.factory.createHandlers(
             zValidator(
                 "json",
@@ -84,6 +86,48 @@ export class StreamController implements IStreamController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: StreamDTO.parse(updatedStream),
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getAllStreamHandler() {
+        const queries = QueryDTO.createPaginationSchema(1, 5);
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const currentUser = c.get("user");
+                const offset = (page - 1) * size;
+
+                const recommendsPromise = currentUser
+                    ? this.streamService.getRecommendedStreamsByUserId(
+                          currentUser.id,
+                          offset,
+                          size,
+                      )
+                    : this.streamService.getRecommendedStreams(offset, size);
+                const followingsPromise = currentUser
+                    ? this.streamService.getFollowingStreamsByUserId(
+                          currentUser.id,
+                          offset,
+                          size,
+                      )
+                    : null;
+
+                const [recommendStreams, followingStreams] = await Promise.all([
+                    recommendsPromise,
+                    followingsPromise,
+                ]);
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        recommends:
+                            StreamDTO.parseStreamWithUser(recommendStreams),
+                        followings:
+                            StreamDTO.parseStreamWithUser(followingStreams),
+                    },
                     status: HttpStatus.OK,
                 });
             },

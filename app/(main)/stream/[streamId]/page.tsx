@@ -4,7 +4,7 @@ import { LivestreamLayout, StreamVideo } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { useParams } from "next/navigation";
 
-import { CustomCall } from "@/lib/features/stream/components/custom-call";
+import { CustomCall } from "@/lib/features/stream/components/local-livescreen/custom-call";
 import { useVideoClient } from "@/lib/features/stream/hooks/use-stream-video";
 
 import { Spinner } from "@/components/ui/spinner";

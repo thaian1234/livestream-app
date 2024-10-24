@@ -4,12 +4,12 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 
-import { Miniplayer } from "@/lib/features/stream/components/live/miniplayer";
+import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
+import { LivesPreview } from "@/lib/features/stream/components/preview/live-preview";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LivesPreview } from "@/lib/features/stream/components/live-preview";
 
 export default function HomePage() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -23,10 +23,7 @@ export default function HomePage() {
                 <h2 className="mb-6 text-2xl font-bold text-white">
                     Welcome to Your Dashboard
                 </h2>
-                {/* Placeholder content */}
-                <div className="grid gap-6 min-[712px]:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
-                    <LivesPreview />
-                </div>
+                <LivesPreview />
                 <div className="mt-8 flex justify-center">
                     <Button
                         onClick={handleShowMore}

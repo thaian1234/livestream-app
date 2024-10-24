@@ -1,4 +1,4 @@
-import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-livestream-player";
+import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-livescreen/local-livestream-player";
 
 export default function StreamPage() {
     return (

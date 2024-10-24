@@ -1,4 +1,4 @@
-import { useJoinCall } from "../hooks/use-join-call";
+import { useJoinCall } from "../../hooks/use-join-call";
 import {
     Call,
     StreamCall,

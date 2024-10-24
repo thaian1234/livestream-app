@@ -17,7 +17,7 @@ type ParamsType = {
     username: string;
 };
 
-export default function LivePage() {
+export default function StreamPage() {
     const { liveSrceenStatus, isChatComponent } = useLiveInfor();
     const router = useRouter();
     const params = useParams<ParamsType>();
@@ -47,7 +47,7 @@ export default function LivePage() {
                                 Recommended
                             </p>
                             <div className="flex w-full justify-center">
-                                {/* <LivePreviewCarousel /> */}
+                                <LivePreviewCarousel />
                             </div>
                         </div>
                     </div>

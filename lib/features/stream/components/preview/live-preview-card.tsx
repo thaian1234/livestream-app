@@ -1,84 +1,67 @@
 "use client";
 
 import { UsersRound } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
+
+import { StreamDTO } from "@/server/api/dtos/stream.dto";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
+import { UserAvatar } from "@/components/user-avatar";
 
-interface DashboardCardProps {
-    id: string;
-    title: string;
-    userName: string;
-    category?: string;
-    thumnail: string;
-    viewers: string;
-    avatar: string;
-    // Add more props if needed...
-}
+interface DashboardCardProps extends StreamDTO.StreamWithUser {}
 
 export function LivePreviewCard({
     id,
-    title,
-    userName,
-    category,
-    thumnail,
-    viewers,
-    avatar,
+    isLive,
+    name,
+    thumbnailUrl,
+    userId,
+    user,
 }: DashboardCardProps) {
-    const { setLiveInfor } = useLiveInfor();
     const router = useRouter();
 
-    const handleNavigateLive = () => {
-        // Navigate to live room
-        router.push(`/live/${userName.replace(/\s+/g, "-")}`);
-        // get one API and setLiveInfor
-        setLiveInfor({
-            id,
-            title,
-            userName,
-            category,
-            viewers,
-            avatar,
-            followers: "122000",
-        });
+    const handleRedirect = () => {
+        router.push(ROUTES.STREAM_PAGE(user.username));
     };
+
     return (
         //khung ảnh 16:9, khung Card 5:4
-        <AspectRatio ratio={5 / 4} className="overflow-y-hidden">
+        <AspectRatio
+            ratio={5 / 4}
+            className="min-h-72 overflow-y-hidden"
+            onClick={handleRedirect}
+        >
             <div className="h-full w-full font-sans">
                 {/* thumnail */}
                 <AspectRatio
-                    onClick={handleNavigateLive}
                     ratio={16 / 9}
                     className="cursor-pointer rounded-xl bg-gray-1"
                 ></AspectRatio>
-                <div className="flex items-center">
-                    <Image
-                        className="mx-2 rounded-full object-cover"
-                        src={thumnail}
-                        alt={title}
-                        height={60}
-                        width={60}
+                <div className="flex items-center space-x-4 px-2">
+                    <UserAvatar
+                        imageUrl={user.imageUrl}
+                        isLive={isLive}
+                        size={"lg"}
                     />
                     <div className="w-full truncate text-white">
-                        <div className="text-lg">{title}</div>
-                        <div className="text-sm">{userName}</div>
+                        <p className="text-lg">{name}</p>
+                        <p className="text-sm">{user.username}</p>
                         <div className="flex justify-between py-1">
                             <div className="flex w-2/3 space-x-2 overflow-x-hidden">
                                 <Badge className="bg-gray-500 hover:bg-gray-600">
-                                    {category}
+                                    {"Game"}
                                 </Badge>
                                 <Badge className="bg-gray-500 hover:bg-gray-600">
-                                    {category}
+                                    {"Cooking"}
                                 </Badge>
                             </div>
                             <div className="flex space-x-1">
                                 <UsersRound size={16} />
-                                <span className="text-sm">{viewers}</span>
+                                <span className="text-sm">{"0"}</span>
                             </div>
                         </div>
                     </div>

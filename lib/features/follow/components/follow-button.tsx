@@ -4,25 +4,41 @@ import { followApi } from "../apis";
 import { UserCheck, UserMinus, UserPlus } from "lucide-react";
 import { useState } from "react";
 import React from "react";
+import { toast } from "sonner";
 
+import { useAuth } from "@/lib/providers/auth-provider";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
 interface FollowButtonProps {
-    followerId: string;
     followingId: string;
+    isFollowed: boolean;
 }
 
-export function FollowButton({ followerId, followingId }: FollowButtonProps) {
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-    const { mutate: handleFollowToggle, isPending } =
-        followApi.mutation.useFollowToggle();
+export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
+    const { user: currentUser } = useAuth();
+    const [isFollowing, setIsFollowing] = useState<Boolean>(isFollowed);
+    const [isHovering, setIsHovering] = useState<Boolean>(false);
+    const {
+        mutate: handleFollowToggle,
+        isPending,
+        isError,
+    } = followApi.mutation.useFollowToggle();
     const handleClick = () => {
+        if (!currentUser) {
+            toast.error("Please Sign in for further action");
+            return;
+        }
         setIsFollowing(!isFollowing);
-        handleFollowToggle({ param: { followerId, followingId } });
+        handleFollowToggle({
+            param: { followerId: currentUser.id, followingId },
+        });
     };
+
+    if (isError) {
+        setIsHovering(isFollowed);
+    }
 
     const handleMouseEnter = () => {
         setIsHovering(true);

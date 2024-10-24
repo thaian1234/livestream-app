@@ -38,4 +38,29 @@ export class StreamService implements IStreamService {
     public async updateStream(id: string, data: StreamDTO.Update) {
         return await this.streamRepository.update(id, data);
     }
+    public async getRecommendedStreamsByUserId(
+        userId: string,
+        offset: number = 0,
+        limit: number = 10,
+    ) {
+        return this.streamRepository.getRecommendedStreamsByUserId(
+            userId,
+            offset,
+            limit,
+        );
+    }
+    public async getRecommendedStreams(offset: number = 0, limit: number = 10) {
+        return this.streamRepository.getRecommendedStreams(offset, limit);
+    }
+    public async getFollowingStreamsByUserId(
+        userId: string,
+        offset: number = 0,
+        limit: number = 10,
+    ) {
+        return this.streamRepository.getFollowingStreamsByUserId(
+            userId,
+            offset,
+            limit,
+        );
+    }
 }
