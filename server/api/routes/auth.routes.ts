@@ -61,6 +61,7 @@ function createAuthRoutes() {
         userService,
         emailVerificationService,
         nodemailService,
+        getStreamService
     );
     const oauthController = new OauthController(
         factory,
