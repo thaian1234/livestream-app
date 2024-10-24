@@ -63,7 +63,7 @@ export function LiveScreen() {
         //             </div>
 
         //             <div className="absolute bottom-4 left-4 right-4 flex transform items-center justify-between space-x-4">
-        //                 <div>
+        //                 <div className space-x-2>
         //                     <TooltipModel
         //                         content={isPaused ? "Play" : "Pause"}
         //                         side="bottom"
@@ -72,18 +72,22 @@ export function LiveScreen() {
         //                             onClick={handlePlayLive}
         //                             className="bg-black rounded-full text-white transition-all hover:bg-white/20"
         //                         >
-        //                             {isPaused ? <Play /> : <Pause />}
+        //                             {isPaused ? (
+        //                              <Play strokeWidth={3} />
+        //                              ) : (
+        //                              <Pause strokeWidth={3} />
+        //                             )}
         //                         </Button>
         //                     </TooltipModel>
         //                     <VolumnButton />
         //                 </div>
-        //                 <div className="flex">
+        //                 <div className="flex space-x-2">
         //                     <VideoQualitySelectorDemo />
-        // thay bằng <PiPButton />
-        // <MiniplayerButton />
-        // <CinemaModeButton />
-        //  thay bằng <ToggleFullScreenButton/>
-        // <FullScreenButton />
+        //                     // thay bằng <PiPButton />
+        //                      <MiniplayerButton />
+        //                      <CinemaModeButton />
+        //                      //thay bằng <ToggleFullScreenButton/>
+        //                      <FullScreenButton />
         //                 </div>
         //             </div>
         //         </>
