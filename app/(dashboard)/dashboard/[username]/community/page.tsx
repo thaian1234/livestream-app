@@ -15,7 +15,7 @@ export default function CommunityPage() {
             {/* main */}
             <div className="flex-grow">
                 <Tabs defaultValue="Following" className="w-full pr-14">
-                    <TabsList className="grid w-2/3 grid-cols-3">
+                    <TabsList className="grid w-2/3 grid-cols-3 border border-white/50">
                         <TabsTrigger value="Following">Following</TabsTrigger>
                         <TabsTrigger value="Followers">Followers</TabsTrigger>
                         <TabsTrigger value="Block">Block</TabsTrigger>

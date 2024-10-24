@@ -2,7 +2,9 @@
 
 import { FollowButton } from "../follow-button";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 
 // This type is used to define the shape of our data.
@@ -20,8 +22,7 @@ export const columns = (
     isFollowerState: boolean,
 ): ColumnDef<Follow>[] => [
     {
-        accessorKey: "avatar",
-        header: "Avatar",
+        id: "avatar",
         cell: ({ row }) => {
             const follow = row.original;
             return (
@@ -34,7 +35,19 @@ export const columns = (
     },
     {
         accessorKey: "username",
-        header: "Username",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Username
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }) => {
             const follow = row.original;
             return (
