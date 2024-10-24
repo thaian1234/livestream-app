@@ -6,7 +6,7 @@ interface ChatMessageProps {
     message: string;
     // Add more props if needed...
 }
-export function ChatMessage({ avatar, userName, message }: ChatMessageProps) {
+export function ChatMessage() {
     return (
         <div className="flex w-full items-start space-x-2">
             <button>

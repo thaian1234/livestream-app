@@ -1,6 +1,7 @@
 import { AuthDTO } from "../dtos/auth.dto";
 import { EmailVerificationDTO } from "../dtos/email-verification.dto";
 import { UserDTO } from "../dtos/user.dto";
+import { GetStreamService } from "../external-services/getstream.service";
 import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -25,6 +26,7 @@ export class AuthController implements IAuthController {
         private readonly userService: IUserService,
         private readonly emailVerificationService: IEmailVerificationService,
         private readonly nodemailService: INodemailService,
+        private readonly getStreamService: GetStreamService,
     ) {}
     public setupHandlers() {
         return this.factory
