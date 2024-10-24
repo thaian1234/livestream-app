@@ -20,7 +20,9 @@ export class StreamDTO {
         userId: true,
     });
     public static parseMany(data: unknown) {
-        return this.selectSchema.array().parse(data);
+        try {
+            return this.selectSchema.array().parse(data);
+        } catch (error) {}
     }
     public static parse(data: unknown) {
         return this.selectSchema.parse(data);

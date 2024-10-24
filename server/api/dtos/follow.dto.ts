@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
+import { StreamDTO } from "./stream.dto";
 import { UserDTO } from "./user.dto";
 
 export class FollowDTO {

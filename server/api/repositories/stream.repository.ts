@@ -1,6 +1,18 @@
 import { StreamDTO } from "../dtos/stream.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import {
+    and,
+    asc,
+    desc,
+    eq,
+    gte,
+    inArray,
+    lte,
+    ne,
+    notInArray,
+    or,
+    sql,
+} from "drizzle-orm";
 import { Stream } from "stream";
 
 import Database from "@/server/db";
@@ -106,6 +118,98 @@ export class StreamRepository implements IStreamRepository {
                 .where(eq(tableSchemas.streamTable.id, id))
                 .returning();
             return stream;
+        } catch (error) {}
+    }
+
+    private getBlockedSubQuery(userId: string) {
+        const blockedSubQuery = this.db
+            .select({
+                blockedId: tableSchemas.blockTable.blockedId,
+            })
+            .from(tableSchemas.blockTable)
+            .where(eq(tableSchemas.blockTable.blockerId, userId));
+        return blockedSubQuery;
+    }
+
+    private getBlockerSubQuery(userId: string) {
+        const blockerSubQuery = this.db
+            .select({
+                blockerId: tableSchemas.blockTable.blockerId,
+            })
+            .from(tableSchemas.blockTable)
+            .where(eq(tableSchemas.blockTable.blockedId, userId));
+        return blockerSubQuery;
+    }
+    private getFollowingSubQuery(userId: string) {
+        const followersSubQuery = this.db
+            .select({
+                followerId: tableSchemas.followTable.followerId,
+            })
+            .from(tableSchemas.followTable)
+            .where(eq(tableSchemas.followTable.followedId, userId));
+        return followersSubQuery;
+    }
+    public async getRecommendedStreamsByUserId(
+        userId: string,
+        offset: number = 0,
+        limit: number = 10,
+    ) {
+        try {
+            const streams = await this.db.query.streamTable.findMany({
+                where: and(
+                    ne(tableSchemas.streamTable.userId, userId),
+                    notInArray(
+                        tableSchemas.streamTable.id,
+                        this.getBlockedSubQuery(userId),
+                    ),
+                    notInArray(
+                        tableSchemas.streamTable.id,
+                        this.getBlockerSubQuery(userId),
+                    ),
+                ),
+                offset: offset,
+                limit: limit,
+                orderBy: sql`RANDOM()`,
+            });
+            return streams;
+        } catch (error) {}
+    }
+    public async getRecommendedStreams(offset: number = 0, limit: number = 10) {
+        try {
+            const streams = await this.db.query.streamTable.findMany({
+                offset: offset,
+                limit: limit,
+                orderBy: sql`RANDOM()`,
+            });
+            return streams;
+        } catch (error) {}
+    }
+    public async getFollowingStreamsByUserId(
+        userId: string,
+        offset: number = 0,
+        limit: number = 10,
+    ) {
+        try {
+            const streams = await this.db.query.streamTable.findMany({
+                where: and(
+                    ne(tableSchemas.streamTable.userId, userId),
+                    notInArray(
+                        tableSchemas.streamTable.id,
+                        this.getBlockedSubQuery(userId),
+                    ),
+                    notInArray(
+                        tableSchemas.streamTable.id,
+                        this.getBlockerSubQuery(userId),
+                    ),
+                    inArray(
+                        tableSchemas.streamTable.userId,
+                        this.getFollowingSubQuery(userId),
+                    ),
+                ),
+                offset: offset,
+                limit: limit,
+            });
+            return streams;
         } catch (error) {}
     }
 }
