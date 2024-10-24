@@ -65,14 +65,11 @@ export const columns = (
             return (
                 <>
                     {isFollowerState ? (
-                        <FollowButton
-                            followerId={follow.id}
-                            followingId={idAuth}
-                        />
+                        <FollowButton followingId={idAuth} isFollowed={false} />
                     ) : (
                         <FollowButton
-                            followerId={idAuth}
                             followingId={follow.id}
+                            isFollowed={false}
                         />
                     )}
                 </>

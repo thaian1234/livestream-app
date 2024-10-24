@@ -29,9 +29,7 @@ export function Profile() {
 
     return (
         <div className="flex w-[350px] flex-col items-center space-y-4">
-            <button>
-                <UserAvatar imageUrl={"/user.svg"} size={"xxl"} />
-            </button>
+            <UserAvatar imageUrl={user.imageUrl} size={"xxl"} />
             <p className="max-w-full break-words text-2xl">{user.username}</p>
             <div className="flex w-full justify-around">
                 <Link

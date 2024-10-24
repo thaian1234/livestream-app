@@ -37,7 +37,7 @@ export default function CommunityPage() {
                     <TabsContent value="Block">
                         <BlockTable />
                     </TabsContent>
-                </Tabs>
+                </Tabs>	
             </div>
         </div>
     );
