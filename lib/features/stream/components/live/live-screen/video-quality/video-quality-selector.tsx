@@ -1,5 +1,14 @@
 import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
-import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
+
+import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 import {
     IncomingVideoSetting,
@@ -8,7 +17,11 @@ import {
     incomingVideoSettings,
 } from "./video-setting";
 
+("use client");
+
 const VideoQualitySelector = () => {
+    const [selectedSetting, setSelectedSetting] = useState("");
+
     const call = useCall();
     const { useIncomingVideoSettings } = useCallStateHooks();
     const { enabled, preferredResolution } = useIncomingVideoSettings();
@@ -20,26 +33,41 @@ const VideoQualitySelector = () => {
         currentSetting = incomingVideoResolutionToSetting(preferredResolution);
     }
 
-    const handleChange = (event: FormEvent<HTMLSelectElement>) => {
+    const handleChange = (setting: IncomingVideoSetting) => {
         if (call) {
-            const setting = event.currentTarget.value as IncomingVideoSetting;
             applyIncomingVideoSetting(call, setting);
+            setSelectedSetting(setting);
         }
     };
+    useEffect(() => {
+        if (currentSetting) setSelectedSetting(currentSetting);
+    }, [currentSetting]);
 
     return (
-        <span className="quality-selector">
-            <select
-                className="quality-selector-dropdown"
-                value={currentSetting}
-                onChange={handleChange}
-            >
-                {incomingVideoSettings.map((setting) => (
-                    <option key={setting} value={setting}>
-                        {setting}
-                    </option>
-                ))}
-            </select>
-        </span>
+        <HoverCard openDelay={0} closeDelay={200}>
+            <HoverCardTrigger asChild>
+                <Button size="sm" className="w-[65px] bg-white/10 text-white">
+                    {selectedSetting}
+                </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-[65px] border-0 bg-black-0/60 p-0">
+                <ul className="py-1">
+                    {incomingVideoSettings.map((setting, index) => (
+                        <li
+                            key={index}
+                            className={cn(
+                                "cursor-pointer px-2 py-1 text-sm hover:text-teal-2",
+                                setting === currentSetting && "bg-white/10",
+                            )}
+                            onClick={() => handleChange(setting)}
+                        >
+                            {setting}
+                        </li>
+                    ))}
+                </ul>
+            </HoverCardContent>
+        </HoverCard>
     );
 };
+
+export { VideoQualitySelector };

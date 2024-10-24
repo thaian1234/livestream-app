@@ -25,19 +25,19 @@ export function UserPreviewCard({
         //navigate to user profile
     };
     return (
-        <div className="mr-10 flex justify-between space-x-4">
+        <div className="flex justify-between space-x-4">
             <div className="flex space-x-4">
                 <div className="flex min-w-72 justify-center">
                     <button onClick={navigateUserProfile}>
                         <UserAvatar imageUrl={"/user.svg"} size={"xl"} />
                     </button>
                 </div>
-                <p className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-1">
                     <p className="text-xl">{username}</p>
                     <p className="text-sm text-white/70">
                         Followers: {followers}
                     </p>
-                </p>
+                </div>
             </div>
             <div>
                 <FollowButton followerId={user.id} followingId={id} />
