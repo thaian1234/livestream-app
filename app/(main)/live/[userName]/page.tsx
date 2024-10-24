@@ -5,16 +5,13 @@ import {
     StreamVideoParticipant,
 } from "@stream-io/video-react-sdk";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
-import { LoadingParticipant } from "@/lib/features/stream/components/live/live-screen/loading-participant";
 import { LiveScreen } from "@/lib/features/stream/components/livescreen";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
-import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,6 +21,13 @@ type ParamsType = {
 };
 
 export default function LivePage() {
+    const [participant, setParticipant] =
+        useState<StreamVideoParticipant | null>(null);
+    // Assuming you have a way to retrieve the participant object
+
+    // Example: Fetch or set the participant from your video context or API
+    // setParticipant(yourParticipantData);
+
     const { liveSrceenStatus, isChatComponent } = useLiveInfor();
     const router = useRouter();
     const params = useParams<ParamsType>();
@@ -35,13 +39,6 @@ export default function LivePage() {
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
     }
-
-    // Assuming you have a way to retrieve the participant object
-    const [participant, setParticipant] =
-        useState<StreamVideoParticipant | null>(null);
-
-    // Example: Fetch or set the participant from your video context or API
-    // setParticipant(yourParticipantData);
 
     return (
         <div className="flex w-screen space-x-4 px-4">
