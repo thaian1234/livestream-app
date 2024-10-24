@@ -39,7 +39,7 @@ export function FollowersTable() {
             <DataTable
                 columns={columns(user.id, isFollowerState)}
                 data={dummyDataFollowers}
-                isHeader={false}
+                pageSizeValue={10}
             />
         </div>
     );
