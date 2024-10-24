@@ -8,6 +8,8 @@ import { FollowingsTable } from "@/lib/features/follow/components/follow-table/f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CommunityPage() {
+    const tabs = ["Following", "Followers", "Block"];
+
     return (
         <div className="mx-auto mr-14 mt-10 flex space-x-14">
             {/* profile */}
@@ -15,10 +17,16 @@ export default function CommunityPage() {
             {/* main */}
             <div className="flex-grow">
                 <Tabs defaultValue="Following" className="w-full pr-14">
-                    <TabsList className="grid w-2/3 grid-cols-3 border border-white/50">
-                        <TabsTrigger value="Following">Following</TabsTrigger>
-                        <TabsTrigger value="Followers">Followers</TabsTrigger>
-                        <TabsTrigger value="Block">Block</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-3">
+                        {tabs.map((tab, index) => (
+                            <TabsTrigger
+                                className="rounded-none border-b border-white/50 duration-0 data-[state=active]:rounded-none data-[state=active]:border data-[state=active]:border-b-0 data-[state=active]:border-white/50 data-[state=active]:bg-transparent data-[state=active]:text-white"
+                                value={tab}
+                                key={index}
+                            >
+                                {tab}
+                            </TabsTrigger>
+                        ))}
                     </TabsList>
                     <TabsContent value="Following">
                         <FollowingsTable />

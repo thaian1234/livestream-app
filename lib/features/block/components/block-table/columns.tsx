@@ -2,9 +2,9 @@
 
 import { BlockButton } from "../block-button";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-import { useUser } from "@/lib/hooks/use-user";
-
+import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 
 // This type is used to define the shape of our data.
@@ -19,8 +19,7 @@ const handleNavigate = (id: string) => {
 };
 export const columns = (idAuth: string): ColumnDef<Block>[] => [
     {
-        accessorKey: "avatar",
-        header: "Avatar",
+        id: "avatar",
         cell: ({ row }) => {
             const block = row.original;
             return (
@@ -33,7 +32,19 @@ export const columns = (idAuth: string): ColumnDef<Block>[] => [
     },
     {
         accessorKey: "username",
-        header: "Username",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Username
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }) => {
             const block = row.original;
             return (

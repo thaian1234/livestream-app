@@ -28,7 +28,7 @@ export function BlockTable() {
             <DataTable
                 columns={columns(user.id)}
                 data={dataBlock}
-                isHeader={false}
+                pageSizeValue={10}
             />
         </div>
     );
