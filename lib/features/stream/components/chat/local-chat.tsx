@@ -5,7 +5,6 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -16,7 +15,7 @@ interface ChatMessage {
     message: string;
     badges?: string[];
 }
-export function Chat() {
+export function LocalChat() {
     const { onChangeChatComponent } = useLiveInfor();
     const [newMessage, setNewMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -85,7 +84,7 @@ export function Chat() {
     }, [newMessage]);
 
     return (
-        <div className="flex h-[calc(100vh-5rem)] w-[500px] flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
+        <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
             <div className="flex justify-between border-b border-gray-700 p-2">
                 <TooltipModel content="Collapse" side="bottom">
                     <button onClick={onChangeChatComponent}>

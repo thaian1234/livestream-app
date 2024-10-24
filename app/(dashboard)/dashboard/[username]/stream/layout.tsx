@@ -18,7 +18,7 @@ export default function StreamDashboardLayout({
     }
 
     return (
-        <StreamTheme as="section">
+        <StreamTheme as="section" className="pt-8">
             <StreamVideoProvider>
                 <CustomCall streamId={stream.id}>{children}</CustomCall>
             </StreamVideoProvider>
