@@ -1,5 +1,6 @@
 "use client";
 
+import { CallingState, useCallStateHooks } from "@stream-io/video-react-sdk";
 import { useParams, useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
@@ -23,11 +24,21 @@ export default function StreamPage() {
     const params = useParams<ParamsType>();
     const { data, isPending, isError } =
         streamApi.query.useGetStreamInformation(params.username);
+    const { useCallCallingState } = useCallStateHooks();
+    const callingState = useCallCallingState();
+
     if (isPending) {
         return <p>Loading...</p>;
     }
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
+    }
+
+    switch (callingState) {
+        case CallingState.IDLE:
+            return <p>IDLE State</p>;
+        case CallingState.OFFLINE:
+            return <p>Offline state</p>;
     }
 
     return (

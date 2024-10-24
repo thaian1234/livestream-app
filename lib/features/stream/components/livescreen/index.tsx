@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 
 import { CinemaModeButton } from "./cinema-mode-button";
 import { FullScreenButton } from "./full-screen-button";
+import { LivestreamPlayer } from "./livestream-player";
 import { MiniplayerButton } from "./miniplayer-button";
 import { VolumnButton } from "./volumn-button";
 
@@ -40,6 +41,7 @@ export function LiveScreen() {
                     isHideSidebar && "aspect-[16/9] max-h-[calc(100vh-5rem)]", //cinema mode
                 )}
             ></div>
+            {/* <LivestreamPlayer /> */}
             {isHovered && (
                 <>
                     <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black-0 to-transparent opacity-60" />

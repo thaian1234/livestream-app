@@ -1,4 +1,4 @@
-import { useJoinCall } from "../../hooks/use-join-call";
+import { useJoinCall } from "../hooks/use-join-call";
 import {
     Call,
     StreamCall,
@@ -19,7 +19,7 @@ export function CustomCall({ streamId, children }: CustomCallProps) {
         return <Spinner />;
     }
     if (isError) {
-        return <p>Failed to join call</p>;
+        return <p>User is offline please try again</p>;
     }
 
     return <StreamCall call={call}>{children}</StreamCall>;
