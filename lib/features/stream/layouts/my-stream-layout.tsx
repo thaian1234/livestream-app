@@ -1,10 +1,9 @@
+import { ParticipantOverlay } from "../components/controls/participant-overlay";
 import { usePaginatedLayoutSortPreset } from "../hooks/use-paginated-layout";
 import { useCall, useCallStateHooks } from "@stream-io/video-react-bindings";
 import { ParticipantView, ParticipantsAudio } from "@stream-io/video-react-sdk";
 
 import { cn } from "@/lib/utils";
-
-import { ParticipantOverlay } from "./controls/participant-overlay";
 
 /**
  * The props for the {@link MyLivestreamLayout} component.

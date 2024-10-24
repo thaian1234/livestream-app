@@ -3,8 +3,8 @@ import {
     formatDuration,
     useUpdateCallDuration,
 } from "../../hooks/use-update-call-duration";
-import { CinemaModeButton } from "../live/live-screen/cinema-mode-button";
-import { MiniplayerButton } from "../live/live-screen/miniplayer-button";
+import { CinemaModeButton } from "../livescreen/cinema-mode-button";
+import { MiniplayerButton } from "../livescreen/miniplayer-button";
 import {
     useCallStateHooks,
     useI18n,

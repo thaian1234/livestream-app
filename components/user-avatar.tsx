@@ -29,7 +29,7 @@ export function UserAvatar({
     const userImage = imageUrl !== null ? imageUrl : undefined;
 
     return (
-        <div className="flex items-center justify-center space-x-4">
+        <div className="flex items-center justify-center space-x-4 p-2">
             <Avatar
                 className={cn(
                     "border-2 border-white ring-2",

@@ -1,7 +1,8 @@
 "use client";
 
-import { LocalLiveInformation } from "./livescreen/local-live-information";
-import { MyLivestreamLayout } from "./my-stream-layout";
+import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
+
+import { LocalLiveInformation } from "./local-live-information";
 
 export const LocalLivestreamPlayer = () => {
     return (

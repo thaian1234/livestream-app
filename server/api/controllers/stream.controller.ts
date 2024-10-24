@@ -123,8 +123,10 @@ export class StreamController implements IStreamController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends: StreamDTO.parseMany(recommendStreams),
-                        followings: StreamDTO.parseMany(followingStreams),
+                        recommends:
+                            StreamDTO.parseStreamWithUser(recommendStreams),
+                        followings:
+                            StreamDTO.parseStreamWithUser(followingStreams),
                     },
                     status: HttpStatus.OK,
                 });

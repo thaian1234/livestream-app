@@ -23,7 +23,7 @@ export function getUserNavConfig(username: string): Menu[] {
         },
         {
             label: "Stream",
-            href: ROUTES.STREAM_PAGE(username),
+            href: ROUTES.DASHBOARD_STREAM_PAGE(username),
             icon: VideoIcon,
         },
         {

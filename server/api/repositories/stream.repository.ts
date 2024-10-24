@@ -156,6 +156,9 @@ export class StreamRepository implements IStreamRepository {
     ) {
         try {
             const streams = await this.db.query.streamTable.findMany({
+                with: {
+                    user: true,
+                },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
                     notInArray(
@@ -177,6 +180,9 @@ export class StreamRepository implements IStreamRepository {
     public async getRecommendedStreams(offset: number = 0, limit: number = 10) {
         try {
             const streams = await this.db.query.streamTable.findMany({
+                with: {
+                    user: true,
+                },
                 offset: offset,
                 limit: limit,
                 orderBy: sql`RANDOM()`,
@@ -191,6 +197,9 @@ export class StreamRepository implements IStreamRepository {
     ) {
         try {
             const streams = await this.db.query.streamTable.findMany({
+                with: {
+                    user: true,
+                },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
                     notInArray(

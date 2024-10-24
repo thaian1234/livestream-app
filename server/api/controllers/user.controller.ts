@@ -167,6 +167,9 @@ export class UserController {
                     const isFollow = followers?.find((follower) => {
                         return follower.id === currentUser.id;
                     });
+                    const isBlocked = blocks?.find(
+                        (block) => block.id === currentUser.id,
+                    );
                     return ApiResponse.WriteJSON({
                         c,
                         data: {
@@ -175,7 +178,8 @@ export class UserController {
                             followings: FollowDTO.parseUserOnlyMany(followings),
                             followers: FollowDTO.parseUserOnlyMany(followers),
                             blocks: BlockDTO.parseUserOnlyMany(blocks),
-                            isFollowing: isFollow != undefined,
+                            isFollowing: !!isFollow,
+                            isBlocked: !!isBlocked,
                         },
                         status: HttpStatus.OK,
                     });
@@ -189,6 +193,7 @@ export class UserController {
                         followers: FollowDTO.parseUserOnlyMany(followers),
                         blocks: BlockDTO.parseUserOnlyMany(blocks),
                         isFollowing: false,
+                        isBlocked: false,
                     },
                     status: HttpStatus.OK,
                 });

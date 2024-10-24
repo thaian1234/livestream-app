@@ -1,3 +1,5 @@
+import { streamApi } from "../../apis";
+
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
@@ -14,12 +16,20 @@ import { LivePreviewCard } from "./live-preview-card";
 
 export function LivePreviewCarousel() {
     const { isOpenSidebar } = useSidebar();
+    const { data, isPending, isError } = streamApi.query.useGetDefaultStreams(); // TODO: Add pagination
+    if (isPending) {
+        return <p>Loading stream...</p>;
+    }
+    if (!data || isError) {
+        return <p>Cannot fetch Streams</p>;
+    }
+    const recommendStreams = data.data.recommends;
 
     return (
         <div className="w-7/12 md:w-9/12 xl:w-10/12 2xl:w-11/12">
             <Carousel>
                 <CarouselContent>
-                    {cardData.slice(0, 5).map((card, index) => (
+                    {recommendStreams?.slice(0, 5).map((card, index) => (
                         <CarouselItem
                             key={index}
                             className={cn(
@@ -31,12 +41,11 @@ export function LivePreviewCarousel() {
                         >
                             <LivePreviewCard
                                 id={card.id}
-                                title={card.title}
-                                userName={card.userName}
-                                thumnail={card.thumnail}
-                                category={card.category}
-                                viewers={card.viewers}
-                                avatar={card.avatar}
+                                isLive={card.isLive}
+                                name={card.name}
+                                thumbnailUrl={card.thumbnailUrl}
+                                user={card.user}
+                                userId={card.userId}
                             />
                         </CarouselItem>
                     ))}

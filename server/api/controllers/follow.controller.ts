@@ -170,7 +170,7 @@ export class FollowController implements IFollowController {
 
                 return ApiResponse.WriteJSON({
                     c,
-                    data: data,
+                    data: undefined,
                     status: HttpStatus.OK,
                 });
             },

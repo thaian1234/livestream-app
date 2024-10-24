@@ -38,9 +38,9 @@ export function getDashboardMenuList(
             groupLabel: "Streams",
             menus: [
                 {
-                    href: ROUTES.STREAM_PAGE(username),
+                    href: ROUTES.DASHBOARD_STREAM_PAGE(username),
                     label: "Stream",
-                    active: pathname === ROUTES.STREAM_PAGE(username),
+                    active: pathname === ROUTES.DASHBOARD_STREAM_PAGE(username),
                     icon: Video,
                     submenus: [],
                 },
