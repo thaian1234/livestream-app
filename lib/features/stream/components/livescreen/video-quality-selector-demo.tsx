@@ -1,63 +1,45 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
+import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const incomingVideoSettings = ["auto", "1080p", "720p", "480p", "off"];
 export function VideoQualitySelectorDemo() {
-    const [isQualityHovered, setIsQualityHovered] = useState(false);
-    const [selectedFruit, setSelectedFruit] = useState("auto");
+    const [selectedSetting, setSelectedSetting] = useState("auto");
     const handleSelectChange = (value: string) => {
-        setSelectedFruit(value);
-        console.log(`Selected fruit: ${value}`);
+        setSelectedSetting(value);
     };
-
-    const [isSelectOpen, setIsSelectOpen] = useState(false);
-    const handleSelectClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setIsSelectOpen(true);
-    };
-    const selectRef = useRef<HTMLDivElement>(null);
-    console.log(isSelectOpen);
     return (
-        <div ref={selectRef}>
-            <Select
-                value={selectedFruit}
-                onValueChange={handleSelectChange}
-                open={isSelectOpen}
-                onOpenChange={setIsSelectOpen}
-            >
-                <SelectTrigger
-                    className="w-[100px] border-0 bg-white/10"
-                    onClick={handleSelectClick}
-                >
-                    <SelectValue placeholder="Select a fruit" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        {incomingVideoSettings.map((setting) => (
-                            <SelectItem key={setting} value={setting}>
-                                {setting}
-                            </SelectItem>
-                        ))}
-                        <SelectItem value="apple">Apple</SelectItem>
-                        <SelectItem value="banana">Banana</SelectItem>
-                        <SelectItem value="blueberry">Blueberry</SelectItem>
-                        <SelectItem value="grapes">Grapes</SelectItem>
-                        <SelectItem value="pineapple">Pineapple</SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-        </div>
+        <HoverCard openDelay={0} closeDelay={200}>
+            <HoverCardTrigger asChild>
+                <Button size="sm" className="w-[65px] bg-white/10 text-white">
+                    {selectedSetting}
+                </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-[65px] border-0 bg-black-0/60 p-0">
+                <ul className="py-1">
+                    {incomingVideoSettings.map((quality, index) => (
+                        <li
+                            key={index}
+                            className={cn(
+                                "cursor-pointer px-2 py-1 text-sm hover:text-teal-2",
+                                quality === selectedSetting && "bg-white/10",
+                            )}
+                            onClick={() => handleSelectChange(quality)}
+                        >
+                            {quality}
+                        </li>
+                    ))}
+                </ul>
+            </HoverCardContent>
+        </HoverCard>
     );
 }
