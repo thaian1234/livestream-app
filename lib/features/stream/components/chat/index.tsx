@@ -86,11 +86,12 @@ export function Chat({ streamId }: ChatProps) {
                 <StreamChat client={chatClient}>
                     <Channel channel={chatChannel}>
                         <MessageList Message={ChatMessage}/>
-                        <ScrollArea
+                        <MessageInput Input={CustomMessageInput}/>
+                        {/* <ScrollArea
                             ref={scrollAreaRef}
                             className="h-[calc(100vh-12rem)] px-4"
                         >
-                            {/* <div className="flex flex-col space-y-2 py-2">
+                            <div className="flex flex-col space-y-2 py-2">
                                 {messages.map((msg, index) => (
                                     <ChatMessage
                                         key={index}
@@ -99,9 +100,8 @@ export function Chat({ streamId }: ChatProps) {
                                         userName={msg.username}
                                     />
                                 ))}
-                            </div> */}
-                        </ScrollArea>
-                        <MessageInput Input={CustomMessageInput}/>
+                            </div>
+                        </ScrollArea> */}
                         
                     </Channel>
                 </StreamChat>
