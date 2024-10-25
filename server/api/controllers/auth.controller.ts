@@ -12,6 +12,7 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IAuthService } from "../services/auth.service";
 import { IEmailVerificationService } from "../services/email-verification.service";
+import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
@@ -27,6 +28,7 @@ export class AuthController implements IAuthController {
         private readonly emailVerificationService: IEmailVerificationService,
         private readonly nodemailService: INodemailService,
         private readonly getStreamService: GetStreamService,
+        private readonly streamService: IStreamService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -170,6 +172,9 @@ export class AuthController implements IAuthController {
                 await this.userService.updateUser(userId, {
                     emailVerified: true,
                 });
+                const stream = await this.streamService.getStreamByUserId(userId);
+                if (stream)
+                    this.getStreamService.createChatChannel(stream.id);
                 const { sessionCookie } =
                     await this.authService.initiateSession(userId);
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
