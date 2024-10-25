@@ -7,7 +7,6 @@ import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LiveScreen } from "@/lib/features/stream/components/livescreen";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
 import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
@@ -18,7 +17,7 @@ type ParamsType = {
 };
 
 export default function StreamPage() {
-    const { liveSrceenStatus, isChatComponent } = useLiveInfor();
+    const { liveSrceenStatus, isOpenChatComponent } = useLiveInfor();
     const router = useRouter();
     const params = useParams<ParamsType>();
     const { data, isPending, isError } =
@@ -53,8 +52,7 @@ export default function StreamPage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat />}
-            {liveSrceenStatus.miniPlayer && <Miniplayer />}
+            {isOpenChatComponent && <Chat />}
         </div>
     );
 }

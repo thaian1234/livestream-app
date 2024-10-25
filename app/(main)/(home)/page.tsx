@@ -4,7 +4,6 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
 import { LivesPreview } from "@/lib/features/stream/components/preview/live-preview";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
@@ -43,7 +42,6 @@ export default function HomePage() {
                     </Button>
                 </div>
             </div>
-            {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </ScrollArea>
     );
 }

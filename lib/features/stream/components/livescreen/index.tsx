@@ -19,7 +19,7 @@ import { VolumnButton } from "./volumn-button";
 
 export function LiveScreen() {
     const { isHideSidebar, isOpenSidebar } = useSidebar();
-    const { onChangeChatComponent, isChatComponent } = useLiveInfor();
+    const { onToggleChatComponent, isOpenChatComponent } = useLiveInfor();
 
     const [isHovered, setIsHovered] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -52,9 +52,9 @@ export function LiveScreen() {
                         >
                             TRỰC TIẾP
                         </Button>
-                        {!isChatComponent && (
+                        {!isOpenChatComponent && (
                             <TooltipModel content="Expand" side="bottom">
-                                <button onClick={onChangeChatComponent}>
+                                <button onClick={onToggleChatComponent}>
                                     <ArrowLeftToLine className="text-white" />
                                 </button>
                             </TooltipModel>

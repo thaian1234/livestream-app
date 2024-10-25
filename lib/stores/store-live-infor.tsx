@@ -11,12 +11,11 @@ interface LiveInforStore {
         followers: string;
     };
     liveSrceenStatus: {
-        miniPlayer: boolean;
         fullScreen: boolean;
         cinemaMode: boolean;
     };
-    isChatComponent: boolean;
-    onChangeChatComponent: () => void;
+    isOpenChatComponent: boolean;
+    onToggleChatComponent: () => void;
     setLiveInfor: (payload: any) => void;
     setViewer: (viewer: string) => void;
     setLiveScreenStatus: (mode: string) => void;
@@ -39,9 +38,11 @@ export const useLiveInfor = create(
                 fullScreen: false,
                 cinemaMode: false,
             },
-            isChatComponent: true,
-            onChangeChatComponent: () => {
-                set((state) => ({ isChatComponent: !state.isChatComponent }));
+            isOpenChatComponent: true,
+            onToggleChatComponent: () => {
+                set((state) => ({
+                    isOpenChatComponent: !state.isOpenChatComponent,
+                }));
             },
             setLiveInfor: (payload) => {
                 set((state) => ({
@@ -67,7 +68,6 @@ export const useLiveInfor = create(
             setLiveScreenStatus: (mode) => {
                 set(() => ({
                     liveSrceenStatus: {
-                        miniPlayer: mode === "miniPlayer",
                         fullScreen: mode === "fullScreen",
                         cinemaMode: mode === "cinemaMode",
                     },
@@ -76,7 +76,6 @@ export const useLiveInfor = create(
             resetLiveScreenStatus: () => {
                 set(() => ({
                     liveSrceenStatus: {
-                        miniPlayer: false,
                         fullScreen: false,
                         cinemaMode: false,
                     },

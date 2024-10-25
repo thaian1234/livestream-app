@@ -28,7 +28,7 @@ export default function LivePage() {
     // Example: Fetch or set the participant from your video context or API
     // setParticipant(yourParticipantData);
 
-    const { liveSrceenStatus, isChatComponent } = useLiveInfor();
+    const { liveSrceenStatus, isOpenChatComponent } = useLiveInfor();
     const router = useRouter();
     const params = useParams<ParamsType>();
     const { data, isPending, isError } =
@@ -71,8 +71,7 @@ export default function LivePage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat />}
-            {/* {liveSrceenStatus.miniPlayer && <Miniplayer />} */}
+            {isOpenChatComponent && <Chat />}
         </div>
     );
 }
