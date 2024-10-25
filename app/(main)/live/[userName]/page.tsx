@@ -36,12 +36,12 @@ export default function LivePage() {
                 <LiveScreen />
                 {!liveSrceenStatus.cinemaMode && (
                     <div className="space-y-10">
-                        <LiveInformation
+                        {/* <LiveInformation
                             followerCount={data.data.followers?.length || 0}
                             stream={data.data.stream}
                             user={data.data.user}
                             isFollowing={data.data.isFollowing}
-                        />
+                        /> */}
                         <div className="">
                             <p className="mb-4 text-lg text-white">
                                 Recommended
@@ -53,7 +53,7 @@ export default function LivePage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat streamId={data.data.stream.id}/>}
+            {isChatComponent && <Chat />}
             {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </div>
     );

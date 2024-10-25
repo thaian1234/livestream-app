@@ -6,7 +6,20 @@ import {
     Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Channel, MessageInput, MessageList, Chat as StreamChat } from "stream-chat-react";
+import {
+    DefaultGenerics,
+    Channel as TypeChannel,
+    StreamChat as TypeStreamChat,
+} from "stream-chat";
+import {
+    Channel,
+    Message,
+    MessageInput,
+    MessageList,
+    Chat as StreamChat,
+    VirtualizedMessageList,
+    Window,
+} from "stream-chat-react";
 
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
@@ -25,13 +38,8 @@ interface ChatMessage {
     badges?: string[];
 }
 
-interface ChatProps {
-    streamId: string;
-}
-
-export function Chat({ streamId }: ChatProps) {
+export function Chat() {
     const { onChangeChatComponent } = useLiveInfor();
-    const { chatClient, chatChannel } = useInitializeChatClient(streamId);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     //dummy data
@@ -82,32 +90,15 @@ export function Chat({ streamId }: ChatProps) {
                 <p className="text-lg font-semibold">Live chat</p>
                 <Settings />
             </div>
-            {chatClient && chatChannel ? (
-                <StreamChat client={chatClient}>
-                    <Channel channel={chatChannel}>
-                        <MessageList Message={ChatMessage}/>
-                        <MessageInput Input={CustomMessageInput}/>
-                        {/* <ScrollArea
-                            ref={scrollAreaRef}
-                            className="h-[calc(100vh-12rem)] px-4"
-                        >
-                            <div className="flex flex-col space-y-2 py-2">
-                                {messages.map((msg, index) => (
-                                    <ChatMessage
-                                        key={index}
-                                        avatar="/user.svg"
-                                        message={msg.message}
-                                        userName={msg.username}
-                                    />
-                                ))}
-                            </div>
-                        </ScrollArea> */}
-                        
-                    </Channel>
-                </StreamChat>
-            ) : (
-                <Loader2 className="mx-auto my-3 animate-spin" />
-            )}
+            <ScrollArea ref={scrollAreaRef} className="px-4">
+                <MessageList
+                    internalInfiniteScrollProps={{}}
+                    showUnreadNotificationAlways={false}
+                    disableDateSeparator={false}
+                    Message={ChatMessage}
+                />
+            </ScrollArea>
+            <MessageInput Input={CustomMessageInput} />
         </div>
     );
 }

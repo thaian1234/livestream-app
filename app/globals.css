@@ -1,6 +1,19 @@
+/* @import "@stream-chat-react/dist/css/v2/index.css"; */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide unread indicator (e.g., "New Messages" or "Latest Messages" text) */
+.str-chat__list--unread,
+.str-chat__message-simple-status,
+.str-chat__message-date {
+    display: none !important;
+}
+
+/* Hide date separators */
+.str-chat__date-separator {
+    display: none !important;
+}
 
 @layer base {
     :root {
