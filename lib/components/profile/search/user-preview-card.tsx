@@ -1,9 +1,11 @@
-import Image from "next/image";
+import { Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useAuth } from "@/lib/providers/auth-provider";
 
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface UserPreviewCardProps {
@@ -21,27 +23,43 @@ export function UserPreviewCard({
     const router = useRouter();
     const { user } = useAuth();
     if (!user) return;
-    const navigateUserProfile = () => {
-        //navigate to user profile
-    };
+
     return (
-        <div className="flex justify-between space-x-4">
-            <div className="flex space-x-4">
-                <div className="flex min-w-72 justify-center">
-                    <button onClick={navigateUserProfile}>
-                        <UserAvatar imageUrl={"/user.svg"} size={"xl"} />
-                    </button>
+        <Card className="w-full overflow-hidden py-4 transition-all duration-300 ease-in-out hover:bg-accent/50 hover:shadow-lg">
+            <CardContent className="px-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-grow items-center space-x-6">
+                        <UserAvatar imageUrl={imageUrl} size="xl" />
+
+                        <div className="min-w-0 flex-grow">
+                            <div className="mb-2 flex items-center space-x-2">
+                                <h3 className="line-clamp-1 text-lg font-semibold transition-colors duration-300 ease-in-out hover:text-primary">
+                                    <a
+                                        href={`/dashboard/${username}`}
+                                        className="hover:underline"
+                                    >
+                                        CoolGamer123
+                                    </a>
+                                </h3>
+                                <Badge className="bg-red-500 text-white">
+                                    LIVE
+                                </Badge>
+                            </div>
+                            <p className="mb-1 line-clamp-1 text-sm text-muted-foreground">
+                                Category
+                            </p>
+                            <p className="mb-2 line-clamp-1 text-sm text-muted-foreground">
+                                Category
+                            </p>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                                <Users className="mr-1 h-4 w-4" />
+                                <span>{followers} Followers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <FollowButton followingId={user.id} isFollowed={true} />
                 </div>
-                <div className="flex flex-col space-y-1">
-                    <p className="text-xl">{username}</p>
-                    <p className="text-sm text-white/70">
-                        Followers: {followers}
-                    </p>
-                </div>
-            </div>
-            <div>
-                <FollowButton followerId={user.id} followingId={id} />
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }

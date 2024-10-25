@@ -55,7 +55,7 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             disabled={isPending}
-            className="group relative flex h-10 w-32 items-center justify-center overflow-hidden px-4 transition-all duration-300 ease-in-out hover:bg-primary-foreground/90"
+            className="group relative flex h-10 w-32 items-center justify-center overflow-hidden bg-black-0 px-4 transition-all duration-300 ease-in-out hover:bg-black-0/80"
         >
             <div
                 className={cn(

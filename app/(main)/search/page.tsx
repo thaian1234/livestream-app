@@ -40,7 +40,7 @@ export default function SearchPage() {
                 <TabsContent value="All">
                     <div className="space-y-4">
                         <p className="text-2xl">Channel</p>
-                        <div className="flex max-w-[800px] flex-col space-y-4">
+                        <div className="flex max-w-[700px] flex-col">
                             <UserPreview limit={4} />
                         </div>
 
@@ -57,7 +57,7 @@ export default function SearchPage() {
                     </div>
                 </TabsContent>
                 <TabsContent value="Channel">
-                    <div className="flex flex-col space-y-4">
+                    <div className="flex max-w-[700px] flex-col">
                         <UserPreview />
                     </div>
                 </TabsContent>

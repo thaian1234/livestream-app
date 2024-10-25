@@ -50,8 +50,18 @@ export function LivePreviewCard({
                 ></AspectRatio>
             </div>
             <div className="flex flex-col space-y-1">
-                <p className="text-xl">{title}</p>
-                <p className="text-sm text-white/70">{userName}</p>
+                <a
+                    className="cursor-pointer text-xl hover:underline"
+                    href={`/username`}
+                >
+                    {title}
+                </a>
+                <a
+                    className="cursor-pointer text-sm text-white/70 hover:underline"
+                    href={`/dashboard/username`}
+                >
+                    {userName}
+                </a>
                 <p className="text-sm text-white/70">{viewers} Viewers</p>
                 <div className="flex">
                     <div className="flex space-x-2 overflow-x-hidden">
