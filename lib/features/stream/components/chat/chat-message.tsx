@@ -1,12 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useMessageContext } from "stream-chat-react";
 
-interface ChatMessageProps {
-    avatar: string;
-    userName: string;
-    message: string;
-    // Add more props if needed...
-}
 export function ChatMessage() {
     const {isMyMessage, message} = useMessageContext();
     return (

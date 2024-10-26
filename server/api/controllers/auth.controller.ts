@@ -174,7 +174,7 @@ export class AuthController implements IAuthController {
                 });
                 const stream = await this.streamService.getStreamByUserId(userId);
                 if (stream)
-                    this.getStreamService.createChatChannel(stream.id);
+                    await this.getStreamService.createChatChannel(stream.id);
                 const { sessionCookie } =
                     await this.authService.initiateSession(userId);
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
