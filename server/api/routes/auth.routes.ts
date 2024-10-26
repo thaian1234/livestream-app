@@ -58,6 +58,7 @@ function createAuthRoutes() {
         accountRepository,
         userService,
         getstreamService,
+        streamService
     );
     const authController = new AuthController(
         factory,
