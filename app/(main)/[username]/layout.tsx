@@ -14,7 +14,7 @@ import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 interface Props {
     children: React.ReactNode;
     params: {
-        userName: string;
+        username: string;
     };
 }
 
@@ -23,7 +23,7 @@ export default function StreamDashboardLayout({
     params,
 }: Readonly<Props>) {
     const { data, isPending, isError } =
-        streamApi.query.useGetStreamInformation(params.userName);
+        streamApi.query.useGetStreamInformation(params.username);
     const { chatClient, chatChannel } = useInitializeChatClient(data?.data.stream.id);
 
     if (isPending || !chatClient || !chatChannel) {

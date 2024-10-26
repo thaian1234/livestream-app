@@ -53,7 +53,7 @@ export default function StreamPage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat streamId={data.data.stream.id}/>}
+            {isChatComponent && <Chat/>}
             {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </div>
     );
