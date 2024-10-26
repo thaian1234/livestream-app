@@ -1,6 +1,5 @@
 "use client";
 
-import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalChat } from "@/lib/features/stream/components/chat/local-chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
 import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-livescreen/local-livestream-player";

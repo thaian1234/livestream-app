@@ -30,11 +30,11 @@ export function Sidebar() {
     const recommends = data?.data.recommends;
 
     return (
-        <div>
+        <>
             {!isHideSidebar && (
                 <div
                     className={cn(
-                        "h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
+                        "fixed left-0 top-20 z-20 h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
                         isOpenSidebar && "h-full w-72",
                     )}
                 >
@@ -78,7 +78,7 @@ export function Sidebar() {
                     )}
                 </div>
             )}
-        </div>
+        </>
     );
 }
 

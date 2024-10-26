@@ -1,8 +1,3 @@
-import { useToggleFullScreen } from "../../hooks/use-toggle-fullscreen";
-import {
-    formatDuration,
-    useUpdateCallDuration,
-} from "../../hooks/use-update-call-duration";
 import { CinemaModeButton } from "../livescreen/cinema-mode-button";
 import { MiniplayerButton } from "../livescreen/miniplayer-button";
 import {
@@ -41,7 +36,7 @@ export const ParticipantOverlay = ({
         <section
             className={cn(
                 "str-video__livestream-layout__overlay",
-                "m-0 aspect-video w-full p-0",
+                "m-0 aspect-video !w-full p-0",
             )}
         >
             {isLive && (
