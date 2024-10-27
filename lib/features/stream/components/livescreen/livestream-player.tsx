@@ -35,6 +35,7 @@ export function LivestreamPlayer({}: LivestreamPlayerProps) {
             enableFullScreen={true}
             mirrorLocalParticipantVideo={false}
             showLiveBadge
+            showParticipantCount
         />
     );
 }

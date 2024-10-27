@@ -37,10 +37,7 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         size={"lg"}
                     />
-                    <AdditionalInformation
-                        username={user.username}
-                        participantCount={participants.length}
-                    />
+                    <AdditionalInformation username={user.username} />
                 </div>
             </div>
             {!isHost ? (
@@ -67,13 +64,7 @@ export function LocalLiveInformation() {
     );
 }
 
-function AdditionalInformation({
-    username,
-    participantCount,
-}: {
-    username: string;
-    participantCount: number;
-}) {
+function AdditionalInformation({ username }: { username: string }) {
     const { data: streamInformation, isPending: isLoadingStreamInformation } =
         streamApi.query.useGetStreamInformation(username);
 

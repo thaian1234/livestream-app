@@ -8,7 +8,6 @@ import { Chat } from "@/lib/features/stream/components/chat";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
 import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/livestream-player";
 import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
-import { MyLiveScreen } from "@/lib/features/stream/components/livescreen/my-livescreen";
 import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
@@ -29,6 +28,7 @@ export default function StreamPage() {
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
     }
+
     const stream = data.data.stream;
     const user = data.data.user;
     const followers = data.data.followers;
@@ -36,7 +36,6 @@ export default function StreamPage() {
     return (
         <section className="grid grid-cols-12 gap-x-6 gap-y-4 px-12">
             <div className="col-span-9 row-span-5">
-                {/* <MyLiveScreen streamId={stream.id} /> */}
                 <CustomCall streamId={stream.id}>
                     <LivestreamPlayer />
                 </CustomCall>

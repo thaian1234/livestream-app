@@ -12,6 +12,7 @@ interface CustomCallProps {
 
 export function CustomCall({ streamId, children }: CustomCallProps) {
     const { call, isPending, error } = useJoinCall(streamId);
+
     if (isPending) {
         return <Spinner />;
     }
