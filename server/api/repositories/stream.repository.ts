@@ -10,10 +10,8 @@ import {
     lte,
     ne,
     notInArray,
-    or,
     sql,
 } from "drizzle-orm";
-import { Stream } from "stream";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -143,10 +141,10 @@ export class StreamRepository implements IStreamRepository {
     private getFollowingSubQuery(userId: string) {
         const followersSubQuery = this.db
             .select({
-                followerId: tableSchemas.followTable.followerId,
+                followedId: tableSchemas.followTable.followedId,
             })
             .from(tableSchemas.followTable)
-            .where(eq(tableSchemas.followTable.followedId, userId));
+            .where(eq(tableSchemas.followTable.followerId, userId));
         return followersSubQuery;
     }
     public async getRecommendedStreamsByUserId(
@@ -162,11 +160,11 @@ export class StreamRepository implements IStreamRepository {
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
                     notInArray(
-                        tableSchemas.streamTable.id,
+                        tableSchemas.streamTable.userId,
                         this.getBlockedSubQuery(userId),
                     ),
                     notInArray(
-                        tableSchemas.streamTable.id,
+                        tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
                     ),
                 ),
@@ -203,11 +201,11 @@ export class StreamRepository implements IStreamRepository {
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
                     notInArray(
-                        tableSchemas.streamTable.id,
+                        tableSchemas.streamTable.userId,
                         this.getBlockedSubQuery(userId),
                     ),
                     notInArray(
-                        tableSchemas.streamTable.id,
+                        tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
                     ),
                     inArray(
