@@ -18,7 +18,7 @@ export default function HomePage() {
         setIsExpanded(!isExpanded);
     };
     return (
-        <ScrollArea className="h-[calc(100vh-5rem)] w-full">
+        <>
             <div className="mx-auto px-10 md:max-w-screen-md lg:max-w-screen-xl 2xl:max-w-screen-2xl 2xl:px-4">
                 <h2 className="mb-6 text-2xl font-bold text-white">
                     Welcome to Your Dashboard
@@ -44,6 +44,6 @@ export default function HomePage() {
                 </div>
             </div>
             {liveSrceenStatus.miniPlayer && <Miniplayer />}
-        </ScrollArea>
+        </>
     );
 }

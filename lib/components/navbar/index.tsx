@@ -7,7 +7,7 @@ import { Actions } from "./actions";
 
 export function Navbar() {
     return (
-        <nav className="max-w-screen-w flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-12">
+        <nav className="max-w-screen-w sticky top-0 z-10 flex h-14 justify-between bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-12">
             <div className="flex items-center">
                 <Link href="/">
                     <Image

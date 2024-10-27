@@ -85,7 +85,7 @@ export function Chat() {
     }, [newMessage]);
 
     return (
-        <div className="flex h-[calc(100vh-5rem)] w-[500px] flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
+        <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
             <div className="flex justify-between border-b border-gray-700 p-2">
                 <TooltipModel content="Collapse" side="bottom">
                     <button onClick={onChangeChatComponent}>

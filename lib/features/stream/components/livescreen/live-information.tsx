@@ -1,7 +1,6 @@
-import { Forward, Heart, UsersRound } from "lucide-react";
+import { Forward, UsersRound } from "lucide-react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
-import { useAuth } from "@/lib/providers/auth-provider";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
@@ -22,7 +21,6 @@ export function LiveInformation({
     followerCount,
     isFollowing,
 }: LiveInformationProps) {
-
     return (
         <div className="mt-2 flex justify-between px-2">
             <div className="w-full space-y-1 truncate text-white">
@@ -48,10 +46,7 @@ export function LiveInformation({
             </div>
             <div className="space-x-2"></div>
 
-            <FollowButton
-                followingId={user.id}
-                isFollowed={isFollowing}
-            />
+            <FollowButton followingId={user.id} isFollowed={isFollowing} />
 
             <Button
                 size="sm"

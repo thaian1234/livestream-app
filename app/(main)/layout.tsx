@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 
 import { Navbar } from "@/lib/components/navbar";
 import { Sidebar } from "@/lib/components/sidebar";
+import { useSidebar } from "@/lib/stores/store-sidebar";
+import { cn } from "@/lib/utils";
 
 import "@/style/home.css";
 
@@ -10,15 +14,22 @@ export default function HomeLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const sidebar = useSidebar();
+
     return (
-        <div className="containerHome">
+        <div className="flex min-h-screen flex-col">
             {/* navbar */}
             <Navbar />
-            <div className="flex h-full overflow-hidden pt-6">
-                {/* Sidebar */}
+            {/* Sidebar */}
+            <div className="flex flex-grow pt-6">
                 <Sidebar />
                 {/* Main content */}
-                <main className="flex w-full flex-grow flex-wrap overflow-x-hidden bg-black-1">
+                <main
+                    className={cn(
+                        "flex-grow bg-black-1 pb-12 transition-[margin-left] duration-300 ease-in-out",
+                        sidebar.isOpenSidebar ? "lg:ml-72" : "lg:ml-[90px]",
+                    )}
+                >
                     {children}
                 </main>
             </div>

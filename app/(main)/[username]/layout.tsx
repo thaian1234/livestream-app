@@ -6,13 +6,13 @@ import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 
 import "@/style/video.css";
 
-export default function StreamDashboardLayout({
-    children,
-}: Readonly<{
+type StreamParams = {
     children: React.ReactNode;
-}>) {
+};
+
+export default function StreamLayout({ children }: Readonly<StreamParams>) {
     return (
-        <StreamTheme as="section" className="pt-8">
+        <StreamTheme as="section">
             <StreamVideoProvider>{children}</StreamVideoProvider>
         </StreamTheme>
     );

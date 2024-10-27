@@ -3,7 +3,9 @@
 import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
 import { CallingState, useCallStateHooks } from "@stream-io/video-react-sdk";
 
-export const LocalLivestreamPlayer = () => {
+interface LivestreamPlayerProps {}
+
+export function LivestreamPlayer({}: LivestreamPlayerProps) {
     const { useCallCallingState } = useCallStateHooks();
     const callingState = useCallCallingState();
 
@@ -28,12 +30,12 @@ export const LocalLivestreamPlayer = () => {
         case CallingState.OFFLINE:
             return <p>Offline state</p>;
     }
-
     return (
         <MyLivestreamLayout
             enableFullScreen={true}
             mirrorLocalParticipantVideo={false}
             showLiveBadge
+            showParticipantCount
         />
     );
-};
+}

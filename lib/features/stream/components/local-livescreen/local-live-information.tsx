@@ -37,10 +37,7 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         size={"lg"}
                     />
-                    <AdditionalInformation
-                        username={user.username}
-                        participantCount={participants.length}
-                    />
+                    <AdditionalInformation username={user.username} />
                 </div>
             </div>
             {!isHost ? (
@@ -67,16 +64,10 @@ export function LocalLiveInformation() {
     );
 }
 
-function AdditionalInformation({
-    username,
-    participantCount,
-}: {
-    username: string;
-    participantCount: number;
-}) {
+function AdditionalInformation({ username }: { username: string }) {
     const { data: streamInformation, isPending: isLoadingStreamInformation } =
         streamApi.query.useGetStreamInformation(username);
-		
+
     if (isLoadingStreamInformation) {
         return (
             <div className="space-y-2">
@@ -98,10 +89,6 @@ function AdditionalInformation({
             <div className="flex space-x-6 text-sm text-white/70">
                 <span>
                     Followers: {streamInformation?.data.followers?.length}
-                </span>
-                <span className="flex space-x-1">
-                    <UsersRound size={16} />
-                    <span className="text-sm">{participantCount}</span>
                 </span>
             </div>
         </div>
