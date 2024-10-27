@@ -1,4 +1,8 @@
-import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import {
+    AxiosError,
+    Call,
+    useStreamVideoClient,
+} from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
 export function useJoinCall(streamId: string) {
@@ -7,6 +11,7 @@ export function useJoinCall(streamId: string) {
         call: undefined as Call | undefined,
         isPending: true,
         isError: false,
+        error: null as AxiosError | null,
     });
 
     useEffect(() => {
@@ -16,7 +21,12 @@ export function useJoinCall(streamId: string) {
         myCall
             .join({ create: false })
             .then(() => {
-                setState({ call: myCall, isPending: false, isError: false });
+                setState({
+                    call: myCall,
+                    isPending: false,
+                    isError: false,
+                    error: null,
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -24,6 +34,7 @@ export function useJoinCall(streamId: string) {
                     ...prev,
                     isPending: false,
                     isError: true,
+                    error: error,
                 }));
             });
 
