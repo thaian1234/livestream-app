@@ -13,9 +13,6 @@ export default function useInitializeChatClient(streamId: string) {
         useState<Channel<DefaultGenerics> | null>();
 
     useEffect(() => {
-        console.log("user ", user);
-        console.log("tokenData ", tokenData);
-        console.log("chatClient ", chatClient);
         if (!user || !tokenData || !streamId) return;
         const client =  new StreamChat(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
@@ -43,13 +40,13 @@ export default function useInitializeChatClient(streamId: string) {
             );
             setChatChannel(channel);
         return () => {
-                    setChatClient(null);
-                    client
-                        .disconnectUser()
-                        .catch((error) =>
-                            console.error("Failed to disconnect user: ", error),
-                        )
-                        .then(() => console.log("Connection close"));
+            setChatClient(null);
+            client
+                .disconnectUser()
+                .catch((error) =>
+                    console.error("Failed to disconnect user: ", error),
+                )
+                .then(() => console.log("Connection close"));
         };
     }, [user.username, user.imageUrl, user.id, tokenData]);
 
