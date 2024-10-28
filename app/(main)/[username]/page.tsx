@@ -9,6 +9,7 @@ import { LiveScreen } from "@/lib/features/stream/components/livescreen";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
 import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
 import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
+import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -53,7 +54,11 @@ export default function StreamPage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat/>}
+            {isChatComponent && (
+                <ChatProvider username={params.username}>
+                    <Chat />
+                </ChatProvider>
+            )}
             {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </div>
     );
