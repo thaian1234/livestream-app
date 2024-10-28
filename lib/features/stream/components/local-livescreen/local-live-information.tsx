@@ -11,7 +11,6 @@ import { UserAvatar } from "@/components/user-avatar";
 
 export function LocalLiveInformation() {
     const { isPending, user, stream, isSignedIn } = useAuth();
-
     const { useParticipants, useIsCallLive } = useCallStateHooks();
     const participants = useParticipants();
     const isHost =
@@ -29,17 +28,7 @@ export function LocalLiveInformation() {
 
     return (
         <section className="mt-2 flex justify-between">
-            <div className="w-full space-y-1 truncate text-white">
-                <h2 className="text-xl">{stream.name}</h2>
-                <div className="flex w-full items-center space-x-4 p-3">
-                    <UserAvatar
-                        imageUrl={user.imageUrl}
-                        isLive={isLive}
-                        size={"lg"}
-                    />
-                    <AdditionalInformation username={user.username} />
-                </div>
-            </div>
+            <AdditionalInformation isLive={isLive} username={user.username} />
             {!isHost ? (
                 <div className="flex items-center space-x-4">
                     <Button
@@ -58,17 +47,24 @@ export function LocalLiveInformation() {
                     </Button>
                 </div>
             ) : (
-                <ToggleLiveButton isLive={isLive} />
+                <ToggleLiveButton isLive={isLive} username={user.username} />
             )}
         </section>
     );
 }
 
-function AdditionalInformation({ username }: { username: string }) {
-    const { data: streamInformation, isPending: isLoadingStreamInformation } =
+interface AdditionalInformationProps {
+    isLive: boolean;
+    username: string;
+}
+function AdditionalInformation({
+    isLive,
+    username,
+}: AdditionalInformationProps) {
+    const { data, isPending, isError } =
         streamApi.query.useGetStreamInformation(username);
 
-    if (isLoadingStreamInformation) {
+    if (isPending) {
         return (
             <div className="space-y-2">
                 <Skeleton className="h-4 w-16" />
@@ -83,13 +79,29 @@ function AdditionalInformation({ username }: { username: string }) {
         );
     }
 
+    if (isError || !data) {
+        return <p>Failed to load AdditionalInformation</p>;
+    }
+
+    const stream = data.data.stream;
+    const user = data.data.user;
+    const follwers = data.data.followers;
+
     return (
-        <div className="space-y-1">
-            <p className="text-sm">{username}</p>
-            <div className="flex space-x-6 text-sm text-white/70">
-                <span>
-                    Followers: {streamInformation?.data.followers?.length}
-                </span>
+        <div className="w-full truncate p-2 text-white">
+            <h2 className="text-xl">{stream.name}</h2>
+            <div className="flex w-full items-center space-x-4">
+                <UserAvatar
+                    imageUrl={user.imageUrl}
+                    isLive={isLive}
+                    size="lg"
+                />
+                <div className="space-y-1">
+                    <p className="text-sm">{username}</p>
+                    <div className="flex space-x-6 text-sm text-white/70">
+                        <span>Followers: {follwers?.length || 0}</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
