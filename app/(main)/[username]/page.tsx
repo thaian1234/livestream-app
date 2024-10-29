@@ -55,7 +55,7 @@ export default function StreamPage() {
                 )}
             </ScrollArea>
             {isChatComponent && (
-                <ChatProvider username={params.username}>
+                <ChatProvider streamId={data.data.stream.id}>
                     <Chat />
                 </ChatProvider>
             )}

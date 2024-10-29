@@ -6,6 +6,7 @@ import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { CustomCall } from "@/lib/features/stream/components/local-livescreen/custom-call";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
+import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 
 export default function StreamDashboardLayout({
     children,
@@ -19,9 +20,11 @@ export default function StreamDashboardLayout({
 
     return (
         <StreamTheme as="section">
-            <StreamVideoProvider>
-                <CustomCall streamId={stream.id}>{children}</CustomCall>
-            </StreamVideoProvider>
+            <ChatProvider streamId={stream.id}>
+                <StreamVideoProvider>
+                    <CustomCall streamId={stream.id}>{children}</CustomCall>
+                </StreamVideoProvider>
+            </ChatProvider>
         </StreamTheme>
     );
 }
