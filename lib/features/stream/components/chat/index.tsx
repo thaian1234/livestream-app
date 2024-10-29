@@ -45,6 +45,15 @@ export function Chat() {
                 ) : (
                     <></>
                 )}
+                {messages && messages.length > 0 ? (
+                    <MessageList
+                        showUnreadNotificationAlways={false}
+                        disableDateSeparator={false}
+                        Message={ChatMessage}
+                    />
+                ) : (
+                    <></>
+                )}
             </ScrollArea>
             <MessageInput Input={CustomMessageInput} />
         </div>
