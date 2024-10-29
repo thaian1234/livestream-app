@@ -30,7 +30,7 @@ export function Chat() {
     }, [messages]);
 
     return (
-        <div className="flex h-[calc(100vh-5rem)] w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
+        <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
             <CustomChannelHeader />
             <ScrollArea
                 ref={scrollAreaRef}
