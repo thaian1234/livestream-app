@@ -10,36 +10,15 @@ import { Channel, Chat } from "stream-chat-react";
 import { Spinner } from "@/components/ui/spinner";
 
 interface ChatProviderProps {
-    username: string;
+    streamId: string;
     children: React.ReactNode;
 }
 
-export function ChatProvider({ username, children }: ChatProviderProps) {
+export function ChatProvider({ streamId, children }: ChatProviderProps) {
     
-    const { data, isPending, isError } =
-        streamApi.query.useGetStreamInformation(username);
-    const {chatClient, chatChannel} = useInitializeChatClient(data?.data.stream.id ?? '');
-
-    // useEffect(() => {
-    //     if (!chatClient || !data) return;
-
-    //     const loadChat = async () => {
-    //         const channel = chatClient.channel(
-    //             "livestream",
-    //             data.data.stream.id,
-    //         );
-    //         await channel.watch();
-    //         setChannel(channel);
-    //     };
-
-    //     loadChat();
-    //     return () => {
-    //         if (channel) {
-    //             channel?.stopWatching();
-    //             setChannel(null);
-    //         }
-    //     };
-    // }, [chatClient, isPending]);
+    // const { data, isPending, isError } =
+    //     streamApi.query.useGetStreamInformation(username);
+    const {chatClient, chatChannel} = useInitializeChatClient(streamId);
 
     if (!chatClient || !chatChannel) return <Spinner />;
 

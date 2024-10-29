@@ -3,6 +3,7 @@
 import { StreamTheme } from "@stream-io/video-react-sdk";
 
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
+import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 
 import "@/style/video.css";
 
