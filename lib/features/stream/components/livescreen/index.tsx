@@ -15,11 +15,12 @@ import { CinemaModeButton } from "./cinema-mode-button";
 import { FullScreenButton } from "./full-screen-button";
 import { LivestreamPlayer } from "./livestream-player";
 import { MiniplayerButton } from "./miniplayer-button";
+import { VideoQualitySelectorDemo } from "./video-quality-selector-demo";
 import { VolumnButton } from "./volumn-button";
 
 export function LiveScreen() {
     const { isHideSidebar, isOpenSidebar } = useSidebar();
-    const { onChangeChatComponent, isChatComponent } = useLiveInfor();
+    const { onToggleChatComponent, isOpenChatComponent } = useLiveInfor();
 
     const [isHovered, setIsHovered] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -52,17 +53,16 @@ export function LiveScreen() {
         //                 >
         //                     TRỰC TIẾP
         //                 </Button>
-        //                 {!isChatComponent && (
+        //                 {!isOpenChatComponent && (
         //                     <TooltipModel content="Expand" side="bottom">
-        //                         <button onClick={onChangeChatComponent}>
+        //                         <button onClick={onToggleChatComponent}>
         //                             <ArrowLeftToLine className="text-white" />
         //                         </button>
         //                     </TooltipModel>
         //                 )}
         //             </div>
-
         //             <div className="absolute bottom-4 left-4 right-4 flex transform items-center justify-between space-x-4">
-        //                 <div>
+        //                 <div className space-x-2>
         //                     <TooltipModel
         //                         content={isPaused ? "Play" : "Pause"}
         //                         side="bottom"
@@ -71,15 +71,22 @@ export function LiveScreen() {
         //                             onClick={handlePlayLive}
         //                             className="bg-black rounded-full text-white transition-all hover:bg-white/20"
         //                         >
-        //                             {isPaused ? <Play /> : <Pause />}
+        //                             {isPaused ? (
+        //                              <Play strokeWidth={3} />
+        //                              ) : (
+        //                              <Pause strokeWidth={3} />
+        //                             )}
         //                         </Button>
         //                     </TooltipModel>
         //                     <VolumnButton />
         //                 </div>
-        //                 <div>
-        //                     <MiniplayerButton />
-        //                     <CinemaModeButton />
-        //                     <FullScreenButton />
+        //                 <div className="flex space-x-2">
+        //                     <VideoQualitySelectorDemo />
+        //                     // thay bằng <PiPButton />
+        //                      <MiniplayerButton />
+        //                      <CinemaModeButton />
+        //                      //thay bằng <ToggleFullScreenButton/>
+        //                      <FullScreenButton />
         //                 </div>
         //             </div>
         //         </>
