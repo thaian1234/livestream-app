@@ -2,10 +2,10 @@ import { ArrowRightToLine, SendHorizontal, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -17,7 +17,7 @@ interface ChatMessage {
     badges?: string[];
 }
 export function Chat() {
-    const { onChangeChatComponent } = useLiveInfor();
+    const { onToggleChatComponent, isOpenChatComponent } = useLiveInfor();
     const [newMessage, setNewMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -85,49 +85,58 @@ export function Chat() {
     }, [newMessage]);
 
     return (
-        <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
-            <div className="flex justify-between border-b border-gray-700 p-2">
-                <TooltipModel content="Collapse" side="bottom">
-                    <button onClick={onChangeChatComponent}>
-                        <ArrowRightToLine />
-                    </button>
-                </TooltipModel>
-                <p className="text-lg font-semibold">Live chat</p>
-                <Settings />
-            </div>
-            <ScrollArea
-                ref={scrollAreaRef}
-                className="h-[calc(100vh-12rem)] px-4"
-            >
-                <div className="flex flex-col space-y-2 py-2">
-                    {messages.map((msg, index) => (
-                        <ChatMessage
-                            key={index}
-                            avatar="/user.svg"
-                            message={msg.message}
-                            userName={msg.username}
-                        />
-                    ))}
+        <div
+            className={cn(
+                "fixed bottom-0 right-2 transform rounded-xl border border-gray-700 bg-transparent text-white transition-transform duration-300 ease-in-out",
+                isOpenChatComponent
+                    ? "w-[400px] translate-x-full"
+                    : "w-[10px] translate-x-0",
+            )}
+        >
+            <div className="flex flex-col justify-between">
+                <div className="flex justify-between border-b border-gray-700 p-2">
+                    <TooltipModel content="Collapse" side="bottom">
+                        <button onClick={onToggleChatComponent}>
+                            <ArrowRightToLine />
+                        </button>
+                    </TooltipModel>
+                    <p className="text-lg font-semibold">Live chat</p>
+                    <Settings />
                 </div>
-            </ScrollArea>
-            <div className="flex border-t border-gray-700 p-2">
-                <Textarea
-                    ref={textareaRef}
-                    placeholder="Your message"
-                    className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    rows={1}
-                    onKeyDown={handleKeyDown}
-                />
-
-                <Button
-                    variant="ghost"
-                    className="hover:bg-white/20"
-                    onClick={() => handleSendMessage}
+                <ScrollArea
+                    ref={scrollAreaRef}
+                    className="h-[calc(100vh-11rem)] px-4"
                 >
-                    <SendHorizontal />
-                </Button>
+                    <div className="flex flex-col space-y-2 py-2">
+                        {messages.map((msg, index) => (
+                            <ChatMessage
+                                key={index}
+                                avatar="/user.svg"
+                                message={msg.message}
+                                userName={msg.username}
+                            />
+                        ))}
+                    </div>
+                </ScrollArea>
+                <div className="flex border-t border-gray-700 p-2">
+                    <Textarea
+                        ref={textareaRef}
+                        placeholder="Your message"
+                        className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        rows={1}
+                        onKeyDown={handleKeyDown}
+                    />
+
+                    <Button
+                        variant="ghost"
+                        className="hover:bg-white/20"
+                        onClick={() => handleSendMessage}
+                    >
+                        <SendHorizontal />
+                    </Button>
+                </div>
             </div>
         </div>
     );

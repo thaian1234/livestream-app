@@ -7,10 +7,8 @@ import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
 import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/livestream-player";
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
 import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 type ParamsType = {
     username: string;

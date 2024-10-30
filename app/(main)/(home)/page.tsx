@@ -4,16 +4,13 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
 import { LivesPreview } from "@/lib/features/stream/components/preview/live-preview";
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function HomePage() {
     const [isExpanded, setIsExpanded] = useState(false);
-    const { liveSrceenStatus } = useLiveInfor();
     const handleShowMore = () => {
         setIsExpanded(!isExpanded);
     };
@@ -43,7 +40,6 @@ export default function HomePage() {
                     </Button>
                 </div>
             </div>
-            {liveSrceenStatus.miniPlayer && <Miniplayer />}
         </>
     );
 }
