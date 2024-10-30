@@ -16,7 +16,7 @@ interface ChatMessage {
     badges?: string[];
 }
 export function LocalChat() {
-    const { onChangeChatComponent } = useLiveInfor();
+    const { onToggleChatComponent } = useLiveInfor();
     const [newMessage, setNewMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export function LocalChat() {
         <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
             <div className="flex justify-between border-b border-gray-700 p-2">
                 <TooltipModel content="Collapse" side="bottom">
-                    <button onClick={onChangeChatComponent}>
+                    <button onClick={onToggleChatComponent}>
                         <ArrowRightToLine />
                     </button>
                 </TooltipModel>

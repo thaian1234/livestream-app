@@ -6,11 +6,7 @@ import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 
 export function MiniplayerButton() {
-    const { setLiveScreenStatus } = useLiveInfor();
-
-    const handleMiniPlayer = () => {
-        setLiveScreenStatus("miniPlayer");
-    };
+    const handleMiniPlayer = () => {};
 
     return (
         <TooltipModel content="Miniplayer" side="bottom">
