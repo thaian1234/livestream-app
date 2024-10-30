@@ -61,7 +61,6 @@ export function LiveScreen() {
         //                     </TooltipModel>
         //                 )}
         //             </div>
-
         //             <div className="absolute bottom-4 left-4 right-4 flex transform items-center justify-between space-x-4">
         //                 <div className space-x-2>
         //                     <TooltipModel
