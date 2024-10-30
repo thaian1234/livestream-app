@@ -1,14 +1,17 @@
 "use client";
 
+import {
+    ParticipantView,
+    StreamVideoParticipant,
+} from "@stream-io/video-react-sdk";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LiveScreen } from "@/lib/features/stream/components/livescreen";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
-import { Miniplayer } from "@/lib/features/stream/components/livescreen/miniplayer";
-import { LivePreviewCarousel } from "@/lib/features/stream/components/preview/live-preview-carousel";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -18,7 +21,14 @@ type ParamsType = {
 };
 
 export default function LivePage() {
-    const { liveSrceenStatus, isChatComponent } = useLiveInfor();
+    const [participant, setParticipant] =
+        useState<StreamVideoParticipant | null>(null);
+    // Assuming you have a way to retrieve the participant object
+
+    // Example: Fetch or set the participant from your video context or API
+    // setParticipant(yourParticipantData);
+
+    const { liveSrceenStatus, isOpenChatComponent } = useLiveInfor();
     const router = useRouter();
     const params = useParams<ParamsType>();
     const { data, isPending, isError } =
@@ -33,7 +43,15 @@ export default function LivePage() {
     return (
         <div className="flex w-screen space-x-4 px-4">
             <ScrollArea className="h-[calc(100vh-5rem)] w-full pl-4 pr-2">
-                <LiveScreen />
+                {!participant ? (
+                    <LiveScreen />
+                ) : (
+                    <ParticipantView
+                        participant={participant}
+                        ParticipantViewUI={<LiveScreen />}
+                    />
+                )}
+
                 {!liveSrceenStatus.cinemaMode && (
                     <div className="space-y-10">
                         <LiveInformation
@@ -53,8 +71,7 @@ export default function LivePage() {
                     </div>
                 )}
             </ScrollArea>
-            {isChatComponent && <Chat />}
-            {liveSrceenStatus.miniPlayer && <Miniplayer />}
+            {isOpenChatComponent && <Chat />}
         </div>
     );
 }
