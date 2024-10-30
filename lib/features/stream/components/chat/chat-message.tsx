@@ -4,7 +4,7 @@ import { useMessageContext } from "stream-chat-react";
 export function ChatMessage() {
     const {isMyMessage, message} = useMessageContext();
     return (
-        <div className="flex w-full items-start space-x-2">
+        <div className="flex w-full items-center space-x-2">
             <button>
                 <Avatar className="h-7 w-7">
                     <AvatarImage src={message.user?.image} alt={message.user?.name} />
