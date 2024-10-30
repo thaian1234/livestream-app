@@ -38,6 +38,7 @@ export function ToggleLiveButton({ isLive, username }: ToggleLiveButtonProps) {
         <Button
             onClick={handleToggleLive}
             variant={isLive ? "default" : "gradient"}
+            className="text-black-1"
         >
             {isLive ? "Stop Live" : "Go Live"}
         </Button>

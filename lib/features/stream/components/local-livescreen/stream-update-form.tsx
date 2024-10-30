@@ -74,7 +74,6 @@ export function StreamUpdateForm({
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Update</Button>
             </form>
         </Form>
     );

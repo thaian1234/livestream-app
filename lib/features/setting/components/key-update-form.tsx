@@ -22,9 +22,11 @@ import { SecretInput } from "@/components/ui/secret-input";
 
 import { GenerateKeyAlert } from "./generate-key-alert";
 
-interface KeyFormProps {}
+interface KeyFormProps {
+    hidingUpdateButton: boolean;
+}
 
-export function KeyForm({}: KeyFormProps) {
+export function KeyForm({ hidingUpdateButton = false }: KeyFormProps) {
     const { data: setting } = settingApi.query.useGetSetting();
     const { mutate: handleUpdateSetting, isPending: isUpdating } =
         settingApi.mutation.useUpdateSetting();
@@ -103,7 +105,9 @@ export function KeyForm({}: KeyFormProps) {
                     }
                 />
             </CardContent>
-            <GenerateKeyAlert isPending={isUpdating} onSubmit={onSubmit} />
+            {!hidingUpdateButton && (
+                <GenerateKeyAlert isPending={isUpdating} onSubmit={onSubmit} />
+            )}
         </Card>
     );
 }
