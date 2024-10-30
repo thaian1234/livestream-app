@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/user-avatar";
 
+import { StreamUpdateDialog } from "./stream-update-dialog";
+
 export function LocalLiveInformation() {
     const { isPending, user, stream, isSignedIn } = useAuth();
     const { useParticipants, useIsCallLive } = useCallStateHooks();
@@ -47,7 +49,13 @@ export function LocalLiveInformation() {
                     </Button>
                 </div>
             ) : (
-                <ToggleLiveButton isLive={isLive} username={user.username} />
+                <div className="flex space-x-2">
+                    <ToggleLiveButton
+                        isLive={isLive}
+                        username={user.username}
+                    />
+                    <StreamUpdateDialog username={user.username}  />
+                </div>
             )}
         </section>
     );
