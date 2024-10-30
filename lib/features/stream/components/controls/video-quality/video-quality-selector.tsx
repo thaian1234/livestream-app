@@ -1,3 +1,5 @@
+"use client";
+
 import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
@@ -16,8 +18,6 @@ import {
     incomingVideoResolutionToSetting,
     incomingVideoSettings,
 } from "./video-setting";
-
-("use client");
 
 const VideoQualitySelector = () => {
     const [selectedSetting, setSelectedSetting] = useState("");

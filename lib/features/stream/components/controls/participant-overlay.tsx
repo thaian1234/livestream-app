@@ -1,5 +1,4 @@
 import { CinemaModeButton } from "../livescreen/cinema-mode-button";
-import { MiniplayerButton } from "../livescreen/miniplayer-button";
 import { useCallStateHooks } from "@stream-io/video-react-sdk";
 import { Users2Icon } from "lucide-react";
 import { useRef, useState } from "react";
@@ -9,8 +8,10 @@ import { cn } from "@/lib/utils";
 import { LiveBadge } from "@/components/live-badge";
 import { Badge } from "@/components/ui/badge";
 
+import { PiPButton } from "./PiP-button";
 import { PlayButton } from "./play-button";
 import { ToggleFullScreenButton } from "./toggle-fullscreen-button";
+import { VideoQualitySelector } from "./video-quality/video-quality-selector";
 import { VolumeControl } from "./volumn-control";
 
 interface ParticipantOverlayProps {
@@ -56,8 +57,9 @@ export const ParticipantOverlay = ({
                 <PlayButton />
                 <VolumeControl />
             </div>
-            <div className="flex">
-                <MiniplayerButton />
+            <div className="flex space-x-2">
+                <VideoQualitySelector />
+                <PiPButton />
                 <CinemaModeButton />
                 <ToggleFullScreenButton />
             </div>
