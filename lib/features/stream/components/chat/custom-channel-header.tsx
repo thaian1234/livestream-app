@@ -10,7 +10,7 @@ export const CustomChannelHeader = () => {
     return (
         <div className="flex justify-between border-b border-gray-700 p-2">
             <TooltipModel content="Collapse" side="bottom">
-                <button onClick={}>
+                <button onClick={() => {}}>
                     <ArrowRightToLine />
                 </button>
             </TooltipModel>
