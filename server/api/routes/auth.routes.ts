@@ -13,9 +13,11 @@ import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AccountRepository } from "../repositories/account.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
+import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AuthService } from "../services/auth.service";
 import { EmailVerificationService } from "../services/email-verification.service";
+import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
 
@@ -39,6 +41,7 @@ function createAuthRoutes() {
     const userRepository = new UserRepository();
     const emailVerificationRepository = new EmailVerificationRepository();
     const accountRepository = new AccountRepository();
+    const streamRepository = new StreamRepository();
     // Service
     const userService = new UserService(userRepository);
     const getstreamService = new GetStreamService();
@@ -47,13 +50,20 @@ function createAuthRoutes() {
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
+    const streamService = new StreamService(streamRepository);
     const getStreamService = new GetStreamService();
-    const githubService = new GitHubService(accountRepository, userService);
+    const githubService = new GitHubService(
+        accountRepository,
+        userService,
+        getStreamService,
+        streamService,
+    );
     // Controller
     const goolgeService = new GoogleService(
         accountRepository,
         userService,
         getstreamService,
+        streamService,
     );
     const authController = new AuthController(
         factory,
@@ -61,6 +71,8 @@ function createAuthRoutes() {
         userService,
         emailVerificationService,
         nodemailService,
+        getStreamService,
+        streamService,
     );
     const oauthController = new OauthController(
         factory,

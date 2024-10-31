@@ -10,6 +10,7 @@ import { envServer } from "@/lib/env/env.server";
 
 import { IGetStreamService } from "./getstream.service";
 import { ILuciaService, LuciaService } from "./lucia.service";
+import { IStreamService } from "../services/stream.service";
 
 export interface IGoogleService extends Utils.AutoMappedClass<GoogleService> {}
 
@@ -21,6 +22,7 @@ export class GoogleService implements IGoogleService {
         private readonly accountRepository: IGoogleAccountRepository,
         private readonly userService: IUserService,
         private readonly getStreamService: IGetStreamService,
+        private readonly streamService: IStreamService
     ) {
         this.googleClient = new Google(
             envServer.GOOGLE_CLIENT_ID,
@@ -104,6 +106,11 @@ export class GoogleService implements IGoogleService {
             await this.accountRepository.createGoogleAccountTransaction(
                 googleData,
             );
+        if (newAccount) {
+            const stream = await this.streamService.getStreamByUserId(newAccount?.id);
+            if (stream)
+                await this.getStreamService.createChatChannel(stream.id);
+        }
         await this.getStreamService.upsertUser(UserDTO.parse(newAccount));
         return newAccount?.id;
     }

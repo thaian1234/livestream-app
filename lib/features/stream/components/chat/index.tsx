@@ -1,60 +1,22 @@
-import { ArrowRightToLine, SendHorizontal, Settings } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+"use client";
 
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useEffect, useRef } from "react";
+import {
+    MessageInput,
+    MessageList,
+    useChannelStateContext,
+} from "stream-chat-react";
 
-import { TooltipModel } from "@/components/tooltip-model";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
 
 import { ChatMessage } from "./chat-message";
+import { CustomChannelHeader } from "./custom-channel-header";
+import { CustomMessageInput } from "./custom-message-input";
+import { MessageSquare } from "lucide-react";
 
-interface ChatMessage {
-    username: string;
-    message: string;
-    badges?: string[];
-}
 export function Chat() {
-    const { onToggleChatComponent } = useLiveInfor();
-    const [newMessage, setNewMessage] = useState("");
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-    //dummy data
-    const [messages, setMessages] = useState<ChatMessage[]>([
-        { username: "lifeisbeautiful7", message: "2400", badges: ["gift"] },
-        { username: "Master", message: "1002", badges: ["mod"] },
-        { username: "paul", message: "869", badges: ["sub"] },
-        { username: "slackerizn", message: "faerie + 7" },
-        { username: "MightyHorst", message: "Soju TROOBIS" },
-        { username: "grimlyjuicer", message: "Soju troobis" },
-        { username: "Gigawawa", message: "Soju" },
-        { username: "nahvi_", message: "TROOBIS" },
-        { username: "attackontower", message: "so you admit it" },
-        {
-            username: "psiae",
-            message: "test cái message nàyyyyxxxxxxxxyyyyy bdjnckn  ne",
-        },
-        {
-            username: "psiae",
-            message: "test cái message nàyyyyxxxxxxxxyyyyy bdjnckn  ne",
-        },
-        {
-            username: "psiae",
-            message: "test cái message nàyyyyxxxxxxxxyyyyyyyy bdjnckn  ne",
-        },
-    ]);
-    const handleSendMessage = () => {
-        if (newMessage) {
-            setMessages([
-                ...messages,
-                { username: "You", message: newMessage },
-            ]);
-            setNewMessage("");
-        }
-    };
 
     //chat scrolls to the bottom
     useEffect(() => {
@@ -68,67 +30,29 @@ export function Chat() {
         }
     }, [messages]);
 
-    //send message when press enter
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    };
-
-    //expand textarea
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "inherit";
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    }, [newMessage]);
-
     return (
         <div className="flex w-full flex-col justify-between rounded-xl border border-gray-700 bg-transparent text-white">
-            <div className="flex justify-between border-b border-gray-700 p-2">
-                <TooltipModel content="Collapse" side="bottom">
-                    <button onClick={onToggleChatComponent}>
-                        <ArrowRightToLine />
-                    </button>
-                </TooltipModel>
-                <p className="text-lg font-semibold">Live chat</p>
-                <Settings />
-            </div>
+            <CustomChannelHeader />
             <ScrollArea
                 ref={scrollAreaRef}
                 className="h-[calc(100vh-12rem)] px-4"
             >
-                <div className="flex flex-col space-y-2 py-2">
-                    {messages.map((msg, index) => (
-                        <ChatMessage
-                            key={index}
-                            avatar="/user.svg"
-                            message={msg.message}
-                            userName={msg.username}
-                        />
-                    ))}
-                </div>
+                {messages && messages.length > 0 ? (
+                    <MessageList
+                        showUnreadNotificationAlways={false}
+                        disableDateSeparator={false}
+                        Message={ChatMessage}
+                    />
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-[300px] bg-muted/30 rounded-lg">
+                        <MessageSquare className="h-12 w-12 text-muted-foreground mb-4" />
+                        <p className="text-lg text-center text-muted-foreground max-w-[250px]">
+                            No messages yet. Let start chating!
+                        </p>
+                    </div>
+                )}
             </ScrollArea>
-            <div className="flex border-t border-gray-700 p-2">
-                <Textarea
-                    ref={textareaRef}
-                    placeholder="Your message"
-                    className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    rows={1}
-                    onKeyDown={handleKeyDown}
-                />
-
-                <Button
-                    variant="ghost"
-                    className="hover:bg-white/20"
-                    onClick={() => handleSendMessage}
-                >
-                    <SendHorizontal />
-                </Button>
-            </div>
+            <MessageInput Input={CustomMessageInput} />
         </div>
     );
 }
