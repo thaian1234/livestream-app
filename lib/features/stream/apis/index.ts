@@ -6,6 +6,7 @@ const keys = {
     stream_token: ["stream_token"],
     stream_information: (username: string) => ["stream_information", username],
     streams: (page: string, size: string) => ["streams", page, size],
+    chat_token: ["chat_token"],
 };
 
 export const streamApi = {
@@ -49,6 +50,17 @@ export const streamApi = {
                 },
             );
         },
+        useGetChatToken() {
+            const $get = client.api.streams["chat-token"].$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.chat_token,
+                {},
+                {
+                    retry: 1,
+                },
+            );
+        },
     },
     mutation: {
         useGetStreamToken() {
@@ -58,6 +70,23 @@ export const streamApi = {
                     router.replace(ROUTES.HOME_PAGE);
                 },
             });
+            return mutation;
+        },
+        useUpdateStream(username: string) {
+            const $patch = client.api.streams.$patch;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $patch,
+                {
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                    onSuccess() {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.stream_information(username),
+                        });
+                    },
+                },
+            );
             return mutation;
         },
     },

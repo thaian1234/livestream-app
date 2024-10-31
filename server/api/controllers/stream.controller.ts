@@ -25,7 +25,8 @@ export class StreamController implements IStreamController {
             .createApp()
             .get("/stream-token", ...this.getStreamTokenHandler())
             .patch("/", ...this.updateStreamHandler())
-            .get("/", ...this.getAllStreamHandler());
+            .get("/", ...this.getAllStreamHandler())
+            .get("/chat-token", ...this.getStreamChatTokenHandler());
     }
     private getStreamTokenHandler() {
         return this.factory.createHandlers(
@@ -129,6 +130,25 @@ export class StreamController implements IStreamController {
                             StreamDTO.parseStreamWithUser(followingStreams),
                     },
                     status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getStreamChatTokenHandler() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const token = this.getStreamService.generateStreamChatToken(
+                    currentUser.id,
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Get token successfully",
+                    data: {
+                        token: token,
+                    },
+                    status: HttpStatus.Created,
                 });
             },
         );

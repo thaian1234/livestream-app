@@ -20,11 +20,8 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
     const { user: currentUser } = useAuth();
     const [isFollowing, setIsFollowing] = useState<Boolean>(isFollowed);
     const [isHovering, setIsHovering] = useState<Boolean>(false);
-    const {
-        mutate: handleFollowToggle,
-        isPending,
-        isError,
-    } = followApi.mutation.useFollowToggle();
+    const { mutate: handleFollowToggle, isPending } =
+        followApi.mutation.useFollowToggle();
     const handleClick = () => {
         if (!currentUser) {
             toast.error("Please Sign in for further action");
@@ -35,10 +32,6 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
             param: { followingId },
         });
     };
-
-    if (isError) {
-        setIsHovering(isFollowed);
-    }
 
     const handleMouseEnter = () => {
         setIsHovering(true);

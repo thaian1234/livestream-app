@@ -1,6 +1,7 @@
 import { AuthDTO } from "../dtos/auth.dto";
 import { EmailVerificationDTO } from "../dtos/email-verification.dto";
 import { UserDTO } from "../dtos/user.dto";
+import { GetStreamService } from "../external-services/getstream.service";
 import { INodemailService } from "../external-services/nodemail.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -11,6 +12,7 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IAuthService } from "../services/auth.service";
 import { IEmailVerificationService } from "../services/email-verification.service";
+import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
@@ -25,6 +27,8 @@ export class AuthController implements IAuthController {
         private readonly userService: IUserService,
         private readonly emailVerificationService: IEmailVerificationService,
         private readonly nodemailService: INodemailService,
+        private readonly getStreamService: GetStreamService,
+        private readonly streamService: IStreamService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -168,6 +172,9 @@ export class AuthController implements IAuthController {
                 await this.userService.updateUser(userId, {
                     emailVerified: true,
                 });
+                const stream = await this.streamService.getStreamByUserId(userId);
+                if (stream)
+                    await this.getStreamService.createChatChannel(stream.id);
                 const { sessionCookie } =
                     await this.authService.initiateSession(userId);
                 setCookie(c, sessionCookie.name, sessionCookie.value, {
