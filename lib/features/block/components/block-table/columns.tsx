@@ -13,6 +13,7 @@ export type Block = {
     id: string;
     username: string;
     imageUrl: string | null;
+    createdAt: string;
 };
 const handleNavigate = (id: string) => {
     console.log("Navigate to user profile: " + id);
@@ -56,10 +57,31 @@ export const columns = (idAuth: string): ColumnDef<Block>[] => [
         size: 560,
     },
     {
+        accessorKey: "block date",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Block date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const block = row.original;
+            return <div className="ml-6">{block.createdAt}</div>;
+        },
+        size: 560,
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const block = row.original;
-            return <BlockButton blockedId={block.id} blockerId={idAuth} />;
+            return <BlockButton blockedId={block.id} blockerId={idAuth} isBlocking={true}/>;
         },
         size: 50,
     },

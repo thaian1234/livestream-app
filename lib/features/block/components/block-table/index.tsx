@@ -3,6 +3,9 @@ import { useUser } from "@/lib/hooks/use-user";
 import { DataTable } from "@/components/data-table";
 
 import { columns } from "./columns";
+import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { userApi } from "@/lib/features/user/apis";
+import { blockApi } from "../../apis";
 
 const dataBlock = [
     { id: "1", username: "Channel 1", imageUrl: "/user.svg" },
@@ -22,12 +25,35 @@ const dataBlock = [
 ];
 export function BlockTable() {
     const { user } = useUser();
+    const { data, isPending, error } = blockApi.query.useBlock("1", "10", user.id);
+    if (data === undefined || isPending) {
+        return <ListSkeleton />;
+    }
+    if (error) {
+        return <p>Some thing went wrong</p>;
+    }
+    const blockeds = data.data?.blockeds?.map((block) => {
+        const formattedDate = new Date(block.createdAt).toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+            },
+        );
 
+        return {
+            id: block.id,
+            username: block.username,
+            imageUrl: block.imageUrl,
+            createdAt: formattedDate,
+        };
+    }) || [];
     return (
         <div className="container mx-auto py-10">
             <DataTable
                 columns={columns(user.id)}
-                data={dataBlock}
+                data={blockeds}
                 pageSizeValue={10}
             />
         </div>

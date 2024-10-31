@@ -26,7 +26,7 @@ const dummyDataFollowings = [
 
 export function FollowingsTable() {
     const { user } = useUser();
-    const isFollowerState = false;
+    const isFollowerState = true;
     const { data, isPending, error } = followApi.query.useFollow();
     if (data === undefined || isPending) {
         return <ListSkeleton />;
@@ -34,12 +34,29 @@ export function FollowingsTable() {
     if (error) {
         return <p>Some thing went wrong</p>;
     }
-    const following = data?.data.followings;
+    const following =
+        data.data?.followings?.map((follow) => {
+            const formattedDate = new Date(follow.createdAt).toLocaleDateString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                },
+            );
+
+            return {
+                id: follow.id,
+                username: follow.username,
+                imageUrl: follow.imageUrl,
+                createdAt: formattedDate,
+            };
+        }) || [];
     return (
         <div className="container mx-auto py-10">
             <DataTable
                 columns={columns(user.id, isFollowerState)}
-                data={dummyDataFollowings}
+                data={following}
                 pageSizeValue={10}
             />
         </div>

@@ -76,7 +76,7 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
                     <>
                         <UserCheck className="h-6 w-6 fill-primary text-primary transition-all duration-300 ease-in-out" />
                         <span className="transition-all duration-300 ease-in-out">
-                            Followed!
+                            Followed
                         </span>
                     </>
                 )}

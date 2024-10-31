@@ -11,14 +11,13 @@ import { Button } from "@/components/ui/button";
 interface BlockButtonProps {
     blockerId: string;
     blockedId: string;
+    isBlocking: boolean;
 }
 
-export function BlockButton({ blockerId, blockedId }: BlockButtonProps) {
-    const [isBlocking, setisBlocking] = useState(false);
+export function BlockButton({ blockerId, blockedId, isBlocking }: BlockButtonProps) {
     const { mutate: handleBlockToggle, isPending } =
         blockApi.mutation.useBlockToggle();
     const handleClick = () => {
-        setisBlocking(!isBlocking);
         handleBlockToggle({ param: { blockerId, blockedId } });
     };
 
