@@ -11,8 +11,13 @@ import DragDropArea from "./drag-drop-area";
 interface FileWithPreview extends File {
     preview: string;
 }
+interface UploadThumbnailFormProps {
+    initialImageUrl: string | null;
+}
 
-export function UploadThumbnailForm() {
+export function UploadThumbnailForm({
+    initialImageUrl,
+}: UploadThumbnailFormProps) {
     const [file, setFile] = useState<FileWithPreview | null>(null);
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUploadThumbnail(file);
@@ -46,17 +51,23 @@ export function UploadThumbnailForm() {
     };
 
     return (
-        <div className="flex w-full flex-col justify-between rounded-lg bg-background p-6 shadow-md">
+        <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
                     <img src={file.preview} alt={file.name} />
                 ) : (
                     <div className="flex aspect-video h-full flex-col items-center justify-center">
-                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                        <p className="mt-2 text-sm text-gray-400">
-                            Drag and drop your image here, or click to select a
-                            file
-                        </p>
+                        {!!initialImageUrl ? (
+                            <img src={initialImageUrl} alt="Thumbnail Image" />
+                        ) : (
+                            <>
+                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                                <p className="mt-2 text-sm text-gray-400">
+                                    Drag and drop your image here, or click to
+                                    select a file
+                                </p>
+                            </>
+                        )}
                     </div>
                 )}
             </DragDropArea>

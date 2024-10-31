@@ -72,5 +72,22 @@ export const streamApi = {
             });
             return mutation;
         },
+        useUpdateStream(username: string) {
+            const $patch = client.api.streams.$patch;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $patch,
+                {
+                    onError(err) {
+                        toast.error(err.message);
+                    },
+                    onSuccess() {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.stream_information(username),
+                        });
+                    },
+                },
+            );
+            return mutation;
+        },
     },
 };

@@ -5,7 +5,7 @@ export default function UploadPage() {
     return (
         <div className="flex w-[600px] flex-col space-y-4 bg-white">
             <UploadImageForm />
-            <UploadThumbnailForm />
+            <UploadThumbnailForm initialImageUrl={null} />
         </div>
     );
 }

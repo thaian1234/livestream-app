@@ -44,14 +44,13 @@ function createAuthRoutes() {
     const streamRepository = new StreamRepository();
     // Service
     const userService = new UserService(userRepository);
-    const getstreamService = new GetStreamService();
-    const authService = new AuthService(userService, getstreamService);
+    const getStreamService = new GetStreamService();
+    const authService = new AuthService(userService, getStreamService);
     const nodemailService = new NodemailService();
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
     const streamService = new StreamService(streamRepository);
-    const getStreamService = new GetStreamService();
     const githubService = new GitHubService(
         accountRepository,
         userService,
@@ -62,7 +61,7 @@ function createAuthRoutes() {
     const goolgeService = new GoogleService(
         accountRepository,
         userService,
-        getstreamService,
+        getStreamService,
         streamService,
     );
     const authController = new AuthController(

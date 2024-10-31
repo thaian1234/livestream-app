@@ -23,12 +23,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { UserAvatar } from "@/components/user-avatar";
 
 export function UserNav() {
-    const { user, isPending, error } = useAuth();
-    if (error) {
-        notFound();
-    }
-    if (isPending || !user) {
+    const { user, isPending, error, stream } = useAuth();
+    if (isPending) {
         return <Spinner />;
+    }
+    if (error || !user || !stream) {
+        notFound();
     }
 
     return (
@@ -36,7 +36,10 @@ export function UserNav() {
             <TooltipModel content="Profile" side="bottom">
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="size-10 rounded-full">
-                        <UserAvatar imageUrl={user.imageUrl} />
+                        <UserAvatar
+                            imageUrl={user.imageUrl}
+                            isLive={stream.isLive}
+                        />
                     </Button>
                 </DropdownMenuTrigger>
             </TooltipModel>
