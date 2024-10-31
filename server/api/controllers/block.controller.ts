@@ -22,12 +22,11 @@ export class BlockController implements IBlockController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .post("/:blockerId/:blockedId", ...this.blockToggle())
-            .get("/:userId/blocked", ...this.findBlockedByUserId());
+            .post("/:blockedId", ...this.blockToggle())
+            .get("/blocked", ...this.findBlockedByUserId());
     }
     private blockToggle() {
         const params = z.object({
-            blockerId: z.string().uuid(),
             blockedId: z.string().uuid(),
         });
 
@@ -35,50 +34,49 @@ export class BlockController implements IBlockController {
             zValidator("param", params, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { blockerId, blockedId } = c.req.valid("param");
+                const { blockedId } = c.req.valid("param");
                 const currentUser = c.get("getUser");
-                if (currentUser.id !== blockerId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 if (currentUser.id === blockedId) {
                     throw new MyError.BadRequestError();
                 }
 
                 const data = await this.blockService.blockToggle({
-                    blockerId,
+                    blockerId: currentUser.id,
                     blockedId,
                 });
+
+                if (!data) {
+                    throw new MyError.BadRequestError();
+                }
+
+                let message = "Block user successfully";
+                if (typeof data === "boolean") {
+                    message = "Unblock user successfully";
+                }
 
                 return ApiResponse.WriteJSON({
                     c,
                     data: data,
                     status: HttpStatus.OK,
+                    msg: message,
                 });
             },
         );
     }
     private findBlockedByUserId() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createFilterSchema();
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { userId } = c.req.valid("param");
                 const { page, size, filterBy } = c.req.valid("query");
 
                 const currentUser = c.get("getUser");
 
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 const blockedQuery =
                     await this.blockService.findBlockedByUserIdWithUsername(
                         filterBy,
-                        userId,
+                        currentUser.id,
                         (page - 1) * size,
                         size,
                     );

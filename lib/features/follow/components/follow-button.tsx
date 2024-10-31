@@ -32,7 +32,7 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
         }
         setIsFollowing(!isFollowing);
         handleFollowToggle({
-            param: { followerId: currentUser.id, followingId },
+            param: { followingId },
         });
     };
 

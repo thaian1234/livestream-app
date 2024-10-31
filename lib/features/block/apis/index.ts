@@ -2,17 +2,14 @@ import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
 
 const keys = {
-    block: (page: string, size: string) => ["follow", page, size],
+    block: (page: string, size: string) => ["block", page, size],
 };
 
 export const blockApi = {
     query: {
-        useBlock(page = "1", size = "4", userId: string) {
-            const $get = client.api.blocks[":userId"].blocked.$get;
+        useBlock(page = "1", size = "4") {
+            const $get = client.api.blocks.blocked.$get;
             return Fetcher.useHonoQuery($get, keys.block(page, size), {
-                param: {
-                    userId,
-                },
                 query: {
                     page,
                     size,
@@ -22,15 +19,19 @@ export const blockApi = {
     },
     mutation: {
         useBlockToggle() {
-            const $post = client.api.blocks[":blockerId"][":blockedId"].$post;
-            const { mutation, toast } = Fetcher.useHonoMutation($post, {
-                onSuccess() {
-                    toast.success("Block success");
+            const $post = client.api.blocks[":blockedId"].$post;
+            const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onSuccess(data) {
+                        toast.success(data.msg);
+                        queryClient.invalidateQueries();
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
                 },
-                onError(err) {
-                    toast.error(err.message);
-                },
-            });
+            );
             return mutation;
         },
     },

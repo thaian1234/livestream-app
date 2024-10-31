@@ -15,16 +15,16 @@ export type Block = {
     imageUrl: string | null;
     createdAt: string;
 };
-const handleNavigate = (id: string) => {
-    console.log("Navigate to user profile: " + id);
+const handleNavigate = (username: string) => {
+    console.log("Navigate to user profile: " + username);
 };
-export const columns = (idAuth: string): ColumnDef<Block>[] => [
+export const columns = (): ColumnDef<Block>[] => [
     {
         id: "avatar",
         cell: ({ row }) => {
             const block = row.original;
             return (
-                <button onClick={() => handleNavigate(block.id)}>
+                <button onClick={() => handleNavigate(block.username)}>
                     <UserAvatar imageUrl={block?.imageUrl} />
                 </button>
             );
@@ -81,7 +81,7 @@ export const columns = (idAuth: string): ColumnDef<Block>[] => [
         id: "actions",
         cell: ({ row }) => {
             const block = row.original;
-            return <BlockButton blockedId={block.id} blockerId={idAuth} isBlocking={true}/>;
+            return <BlockButton blockedId={block.id} isBlock={true}/>;
         },
         size: 50,
     },

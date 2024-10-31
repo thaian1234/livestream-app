@@ -19,7 +19,6 @@ const handleNavigate = (id: string) => {
     console.log("Navigate to user profile: " + id);
 };
 export const columns = (
-    idAuth: string,
     isFollowerState: boolean,
 ): ColumnDef<Follow>[] => [
     {
@@ -88,7 +87,7 @@ export const columns = (
                 <>
                     {isFollowerState ? (
                         <FollowButton
-                            followingId={idAuth}
+                            followingId={follow.id}
                             isFollowed={isFollowerState}
                         />
                     ) : (

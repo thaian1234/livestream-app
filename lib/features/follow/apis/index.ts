@@ -19,17 +19,17 @@ export const followApi = {
     },
     mutation: {
         useFollowToggle() {
-            const $post =
-                client.api.follows[":followerId"][":followingId"].$post;
+            const $post = client.api.follows[":followingId"].$post;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
                 $post,
                 {
                     onError(err) {
                         toast.error(err.message);
                     },
-					onSuccess() {
-						queryClient.invalidateQueries()
-					}
+                    onSuccess(data) {
+                        toast.error(data.msg);
+                        queryClient.invalidateQueries();
+                    },
                 },
             );
             return mutation;
