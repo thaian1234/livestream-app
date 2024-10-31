@@ -41,19 +41,18 @@ function createAuthRoutes() {
     const accountRepository = new AccountRepository();
     // Service
     const userService = new UserService(userRepository);
-    const getstreamService = new GetStreamService();
-    const authService = new AuthService(userService, getstreamService);
+    const getStreamService = new GetStreamService();
+    const authService = new AuthService(userService, getStreamService);
     const nodemailService = new NodemailService();
     const emailVerificationService = new EmailVerificationService(
         emailVerificationRepository,
     );
-    const getStreamService = new GetStreamService();
     const githubService = new GitHubService(accountRepository, userService);
     // Controller
     const goolgeService = new GoogleService(
         accountRepository,
         userService,
-        getstreamService,
+        getStreamService,
     );
     const authController = new AuthController(
         factory,

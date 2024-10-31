@@ -23,7 +23,7 @@ import { SecretInput } from "@/components/ui/secret-input";
 import { GenerateKeyAlert } from "./generate-key-alert";
 
 interface KeyFormProps {
-    hidingUpdateButton: boolean;
+    hidingUpdateButton?: boolean;
 }
 
 export function KeyForm({ hidingUpdateButton = false }: KeyFormProps) {

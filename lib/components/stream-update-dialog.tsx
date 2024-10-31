@@ -1,8 +1,10 @@
+import { ROUTES } from "../configs/routes.config";
 import { streamApi } from "../features/stream/apis";
 import { StreamUpdateForm } from "../features/stream/components/local-livescreen/stream-update-form";
 import { UploadThumbnailForm } from "../features/upload/components/upload-thumbnail-form";
 import { SettingsIcon } from "lucide-react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 import {
     Dialog,
@@ -23,7 +25,7 @@ const KeyInformation = dynamic(
         ),
     {
         loading: () => <Spinner />,
-        ssr: false, // Disable server-side rendering for this component
+        ssr: false,
     },
 );
 
@@ -49,11 +51,19 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             </DialogTrigger>
             <DialogContent className="px-10 lg:max-w-3xl">
                 <Tabs className="flex flex-col space-y-6">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="information">
+                    <TabsList className="grid w-full grid-cols-2 gap-x-4 bg-transparent">
+                        <TabsTrigger
+                            value="information"
+                            className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
+                        >
                             Information
                         </TabsTrigger>
-                        <TabsTrigger value="key">Key</TabsTrigger>
+                        <TabsTrigger
+                            value="key"
+                            className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
+                        >
+                            Key
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="information" className="space-y-4">
                         <DialogHeader>
@@ -76,8 +86,18 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                             />
                         </div>
                     </TabsContent>
-                    <TabsContent value="key" className="space-y-4">
+                    <TabsContent
+                        value="key"
+                        className="flex flex-col space-y-4 pb-8"
+                    >
+                        <Label>Key Information</Label>
                         <KeyInformation hidingUpdateButton />
+                        <Link
+                            href={ROUTES.KEY_PAGE(username)}
+                            className="ml-auto italic underline"
+                        >
+                            Generate new Key ?
+                        </Link>
                     </TabsContent>
                 </Tabs>
             </DialogContent>
