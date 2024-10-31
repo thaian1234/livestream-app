@@ -25,11 +25,11 @@ export const followApi = {
                 $post,
                 {
                     onError(err) {
-                        toast.error(err.message);
+                        toast.error("Cannot follow yourself");
                     },
-					onSuccess() {
-						queryClient.invalidateQueries()
-					}
+                    onSuccess() {
+                        queryClient.invalidateQueries();
+                    },
                 },
             );
             return mutation;

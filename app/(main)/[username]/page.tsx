@@ -7,8 +7,8 @@ import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LiveInformation } from "@/lib/features/stream/components/livescreen/live-information";
 import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/livestream-player";
-
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
+import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 
 type ParamsType = {
     username: string;
@@ -39,7 +39,9 @@ export default function StreamPage() {
                 </CustomCall>
             </div>
             <div className="col-span-3 col-start-10 row-span-5 row-start-1">
-                <Chat />
+                <ChatProvider streamId={stream.id}>
+                    <Chat />
+                </ChatProvider>
             </div>
             <div className="col-span-9 col-start-1 row-span-2">
                 <LiveInformation

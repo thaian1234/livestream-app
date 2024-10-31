@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { Channel, DefaultGenerics, StreamChat } from "stream-chat";
 
 import { envClient } from "@/lib/env/env.client";
-import { useUser } from "@/lib/hooks/use-user";
+import { useAuth } from "@/lib/providers/auth-provider";
 
 export default function useInitializeChatClient(streamId: string) {
-    const { user } = useUser();
+    const { user } = useAuth();
     const { data: tokenData } = streamApi.query.useGetChatToken();
     const [chatClient, setChatClient] = useState<StreamChat | null>(null);
     const [chatChannel, setChatChannel] =
@@ -14,13 +14,11 @@ export default function useInitializeChatClient(streamId: string) {
 
     useEffect(() => {
         if (!user || !tokenData || !streamId) return;
-        const client =  new StreamChat(
-            envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-            {
-                enableInsights: true,
-                enableWSFallback: true,
-            },
-        );
+        const client = new StreamChat(envClient.NEXT_PUBLIC_GETSTREAM_API_KEY, {
+            enableInsights: true,
+            enableWSFallback: true,
+            timeout: 10000,
+        });
         client
             .connectUser(
                 {
@@ -32,13 +30,10 @@ export default function useInitializeChatClient(streamId: string) {
             )
             .catch((error) => console.error("Failled to connect user", error))
             .then(() => {
-                    setChatClient(client);
+                setChatClient(client);
             });
-            const channel = client.channel(
-                "livestream",
-                streamId,
-            );
-            setChatChannel(channel);
+        const channel = client.channel("livestream", streamId);
+        setChatChannel(channel);
         return () => {
             setChatClient(null);
             client
@@ -48,7 +43,7 @@ export default function useInitializeChatClient(streamId: string) {
                 )
                 .then(() => console.log("Connection close"));
         };
-    }, [user.username, user.imageUrl, user.id, tokenData]);
+    }, [streamId, user, tokenData]);
 
-    return {chatClient, chatChannel};
+    return { chatClient, chatChannel };
 }
