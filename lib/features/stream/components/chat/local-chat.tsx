@@ -99,14 +99,14 @@ export function LocalChat() {
                 className="h-[calc(100vh-12rem)] px-4"
             >
                 <div className="flex flex-col space-y-2 py-2">
-                    {messages.map((msg, index) => (
+                    {/* {messages.map((msg, index) => (
                         <ChatMessage
                             key={index}
                             avatar="/user.svg"
                             message={msg.message}
                             userName={msg.username}
                         />
-                    ))}
+                    ))} */}
                 </div>
             </ScrollArea>
             <div className="flex border-t border-gray-700 p-2">

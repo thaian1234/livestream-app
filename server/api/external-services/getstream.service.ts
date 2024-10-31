@@ -2,6 +2,7 @@ import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { StreamClient, UserRequest } from "@stream-io/node-sdk";
+import { StreamChat } from "stream-chat";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
@@ -10,6 +11,7 @@ export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
 export class GetStreamService implements IGetStreamService {
     private readonly streamClient: StreamClient;
+    private readonly streamChatClient: StreamChat
     private readonly callType;
     private readonly roles;
     constructor() {
@@ -20,6 +22,10 @@ export class GetStreamService implements IGetStreamService {
                 timeout: 10000,
             },
         );
+        this.streamChatClient = StreamChat.getInstance(
+            envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
+            envServer.GETSTREAM_PRIVATE_API_KEY,
+        )
         this.callType = {
             default: "default",
             audio_room: "audio_room",
@@ -86,5 +92,21 @@ export class GetStreamService implements IGetStreamService {
             },
         });
         return callRoom;
+    }
+
+    public async createChatChannel(streamId: string) {
+        const channel = this.streamChatClient.channel('livestream', streamId);
+        await channel.create();
+    }
+
+    public generateStreamChatToken(userId: string) {
+        const expirationTime = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 1 week
+        const issuedAt = Math.floor(Date.now() / 1000) - 60;
+        const token = this.streamChatClient.createToken(
+            userId,
+            expirationTime,
+            issuedAt,
+        );
+        return token;
     }
 }

@@ -6,6 +6,7 @@ const keys = {
     stream_token: ["stream_token"],
     stream_information: (username: string) => ["stream_information", username],
     streams: (page: string, size: string) => ["streams", page, size],
+    chat_token: ["chat_token"],
 };
 
 export const streamApi = {
@@ -44,6 +45,17 @@ export const streamApi = {
                         size,
                     },
                 },
+                {
+                    retry: 1,
+                },
+            );
+        },
+        useGetChatToken() {
+            const $get = client.api.streams["chat-token"].$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.chat_token,
+                {},
                 {
                     retry: 1,
                 },

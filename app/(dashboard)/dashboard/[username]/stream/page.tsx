@@ -1,10 +1,12 @@
 "use client";
 
+import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalChat } from "@/lib/features/stream/components/chat/local-chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
 import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-livescreen/local-livestream-player";
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useAuth } from "@/lib/providers/auth-provider";
+import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 
 export default function StreamPage() {
     const auth = useAuth();
@@ -26,7 +28,9 @@ export default function StreamPage() {
                 </div>
             </CustomCall>
             <div className="col-span-3 col-start-10 row-span-5 row-start-1">
-                <LocalChat />
+                <ChatProvider streamId={auth.stream.id}>
+                    <Chat />
+                </ChatProvider>
             </div>
         </section>
     );

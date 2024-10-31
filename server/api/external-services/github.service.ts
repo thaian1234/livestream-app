@@ -9,6 +9,8 @@ import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
 import { ILuciaService, LuciaService } from "./lucia.service";
+import { IGetStreamService } from "./getstream.service";
+import { IStreamService } from "../services/stream.service";
 
 export interface IGitHubService extends Utils.AutoMappedClass<GitHubService> {}
 
@@ -19,6 +21,8 @@ export class GitHubService implements IGitHubService {
     constructor(
         private readonly accountRepository: IGitHubAccountRepository,
         private readonly userService: IUserService,
+        private readonly getStreamService: IGetStreamService,
+        private readonly streamService: IStreamService
     ) {
         this.gitHubClient = new GitHub(
             envServer.GITHUB_CLIENT_ID,
@@ -95,6 +99,12 @@ export class GitHubService implements IGitHubService {
             await this.accountRepository.createGitHubAccountTransaction(
                 gitHubData,
             );
+        if (newAccount) {
+            const stream = await this.streamService.getStreamByUserId(newAccount?.id);
+            if (stream)
+                await this.getStreamService.createChatChannel(stream.id);
+        }
+        await this.getStreamService.upsertUser(UserDTO.parse(newAccount));
         return newAccount?.id;
     }
 
