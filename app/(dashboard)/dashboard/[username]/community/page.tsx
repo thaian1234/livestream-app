@@ -1,5 +1,3 @@
-"use client";
-
 import { Profile } from "@/lib/components/profile/profile";
 import { BlockTable } from "@/lib/features/block/components/block-table";
 import { FollowersTable } from "@/lib/features/follow/components/follow-table/followers-table";
@@ -11,12 +9,12 @@ export default function CommunityPage() {
     const tabs = ["Following", "Followers", "Block"];
 
     return (
-        <div className="mx-auto mr-14 mt-10 flex space-x-14">
+        <div className="flex flex-col items-center space-y-10 p-4 lg:flex-row lg:items-start lg:space-x-10 lg:space-y-0">
             {/* profile */}
             <Profile />
             {/* main */}
             <div className="flex-grow">
-                <Tabs defaultValue="Following" className="w-full pr-14">
+                <Tabs defaultValue="Following" className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                         {tabs.map((tab, index) => (
                             <TabsTrigger
@@ -37,7 +35,7 @@ export default function CommunityPage() {
                     <TabsContent value="Block">
                         <BlockTable />
                     </TabsContent>
-                </Tabs>	
+                </Tabs>
             </div>
         </div>
     );

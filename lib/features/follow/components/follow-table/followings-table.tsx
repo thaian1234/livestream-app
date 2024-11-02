@@ -1,3 +1,5 @@
+"use client";
+
 import { followApi } from "../../apis";
 
 import { ListSkeleton } from "@/lib/components/community/list-skeleton";
@@ -34,12 +36,10 @@ export function FollowingsTable() {
             };
         }) || [];
     return (
-        <div className="container mx-auto py-10">
-            <DataTable
-                columns={columns(isFollowerState)}
-                data={following}
-                pageSizeValue={10}
-            />
-        </div>
+        <DataTable
+            columns={columns(isFollowerState)}
+            data={following}
+            pageSizeValue={10}
+        />
     );
 }

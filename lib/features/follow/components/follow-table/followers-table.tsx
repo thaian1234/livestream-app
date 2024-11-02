@@ -1,3 +1,5 @@
+"use client";
+
 import { followApi } from "../../apis";
 
 import { ListSkeleton } from "@/lib/components/community/list-skeleton";
@@ -15,30 +17,29 @@ export function FollowersTable() {
     if (error) {
         return <p>Some thing went wrong</p>;
     }
-    const followers = data.data?.followers?.map((follow) => {
-        const formattedDate = new Date(follow.createdAt).toLocaleDateString(
-            "en-GB",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-            },
-        );
+    const followers =
+        data.data?.followers?.map((follow) => {
+            const formattedDate = new Date(follow.createdAt).toLocaleDateString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                },
+            );
 
-        return {
-            id: follow.id,
-            username: follow.username,
-            imageUrl: follow.imageUrl,
-            createdAt: formattedDate,
-        };
-    }) || [];
+            return {
+                id: follow.id,
+                username: follow.username,
+                imageUrl: follow.imageUrl,
+                createdAt: formattedDate,
+            };
+        }) || [];
     return (
-        <div className="container mx-auto py-10">
-            <DataTable
-                columns={columns(isFollowerState)}
-                data={followers}
-                pageSizeValue={10}
-            />
-        </div>
+        <DataTable
+            columns={columns(isFollowerState)}
+            data={followers}
+            pageSizeValue={10}
+        />
     );
 }
