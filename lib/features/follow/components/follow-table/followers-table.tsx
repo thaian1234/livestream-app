@@ -1,3 +1,4 @@
+"use client";
 import { CommunityData, formatCommunityData } from "@/lib/helpers/formatData";
 
 import { DataTable } from "@/components/data-table";
@@ -14,12 +15,10 @@ export function FollowersTable({rawFollowers}:FollowersTableProps) {
         rawFollowers?.map((follow) => formatCommunityData(follow)) ||
         [];
     return (
-        <div className="container mx-auto py-10">
-            <DataTable
-                columns={columns(isFollowerState)}
-                data={followers}
-                pageSizeValue={10}
-            />
-        </div>
+        <DataTable
+            columns={columns(isFollowerState)}
+            data={followers}
+            pageSizeValue={10}
+        />
     );
 }

@@ -18,8 +18,6 @@ export function BlockTable() {
     const blockeds =
         data.data?.blockeds?.map((block) => formatCommunityData(block)) || [];
     return (
-        <div className="container mx-auto py-10">
             <DataTable columns={columns()} data={blockeds} pageSizeValue={10} />
-        </div>
     );
 }
