@@ -4,6 +4,7 @@ import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import PaginationHelper from "../lib/helpers/pagination";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
@@ -108,6 +109,7 @@ export class StreamController implements IStreamController {
                           size,
                       )
                     : this.streamService.getRecommendedStreams(offset, size);
+
                 const followingsPromise = currentUser
                     ? this.streamService.getFollowingStreamsByUserId(
                           currentUser.id,
@@ -120,14 +122,25 @@ export class StreamController implements IStreamController {
                     recommendsPromise,
                     followingsPromise,
                 ]);
-
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends:
-                            StreamDTO.parseStreamWithUser(recommendStreams),
-                        followings:
-                            StreamDTO.parseStreamWithUser(followingStreams),
+                        recommends: PaginationHelper.getPaginationMetadata({
+                            data: StreamDTO.parseStreamWithUser(
+                                recommendStreams?.streams,
+                            ),
+                            totalRecords: recommendStreams?.totalCount,
+                            currentOffset: offset,
+                            limit: size,
+                        }),
+                        followings: PaginationHelper.getPaginationMetadata({
+                            data: StreamDTO.parseStreamWithUser(
+                                followingStreams?.streams,
+                            ),
+                            totalRecords: followingStreams?.totalCount,
+                            currentOffset: offset,
+                            limit: size,
+                        }),
                     },
                     status: HttpStatus.OK,
                 });

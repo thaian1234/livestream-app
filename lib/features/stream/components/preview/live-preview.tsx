@@ -123,8 +123,8 @@ export function LivesPreview() {
     if (!data || isError) {
         return <p>Cannot fetch Streams</p>;
     }
-    const recommendStreams = data.data.recommends;
-    const followingStreams = data.data.followings;
+    const recommendStreams = data.data.recommends.data;
+    const followingStreams = data.data.followings.data;
 
     return (
         <section className="flex w-full flex-col">
