@@ -6,10 +6,18 @@ import { FollowersTable } from "@/lib/features/follow/components/follow-table/fo
 import { FollowingsTable } from "@/lib/features/follow/components/follow-table/followings-table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { followApi } from "@/lib/features/follow/apis";
 
 export default function CommunityPage() {
     const tabs = ["Following", "Followers", "Block"];
-
+    const { data, isPending, error } = followApi.query.useFollow();
+    if (data === undefined || isPending) {
+        return <ListSkeleton />;
+    }
+    if (error) {
+        return <p>Some thing went wrong</p>;
+    }    
     return (
         <div className="mx-auto mr-14 mt-10 flex space-x-14">
             {/* profile */}
@@ -29,10 +37,10 @@ export default function CommunityPage() {
                         ))}
                     </TabsList>
                     <TabsContent value="Following">
-                        <FollowingsTable />
+                        <FollowingsTable rawFollowings={data.data.followings}/>
                     </TabsContent>
                     <TabsContent value="Followers">
-                        <FollowersTable />
+                        <FollowersTable rawFollowers={data.data.followers}/>
                     </TabsContent>
                     <TabsContent value="Block">
                         <BlockTable />

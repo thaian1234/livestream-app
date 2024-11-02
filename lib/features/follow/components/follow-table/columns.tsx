@@ -59,7 +59,7 @@ export const columns = (
         size: 560,
     },
     {
-        accessorKey: "follow date",
+        accessorKey: "createdAt",
         header: ({ column }) => {
             return (
                 <Button

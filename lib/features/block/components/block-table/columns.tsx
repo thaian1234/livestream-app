@@ -57,7 +57,7 @@ export const columns = (): ColumnDef<Block>[] => [
         size: 560,
     },
     {
-        accessorKey: "block date",
+        accessorKey: "createdAt",
         header: ({ column }) => {
             return (
                 <Button

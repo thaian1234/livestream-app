@@ -1,38 +1,17 @@
-import { followApi } from "../../apis";
-
-import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { CommunityData, formatCommunityData } from "@/lib/helpers/formatData";
 
 import { DataTable } from "@/components/data-table";
 
 import { columns } from "./columns";
 
-export function FollowingsTable() {
-    const isFollowerState = true;
-    const { data, isPending, error } = followApi.query.useFollow();
-    if (data === undefined || isPending) {
-        return <ListSkeleton />;
-    }
-    if (error) {
-        return <p>Some thing went wrong</p>;
-    }
-    const following =
-        data.data?.followings?.map((follow) => {
-            const formattedDate = new Date(follow.createdAt).toLocaleDateString(
-                "en-GB",
-                {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                },
-            );
+interface FollowingsTableProps {
+    rawFollowings: CommunityData[] | undefined;
+}
 
-            return {
-                id: follow.id,
-                username: follow.username,
-                imageUrl: follow.imageUrl,
-                createdAt: formattedDate,
-            };
-        }) || [];
+export function FollowingsTable({ rawFollowings }: FollowingsTableProps) {
+    const isFollowerState = true;
+    const following =
+        rawFollowings?.map((follow) => formatCommunityData(follow)) || [];
     return (
         <div className="container mx-auto py-10">
             <DataTable
