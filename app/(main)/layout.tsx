@@ -21,12 +21,12 @@ export default function HomeLayout({
             {/* navbar */}
             <Navbar />
             {/* Sidebar */}
-            <div className="flex flex-grow pt-6">
+            <div className="flex flex-grow">
                 <Sidebar />
                 {/* Main content */}
                 <main
                     className={cn(
-                        "flex-grow bg-black-1 pb-12 transition-[margin-left] duration-300 ease-in-out",
+                        "flex-grow px-10 py-10 transition-[margin-left] duration-300 ease-in-out",
                         sidebar.isOpenSidebar ? "lg:ml-72" : "lg:ml-[90px]",
                     )}
                 >
