@@ -21,24 +21,31 @@ export class BlockRepository implements IBlockRepository {
         limit: number = 10,
     ) {
         try {
-            const blockeds = await this.db.query.userTable.findMany({
-                where: and(
-                    ne(tableSchemas.userTable.id, userId),
-                    inArray(
+            const blockeds = await this.db
+                .select({
+                    id: tableSchemas.userTable.id,
+                    username: tableSchemas.userTable.username,
+                    email: tableSchemas.userTable.email,
+                    emailVerified: tableSchemas.userTable.emailVerified,
+                    imageUrl: tableSchemas.userTable.imageUrl,
+                    createdAt: tableSchemas.blockTable.createdAt,
+                })
+                .from(tableSchemas.userTable)
+                .innerJoin(
+                    tableSchemas.blockTable,
+                    eq(
                         tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockedId: tableSchemas.blockTable.blockedId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockerId, userId),
-                            ),
+                        tableSchemas.blockTable.blockedId,
                     ),
-                ),
-                offset: offset,
-                limit: limit,
-            });
+                )
+                .where(
+                    and(
+                        ne(tableSchemas.userTable.id, userId),
+                        eq(tableSchemas.blockTable.blockerId, userId),
+                    ),
+                )
+                .limit(limit)
+                .offset(offset);
             return blockeds;
         } catch (error) {}
     }
@@ -105,25 +112,32 @@ export class BlockRepository implements IBlockRepository {
         limit: number = 10,
     ) {
         try {
-            const blockeds = await this.db.query.userTable.findMany({
-                where: and(
-                    ne(tableSchemas.userTable.id, userId),
-                    ilike(tableSchemas.userTable.username, `%${query}%`),
-                    inArray(
+            const blockeds = await this.db
+                .select({
+                    id: tableSchemas.userTable.id,
+                    username: tableSchemas.userTable.username,
+                    email: tableSchemas.userTable.email,
+                    emailVerified: tableSchemas.userTable.emailVerified,
+                    imageUrl: tableSchemas.userTable.imageUrl,
+                    createdAt: tableSchemas.blockTable.createdAt,
+                })
+                .from(tableSchemas.userTable)
+                .innerJoin(
+                    tableSchemas.blockTable,
+                    eq(
                         tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockedId: tableSchemas.blockTable.blockedId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockerId, userId),
-                            ),
+                        tableSchemas.blockTable.blockedId,
                     ),
-                ),
-                offset: offset,
-                limit: limit,
-            });
+                )
+                .where(
+                    and(
+                        ne(tableSchemas.userTable.id, userId),
+                        eq(tableSchemas.blockTable.blockerId, userId),
+                        ilike(tableSchemas.userTable.username, `%${query}%`),
+                    ),
+                )
+                .limit(limit)
+                .offset(offset);
             return blockeds;
         } catch (error) {
             console.log(error);

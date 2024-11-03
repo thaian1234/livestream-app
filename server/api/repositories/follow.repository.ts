@@ -20,51 +20,64 @@ export class FollowRepository implements IFollowRepository {
         limit: number = 10,
     ) {
         try {
-            const followings = await this.db.query.userTable.findMany({
-                where: and(
-                    // Not the current user themself
-                    ne(tableSchemas.userTable.id, userId),
-                    // current user and get user Not in the block relationship
-                    // check if get user being blocked by current user
-                    notInArray(
+            const followings = await this.db
+                .select({
+                    id: tableSchemas.userTable.id,
+                    username: tableSchemas.userTable.username,
+                    email: tableSchemas.userTable.email,
+                    emailVerified: tableSchemas.userTable.emailVerified,
+                    imageUrl: tableSchemas.userTable.imageUrl,
+                    createdAt: tableSchemas.followTable.createdAt,
+                })
+                .from(tableSchemas.userTable)
+                .innerJoin(
+                    tableSchemas.followTable,
+                    eq(
                         tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockedId: tableSchemas.blockTable.blockedId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockerId, userId),
-                            ),
+                        tableSchemas.followTable.followedId,
                     ),
-                    // check if current user being blocked
-                    notInArray(
-                        tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockerId: tableSchemas.blockTable.blockerId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockedId, userId),
-                            ),
+                )
+                .where(
+                    and(
+                        ne(tableSchemas.userTable.id, userId),
+                        eq(tableSchemas.followTable.followerId, userId),
+                        // current user and get user Not in the block relationship
+                        // check if get user being blocked by current user
+                        notInArray(
+                            tableSchemas.userTable.id,
+                            this.db
+                                .select({
+                                    blockedId:
+                                        tableSchemas.blockTable.blockedId,
+                                })
+                                .from(tableSchemas.blockTable)
+                                .where(
+                                    eq(
+                                        tableSchemas.blockTable.blockerId,
+                                        userId,
+                                    ),
+                                ),
+                        ),
+                        // check if current user being blocked
+                        notInArray(
+                            tableSchemas.userTable.id,
+                            this.db
+                                .select({
+                                    blockerId:
+                                        tableSchemas.blockTable.blockerId,
+                                })
+                                .from(tableSchemas.blockTable)
+                                .where(
+                                    eq(
+                                        tableSchemas.blockTable.blockedId,
+                                        userId,
+                                    ),
+                                ),
+                        ),
                     ),
-                    // check get user is a follower of current user
-                    inArray(
-                        tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                followedId: tableSchemas.followTable.followedId,
-                            })
-                            .from(tableSchemas.followTable)
-                            .where(
-                                eq(tableSchemas.followTable.followerId, userId),
-                            ),
-                    ),
-                ),
-                offset: offset,
-                limit: limit,
-            });
+                )
+                .limit(limit)
+                .offset(offset);
             return followings;
         } catch (error) {}
     }
@@ -75,51 +88,64 @@ export class FollowRepository implements IFollowRepository {
         limit: number = 10,
     ) {
         try {
-            const followers = await this.db.query.userTable.findMany({
-                where: and(
-                    // Not the current user themself
-                    ne(tableSchemas.userTable.id, userId),
-                    // current user and get user Not in the block relationship
-                    // check if get user being blocked by current user
-                    notInArray(
+            const followers = await this.db
+                .select({
+                    id: tableSchemas.userTable.id,
+                    username: tableSchemas.userTable.username,
+                    email: tableSchemas.userTable.email,
+                    emailVerified: tableSchemas.userTable.emailVerified,
+                    imageUrl: tableSchemas.userTable.imageUrl,
+                    createdAt: tableSchemas.followTable.createdAt,
+                })
+                .from(tableSchemas.userTable)
+                .innerJoin(
+                    tableSchemas.followTable,
+                    eq(
                         tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockedId: tableSchemas.blockTable.blockedId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockerId, userId),
-                            ),
+                        tableSchemas.followTable.followerId,
                     ),
-                    // check if current user being blocked
-                    notInArray(
-                        tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                blockerId: tableSchemas.blockTable.blockerId,
-                            })
-                            .from(tableSchemas.blockTable)
-                            .where(
-                                eq(tableSchemas.blockTable.blockedId, userId),
-                            ),
+                )
+                .where(
+                    and(
+                        ne(tableSchemas.userTable.id, userId),
+                        eq(tableSchemas.followTable.followedId, userId),
+                        // current user and get user Not in the block relationship
+                        // check if get user being blocked by current user
+                        notInArray(
+                            tableSchemas.userTable.id,
+                            this.db
+                                .select({
+                                    blockedId:
+                                        tableSchemas.blockTable.blockedId,
+                                })
+                                .from(tableSchemas.blockTable)
+                                .where(
+                                    eq(
+                                        tableSchemas.blockTable.blockerId,
+                                        userId,
+                                    ),
+                                ),
+                        ),
+                        // check if current user being blocked
+                        notInArray(
+                            tableSchemas.userTable.id,
+                            this.db
+                                .select({
+                                    blockerId:
+                                        tableSchemas.blockTable.blockerId,
+                                })
+                                .from(tableSchemas.blockTable)
+                                .where(
+                                    eq(
+                                        tableSchemas.blockTable.blockedId,
+                                        userId,
+                                    ),
+                                ),
+                        ),
                     ),
-                    // check get user is a being followed by current user
-                    inArray(
-                        tableSchemas.userTable.id,
-                        this.db
-                            .select({
-                                followerId: tableSchemas.followTable.followerId,
-                            })
-                            .from(tableSchemas.followTable)
-                            .where(
-                                eq(tableSchemas.followTable.followedId, userId),
-                            ),
-                    ),
-                ),
-                offset: offset,
-                limit: limit,
-            });
+                )
+                .limit(limit)
+                .offset(offset);
             return followers;
         } catch (error) {}
     }
