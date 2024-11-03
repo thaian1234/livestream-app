@@ -173,11 +173,11 @@ export class StreamController implements IStreamController {
                 const recommends = currentUser
                     ? await this.streamService.getRecommendedStreamsByUserId(
                           currentUser.id,
-                          page,
+                          offset,
                           size,
                       )
                     : await this.streamService.getRecommendedStreams(
-                          page,
+                          offset,
                           size,
                       );
                 return ApiResponse.WriteJSON({
