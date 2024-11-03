@@ -14,6 +14,13 @@ export class QueryDTO {
         });
     }
 
+    public static createQueryParam(defaultPage: number) {
+        return z.preprocess(
+            (x) => (x ? x : undefined),
+            z.coerce.number().int().min(1).default(defaultPage),
+        );
+    }
+
     public static createPaginationSchema(defaultPage = 1, defaultSize = 10) {
         return this.createBaseSchema(defaultPage, defaultSize);
     }

@@ -11,6 +11,7 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 
 export interface IStreamController
     extends Utils.AutoMappedClass<StreamController> {}
@@ -94,34 +95,45 @@ export class StreamController implements IStreamController {
         );
     }
     private getAllStreamHandler() {
-        const queries = QueryDTO.createPaginationSchema(1, 5);
+        const queries = z.object({
+            recommendPage: QueryDTO.createQueryParam(10),
+            recommendSize: QueryDTO.createQueryParam(5),
+            followPage: QueryDTO.createQueryParam(10),
+            followSize: QueryDTO.createQueryParam(5),
+        });
+
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const { page, size } = c.req.valid("query");
+                const { recommendSize, followSize, recommendPage, followPage } =
+                    c.req.valid("query");
                 const currentUser = c.get("user");
-                const offset = (page - 1) * size;
+                const recommendOffset = (recommendPage - 1) * recommendSize;
+                const followOffset = (followPage - 1) * followSize;
 
                 const recommendsPromise = currentUser
                     ? this.streamService.getRecommendedStreamsByUserId(
                           currentUser.id,
-                          offset,
-                          size,
+                          recommendOffset,
+                          recommendSize,
                       )
-                    : this.streamService.getRecommendedStreams(offset, size);
+                    : this.streamService.getRecommendedStreams(
+                          recommendOffset,
+                          recommendSize,
+                      );
 
                 const followingsPromise = currentUser
                     ? this.streamService.getFollowingStreamsByUserId(
                           currentUser.id,
-                          offset,
-                          size,
+                          followOffset,
+                          followSize,
                       )
                     : null;
-
                 const [recommendStreams, followingStreams] = await Promise.all([
                     recommendsPromise,
                     followingsPromise,
                 ]);
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
@@ -129,17 +141,17 @@ export class StreamController implements IStreamController {
                             data: StreamDTO.parseStreamWithUser(
                                 recommendStreams?.streams,
                             ),
-                            totalRecords: recommendStreams?.totalCount,
-                            currentOffset: offset,
-                            limit: size,
+                            totalRecords: recommendStreams?.totalRecords,
+                            currentOffset: recommendOffset,
+                            limit: recommendSize,
                         }),
                         followings: PaginationHelper.getPaginationMetadata({
                             data: StreamDTO.parseStreamWithUser(
                                 followingStreams?.streams,
                             ),
-                            totalRecords: followingStreams?.totalCount,
-                            currentOffset: offset,
-                            limit: size,
+                            totalRecords: followingStreams?.totalRecords,
+                            currentOffset: followOffset,
+                            limit: followSize,
                         }),
                     },
                     status: HttpStatus.OK,

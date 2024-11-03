@@ -173,7 +173,7 @@ export class StreamRepository implements IStreamRepository {
                 limit: limit,
                 orderBy: sql`RANDOM()`,
             });
-            const totalCount = await this.db.$count(
+            const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
                 and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -187,7 +187,7 @@ export class StreamRepository implements IStreamRepository {
                     ),
                 ),
             );
-            return { streams, totalCount };
+            return { streams, totalRecords };
         } catch (error) {}
     }
     public async getRecommendedStreams(offset: number = 0, limit: number = 10) {
@@ -200,9 +200,9 @@ export class StreamRepository implements IStreamRepository {
                 limit: limit,
                 orderBy: sql`RANDOM()`,
             });
-            const totalCount = await this.db.$count(tableSchemas.streamTable);
+            const totalRecords = await this.db.$count(tableSchemas.streamTable);
 
-            return { streams, totalCount };
+            return { streams, totalRecords };
         } catch (error) {}
     }
     public async getFollowingStreamsByUserId(
@@ -233,7 +233,7 @@ export class StreamRepository implements IStreamRepository {
                 offset: offset,
                 limit: limit,
             });
-            const totalCount = await this.db.$count(
+            const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
                 and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -251,7 +251,7 @@ export class StreamRepository implements IStreamRepository {
                     ),
                 ),
             );
-            return { streams, totalCount };
+            return { streams, totalRecords };
         } catch (error) {}
     }
 }
