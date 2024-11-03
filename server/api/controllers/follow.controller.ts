@@ -26,7 +26,7 @@ export class FollowController implements IFollowController {
             .get("/:userId/follower", ...this.getAllFollwerByUserIdHandler())
             .get("/:userId/recommend", ...this.getRecommendByUserId())
             .get("/follow", ...this.getAllFollowHandler())
-            .post("/:followerId/:followingId", ...this.followToggle());
+            .post("/:followingId", ...this.followToggle());
     }
     private getAllFollowingByUserIdHandler() {
         const params = z.object({
@@ -143,24 +143,20 @@ export class FollowController implements IFollowController {
     }
     private followToggle() {
         const params = z.object({
-            followerId: z.string().uuid(),
             followingId: z.string().uuid(),
         });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { followerId, followingId } = c.req.valid("param");
+                const { followingId } = c.req.valid("param");
                 const currentUser = c.get("getUser");
-                if (currentUser.id !== followerId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 if (currentUser.id === followingId) {
                     throw new MyError.BadRequestError();
                 }
 
                 const data = await this.followService.followToggle({
-                    followerId,
+                    followerId: currentUser.id,
                     followedId: followingId,
                 });
 
@@ -168,10 +164,16 @@ export class FollowController implements IFollowController {
                     throw new MyError.BadRequestError();
                 }
 
+                let message = "Follow user successfully";
+                if (typeof data === "boolean") {
+                    message = "Unfollow user successfully";
+                }
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: undefined,
                     status: HttpStatus.OK,
+                    msg: message,
                 });
             },
         );

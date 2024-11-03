@@ -178,7 +178,21 @@ export class StreamRepository implements IStreamRepository {
                 limit: limit,
                 orderBy: sql`RANDOM()`,
             });
-            return streams;
+            const totalRecords = await this.db.$count(
+                tableSchemas.streamTable,
+                and(
+                    ne(tableSchemas.streamTable.userId, userId),
+                    notInArray(
+                        tableSchemas.streamTable.userId,
+                        this.getBlockedSubQuery(userId),
+                    ),
+                    notInArray(
+                        tableSchemas.streamTable.userId,
+                        this.getBlockerSubQuery(userId),
+                    ),
+                ),
+            );
+            return { streams, totalRecords };
         } catch (error) {}
     }
     public async getRecommendedStreams(offset: number = 0, limit: number = 10) {
@@ -191,7 +205,9 @@ export class StreamRepository implements IStreamRepository {
                 limit: limit,
                 orderBy: sql`RANDOM()`,
             });
-            return streams;
+            const totalRecords = await this.db.$count(tableSchemas.streamTable);
+
+            return { streams, totalRecords };
         } catch (error) {}
     }
     public async getFollowingStreamsByUserId(
@@ -222,7 +238,25 @@ export class StreamRepository implements IStreamRepository {
                 offset: offset,
                 limit: limit,
             });
-            return streams;
+            const totalRecords = await this.db.$count(
+                tableSchemas.streamTable,
+                and(
+                    ne(tableSchemas.streamTable.userId, userId),
+                    notInArray(
+                        tableSchemas.streamTable.userId,
+                        this.getBlockedSubQuery(userId),
+                    ),
+                    notInArray(
+                        tableSchemas.streamTable.userId,
+                        this.getBlockerSubQuery(userId),
+                    ),
+                    inArray(
+                        tableSchemas.streamTable.userId,
+                        this.getFollowingSubQuery(userId),
+                    ),
+                ),
+            );
+            return { streams, totalRecords };
         } catch (error) {}
     }
 }

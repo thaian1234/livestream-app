@@ -4,12 +4,14 @@ import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import PaginationHelper from "../lib/helpers/pagination";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 
 export interface IStreamController
     extends Utils.AutoMappedClass<StreamController> {}
@@ -26,6 +28,8 @@ export class StreamController implements IStreamController {
             .get("/stream-token", ...this.getStreamTokenHandler())
             .patch("/", ...this.updateStreamHandler())
             .get("/", ...this.getAllStreamHandler())
+            .get("/recommend", ...this.getRecommendStreams())
+            .get("/following", ...this.getFollowingStreams())
             .get("/chat-token", ...this.getStreamChatTokenHandler());
     }
     private getStreamTokenHandler() {
@@ -93,29 +97,40 @@ export class StreamController implements IStreamController {
         );
     }
     private getAllStreamHandler() {
-        const queries = QueryDTO.createPaginationSchema(1, 5);
+        const queries = z.object({
+            recommendPage: QueryDTO.createQueryParam(1),
+            recommendSize: QueryDTO.createQueryParam(6),
+            followPage: QueryDTO.createQueryParam(1),
+            followSize: QueryDTO.createQueryParam(6),
+        });
+
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const { page, size } = c.req.valid("query");
+                const { recommendSize, followSize, recommendPage, followPage } =
+                    c.req.valid("query");
                 const currentUser = c.get("user");
-                const offset = (page - 1) * size;
+                const recommendOffset = (recommendPage - 1) * recommendSize;
+                const followOffset = (followPage - 1) * followSize;
 
                 const recommendsPromise = currentUser
                     ? this.streamService.getRecommendedStreamsByUserId(
                           currentUser.id,
-                          offset,
-                          size,
+                          recommendOffset,
+                          recommendSize,
                       )
-                    : this.streamService.getRecommendedStreams(offset, size);
+                    : this.streamService.getRecommendedStreams(
+                          recommendOffset,
+                          recommendSize,
+                      );
+
                 const followingsPromise = currentUser
                     ? this.streamService.getFollowingStreamsByUserId(
                           currentUser.id,
-                          offset,
-                          size,
+                          followOffset,
+                          followSize,
                       )
                     : null;
-
                 const [recommendStreams, followingStreams] = await Promise.all([
                     recommendsPromise,
                     followingsPromise,
@@ -124,12 +139,89 @@ export class StreamController implements IStreamController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        recommends:
-                            StreamDTO.parseStreamWithUser(recommendStreams),
-                        followings:
-                            StreamDTO.parseStreamWithUser(followingStreams),
+                        recommends: PaginationHelper.getPaginationMetadata({
+                            data: StreamDTO.parseStreamWithUser(
+                                recommendStreams?.streams,
+                            ),
+                            totalRecords: recommendStreams?.totalRecords,
+                            currentOffset: recommendOffset,
+                            limit: recommendSize,
+                        }),
+                        followings: PaginationHelper.getPaginationMetadata({
+                            data: StreamDTO.parseStreamWithUser(
+                                followingStreams?.streams,
+                            ),
+                            totalRecords: followingStreams?.totalRecords,
+                            currentOffset: followOffset,
+                            limit: followSize,
+                        }),
                     },
                     status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getRecommendStreams() {
+        const queries = QueryDTO.createPaginationSchema(1, 6);
+        return this.factory.createHandlers(
+            zValidator("query", queries),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const offset = (page - 1) * size;
+                const currentUser = c.get("user");
+
+                const recommends = currentUser
+                    ? await this.streamService.getRecommendedStreamsByUserId(
+                          currentUser.id,
+                          offset,
+                          size,
+                      )
+                    : await this.streamService.getRecommendedStreams(
+                          offset,
+                          size,
+                      );
+                return ApiResponse.WriteJSON({
+                    c,
+                    status: HttpStatus.OK,
+                    data: PaginationHelper.getPaginationMetadata({
+                        data: StreamDTO.parseStreamWithUser(
+                            recommends?.streams,
+                        ),
+                        currentOffset: offset,
+                        limit: size,
+                        totalRecords: recommends?.totalRecords,
+                    }),
+                });
+            },
+        );
+    }
+    private getFollowingStreams() {
+        const queries = QueryDTO.createPaginationSchema(1, 3);
+        return this.factory.createHandlers(
+            zValidator("query", queries),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const offset = (page - 1) * size;
+                const currentUser = c.get("user");
+                const followings = currentUser
+                    ? await this.streamService.getFollowingStreamsByUserId(
+                          currentUser.id,
+                          offset,
+                          size,
+                      )
+                    : null;
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    status: HttpStatus.OK,
+                    data: PaginationHelper.getPaginationMetadata({
+                        data: StreamDTO.parseStreamWithUser(
+                            followings?.streams,
+                        ),
+                        currentOffset: offset,
+                        limit: size,
+                        totalRecords: followings?.totalRecords,
+                    }),
                 });
             },
         );

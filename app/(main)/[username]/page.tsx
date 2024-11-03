@@ -32,7 +32,7 @@ export default function StreamPage() {
     const followers = data.data.followers;
 
     return (
-        <section className="grid grid-cols-12 gap-x-6 gap-y-4 px-12">
+        <section className="grid grid-cols-12 gap-x-6 gap-y-4">
             <div className="col-span-9 row-span-5">
                 <CustomCall streamId={stream.id}>
                     <LivestreamPlayer />
