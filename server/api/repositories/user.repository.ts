@@ -1,6 +1,19 @@
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, asc, count, desc, eq, gte, ilike, like, lte, or, sql } from "drizzle-orm";
+import { table } from "console";
+import {
+    and,
+    asc,
+    count,
+    desc,
+    eq,
+    gte,
+    ilike,
+    like,
+    lte,
+    or,
+    sql,
+} from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -91,9 +104,10 @@ export class UserRepository implements IUserRepository {
         sortOrder: string = "asc",
         offset: number = 0,
         limit: number = 10,
+        currentUserId: string | null,
     ) {
         const conditions = [];
-        let orderBy;
+        let orderBy = desc(tableSchemas.userTable.createdAt);
         if (username) {
             conditions.push(
                 ilike(tableSchemas.userTable.username, `%${username}%`),
@@ -108,30 +122,50 @@ export class UserRepository implements IUserRepository {
         if (isSortByCreatedAt) {
             orderBy = sortOrder.toLowerCase().localeCompare("asc")
                 ? asc(tableSchemas.userTable.createdAt)
-                : desc(tableSchemas.userTable.createdAt);
+                : orderBy;
         }
-        const result = await this.db.query.userTable.findMany({
-            where: and(...conditions),
-            extras: {
-                followerCount: sql`(
-                    SELECT COUNT(*) 
-                    FROM ${tableSchemas.followTable}
-                    JOIN ${tableSchemas.userTable} ON ${tableSchemas.followTable}.following_id = ${tableSchemas.userTable}.id
-                    LIMIT 1
-                  )`.as("followerCount"),
-                isLive : sql `(
-                    SELECT is_live
-                    FROM ${tableSchemas.streamTable}
-                    JOIN ${tableSchemas.userTable} ON ${tableSchemas.streamTable}.user_id = ${tableSchemas.userTable}.id
-                    LIMIT 1
-                )`.as("isLive"),
-            },
-            limit: limit,
-            offset: offset,
-            orderBy: orderBy,
-        });
+        console.log(currentUserId);
+        let isFollowSql = sql`false`;
+        if (currentUserId) {
+            isFollowSql = sql`CASE 
+                WHEN COUNT(CASE WHEN ${tableSchemas.followTable.followerId} = ${currentUserId} THEN 1 END) > 0 
+                THEN true ELSE false END`;
+        }
+        const result = await this.db
+            .select({
+                id: tableSchemas.userTable.id,
+                username: tableSchemas.userTable.username,
+                imageUrl: tableSchemas.userTable.imageUrl,
+                bio: tableSchemas.userTable.bio,
+                isLive: tableSchemas.streamTable.isLive,
+                followerCount: count(tableSchemas.followTable.followedId),
+                isFollow: isFollowSql,
+            })
+            .from(tableSchemas.userTable)
+            .innerJoin(
+                tableSchemas.followTable,
+                eq(
+                    tableSchemas.userTable.id,
+                    tableSchemas.followTable.followedId,
+                ),
+            )
+            .innerJoin(
+                tableSchemas.streamTable,
+                eq(tableSchemas.streamTable.userId, tableSchemas.userTable.id),
+            )
+            .where(and(...conditions))
+            .groupBy(
+                tableSchemas.userTable.id,
+                tableSchemas.userTable.username,
+                tableSchemas.userTable.imageUrl,
+                tableSchemas.userTable.bio,
+                tableSchemas.streamTable.isLive,
+            )
+            .limit(limit)
+            .offset(offset)
+            .orderBy(orderBy);
         return result;
-    }
+    }    
     async findUserWithAccount(userId: string) {
         try {
             const userWithAccount = await this.db.query.userTable.findFirst({

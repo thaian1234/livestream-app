@@ -29,6 +29,7 @@ export class SearchController implements ISearchController {
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
+                const currentUser = c.get("user");
                 const {
                     page,
                     size,
@@ -46,6 +47,7 @@ export class SearchController implements ISearchController {
                     sortOrder,
                     (page - 1) * size,
                     size,
+                    currentUser ? currentUser.id : null,
                 );
                 const streams = await this.streamService.advancedSearchStream(
                     filterBy,
@@ -56,11 +58,12 @@ export class SearchController implements ISearchController {
                     (page - 1) * size,
                     size,
                 );
+                console.log(streams)
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
                         users: UserDTO.parseManySearch(users),
-                        streams: StreamDTO.parseMany(streams),
+                        streams: StreamDTO.parseManySearch(streams),
                     },
                     status: HttpStatus.OK,
                 });

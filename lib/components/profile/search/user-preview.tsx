@@ -64,26 +64,30 @@ const dataUser = [
 interface UserInfo {
     id: string;
     username: string;
-    imageUrl: string;
-    followers: number;
-    bio: string;
+    imageUrl: string | null;
+    followerCount: number;
+    bio: string | null;
+    isLive: boolean;
+    isFollow: boolean;
 }
 
 interface UserPreviewProps {
     limit?: number;
-    users?: UserInfo[];
+    users: UserInfo[];
 }
 
 export function UserPreview({ limit, users }: UserPreviewProps) {
     return (
         <>
-            {dataUser.slice(0, limit || dataUser.length).map((user, index) => (
+            {users.slice(0, limit || dataUser.length).map((user, index) => (
                 <UserPreviewCard
                     key={index}
                     id={user.id}
                     username={user.username}
-                    imageUrl={user.imageUrl}
-                    followers={user.followers}
+                    imageUrl={user.imageUrl || "user.svg"}
+                    followers={user.followerCount}
+                    isLive={user.isLive}
+                    isFollow={user.isFollow}
                 />
             ))}
         </>

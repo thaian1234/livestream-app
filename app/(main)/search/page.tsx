@@ -31,12 +31,6 @@ export default function SearchPage() {
     if (error) return <p>Something went wrong</p>;
 
     return (
-        <ScrollArea
-            className={cn(
-                "h-[calc(100vh-5rem)] w-full",
-                isOpenSidebar ? "" : "ml-20",
-            )}
-        >
             <Tabs defaultValue="All" className="w-full px-10">
                 <TabsList className="mb-8 grid w-[300px] grid-cols-3 space-x-4 bg-black-1">
                     {tabs.map((tabName, index) => (
@@ -53,27 +47,26 @@ export default function SearchPage() {
                     <div className="space-y-4">
                         <p className="text-2xl">Channel</p>
                         <div className="flex max-w-[700px] flex-col">
-                            <UserPreview limit={4} />
+                            <UserPreview users={data.data.users} limit={4} />
                         </div>
 
                         <p className="text-2xl">Live</p>
                         <div className="flex flex-col space-y-4">
-                            <LivesPreview />
+                            <LivesPreview streams={data.data.streams}/>
                         </div>
                     </div>
                 </TabsContent>
 
                 <TabsContent value="Live">
                     <div className="flex flex-col space-y-4">
-                        {/* <LivesPreview streams={data.data.streams} /> */}
+                        <LivesPreview streams={data.data.streams} />
                     </div>
                 </TabsContent>
                 <TabsContent value="Channel">
                     <div className="flex max-w-[700px] flex-col">
-                        {/* <UserPreview users={data.data.users}/> */}
+                        <UserPreview users={data.data.users}/>
                     </div>
                 </TabsContent>
             </Tabs>
-        </ScrollArea>
     );
 }

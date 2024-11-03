@@ -115,31 +115,33 @@ export const cardData = [
 
 interface StreamInfo {
     id: string;
-    avatar: string;
-    title: string;
-    userName: string;
-    category: string;
-    thumbnail: string;
-    viewers: string;
+    avatar?: string | null | undefined;
+    name: string;
+    username: string;
+    // category: string;
+    thumbnailUrl: string | null;
+    // viewers: string;
+    userId: string;
+    isLive: boolean;
 }
 
 interface LivesPreviewProps {
     limit?: number;
-    streams?: StreamInfo[];
+    streams: StreamInfo[];
 }
 export function LivesPreview({ limit, streams }: LivesPreviewProps) {
     return (
         <>
-            {cardData.slice(0, limit || cardData.length).map((card, index) => (
+            {streams.slice(0, limit || cardData.length).map((card, index) => (
                 <LivePreviewCard
                     key={index}
                     id={card.id}
-                    title={card.title}
-                    userName={card.userName}
-                    thumbnail={card.thumbnail}
-                    category={card.category}
-                    viewers={card.viewers}
-                    avatar={card.avatar}
+                    title={card.name}
+                    userName={card.username}
+                    thumbnail={card.thumbnailUrl || "/user.svg"}
+                    category={"Chua co category"}
+                    viewers={"Chua co viewer"}
+                    avatar={card.avatar || ""}
                 />
             ))}
         </>

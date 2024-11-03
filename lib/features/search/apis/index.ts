@@ -28,6 +28,7 @@ export const searchApi = {
                 {
                     enabled: filterBy !== "",
                 },
+
             );
         },
     },

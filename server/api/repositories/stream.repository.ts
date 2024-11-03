@@ -37,7 +37,7 @@ export class StreamRepository implements IStreamRepository {
         let orderBy;
         if (name) {
             conditions.push(
-                sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ plainto_tsquery(${name})`,
+                sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ websearch_to_tsquery('simple', ${name})`,
             );
         }
 
@@ -55,6 +55,12 @@ export class StreamRepository implements IStreamRepository {
         }
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
+            extras(fields, operators) {
+                return {
+                    username: sql`(SELECT username::text FROM users WHERE users.id = ${fields.userId})`.as("username"),
+                    avatar: sql`(SELECT image_url::text from users WHERE users.id = ${fields.userId})`.as("avatar"),
+                }
+            },
             limit: limit,
             offset: offset,
             orderBy: orderBy,

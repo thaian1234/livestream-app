@@ -13,12 +13,16 @@ interface UserPreviewCardProps {
     username: string;
     followers: number;
     imageUrl: string;
+    isLive: boolean;
+    isFollow: boolean;
 }
 export function UserPreviewCard({
     id,
     username,
     followers,
     imageUrl,
+    isLive,
+    isFollow
 }: UserPreviewCardProps) {
     const router = useRouter();
     const { user } = useAuth();
@@ -38,12 +42,12 @@ export function UserPreviewCard({
                                         href={`/dashboard/${username}`}
                                         className="hover:underline"
                                     >
-                                        CoolGamer123
+                                        {username}
                                     </a>
                                 </h3>
-                                <Badge className="bg-red-500 text-white">
+                                {(isLive && <Badge className="bg-red-500 hover:bg-red-500 text-white">
                                     LIVE
-                                </Badge>
+                                </Badge>)}
                             </div>
                             <p className="mb-1 line-clamp-1 text-sm text-muted-foreground">
                                 Category
@@ -57,7 +61,7 @@ export function UserPreviewCard({
                             </div>
                         </div>
                     </div>
-                    <FollowButton followingId={user.id} isFollowed={true} />
+                    <FollowButton followingId={user.id} isFollowed={isFollow} />
                 </div>
             </CardContent>
         </Card>
