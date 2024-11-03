@@ -25,6 +25,8 @@ export class BlockDTO {
     }
     public static selectUserOnlySchema = UserDTO.selectSchema.omit({
         bio: true,
+    }).extend({
+        createdAt: z.date()
     });
     public static parseUserOnlyMany(data: unknown) {
         try {

@@ -13,17 +13,18 @@ export type Block = {
     id: string;
     username: string;
     imageUrl: string | null;
+    createdAt: string;
 };
-const handleNavigate = (id: string) => {
-    console.log("Navigate to user profile: " + id);
+const handleNavigate = (username: string) => {
+    console.log("Navigate to user profile: " + username);
 };
-export const columns = (idAuth: string): ColumnDef<Block>[] => [
+export const columns = (): ColumnDef<Block>[] => [
     {
         id: "avatar",
         cell: ({ row }) => {
             const block = row.original;
             return (
-                <button onClick={() => handleNavigate(block.id)}>
+                <button onClick={() => handleNavigate(block.username)}>
                     <UserAvatar imageUrl={block?.imageUrl} />
                 </button>
             );
@@ -56,10 +57,31 @@ export const columns = (idAuth: string): ColumnDef<Block>[] => [
         size: 560,
     },
     {
+        accessorKey: "createdAt",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")
+                    }
+                >
+                    Block date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const block = row.original;
+            return <div className="ml-6">{block.createdAt}</div>;
+        },
+        size: 560,
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const block = row.original;
-            return <BlockButton blockedId={block.id} blockerId={idAuth} />;
+            return <BlockButton blockedId={block.id} isBlock={true}/>;
         },
         size: 50,
     },

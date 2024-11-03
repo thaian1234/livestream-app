@@ -1,7 +1,9 @@
 "use client";
 
+import { ListSkeleton } from "@/lib/components/community/list-skeleton";
 import { Profile } from "@/lib/components/profile/profile";
 import { BlockTable } from "@/lib/features/block/components/block-table";
+import { followApi } from "@/lib/features/follow/apis";
 import { FollowersTable } from "@/lib/features/follow/components/follow-table/followers-table";
 import { FollowingsTable } from "@/lib/features/follow/components/follow-table/followings-table";
 
@@ -9,14 +11,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CommunityPage() {
     const tabs = ["Following", "Followers", "Block"];
-
+    const { data, isPending, error } = followApi.query.useFollow();
+    if (data === undefined || isPending) {
+        return <ListSkeleton />;
+    }
+    if (error) {
+        return <p>Some thing went wrong</p>;
+    }
     return (
-        <div className="mx-auto mr-14 mt-10 flex space-x-14">
+        <div className="flex flex-col items-center space-y-10 p-4 lg:flex-row lg:items-start lg:space-x-10 lg:space-y-0">
             {/* profile */}
             <Profile />
             {/* main */}
             <div className="flex-grow">
-                <Tabs defaultValue="Following" className="w-full pr-14">
+                <Tabs defaultValue="Following" className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                         {tabs.map((tab, index) => (
                             <TabsTrigger
@@ -29,15 +37,15 @@ export default function CommunityPage() {
                         ))}
                     </TabsList>
                     <TabsContent value="Following">
-                        <FollowingsTable />
+                        <FollowingsTable rawFollowings={data.data.followings} />
                     </TabsContent>
                     <TabsContent value="Followers">
-                        <FollowersTable />
+                        <FollowersTable rawFollowers={data.data.followers} />
                     </TabsContent>
                     <TabsContent value="Block">
                         <BlockTable />
                     </TabsContent>
-                </Tabs>	
+                </Tabs>
             </div>
         </div>
     );
