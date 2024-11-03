@@ -11,12 +11,14 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { cardData } from "./live-preview";
 import { LivePreviewCard } from "./live-preview-card";
 
 export function LivePreviewCarousel() {
     const { isOpenSidebar } = useSidebar();
-    const { data, isPending, isError } = streamApi.query.useGetDefaultStreams(); // TODO: Add pagination
+    const { data, isPending, isError } = streamApi.query.useGetDefaultStreams(
+        {},
+    );
+
     if (isPending) {
         return <p>Loading stream...</p>;
     }

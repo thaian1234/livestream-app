@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
+import { QueryDTO } from "./query.dto";
 import { UserDTO } from "./user.dto";
 
 const userSchema = createSelectSchema(tableSchemas.userTable, {
