@@ -1,9 +1,11 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { UserPreview } from "@/lib/components/profile/search/user-preview";
+import { searchApi } from "@/lib/features/search/apis";
 import { LivesPreview } from "@/lib/features/search/components/live-preview";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
@@ -15,9 +17,19 @@ export default function SearchPage() {
     const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState("All");
     //  giá trị của 'search_query' là tham số tìm kiếm
-    const searchQuery = searchParams.get("search_query");
+    const searchQuery = searchParams.get("searchTerm");
+    const { data, error, isPending } = searchApi.query.useSearch(
+        "1",
+        "10",
+        searchQuery || "",
+    );
     const tabs = ["All", "Live", "Channel"];
     const { isOpenSidebar } = useSidebar();
+
+    if (data === undefined || isPending) return <Loader2 />;
+
+    if (error) return <p>Something went wrong</p>;
+
     return (
         <ScrollArea
             className={cn(
@@ -53,12 +65,12 @@ export default function SearchPage() {
 
                 <TabsContent value="Live">
                     <div className="flex flex-col space-y-4">
-                        <LivesPreview />
+                        {/* <LivesPreview streams={data.data.streams} /> */}
                     </div>
                 </TabsContent>
                 <TabsContent value="Channel">
                     <div className="flex max-w-[700px] flex-col">
-                        <UserPreview />
+                        {/* <UserPreview users={data.data.users}/> */}
                     </div>
                 </TabsContent>
             </Tabs>

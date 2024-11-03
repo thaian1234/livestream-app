@@ -59,7 +59,7 @@ export class SearchController implements ISearchController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
-                        users: UserDTO.parseMany(users),
+                        users: UserDTO.parseManySearch(users),
                         streams: StreamDTO.parseMany(streams),
                     },
                     status: HttpStatus.OK,

@@ -1,6 +1,6 @@
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, asc, desc, eq, gte, ilike, like, lte, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, like, lte, or, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -112,6 +112,20 @@ export class UserRepository implements IUserRepository {
         }
         const result = await this.db.query.userTable.findMany({
             where: and(...conditions),
+            extras: {
+                followerCount: sql`(
+                    SELECT COUNT(*) 
+                    FROM ${tableSchemas.followTable}
+                    JOIN ${tableSchemas.userTable} ON ${tableSchemas.followTable}.following_id = ${tableSchemas.userTable}.id
+                    LIMIT 1
+                  )`.as("followerCount"),
+                isLive : sql `(
+                    SELECT is_live
+                    FROM ${tableSchemas.streamTable}
+                    JOIN ${tableSchemas.userTable} ON ${tableSchemas.streamTable}.user_id = ${tableSchemas.userTable}.id
+                    LIMIT 1
+                )`.as("isLive"),
+            },
             limit: limit,
             offset: offset,
             orderBy: orderBy,

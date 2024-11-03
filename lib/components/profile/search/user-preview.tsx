@@ -61,11 +61,20 @@ const dataUser = [
     },
 ];
 
-interface UserPreviewProps {
-    limit?: number;
+interface UserInfo {
+    id: string;
+    username: string;
+    imageUrl: string;
+    followers: number;
+    bio: string;
 }
 
-export function UserPreview({ limit }: UserPreviewProps) {
+interface UserPreviewProps {
+    limit?: number;
+    users?: UserInfo[];
+}
+
+export function UserPreview({ limit, users }: UserPreviewProps) {
     return (
         <>
             {dataUser.slice(0, limit || dataUser.length).map((user, index) => (

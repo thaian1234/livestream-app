@@ -37,7 +37,7 @@ export class StreamRepository implements IStreamRepository {
         let orderBy;
         if (name) {
             conditions.push(
-                sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ to_tsquery(${name})`,
+                sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ plainto_tsquery(${name})`,
             );
         }
 

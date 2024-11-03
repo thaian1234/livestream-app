@@ -9,7 +9,7 @@ export const cardData = [
         title: "Total Revenue",
         userName: "Thuy Trang",
         category: " month",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "15",
     },
     {
@@ -18,7 +18,7 @@ export const cardData = [
         title: "Active Users",
         userName: "45678",
         category: "users",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "5",
     },
     {
@@ -27,7 +27,7 @@ export const cardData = [
         title: "New Signups",
         userName: "1234",
         category: " week",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "30",
     },
     {
@@ -36,7 +36,7 @@ export const cardData = [
         title: "Customer Satisfaction",
         userName: "475",
         category: "reviews",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "200",
     },
     {
@@ -45,7 +45,7 @@ export const cardData = [
         title: "Conversion Rate",
         userName: "3.45",
         category: " week",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "90",
     },
     {
@@ -54,7 +54,7 @@ export const cardData = [
         title: "Average Order Value",
         userName: "78.90",
         category: " month",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "32",
     },
     {
@@ -63,7 +63,7 @@ export const cardData = [
         title: "Bounce Rate",
         userName: "32.8",
         category: "week",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "12",
     },
     {
@@ -72,7 +72,7 @@ export const cardData = [
         title: "Page Load Time",
         userName: "1.2s",
         category: " improvement",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "357",
     },
     {
@@ -81,7 +81,7 @@ export const cardData = [
         title: "Support Tickets",
         userName: "156",
         category: "hours",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "5457",
     },
     {
@@ -90,7 +90,7 @@ export const cardData = [
         title: "Server Uptime",
         userName: "99.99",
         category: "month",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "5671",
     },
     {
@@ -99,7 +99,7 @@ export const cardData = [
         title: "Inventory Turnover",
         userName: "4.5x",
         category: "quarter",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "5655  ",
     },
     {
@@ -108,14 +108,26 @@ export const cardData = [
         title: "Net Promoter Score",
         userName: "72",
         category: "survey",
-        thumnail: "/user.svg",
+        thumbnail: "/user.svg",
         viewers: "5",
     },
 ];
+
+interface StreamInfo {
+    id: string;
+    avatar: string;
+    title: string;
+    userName: string;
+    category: string;
+    thumbnail: string;
+    viewers: string;
+}
+
 interface LivesPreviewProps {
     limit?: number;
+    streams?: StreamInfo[];
 }
-export function LivesPreview({ limit }: LivesPreviewProps) {
+export function LivesPreview({ limit, streams }: LivesPreviewProps) {
     return (
         <>
             {cardData.slice(0, limit || cardData.length).map((card, index) => (
@@ -124,7 +136,7 @@ export function LivesPreview({ limit }: LivesPreviewProps) {
                     id={card.id}
                     title={card.title}
                     userName={card.userName}
-                    thumnail={card.thumnail}
+                    thumbnail={card.thumbnail}
                     category={card.category}
                     viewers={card.viewers}
                     avatar={card.avatar}
