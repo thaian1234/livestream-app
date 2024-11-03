@@ -27,7 +27,7 @@ export const followApi = {
                         toast.error("Cannot follow yourself");
                     },
                     onSuccess(data) {
-                        toast.error(data.msg);
+                        toast.success(data.msg);
                         queryClient.invalidateQueries();
                     },
                 },

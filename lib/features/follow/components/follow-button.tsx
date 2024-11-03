@@ -27,10 +27,20 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
             toast.error("Please Sign in for further action");
             return;
         }
-        setIsFollowing(!isFollowing);
-        handleFollowToggle({
-            param: { followingId },
-        });
+
+        handleFollowToggle(
+            {
+                param: { followingId },
+            },
+            {
+                onSuccess: () => {
+                    setIsFollowing(!isFollowing);
+                },
+                onError: () => {
+                    setIsHovering(isFollowed);
+                },
+            },
+        );
     };
 
     const handleMouseEnter = () => {
