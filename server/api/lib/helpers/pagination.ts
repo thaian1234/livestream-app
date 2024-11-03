@@ -1,4 +1,17 @@
-interface PaginationHelperType<T> {
+interface PaginationMetadata {
+    totalRecords: number;
+    currentPage: number;
+    totalPages: number;
+    nextPage: number | null;
+    prevPage: number | null;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+    isFirstPage: boolean;
+    isLastPage: boolean;
+    pageSize: number;
+}
+
+interface PaginationInput<T> {
     data: T;
     totalRecords?: number;
     currentOffset: number;
@@ -11,18 +24,25 @@ export default class PaginationHelper {
         totalRecords = 0,
         currentOffset,
         limit,
-    }: PaginationHelperType<T>) {
+    }: PaginationInput<T>) {
         const currentPage = Math.floor(currentOffset / limit) + 1;
         const totalPages = Math.ceil(totalRecords / limit);
+        const hasNextPage = currentPage < totalPages;
+        const hasPrevPage = currentPage > 1;
 
         return {
             data,
             pagination: {
-                totalRecords: totalRecords,
-                currentPage: currentPage,
-                totalPages: totalPages,
-                nextPage: currentPage < totalPages ? currentPage + 1 : null,
-                prevPage: currentPage > 1 ? currentPage - 1 : null,
+                totalRecords,
+                currentPage,
+                totalPages,
+                nextPage: hasNextPage ? currentPage + 1 : null,
+                prevPage: hasPrevPage ? currentPage - 1 : null,
+                hasNextPage,
+                hasPrevPage,
+                isFirstPage: currentPage === 1,
+                isLastPage: currentPage === totalPages,
+                pageSize: limit,
             },
         };
     }
