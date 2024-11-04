@@ -7,10 +7,11 @@ import { TooltipModel } from "@/components/tooltip-model";
 
 export const CustomChannelHeader = () => {
     const {} = useChannelStateContext();
+    const { onToggleChatComponent } = useLiveInfor();
     return (
         <div className="flex justify-between border-b border-gray-700 p-2">
             <TooltipModel content="Collapse" side="bottom">
-                <button onClick={() => {}}>
+                <button onClick={onToggleChatComponent}>
                     <ArrowRightToLine />
                 </button>
             </TooltipModel>
