@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useMessageInputContext } from "stream-chat-react";
 
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
 export const CustomMessageInput = () => {
-    const {text, handleChange, handleSubmit} = useMessageInputContext();
+    const { text, handleChange, handleSubmit } = useMessageInputContext();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     //send message when press enter
@@ -36,11 +37,7 @@ export const CustomMessageInput = () => {
                 onKeyDown={handleKeyDown}
             />
 
-            <Button
-                variant="ghost"
-                className="hover:bg-white/20"
-                onClick={handleSubmit}
-            >
+            <Button variant="ghost" className="ml-2 p-2" onClick={handleSubmit}>
                 <SendHorizontal />
             </Button>
         </div>
