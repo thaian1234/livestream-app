@@ -23,7 +23,7 @@ export function CollapsibleSection({
         <Collapsible
             open={isOpen}
             onOpenChange={setIsOpen}
-            className="mr-4 w-auto border-t border-gray-700 font-sans"
+            className="w-auto border-t border-gray-700 font-sans"
         >
             <div className="flex w-full items-center justify-between space-x-4">
                 <p className="py-2 text-lg font-medium">{title}</p>
