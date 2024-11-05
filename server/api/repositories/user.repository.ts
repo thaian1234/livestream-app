@@ -164,8 +164,13 @@ export class UserRepository implements IUserRepository {
             .limit(limit)
             .offset(offset)
             .orderBy(orderBy);
-        return result;
-    }    
+
+        const totalRecords = await this.db.$count(
+            tableSchemas.userTable,
+            and(...conditions),
+        );
+        return { result, totalRecords };
+    }
     async findUserWithAccount(userId: string) {
         try {
             const userWithAccount = await this.db.query.userTable.findFirst({

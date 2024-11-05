@@ -6,6 +6,7 @@ import {
     desc,
     eq,
     gte,
+    ilike,
     inArray,
     lte,
     ne,
@@ -36,9 +37,7 @@ export class StreamRepository implements IStreamRepository {
         const conditions = [];
         let orderBy;
         if (name) {
-            conditions.push(
-                sql`to_tsvector('simple', ${tableSchemas.streamTable.name}) @@ websearch_to_tsquery('simple', ${name})`,
-            );
+            conditions.push(ilike(tableSchemas.streamTable.name, `%${name}%`));
         }
 
         if (dateFrom) {
@@ -57,15 +56,26 @@ export class StreamRepository implements IStreamRepository {
             where: and(...conditions),
             extras(fields, operators) {
                 return {
-                    username: sql`(SELECT username::text FROM users WHERE users.id = ${fields.userId})`.as("username"),
-                    avatar: sql`(SELECT image_url::text from users WHERE users.id = ${fields.userId})`.as("avatar"),
-                }
+                    username:
+                        sql`(SELECT username::text FROM users WHERE users.id = ${fields.userId})`.as(
+                            "username",
+                        ),
+                    avatar: sql`(SELECT image_url::text from users WHERE users.id = ${fields.userId})`.as(
+                        "avatar",
+                    ),
+                };
             },
             limit: limit,
             offset: offset,
             orderBy: orderBy,
         });
-        return result;
+
+        const totalRecords = await this.db.$count(
+            tableSchemas.streamTable,
+            and(...conditions),
+        );
+
+        return { result, totalRecords };
     }
     async getStreamByUserId(userId: string) {
         const result = await this.db.query.streamTable.findFirst({

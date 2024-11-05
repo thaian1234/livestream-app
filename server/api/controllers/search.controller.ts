@@ -4,6 +4,7 @@ import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import PaginationHelper from "../lib/helpers/pagination";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
@@ -39,13 +40,16 @@ export class SearchController implements ISearchController {
                     isSortByCreatedAt,
                     sortOrder,
                 } = c.req.valid("query");
+
+                const offset = (page - 1) * size;
+
                 const users = await this.userService.advancedSearchUser(
                     filterBy,
                     dateFrom,
                     dateTo,
                     isSortByCreatedAt,
                     sortOrder,
-                    (page - 1) * size,
+                    offset,
                     size,
                     currentUser ? currentUser.id : null,
                 );
@@ -55,16 +59,21 @@ export class SearchController implements ISearchController {
                     dateTo,
                     isSortByCreatedAt,
                     sortOrder,
-                    (page - 1) * size,
+                    offset,
                     size,
                 );
                 console.log(streams)
                 return ApiResponse.WriteJSON({
                     c,
-                    data: {
-                        users: UserDTO.parseManySearch(users),
-                        streams: StreamDTO.parseManySearch(streams),
-                    },
+                    data: PaginationHelper.getPaginationMetadata({
+                        data: {
+                            users: UserDTO.parseManySearch(users.result),
+                            streams: StreamDTO.parseManySearch(streams.result),
+                        },
+                        currentOffset: offset,
+                        limit: size,
+                        totalRecords: Math.max(streams.totalRecords, users.totalRecords),
+                    }),
                     status: HttpStatus.OK,
                 });
             },
