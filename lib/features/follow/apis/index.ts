@@ -33,7 +33,7 @@ export const followApi = {
                             queryKey: keys.stream_information,
                         });
                         queryClient.invalidateQueries({
-                            queryKey: keys.follow("1", "1000"),
+                            queryKey: ["follow"],
                         });
                     },
                 },
