@@ -2,8 +2,6 @@
 
 import { StreamTheme } from "@stream-io/video-react-sdk";
 
-import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
-
 import "@/style/video.css";
 
 type StreamParams = {
@@ -11,9 +9,5 @@ type StreamParams = {
 };
 
 export default function StreamLayout({ children }: Readonly<StreamParams>) {
-    return (
-        <StreamTheme as="section">
-            <StreamVideoProvider>{children}</StreamVideoProvider>
-        </StreamTheme>
-    );
+    return <StreamTheme as="section">{children}</StreamTheme>;
 }
