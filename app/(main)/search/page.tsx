@@ -2,13 +2,11 @@
 
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { useState } from "react";
+import { useQueryState } from "nuqs";
 
 import { UserPreview } from "@/lib/components/profile/search/user-preview";
 import { searchApi } from "@/lib/features/search/apis";
 import { LivesPreview } from "@/lib/features/search/components/live-preview";
-import { useSidebar } from "@/lib/stores/store-sidebar";
 
 import {
     Pagination,
@@ -124,7 +122,7 @@ function PaginationComponent({
 export default function SearchPage() {
     const [currentPage, setCurrentPage] = useQueryState("page", {
         defaultValue: "1",
-        throttleMs: 10000,
+        throttleMs: 500,
         clearOnDefault: false,
         shallow: false,
     });
