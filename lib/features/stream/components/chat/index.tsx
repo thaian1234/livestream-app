@@ -74,7 +74,7 @@ export function Chat() {
                         "flex flex-col px-4 transition-all duration-300 ease-in-out",
                         sidebar.isOpen
                             ? "h-[calc(100vh-16rem)]"
-                            : "h-[calc(100vh-11 rem)]",
+                            : "h-[calc(100vh-11rem)]",
                     )}
                 >
                     <Community />
