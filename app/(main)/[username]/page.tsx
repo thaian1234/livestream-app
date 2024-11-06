@@ -9,6 +9,9 @@ import { LiveInformation } from "@/lib/features/stream/components/livescreen/liv
 import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/livestream-player";
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
+import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
+
+import { LoadingStreamPage } from "@/components/loading-stream-page";
 
 type ParamsType = {
     username: string;
@@ -21,7 +24,7 @@ export default function StreamPage() {
         streamApi.query.useGetStreamInformation(params.username);
 
     if (isPending) {
-        return <p>Loading stream page...</p>;
+        return <LoadingStreamPage />;
     }
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
@@ -32,11 +35,13 @@ export default function StreamPage() {
     const followers = data.data.followers;
 
     return (
-        <section className="grid grid-cols-12 gap-x-6 gap-y-4">
+        <section className="grid grid-cols-12 grid-rows-5 gap-4">
             <div className="col-span-9 row-span-5">
-                <CustomCall streamId={stream.id}>
-                    <LivestreamPlayer />
-                </CustomCall>
+                <StreamVideoProvider>
+                    <CustomCall streamId={stream.id}>
+                        <LivestreamPlayer />
+                    </CustomCall>
+                </StreamVideoProvider>
             </div>
             <div className="col-span-3 col-start-10 row-span-5 row-start-1">
                 <ChatProvider streamId={stream.id}>
