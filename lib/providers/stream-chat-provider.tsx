@@ -5,6 +5,9 @@ import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
 import { Channel, Chat } from "stream-chat-react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+
 interface ChatProviderProps {
     streamId: string;
     children: React.ReactNode;
@@ -13,7 +16,7 @@ interface ChatProviderProps {
 export function ChatProvider({ streamId, children }: ChatProviderProps) {
     const { chatClient, chatChannel } = useInitializeChatClient(streamId);
 
-    if (!chatClient || !chatChannel) return null;
+    if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
 
     return (
         <Chat client={chatClient}>
