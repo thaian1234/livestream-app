@@ -16,7 +16,7 @@ export function CustomCall({ streamId, children }: CustomCallProps) {
     if (isPending) {
         return (
             <div className="h-[750px] w-full">
-                <LiveStreamPlayerState stateMessage="Loading..." isError />
+                <LiveStreamPlayerState stateMessage="Loading..." isLoading />
             </div>
         );
     }

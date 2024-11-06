@@ -2,9 +2,6 @@
 
 import { StreamTheme } from "@stream-io/video-react-sdk";
 
-import { ChatProvider } from "@/lib/providers/stream-chat-provider";
-import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
-
 import "@/style/video.css";
 
 export default function StreamDashboardLayout({
@@ -12,9 +9,5 @@ export default function StreamDashboardLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <StreamTheme as="section">
-            <StreamVideoProvider>{children}</StreamVideoProvider>
-        </StreamTheme>
-    );
+    return <StreamTheme as="section">{children}</StreamTheme>;
 }

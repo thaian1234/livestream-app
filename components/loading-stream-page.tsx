@@ -3,7 +3,7 @@ import { Skeleton } from "./ui/skeleton";
 
 export function LoadingStreamPage() {
     return (
-        <div className="flex max-h-[750px] space-x-6">
+        <div className="flex max-h-[750px] space-x-4">
             <div className="flex w-[75%] flex-col space-y-4">
                 {/* Livestream Player */}
                 <div className="aspect-video">
@@ -11,10 +11,6 @@ export function LoadingStreamPage() {
                         stateMessage="Loading..."
                         isLoading
                     />
-                </div>
-                {/* Info */}
-                <div className="h-24">
-                    <Skeleton className="size-full" />
                 </div>
             </div>
             {/* Chat */}

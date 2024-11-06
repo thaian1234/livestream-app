@@ -14,7 +14,7 @@ export function StreamVideoProvider({ children }: StreamProviderProps) {
     const { videoClient, isError, isPending } = useVideoClient();
     if (isPending) {
         return (
-            <div className="h-[750px] w-[75%]">
+            <div className="h-[750px]">
                 <LiveStreamPlayerState stateMessage="Loading..." isLoading />
             </div>
         );
@@ -22,7 +22,7 @@ export function StreamVideoProvider({ children }: StreamProviderProps) {
 
     if (!videoClient || isError) {
         return (
-            <div className="h-[750px] w-[75%]">
+            <div className="h-[750px]">
                 <LiveStreamPlayerState
                     stateMessage="Failed to connect"
                     isError
