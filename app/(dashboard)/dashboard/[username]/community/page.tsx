@@ -8,10 +8,13 @@ import { FollowersTable } from "@/lib/features/follow/components/follow-table/fo
 import { FollowingsTable } from "@/lib/features/follow/components/follow-table/followings-table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { M_PLUS_1 } from "next/font/google";
 
 export default function CommunityPage() {
     const tabs = ["Following", "Followers", "Block"];
-    const { data, isPending, error } = followApi.query.useFollow();
+    const { data, isPending, error } = followApi.query.useFollow(
+        '1', '1000'
+    );
     if (data === undefined || isPending) {
         return <ListSkeleton />;
     }
@@ -21,7 +24,10 @@ export default function CommunityPage() {
     return (
         <div className="flex flex-col items-center space-y-10 p-4 lg:flex-row lg:items-start lg:space-x-10 lg:space-y-0">
             {/* profile */}
-            <Profile />
+            <Profile
+                followers={data.data.followers?.length || 0}
+                followings={data.data.followings?.length || 0}
+            />
             {/* main */}
             <div className="flex-grow">
                 <Tabs defaultValue="Following" className="w-full">

@@ -3,6 +3,7 @@ import { client } from "@/lib/shared/client";
 
 const keys = {
     follow: (page: string, size: string) => ["follow", page, size],
+    stream_information: ["stream_information"],
 };
 
 export const followApi = {
@@ -28,7 +29,12 @@ export const followApi = {
                     },
                     onSuccess(data) {
                         toast.success(data.msg);
-                        queryClient.invalidateQueries();
+                        queryClient.invalidateQueries({
+                            queryKey: keys.stream_information,
+                        });
+                        queryClient.invalidateQueries({
+                            queryKey: keys.follow("1", "1000"),
+                        });
                     },
                 },
             );
