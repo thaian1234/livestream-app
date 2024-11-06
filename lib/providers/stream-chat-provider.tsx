@@ -5,17 +5,15 @@ import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
 import { Channel, Chat } from "stream-chat-react";
 
-import { Spinner } from "@/components/ui/spinner";
-
 interface ChatProviderProps {
     streamId: string;
     children: React.ReactNode;
 }
 
 export function ChatProvider({ streamId, children }: ChatProviderProps) {
-    const {chatClient, chatChannel} = useInitializeChatClient(streamId);
+    const { chatClient, chatChannel } = useInitializeChatClient(streamId);
 
-    if (!chatClient || !chatChannel) return <Spinner />;
+    if (!chatClient || !chatChannel) return null;
 
     return (
         <Chat client={chatClient}>

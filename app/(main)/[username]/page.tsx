@@ -21,7 +21,7 @@ export default function StreamPage() {
         streamApi.query.useGetStreamInformation(params.username);
 
     if (isPending) {
-        return <p>Loading...</p>;
+        return <p>Loading stream page...</p>;
     }
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
