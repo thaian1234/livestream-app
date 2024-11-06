@@ -47,8 +47,8 @@ export function Chat() {
                         className={cn(
                             "px-4 transition-all duration-300 ease-in-out",
                             sidebar.isOpen
-                                ? "h-[calc(100vh-21rem)]"
-                                : "h-[calc(100vh-16rem)]",
+                                ? "h-[calc(100vh-20rem)]"
+                                : "h-[calc(100vh-15rem)]",
                         )}
                     >
                         {messages && messages.length > 0 ? (

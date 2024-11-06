@@ -28,12 +28,19 @@ export default function StreamPage() {
             <div
                 className={cn(
                     "row-span-5",
-                    isOpenChatComponent ? "col-span-9" : "col-span-12",
+                    isOpenChatComponent ? "col-span-9" : "col-span-12 mx-24",
                 )}
             >
                 <StreamVideoProvider>
                     <CustomCall streamId={auth.stream.id}>
-                        <div className="aspect-video">
+                        <div
+                            className={cn(
+                                "bg-black-1",
+                                isOpenChatComponent
+                                    ? "aspect-video"
+                                    : "aspect-[2/1]",
+                            )}
+                        >
                             <LocalLivestreamPlayer />
                         </div>
                         <LocalLiveInformation />
