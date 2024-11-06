@@ -3,7 +3,7 @@ import { StreamCall } from "@stream-io/video-react-sdk";
 
 import { HttpStatus } from "@/server/api/lib/constant/http.type";
 
-import { Spinner } from "@/components/ui/spinner";
+import { LiveStreamPlayerState } from "@/components/livestream-player-state";
 
 interface CustomCallProps {
     streamId: string;
@@ -14,15 +14,27 @@ export function CustomCall({ streamId, children }: CustomCallProps) {
     const { call, isPending, error } = useJoinCall(streamId);
 
     if (isPending) {
-        return <Spinner />;
+        return (
+            <div className="h-[750px] w-full">
+                <LiveStreamPlayerState stateMessage="Loading..." isError />
+            </div>
+        );
     }
     if (error) {
         if (error.status === HttpStatus.Forbidden) {
-            return <p>User is offline please try agian</p>;
+            return (
+                <LiveStreamPlayerState stateMessage="User is offline" isError />
+            );
         }
         if (error.status === HttpStatus.NotFound) {
-            return <p>Make sure you create a Stream Key before going live</p>;
+            <LiveStreamPlayerState stateMessage="Stream not found" isError />;
         }
+        return (
+            <LiveStreamPlayerState
+                stateMessage="Cannot connect to the stream"
+                isError
+            />
+        );
     }
 
     return <StreamCall call={call}>{children}</StreamCall>;

@@ -3,6 +3,8 @@
 import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
 import { CallingState, useCallStateHooks } from "@stream-io/video-react-sdk";
 
+import { LiveStreamPlayerState } from "@/components/livestream-player-state";
+
 interface LivestreamPlayerProps {}
 
 export function LivestreamPlayer({}: LivestreamPlayerProps) {
@@ -12,23 +14,35 @@ export function LivestreamPlayer({}: LivestreamPlayerProps) {
     switch (callingState) {
         case CallingState.UNKNOWN:
         case CallingState.IDLE:
-            return <p>Lobby state</p>;
+            return (
+                <LiveStreamPlayerState stateMessage="Please wait" isLoading />
+            );
 
         case CallingState.JOINING:
-            return <p>Joining state</p>;
+            return (
+                <LiveStreamPlayerState
+                    stateMessage="Joining Stream"
+                    isLoading
+                />
+            );
 
         case CallingState.LEFT:
-            return <p>Left state</p>;
+            return <LiveStreamPlayerState stateMessage="Left Stream" />;
 
         case CallingState.RECONNECTING:
         case CallingState.MIGRATING:
-            return <p>Restore state</p>;
+            return (
+                <LiveStreamPlayerState
+                    stateMessage="Reconnecting stream"
+                    isLoading
+                />
+            );
 
         case CallingState.RECONNECTING_FAILED:
-            return <p>Reconnec failed state</p>;
+            return <LiveStreamPlayerState stateMessage="Reconnecting stream" />;
 
         case CallingState.OFFLINE:
-            return <p>Offline state</p>;
+            return <LiveStreamPlayerState stateMessage="User is offline" />;
     }
     return (
         <MyLivestreamLayout
