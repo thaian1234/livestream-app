@@ -32,6 +32,7 @@ export class UserService implements IUserService {
         sortOrder: string = "asc",
         offset: number = 0,
         limit: number = 10,
+        currentUserId: string | null,
     ) {
         return await this.userRepository.advancedSearchUser(
             username,
@@ -41,6 +42,7 @@ export class UserService implements IUserService {
             sortOrder,
             offset,
             limit,
+            currentUserId,
         );
     }
     public async updatePassword(userId: string, newPassword: string) {

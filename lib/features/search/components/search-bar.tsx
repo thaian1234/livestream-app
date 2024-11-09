@@ -49,7 +49,7 @@ export function SearchBar() {
         if (event.key === "Enter" && inputRef.current?.value) {
             console.log("Enter was pressed!", inputRef.current.value);
             router.push(
-                `/search?search_query=${encodeURIComponent(inputRef.current.value)}`,
+                `/search?searchTerm=${encodeURIComponent(inputRef.current.value)}`,
             );
             setShowSuggestions(false);
         }

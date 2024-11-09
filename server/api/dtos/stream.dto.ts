@@ -38,7 +38,14 @@ export class StreamDTO {
     public static streamWithUser = this.selectSchema.extend({
         user: userSchema,
     });
+    public static streamSearch = this.selectSchema.extend({
+        username: z.string(),
+        avatar: z.string().nullish(),
+    });
 
+    public static parseManySearch(data: unknown) {
+        return this.streamSearch.array().parse(data);
+    }
     public static parseMany(data: unknown) {
         try {
             return this.selectSchema.array().parse(data);

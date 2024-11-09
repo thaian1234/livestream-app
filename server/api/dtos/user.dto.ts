@@ -52,6 +52,16 @@ export class UserDTO {
         accounts: AccountDTO.selectSchema.array(),
         stream: StreamDTO.selectSchema,
     });
+    public static selectUserSearch = this.selectSchema
+        .extend({
+            followerCount: z.number(),
+            isLive: z.boolean(),
+            isFollow: z.boolean(),
+        })
+        .omit({
+            email: true,
+            emailVerified: true,
+        });
     public static pareBase(data: unknown) {
         return this.baseSchema.parse(data);
     }
@@ -63,6 +73,9 @@ export class UserDTO {
     }
     public static parseMany(data: unknown) {
         return this.selectSchema.array().parse(data);
+    }
+    public static parseManySearch(data: unknown) {
+        return this.selectUserSearch.array().parse(data);
     }
 }
 export namespace UserDTO {
