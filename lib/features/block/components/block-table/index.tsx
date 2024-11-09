@@ -8,7 +8,9 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 
 export function BlockTable() {
-    const { data, isPending, error } = blockApi.query.useBlock();
+    const { data, isPending, error } = blockApi.query.useBlock(
+        "1", "1000"
+    );
     if (data === undefined || isPending) {
         return <ListSkeleton />;
     }

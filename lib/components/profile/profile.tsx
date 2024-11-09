@@ -12,20 +12,16 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import ProfileSkeleton from "./profile-skeleton";
 
-const userData = {
-    followers: 1000,
-    following: 500,
-    blocking: 12,
-};
-export function Profile() {
+interface ProfileProps {
+    followers: number;
+    followings: number;
+}
+
+export function Profile({ followers, followings }: ProfileProps) {
     const { user, isPending: isPending, error } = useAuth();
-    const router = useRouter();
     if (isPending || !user) {
         return <ProfileSkeleton />;
     }
-    const handleEditProfile = () => {
-        router.push(`/dashboard/${user.username}/profile`);
-    };
 
     return (
         <div className="flex w-[350px] flex-col items-center space-y-4">
@@ -39,7 +35,7 @@ export function Profile() {
                     <span className="font-light text-white/50">
                         Followers:{" "}
                     </span>
-                    <span>{userData.followers}</span>
+                    <span>{followers}</span>
                 </Link>
                 <Link
                     href={`/dashboard/${user.username}/community`}
@@ -48,19 +44,20 @@ export function Profile() {
                     <span className="font-light text-white/50">
                         Following:{" "}
                     </span>
-                    <span>{userData.following}</span>
+                    <span>{followings}</span>
                 </Link>
             </div>
             <div className="max-w-full break-words font-extralight text-white/70">
                 {user.bio}
             </div>
-            <Button
-                variant="gradient"
-                className="w-full"
-                onClick={handleEditProfile}
-            >
-                Edit profile
-            </Button>
+            <Link href={`/dashboard/${user.username}/profile`}>
+                <Button
+                    variant="gradient"
+                    className="w-full"
+                >
+                    Edit profile
+                </Button>
+            </Link>
         </div>
     );
 }
