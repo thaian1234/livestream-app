@@ -106,15 +106,6 @@ export const streamApi = {
         },
     },
     mutation: {
-        useGetStreamToken() {
-            const $get = client.api.streams["stream-token"].$get;
-            const { mutation, router } = Fetcher.useHonoMutation($get, {
-                onError() {
-                    router.replace(ROUTES.HOME_PAGE);
-                },
-            });
-            return mutation;
-        },
         useUpdateStream(username: string) {
             const $patch = client.api.streams.$patch;
             const { mutation, queryClient, toast } = Fetcher.useHonoMutation(

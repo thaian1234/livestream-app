@@ -4,11 +4,13 @@ import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import { JWTUtils } from "../lib/helpers/jwt";
 import PaginationHelper from "../lib/helpers/pagination";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
+import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
@@ -21,6 +23,7 @@ export class StreamController implements IStreamController {
         private readonly factory: CreateFactoryType,
         private readonly streamService: IStreamService,
         private readonly getStreamService: IGetStreamService,
+        private readonly settingService: ISettingService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -37,35 +40,41 @@ export class StreamController implements IStreamController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const currentUser = c.get("getUser");
-                const stream = await this.streamService.getStreamWithSetting(
+                const token = await this.handleStreamTokenGeneration(
                     currentUser.id,
                 );
-                const token = this.getStreamService.generateUserToken(
-                    currentUser.id,
-                );
-                if (!stream || !stream.setting) {
-                    return ApiResponse.WriteJSON({
-                        c,
-                        msg: "Get token successfully",
-                        data: {
-                            token: token,
-                        },
-                        status: HttpStatus.Created,
-                    });
-                }
+
                 return ApiResponse.WriteJSON({
                     c,
                     msg: "Get token successfully",
+                    data: { token },
                     status: HttpStatus.Created,
-                    data: {
-                        token:
-                            stream.setting.streamKey !== null
-                                ? stream.setting.streamKey
-                                : token,
-                    },
                 });
             },
         );
+    }
+    private async handleStreamTokenGeneration(userId: string) {
+        const stream = await this.streamService.getStreamWithSetting(userId);
+        if (!stream?.setting) {
+            return this.getStreamService.generateUserToken(userId);
+        }
+
+        const currentStreamKey = stream.setting.streamKey;
+        if (!currentStreamKey) {
+            return this.getStreamService.generateUserToken(userId);
+        }
+
+        const isExpired = await JWTUtils.isTokenExpired(currentStreamKey);
+        if (isExpired) {
+            const newStreamKey =
+                this.getStreamService.generateUserToken(userId);
+            await this.settingService.upsertByStreamId(stream.id, {
+                streamKey: newStreamKey,
+            });
+            return newStreamKey;
+        }
+
+        return currentStreamKey;
     }
     private updateStreamHandler() {
         return this.factory.createHandlers(
