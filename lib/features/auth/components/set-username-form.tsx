@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import "@/style/auth.css";
 
 export function SetUsernameForm() {
-    const { user } = useUser();
     const {
         register,
         handleSubmit,
@@ -30,9 +29,6 @@ export function SetUsernameForm() {
         authApi.mutation.useSetUsername();
     const onSubmit = handleSubmit((data) => {
         handleUpdateUsername({
-            param: {
-                id: user.id,
-            },
             json: {
                 username: data.username,
             },
