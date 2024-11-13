@@ -10,7 +10,7 @@ export const userApi = {
     query: {},
     mutation: {
         useUpdateProfile() {
-            const $patch = client.api.users[":id"].$patch;
+            const $patch = client.api.users.$patch;
             const { mutation, toast, queryClient, router } =
                 Fetcher.useHonoMutation($patch, {
                     onSuccess({ data }) {
@@ -27,7 +27,7 @@ export const userApi = {
             return mutation;
         },
         useChangePassword() {
-            const $patch = client.api.users[":id"]["update-password"].$patch;
+            const $patch = client.api.users["update-password"].$patch;
             const { mutation, toast } = Fetcher.useHonoMutation($patch, {
                 onSuccess({ msg }) {
                     toast.success(msg);

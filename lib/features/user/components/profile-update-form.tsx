@@ -35,9 +35,6 @@ export function ProfileUpdateForm() {
 
     const onSubmit = form.handleSubmit((data) => {
         handleUpdateProfile({
-            param: {
-                id: user.id,
-            },
             json: {
                 bio: data.bio,
                 username: data.username,

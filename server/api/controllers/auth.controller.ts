@@ -49,14 +49,6 @@ export class AuthController implements IAuthController {
             ),
             async (c) => {
                 const jsonData = c.req.valid("json");
-                const currentUser = c.get("user");
-                const currentSession = c.get("session");
-                const isSignedIn = currentUser && currentSession;
-                if (isSignedIn && currentUser.email === jsonData.email) {
-                    throw new MyError.ServiceUnavailableError(
-                        "You are already signed in, please sign out for more actions",
-                    );
-                }
                 const { session, sessionCookie } =
                     await this.authService.authenticateUser(jsonData);
                 if (!session || !sessionCookie) {
@@ -172,7 +164,8 @@ export class AuthController implements IAuthController {
                 await this.userService.updateUser(userId, {
                     emailVerified: true,
                 });
-                const stream = await this.streamService.getStreamByUserId(userId);
+                const stream =
+                    await this.streamService.getStreamByUserId(userId);
                 if (stream)
                     await this.getStreamService.createChatChannel(stream.id);
                 const { sessionCookie } =

@@ -47,9 +47,6 @@ export function ChangePasswordForm() {
     const handleSubmit = form.handleSubmit((data) => {
         handleChangePassword(
             {
-                param: {
-                    id: user.id,
-                },
                 json: data,
             },
             {

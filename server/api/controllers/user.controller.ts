@@ -32,13 +32,10 @@ export class UserController {
             .createApp()
             .get("/", ...this.getAllUserHandler())
             .get("/:username", ...this.getUserByUsername())
-            .patch("/:id", ...this.updateUserHandler())
-            .patch("/:id/update-password", ...this.changeUserPasswordHandler());
+            .patch("/", ...this.updateUserHandler())
+            .patch("/update-password", ...this.changeUserPasswordHandler());
     }
     private updateUserHandler() {
-        const params = z.object({
-            id: z.string().uuid(),
-        });
         const respSchema = UserDTO.selectSchema;
         return this.factory.createHandlers(
             zValidator(
@@ -46,17 +43,13 @@ export class UserController {
                 UserDTO.updateSchema,
                 Validator.handleParseError,
             ),
-            zValidator("param", params, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const jsonData = c.req.valid("json");
-                const { id } = c.req.valid("param");
                 const currentUser = c.get("getUser");
-                if (currentUser.id !== id) {
-                    throw new MyError.UnauthorizedError();
-                }
+
                 const updatedUser = await this.userService.updateUser(
-                    id,
+                    currentUser.id,
                     jsonData,
                 );
                 if (!updatedUser) {
@@ -92,11 +85,7 @@ export class UserController {
         );
     }
     private changeUserPasswordHandler() {
-        const params = z.object({
-            id: z.string().uuid(),
-        });
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator(
                 "json",
                 UserDTO.updatePasswordSchema,
@@ -105,11 +94,7 @@ export class UserController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const jsonData = c.req.valid("json");
-                const { id } = c.req.valid("param");
                 const currentUser = c.get("getUser");
-                if (id !== currentUser.id) {
-                    throw new MyError.UnauthorizedError();
-                }
                 const isMatchedPassword =
                     await this.userService.isMatchedPassword(
                         currentUser.id,
@@ -121,7 +106,7 @@ export class UserController {
                     );
                 }
                 const updatedUser = await this.userService.updatePassword(
-                    id,
+                    currentUser.id,
                     jsonData.newPassword,
                 );
                 if (!updatedUser) {
@@ -148,7 +133,7 @@ export class UserController {
                 const { username } = c.req.valid("param");
                 const user = await this.userService.findByUsername(username);
                 if (!user) {
-                    throw new MyError.NotFoundError("user not found");
+                    throw new MyError.NotFoundError("User not found");
                 }
                 const stream = await this.streamService.getStreamByUserId(
                     user.id,
