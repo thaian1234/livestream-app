@@ -128,7 +128,7 @@ export const authApi = {
             return mutation;
         },
         useSetUsername() {
-            const $patch = client.api.users[":id"].$patch;
+            const $patch = client.api.users.$patch;
             const { mutation, toast, queryClient, router } =
                 Fetcher.useHonoMutation($patch, {
                     onSuccess() {

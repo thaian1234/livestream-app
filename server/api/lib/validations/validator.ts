@@ -19,7 +19,7 @@ export class Validator {
                 : "Something went wrong";
             return ApiResponse.WriteErrorJSON({
                 c,
-                status: HttpStatus.BadRequest,
+                status: HttpStatus.UnprocessableEntity,
                 msg: zodErr as string,
             });
         }
@@ -31,8 +31,8 @@ export class Validator {
         if (err instanceof ZodError) {
             return ApiResponse.WriteErrorJSON({
                 c,
-                status: HttpStatus.BadRequest,
-                msg: "Vaidated fail",
+                status: HttpStatus.UnprocessableEntity,
+                msg: err.message,
             });
         }
         switch (true) {
