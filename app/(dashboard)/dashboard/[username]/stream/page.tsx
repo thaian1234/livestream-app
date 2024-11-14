@@ -25,35 +25,26 @@ export default function StreamPage() {
 
     return (
         <section className="grid grid-cols-12 grid-rows-5 gap-4">
-            <div
-                className={cn(
-                    "row-span-5",
-                    isOpenChatComponent ? "col-span-9" : "col-span-12 mx-24",
-                )}
-            >
-                <StreamVideoProvider>
+            <StreamVideoProvider>
+                <div
+                    className={cn(
+                        "row-span-5",
+                        isOpenChatComponent
+                            ? "col-span-9 aspect-video"
+                            : "col-span-12 mx-14 aspect-[2/1]",
+                    )}
+                >
                     <CustomCall streamId={auth.stream.id}>
-                        <div
-                            className={cn(
-                                "bg-black-1",
-                                isOpenChatComponent
-                                    ? "aspect-video"
-                                    : "aspect-[2/1]",
-                            )}
-                        >
-                            <LocalLivestreamPlayer />
-                        </div>
+                        <LocalLivestreamPlayer />
                         <LocalLiveInformation />
                     </CustomCall>
-                </StreamVideoProvider>
-            </div>
-            {isOpenChatComponent && (
-                <div className="col-span-3 col-start-10 row-span-5">
-                    <ChatProvider streamId={auth.stream.id}>
-                        <Chat />
-                    </ChatProvider>
                 </div>
-            )}
+            </StreamVideoProvider>
+            <div className="col-span-3 col-start-10 row-span-5">
+                <ChatProvider streamId={auth.stream.id}>
+                    {isOpenChatComponent && <Chat />}
+                </ChatProvider>
+            </div>
         </section>
     );
 }

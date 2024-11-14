@@ -53,15 +53,6 @@ export const ParticipantOverlay = ({
                     </Badge>
                 )}
             </div>
-            <div className="absolute right-3 top-3 flex items-center space-x-3">
-                {showExpandChat && (
-                    <TooltipModel content="Expand" side="bottom">
-                        <button onClick={onToggleChatComponent}>
-                            <ArrowLeftToLine />
-                        </button>
-                    </TooltipModel>
-                )}
-            </div>
         </article>
     );
 
@@ -96,6 +87,15 @@ export const ParticipantOverlay = ({
                 )}
             >
                 {isLive && <TopOverlay />}
+                <div className="absolute right-3 top-3 flex items-center space-x-3">
+                    {showExpandChat && (
+                        <TooltipModel content="Expand" side="bottom">
+                            <button onClick={onToggleChatComponent}>
+                                <ArrowLeftToLine />
+                            </button>
+                        </TooltipModel>
+                    )}
+                </div>
                 <BottomControlsOverlay />
             </div>
         </section>
