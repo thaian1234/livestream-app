@@ -15,6 +15,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -49,7 +50,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             <DialogTrigger>
                 <SettingsIcon />
             </DialogTrigger>
-            <DialogContent className="px-10 lg:max-w-3xl">
+            <DialogContent className="h-[calc(100vh-2rem)] px-10 lg:max-w-3xl">
                 <Tabs className="flex flex-col space-y-6">
                     <TabsList className="grid w-full grid-cols-2 gap-x-4 bg-transparent">
                         <TabsTrigger
@@ -65,40 +66,44 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                             Key
                         </TabsTrigger>
                     </TabsList>
-                    <TabsContent value="information" className="space-y-4">
-                        <DialogHeader>
-                            <DialogTitle>Edit Stream Profile</DialogTitle>
-                            <DialogDescription>
-                                Make changes to your stream profile here. Click
-                                save when you&apos;re done.
-                            </DialogDescription>
-                        </DialogHeader>
-                        {/* Stream Update Form */}
-                        <StreamUpdateForm
-                            initialValues={data.data.stream}
-                            username={username}
-                        />
-                        {/* Stream Upload Image */}
-                        <div>
-                            <Label>Upload Stream Thumbnail</Label>
-                            <UploadThumbnailForm
-                                initialImageUrl={data.data.stream.thumbnailUrl}
+                    <ScrollArea className="h-[calc(100vh-8rem)] px-4">
+                        <TabsContent value="information" className="space-y-4">
+                            <DialogHeader>
+                                <DialogTitle>Edit Stream Profile</DialogTitle>
+                                <DialogDescription>
+                                    Make changes to your stream profile here.
+                                    Click save when you&apos;re done.
+                                </DialogDescription>
+                            </DialogHeader>
+                            {/* Stream Update Form */}
+                            <StreamUpdateForm
+                                initialValues={data.data.stream}
+                                username={username}
                             />
-                        </div>
-                    </TabsContent>
-                    <TabsContent
-                        value="key"
-                        className="flex flex-col space-y-4 pb-8"
-                    >
-                        <Label>Key Information</Label>
-                        <KeyInformation hidingUpdateButton />
-                        <Link
-                            href={ROUTES.KEY_PAGE(username)}
-                            className="ml-auto italic underline"
+                            {/* Stream Upload Image */}
+                            <div>
+                                <Label>Upload Stream Thumbnail</Label>
+                                <UploadThumbnailForm
+                                    initialImageUrl={
+                                        data.data.stream.thumbnailUrl
+                                    }
+                                />
+                            </div>
+                        </TabsContent>
+                        <TabsContent
+                            value="key"
+                            className="flex flex-col space-y-4 pb-8"
                         >
-                            Generate new Key ?
-                        </Link>
-                    </TabsContent>
+                            <Label>Key Information</Label>
+                            <KeyInformation hidingUpdateButton />
+                            <Link
+                                href={ROUTES.KEY_PAGE(username)}
+                                className="ml-auto italic underline"
+                            >
+                                Generate new Key ?
+                            </Link>
+                        </TabsContent>
+                    </ScrollArea>
                 </Tabs>
             </DialogContent>
         </Dialog>

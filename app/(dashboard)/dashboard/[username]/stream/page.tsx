@@ -7,11 +7,15 @@ import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
 
 export default function StreamPage() {
     const auth = useAuth();
+    const { isOpenChatComponent } = useLiveInfor();
+
     if (auth.isPending) {
         return <LoadingStreamPage />;
     }
@@ -21,19 +25,24 @@ export default function StreamPage() {
 
     return (
         <section className="grid grid-cols-12 grid-rows-5 gap-4">
-            <div className="col-span-9 row-span-5">
-                <StreamVideoProvider>
+            <StreamVideoProvider>
+                <div
+                    className={cn(
+                        "row-span-5",
+                        isOpenChatComponent
+                            ? "col-span-9 aspect-video"
+                            : "col-span-12 mx-14 aspect-[2/1]",
+                    )}
+                >
                     <CustomCall streamId={auth.stream.id}>
-                        <div className="aspect-video">
-                            <LocalLivestreamPlayer />
-                        </div>
+                        <LocalLivestreamPlayer />
                         <LocalLiveInformation />
                     </CustomCall>
-                </StreamVideoProvider>
-            </div>
+                </div>
+            </StreamVideoProvider>
             <div className="col-span-3 col-start-10 row-span-5">
                 <ChatProvider streamId={auth.stream.id}>
-                    <Chat />
+                    {isOpenChatComponent && <Chat />}
                 </ChatProvider>
             </div>
         </section>

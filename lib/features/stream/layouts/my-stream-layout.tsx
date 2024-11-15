@@ -3,6 +3,7 @@ import { usePaginatedLayoutSortPreset } from "../hooks/use-paginated-layout";
 import { useCall, useCallStateHooks } from "@stream-io/video-react-bindings";
 import { ParticipantView, ParticipantsAudio } from "@stream-io/video-react-sdk";
 
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 /**
@@ -64,6 +65,7 @@ export function MyLivestreamLayout(props: LivestreamLayoutProps) {
     const [currentSpeaker] = participants;
     const remoteParticipants = useRemoteParticipants();
     const hasOngoingScreenShare = useHasOngoingScreenShare();
+    const { isOpenChatComponent } = useLiveInfor();
 
     usePaginatedLayoutSortPreset(call);
 
@@ -74,6 +76,7 @@ export function MyLivestreamLayout(props: LivestreamLayoutProps) {
             showLiveBadge={props.showLiveBadge}
             showSpeakerName={props.showSpeakerName}
             enableFullScreen={props.enableFullScreen}
+            showExpandChat={!isOpenChatComponent}
         />
     );
 

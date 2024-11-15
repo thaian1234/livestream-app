@@ -23,22 +23,11 @@ export function LivePreviewCard({
     viewers,
     avatar,
 }: LivePreviewCardProps) {
-    const { setLiveInfor } = useLiveInfor();
     const router = useRouter();
 
     const handleNavigateLive = () => {
         // Navigate to live room
         router.push(`/live/${userName.replace(/\s+/g, "-")}`);
-        // get one API and setLiveInfor
-        setLiveInfor({
-            id,
-            title,
-            userName,
-            category,
-            viewers,
-            avatar,
-            followers: "122000",
-        });
     };
     return (
         <div className="flex space-x-4">

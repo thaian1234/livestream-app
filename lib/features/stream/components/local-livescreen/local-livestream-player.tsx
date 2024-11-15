@@ -2,9 +2,6 @@
 
 import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
 import { CallingState, useCallStateHooks } from "@stream-io/video-react-sdk";
-import { VideoIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 
 import { LiveStreamPlayerState } from "@/components/livestream-player-state";
 

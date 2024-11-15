@@ -13,7 +13,7 @@ interface Props {
     title: String; // Tiêu đ�� Sidebar
     children: React.ReactNode; // Chỉ nhận các component React
 }
-export function CollapsibleSidebar({
+export function CollapsibleSection({
     isOpen,
     setIsOpen,
     title,
@@ -23,7 +23,7 @@ export function CollapsibleSidebar({
         <Collapsible
             open={isOpen}
             onOpenChange={setIsOpen}
-            className="mr-4 w-auto border-t border-white/40 font-sans"
+            className="w-auto border-t border-gray-700 font-sans"
         >
             <div className="flex w-full items-center justify-between space-x-4">
                 <p className="py-2 text-lg font-medium">{title}</p>

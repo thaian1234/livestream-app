@@ -1,11 +1,13 @@
 import { CinemaModeButton } from "../livescreen/cinema-mode-button";
 import { useCallStateHooks } from "@stream-io/video-react-sdk";
-import { Users2Icon } from "lucide-react";
+import { ArrowLeftToLine, Users2Icon } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 import { LiveBadge } from "@/components/live-badge";
+import { TooltipModel } from "@/components/tooltip-model";
 import { Badge } from "@/components/ui/badge";
 
 import { PiPButton } from "./PiP-button";
@@ -20,6 +22,7 @@ interface ParticipantOverlayProps {
     showDuration?: boolean;
     showLiveBadge?: boolean;
     showSpeakerName?: boolean;
+    showExpandChat?: boolean;
 }
 
 export const ParticipantOverlay = ({
@@ -28,11 +31,13 @@ export const ParticipantOverlay = ({
     showLiveBadge,
     showParticipantCount = true,
     showSpeakerName,
+    showExpandChat,
 }: ParticipantOverlayProps) => {
     const { useIsCallLive, useRemoteParticipants } = useCallStateHooks();
     const isLive = useIsCallLive();
     const participants = useRemoteParticipants();
     const [showControls, setShowControls] = useState(false);
+    const { onToggleChatComponent } = useLiveInfor();
 
     const TopOverlay = () => (
         <article className="absolute inset-x-0 top-0 h-14 bg-gradient-to-t from-black-0/30 to-transparent">
@@ -82,6 +87,15 @@ export const ParticipantOverlay = ({
                 )}
             >
                 {isLive && <TopOverlay />}
+                <div className="absolute right-3 top-3 flex items-center space-x-3">
+                    {showExpandChat && (
+                        <TooltipModel content="Expand" side="bottom">
+                            <button onClick={onToggleChatComponent}>
+                                <ArrowLeftToLine />
+                            </button>
+                        </TooltipModel>
+                    )}
+                </div>
                 <BottomControlsOverlay />
             </div>
         </section>
