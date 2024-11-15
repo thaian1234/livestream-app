@@ -129,7 +129,11 @@ export class AuthController implements IAuthController {
                     this.nodemailService.sendVerifcationEmailCode(
                         code,
                         user.email,
-                    ),
+                    ).catch(() => {
+                        throw new MyError.ServiceUnavailableError(
+                            "Cannot send code to your email",
+                        );
+                    }),
                 );
                 return ApiResponse.WriteJSON({
                     c,
