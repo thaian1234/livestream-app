@@ -55,7 +55,6 @@ export default function StreamPage() {
             </StreamVideoProvider>
             <div
                 className={cn(
-                    "row-span-5",
                     isOpenChatComponent
                         ? "col-span-9 aspect-video"
                         : "col-span-12 mx-14 aspect-[2/1]",
@@ -68,7 +67,12 @@ export default function StreamPage() {
                     isFollowing={data.data.isFollowing}
                 />
             </div>
-            <div className="col-span-3 col-start-10 row-span-5 row-start-1">
+            <div
+                className={cn(
+                    isOpenChatComponent &&
+                        "col-span-3 col-start-10 row-span-5 row-start-1",
+                )}
+            >
                 <ChatProvider streamId={stream.id}>
                     {isOpenChatComponent && <Chat />}
                 </ChatProvider>
