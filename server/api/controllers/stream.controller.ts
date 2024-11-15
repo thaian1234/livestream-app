@@ -40,41 +40,58 @@ export class StreamController implements IStreamController {
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const currentUser = c.get("getUser");
-                const token = await this.handleStreamTokenGeneration(
+                let token;
+                const stream = await this.streamService.getStreamWithSetting(
                     currentUser.id,
                 );
+                if (!stream || !stream.setting) {
+                    token = this.getStreamService.generateUserToken(
+                        currentUser.id,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        msg: "Get token successfully",
+                        data: { token },
+                        status: HttpStatus.Created,
+                    });
+                }
+                const currentStreamKey = stream.setting.streamKey;
+                if (!currentStreamKey) {
+                    token = this.getStreamService.generateUserToken(
+                        currentUser.id,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        msg: "Get token successfully",
+                        data: { token },
+                        status: HttpStatus.Created,
+                    });
+                }
+
+                const isExpired =
+                    await JWTUtils.isTokenExpired(currentStreamKey);
+                if (isExpired) {
+                    const newStreamKey =
+                        this.getStreamService.generateUserToken(currentUser.id);
+                    await this.settingService.upsertByStreamId(stream.id, {
+                        streamKey: newStreamKey,
+                    });
+                    return ApiResponse.WriteJSON({
+                        c,
+                        msg: "Get token successfully",
+                        data: { token: newStreamKey },
+                        status: HttpStatus.Created,
+                    });
+                }
 
                 return ApiResponse.WriteJSON({
                     c,
                     msg: "Get token successfully",
-                    data: { token },
+                    data: { token: currentStreamKey },
                     status: HttpStatus.Created,
                 });
             },
         );
-    }
-    private async handleStreamTokenGeneration(userId: string) {
-        const stream = await this.streamService.getStreamWithSetting(userId);
-        if (!stream?.setting) {
-            return this.getStreamService.generateUserToken(userId);
-        }
-
-        const currentStreamKey = stream.setting.streamKey;
-        if (!currentStreamKey) {
-            return this.getStreamService.generateUserToken(userId);
-        }
-
-        const isExpired = await JWTUtils.isTokenExpired(currentStreamKey);
-        if (isExpired) {
-            const newStreamKey =
-                this.getStreamService.generateUserToken(userId);
-            await this.settingService.upsertByStreamId(stream.id, {
-                streamKey: newStreamKey,
-            });
-            return newStreamKey;
-        }
-
-        return currentStreamKey;
     }
     private updateStreamHandler() {
         return this.factory.createHandlers(
