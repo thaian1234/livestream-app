@@ -25,7 +25,9 @@ export const blockApi = {
                 {
                     onSuccess(data) {
                         toast.success(data.msg);
-                        queryClient.invalidateQueries();
+                        queryClient.invalidateQueries({
+                            queryKey: ["block"],
+                        });
                     },
                     onError(err) {
                         toast.error(err.message);

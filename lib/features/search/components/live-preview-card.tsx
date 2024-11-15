@@ -10,7 +10,7 @@ interface LivePreviewCardProps {
     title: string;
     userName: string;
     category?: string;
-    thumnail: string;
+    thumbnail: string;
     viewers: string;
     avatar: string;
 }
@@ -19,7 +19,7 @@ export function LivePreviewCard({
     title,
     userName,
     category,
-    thumnail,
+    thumbnail,
     viewers,
     avatar,
 }: LivePreviewCardProps) {

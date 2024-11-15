@@ -22,32 +22,23 @@ export class FollowController implements IFollowController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/:userId/following", ...this.getAllFollowingByUserIdHandler())
-            .get("/:userId/follower", ...this.getAllFollwerByUserIdHandler())
-            .get("/:userId/recommend", ...this.getRecommendByUserId())
+            .get("/following", ...this.getAllFollowingByUserIdHandler())
+            .get("/follower", ...this.getAllFollwerByUserIdHandler())
+            .get("/recommend", ...this.getRecommendByUserId())
             .get("/follow", ...this.getAllFollowHandler())
             .post("/:followingId", ...this.followToggle());
     }
     private getAllFollowingByUserIdHandler() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { userId } = c.req.valid("param");
                 const { page, size } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 const followings =
                     await this.followService.findFollowingByUserId(
-                        userId,
+                        currentUser.id,
                         (page - 1) * size,
                         size,
                     );
@@ -67,24 +58,15 @@ export class FollowController implements IFollowController {
         );
     }
     private getAllFollwerByUserIdHandler() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { userId } = c.req.valid("param");
                 const { page, size } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 const followers = await this.followService.findFollowerByUserId(
-                    userId,
+                    currentUser.id,
                     (page - 1) * size,
                     size,
                 );
@@ -104,25 +86,16 @@ export class FollowController implements IFollowController {
         );
     }
     private getRecommendByUserId() {
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createPaginationSchema();
         return this.factory.createHandlers(
-            zValidator("param", params, Validator.handleParseError),
             zValidator("query", queries, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
-                const { userId } = c.req.valid("param");
                 const { page, size } = c.req.valid("query");
                 const currentUser = c.get("getUser");
-
-                if (currentUser.id !== userId) {
-                    throw new MyError.UnauthorizedError();
-                }
                 const recommends =
                     await this.followService.findRecommendedByUserId(
-                        userId,
+                        currentUser.id,
                         (page - 1) * size,
                         size,
                     );

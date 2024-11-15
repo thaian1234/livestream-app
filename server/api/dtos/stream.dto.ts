@@ -3,8 +3,7 @@ import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
-import { QueryDTO } from "./query.dto";
-import { UserDTO } from "./user.dto";
+import { SettingDTO } from "./setting.dto";
 
 const userSchema = createSelectSchema(tableSchemas.userTable, {
     email: z.string().email(),
@@ -38,7 +37,16 @@ export class StreamDTO {
     public static streamWithUser = this.selectSchema.extend({
         user: userSchema,
     });
-
+    public static streamSearch = this.selectSchema.extend({
+        username: z.string(),
+        avatar: z.string().nullish(),
+    });
+    public static streamWithSetting = this.selectSchema.extend({
+        setting: SettingDTO.selectSchema.nullable(),
+    });
+    public static parseManySearch(data: unknown) {
+        return this.streamSearch.array().parse(data);
+    }
     public static parseMany(data: unknown) {
         try {
             return this.selectSchema.array().parse(data);
@@ -59,5 +67,6 @@ export namespace StreamDTO {
     export type Update = z.infer<typeof StreamDTO.updateSchema>;
     export type Select = z.infer<typeof StreamDTO.selectSchema>;
     export type StreamWithUser = z.infer<typeof StreamDTO.streamWithUser>;
+    export type StreamWithSetting = z.infer<typeof StreamDTO.streamWithSetting>;
     export type Delete = z.infer<typeof StreamDTO.deleteSchema>;
 }

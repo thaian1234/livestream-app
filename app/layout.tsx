@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/lib/providers/auth-provider";
@@ -30,8 +31,10 @@ export default function RootLayout({
                             defaultTheme="dark"
                             enableSystem
                         >
-                            <Toaster theme="light" />
-                            {children}
+                            <NuqsAdapter>
+                                <Toaster theme="light" />
+                                {children}
+                            </NuqsAdapter>
                         </ThemeProvider>
                     </AuthProvider>
                 </ReactQueryProvider>
