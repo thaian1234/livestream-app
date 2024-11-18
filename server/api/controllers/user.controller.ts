@@ -1,5 +1,6 @@
 import { BlockDTO } from "../dtos/block.dto";
 import { FollowDTO } from "../dtos/follow.dto";
+import { SettingDTO } from "../dtos/setting.dto";
 import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
@@ -11,6 +12,7 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IBlockService } from "../services/block.service";
 import { IFollowService } from "../services/follow.service";
+import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
@@ -26,6 +28,7 @@ export class UserController {
         private followService: IFollowService,
         private streamService: IStreamService,
         private blockSerice: IBlockService,
+        private settingService: ISettingService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -132,54 +135,50 @@ export class UserController {
             async (c) => {
                 const { username } = c.req.valid("param");
                 const user = await this.userService.findByUsername(username);
+
                 if (!user) {
                     throw new MyError.NotFoundError("User not found");
                 }
-                const stream = await this.streamService.getStreamByUserId(
-                    user.id,
-                );
-                const followings =
-                    await this.followService.findFollowingByUserId(user.id);
-                const followers = await this.followService.findFollowerByUserId(
-                    user.id,
-                );
-                const blocks = await this.blockSerice.findBlockedByUserId(
-                    user.id,
-                );
+
+                const [stream, followings, followers, blocks] =
+                    await Promise.all([
+                        this.streamService.getStreamByUserId(user.id),
+                        this.followService.findFollowingByUserId(user.id),
+                        this.followService.findFollowerByUserId(user.id),
+                        this.blockSerice.findBlockedByUserId(user.id),
+                    ]);
 
                 const currentUser = c.get("user");
-                if (currentUser && currentUser.id != user.id) {
-                    const isFollow = followers?.find((follower) => {
-                        return follower.id === currentUser.id;
-                    });
-                    const isBlocked = blocks?.find(
+                const isCurrentUserDifferent =
+                    currentUser && currentUser.id !== user.id;
+
+                const responseData = {
+                    user: UserDTO.parse(user),
+                    stream: StreamDTO.parse(stream),
+                    followings: FollowDTO.parseUserOnlyMany(followings),
+                    followers: FollowDTO.parseUserOnlyMany(followers),
+                    blocks: BlockDTO.parseUserOnlyMany(blocks),
+                    isFollowing: false,
+                    isBlocked: false,
+                };
+
+                if (isCurrentUserDifferent) {
+                    responseData.isFollowing = !!followers?.find(
+                        (follower) => follower.id === currentUser.id,
+                    );
+                    responseData.isBlocked = !!blocks?.find(
                         (block) => block.id === currentUser.id,
                     );
-                    return ApiResponse.WriteJSON({
-                        c,
-                        data: {
-                            user: UserDTO.parse(user),
-                            stream: StreamDTO.parse(stream),
-                            followings: FollowDTO.parseUserOnlyMany(followings),
-                            followers: FollowDTO.parseUserOnlyMany(followers),
-                            blocks: BlockDTO.parseUserOnlyMany(blocks),
-                            isFollowing: !!isFollow,
-                            isBlocked: !!isBlocked,
-                        },
-                        status: HttpStatus.OK,
-                    });
                 }
+                const setting = SettingDTO.selectSchema.parse(
+                    await this.settingService.getSettingByStreamId(
+                        responseData.stream.id,
+                    ),
+                );
+
                 return ApiResponse.WriteJSON({
                     c,
-                    data: {
-                        user: UserDTO.parse(user),
-                        stream: StreamDTO.parse(stream),
-                        followings: FollowDTO.parseUserOnlyMany(followings),
-                        followers: FollowDTO.parseUserOnlyMany(followers),
-                        blocks: BlockDTO.parseUserOnlyMany(blocks),
-                        isFollowing: false,
-                        isBlocked: false,
-                    },
+                    data: { ...responseData, setting },
                     status: HttpStatus.OK,
                 });
             },

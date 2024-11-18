@@ -8,12 +8,21 @@ export class SettingDTO {
         tableSchemas.settingTable,
         {},
     );
-    public static selectSchema = this.baseSchema;
-    public static insertSchema = createInsertSchema(tableSchemas.settingTable);
-    public static updateSchema = this.baseSchema.partial().omit({
-        id: true,
-        streamId: true,
+    public static selectSchema = this.baseSchema.omit({
+        streamKey: true,
+        serverUrl: true,
     });
+    public static insertSchema = createInsertSchema(tableSchemas.settingTable);
+    public static updateSchema = this.baseSchema
+        .partial()
+        .omit({
+            streamId: true,
+            serverUrl: true,
+            streamKey: true,
+        })
+        .required({
+            id: true,
+        });
     public static updateKeySchema = this.baseSchema
         .pick({
             serverUrl: true,
