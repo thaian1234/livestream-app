@@ -22,17 +22,6 @@ export class SettingRepository implements ISettingRepository {
             return setting;
         } catch (error) {}
     }
-    public async update(data: SettingDTO.UpdateInformation) {
-        try {
-            const { id, ...values } = data;
-            const [updatedSetting] = await this.db
-                .update(tableSchemas.settingTable)
-                .set(values)
-                .where(eq(tableSchemas.settingTable.id, data.id))
-                .returning();
-            return updatedSetting;
-        } catch (error) {}
-    }
     public async upsertByStreamId(streamId: string, data: SettingDTO.Update) {
         try {
             const [updatedSetting] = await this.db

@@ -32,7 +32,6 @@ export class SettingDTO {
         streamId: true,
         streamKey: true,
         serverUrl: true,
-        id: true,
     });
     public static deleteSchema = this.baseSchema.pick({
         streamId: true,

@@ -16,7 +16,4 @@ export class SettingService implements ISettingService {
     public async getSettingByStreamId(streamId: string) {
         return this.settingRepository.getSettingByStreamId(streamId);
     }
-    public async update(data: SettingDTO.UpdateInformation) {
-        return this.settingRepository.update(data);
-    }
 }
