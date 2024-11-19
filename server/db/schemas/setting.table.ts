@@ -22,6 +22,7 @@ export const settingTable = pgTable(
         isChatFollowersOnly: boolean("is_chat_followers_only")
             .default(false)
             .notNull(),
+        isChatEnabled: boolean("is_chat_enabled").default(true).notNull(),
         serverUrl: text("server_url"),
         streamKey: text("stream_key"),
         createdAt: timestamp("created_at").defaultNow().notNull(),

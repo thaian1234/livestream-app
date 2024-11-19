@@ -29,7 +29,7 @@ interface KeyFormProps {
 export function KeyForm({ hidingUpdateButton = false }: KeyFormProps) {
     const { data: setting } = settingApi.query.useGetSetting();
     const { mutate: handleUpdateSetting, isPending: isUpdating } =
-        settingApi.mutation.useUpdateSetting();
+        settingApi.mutation.useUpdateKeySetting();
 
     const [_, copy] = useCopyToClipboard();
     const onSubmit = () => {

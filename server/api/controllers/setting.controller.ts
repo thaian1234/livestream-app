@@ -1,11 +1,14 @@
+import { SettingDTO } from "../dtos/setting.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { ISettingService } from "../services/setting.service";
+import { zValidator } from "@hono/zod-validator";
 
 export interface ISettingController
     extends Utils.PickMethods<SettingController, "setupHandlers"> {}
@@ -20,6 +23,7 @@ export class SettingController implements ISettingController {
         return this.factory
             .createApp()
             .get("/", ...this.getSettingByStreamIdHandler())
+            .patch("/", ...this.updateHandler())
             .patch("/generate-key", ...this.generateKeyHandler());
     }
     private getSettingByStreamIdHandler() {
@@ -49,7 +53,6 @@ export class SettingController implements ISettingController {
                 const streamKey = this.getStreamService.generateUserToken(
                     currentUser.id,
                 );
-
                 const livestreamRoom =
                     await this.getStreamService.upsertLivestreamRoom(
                         currentUser,
@@ -73,6 +76,31 @@ export class SettingController implements ISettingController {
                     status: HttpStatus.OK,
                     data: undefined,
                     msg: "Setting updated",
+                });
+            },
+        );
+    }
+
+    private updateHandler() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            zValidator(
+                "json",
+                SettingDTO.updateInformationSchema,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const jsonData = c.req.valid("json");
+                await this.settingService.upsertByStreamId(
+                    currentUser.stream.id,
+                    jsonData,
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.OK,
+                    msg: "Update setting successfully",
                 });
             },
         );
