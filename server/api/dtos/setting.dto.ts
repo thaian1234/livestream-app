@@ -11,18 +11,14 @@ export class SettingDTO {
     public static selectSchema = this.baseSchema.omit({
         streamKey: true,
         serverUrl: true,
+        createdAt: true,
+        updatedAt: true,
     });
     public static insertSchema = createInsertSchema(tableSchemas.settingTable);
-    public static updateSchema = this.baseSchema
-        .partial()
-        .omit({
-            streamId: true,
-            serverUrl: true,
-            streamKey: true,
-        })
-        .required({
-            id: true,
-        });
+    public static updateSchema = this.baseSchema.partial().omit({
+        streamId: true,
+    });
+
     public static updateKeySchema = this.baseSchema
         .pick({
             serverUrl: true,
@@ -32,6 +28,12 @@ export class SettingDTO {
             serverUrl: z.string().min(1),
             streamKey: z.string().min(1),
         });
+    public static updateInformationSchema = this.baseSchema.partial().omit({
+        streamId: true,
+        streamKey: true,
+        serverUrl: true,
+        id: true,
+    });
     public static deleteSchema = this.baseSchema.pick({
         streamId: true,
     });
@@ -41,6 +43,9 @@ export namespace SettingDTO {
     export type Insert = z.infer<typeof SettingDTO.insertSchema>;
     export type Update = z.infer<typeof SettingDTO.updateSchema>;
     export type UpdateKey = z.infer<typeof SettingDTO.updateKeySchema>;
+    export type UpdateInformation = z.infer<
+        typeof SettingDTO.updateInformationSchema
+    >;
     export type Select = z.infer<typeof SettingDTO.selectSchema>;
     export type Delete = z.infer<typeof SettingDTO.deleteSchema>;
 }

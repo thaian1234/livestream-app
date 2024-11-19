@@ -22,7 +22,7 @@ export class SettingRepository implements ISettingRepository {
             return setting;
         } catch (error) {}
     }
-    public async update(data: SettingDTO.Update) {
+    public async update(data: SettingDTO.UpdateInformation) {
         try {
             const { id, ...values } = data;
             const [updatedSetting] = await this.db

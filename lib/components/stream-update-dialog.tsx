@@ -1,4 +1,5 @@
 import { ROUTES } from "../configs/routes.config";
+import { SettingUpdateForm } from "../features/setting/components/setting-update-form";
 import { streamApi } from "../features/stream/apis";
 import { StreamUpdateForm } from "../features/stream/components/local-livescreen/stream-update-form";
 import { UploadThumbnailForm } from "../features/upload/components/upload-thumbnail-form";
@@ -53,7 +54,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             description:
                 "Make changes to your stream profile here. Click save when you&apos;re done.",
             content: (
-                <>
+                <div>
                     {/* Stream Update Form */}
                     <StreamUpdateForm
                         initialValues={data.data.stream}
@@ -66,16 +67,16 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                             initialImageUrl={data.data.stream.thumbnailUrl}
                         />
                     </div>
-                </>
+                </div>
             ),
         },
         {
             value: "key",
             label: "Key",
             title: "Key Information",
-            description: "Keep this Key scret",
+            description: "Keep this Key secret",
             content: (
-                <>
+                <div className="flex flex-col space-y-4">
                     <KeyInformation hidingUpdateButton />
                     <Link
                         href={ROUTES.KEY_PAGE(username)}
@@ -83,8 +84,15 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                     >
                         Generate new Key ?
                     </Link>
-                </>
+                </div>
             ),
+        },
+        {
+            value: "chat-setting",
+            label: "Chat Setting",
+            title: "Chat Setting",
+            description: "Update your Chat Setting",
+            content: <SettingUpdateForm />,
         },
     ];
 
@@ -93,21 +101,22 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             <DialogTrigger>
                 <SettingsIcon />
             </DialogTrigger>
-            <DialogContent className="h-[calc(100vh-4rem)] px-5 lg:max-w-3xl">
+            <DialogContent
+                className="h-[calc(100vh-4rem)] px-5 lg:max-w-4xl"
+                aria-describedby="stream-update-dialog-description"
+            >
+                <DialogTitle></DialogTitle>
                 <Tabs className="flex flex-col space-y-6">
-                    <TabsList className="grid w-full grid-cols-2 gap-x-4 bg-transparent">
-                        <TabsTrigger
-                            value="information"
-                            className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
-                        >
-                            Information
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="key"
-                            className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
-                        >
-                            Key
-                        </TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-3 gap-x-4 bg-transparent">
+                        {tabList.map((tab) => (
+                            <TabsTrigger
+                                key={tab.value}
+                                value={tab.value}
+                                className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
+                            >
+                                {tab.label}
+                            </TabsTrigger>
+                        ))}
                     </TabsList>
                     <ScrollArea className="h-[calc(100vh-10rem)] px-4">
                         {tabList.map((tab) => (

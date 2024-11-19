@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "is_chat_enabled" boolean DEFAULT true NOT NULL;

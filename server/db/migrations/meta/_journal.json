@@ -8,6 +8,13 @@
       "when": 1727940138772,
       "tag": "0000_spooky_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1731918067254,
+      "tag": "0001_light_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }
