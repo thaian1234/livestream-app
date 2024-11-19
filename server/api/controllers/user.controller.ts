@@ -170,15 +170,10 @@ export class UserController {
                         (block) => block.id === currentUser.id,
                     );
                 }
-                const setting = SettingDTO.selectSchema.parse(
-                    await this.settingService.getSettingByStreamId(
-                        responseData.stream.id,
-                    ),
-                );
 
                 return ApiResponse.WriteJSON({
                     c,
-                    data: { ...responseData, setting },
+                    data: responseData,
                     status: HttpStatus.OK,
                 });
             },
