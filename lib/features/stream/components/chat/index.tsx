@@ -8,7 +8,7 @@ import {
     useChannelStateContext,
 } from "stream-chat-react";
 
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,7 @@ export function Chat() {
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
             <CustomChannelHeader />
-            {chatStatus === "Chat" ? (
+            {chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
                         ref={scrollAreaRef}
