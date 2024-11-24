@@ -5,6 +5,8 @@ import { useMessageInputContext } from "stream-chat-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+import { ChatInfo } from "./chat-info";
+
 interface CustomMessageInputProps {
     isChatDelayed?: boolean;
     isChatEnabled?: boolean;
@@ -18,6 +20,7 @@ export const CustomMessageInput = ({
     isChatEnabled = true,
     isChatFollowersOnly = false,
     isFollowing = false,
+
     isHost = false,
 }: CustomMessageInputProps) => {
     const { text, handleChange, handleSubmit } = useMessageInputContext();
@@ -52,25 +55,31 @@ export const CustomMessageInput = ({
     };
 
     return (
-        <div className="flex border-t border-gray-700 p-2">
-            <Textarea
-                placeholder="Your message"
-                className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
-                value={text}
-                onChange={handleChange}
-                rows={1}
-                onKeyDown={handleKeyDown}
-                disabled={isChatDisabled}
-                maxLength={50}
+        <>
+            <ChatInfo
+                isDelayed={isChatDelayed}
+                isFollowersOnly={isChatFollowersOnly}
             />
-            <Button
-                variant="ghost"
-                className="ml-2 p-2"
-                onClick={handleMessageSubmit}
-                disabled={isChatDisabled}
-            >
-                <SendHorizontal />
-            </Button>
-        </div>
+            <div className="flex border-t border-gray-700 p-2">
+                <Textarea
+                    placeholder="Your message"
+                    className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
+                    value={text}
+                    onChange={handleChange}
+                    rows={1}
+                    onKeyDown={handleKeyDown}
+                    disabled={isChatDisabled}
+                    maxLength={50}
+                />
+                <Button
+                    variant="ghost"
+                    className="ml-2 p-2"
+                    onClick={handleMessageSubmit}
+                    disabled={isChatDisabled}
+                >
+                    <SendHorizontal />
+                </Button>
+            </div>
+        </>
     );
 };

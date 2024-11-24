@@ -36,6 +36,13 @@ export class SettingDTO {
     public static deleteSchema = this.baseSchema.pick({
         streamId: true,
     });
+    public static parse(data: unknown) {
+        try {
+            return SettingDTO.selectSchema.parse(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
 
 export namespace SettingDTO {

@@ -161,6 +161,11 @@ export class UserController {
                     isFollowing: false,
                     isBlocked: false,
                 };
+                const setting = SettingDTO.parse(
+                    await this.settingService.getSettingByStreamId(
+                        responseData.stream.id,
+                    ),
+                );
 
                 if (isCurrentUserDifferent) {
                     responseData.isFollowing = !!followers?.find(
@@ -173,7 +178,7 @@ export class UserController {
 
                 return ApiResponse.WriteJSON({
                     c,
-                    data: responseData,
+                    data: { ...responseData, setting },
                     status: HttpStatus.OK,
                 });
             },

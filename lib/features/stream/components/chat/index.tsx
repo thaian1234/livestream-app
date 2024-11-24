@@ -24,9 +24,14 @@ import { CustomMessageInput } from "./custom-message-input";
 interface ChatProps {
     setting?: SettingDTO.Select;
     isHost?: boolean;
+    isFollowing?: boolean;
 }
 
-export function Chat({ setting, isHost = false }: ChatProps) {
+export function Chat({
+    setting,
+    isHost = false,
+    isFollowing = false,
+}: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { chatStatus } = useLiveInfor();
@@ -81,7 +86,8 @@ export function Chat({ setting, isHost = false }: ChatProps) {
                                 isChatFollowersOnly={
                                     setting?.isChatFollowersOnly
                                 }
-                                isHost={false}
+                                isHost={isHost}
+                                isFollowing={isFollowing}
                             />
                         )}
                     />
