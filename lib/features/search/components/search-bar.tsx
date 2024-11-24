@@ -28,7 +28,7 @@ export function SearchBar() {
     const debounced = useDebounceCallback(handleChange, 500);
     const { data, isPending, error } = searchApi.query.useSearch(
         "1",
-        "10",
+        "5",
         search,
     );
 
@@ -91,20 +91,35 @@ export function SearchBar() {
                     <X size={20} />
                 )}
             </button>
-            {showSuggestions && dummyData && dummyData.length > 0 && (
-                <div className="absolute z-10 mt-1 w-full rounded-md bg-black-1 shadow-lg">
-                    {dummyData.map((item, index) => (
-                        <div
-                            key={index}
-                            className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
-                            onClick={() => handleSuggestionClick(item.title)}
-                        >
-                            <Search className="h-5 w-5" />
-                            <p className="text-sm">{item.title}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
+            {showSuggestions &&
+                data &&
+                data.data.data.streams.length + data.data.data.users.length >
+                    0 && (
+                    <div className="absolute z-10 mt-1 w-full rounded-md bg-black-1 shadow-lg">
+                        {data.data.data.streams.map((item, index) => (
+                            <div
+                                key={index}
+                                className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
+                                onClick={() => handleSuggestionClick(item.name)}
+                            >
+                                <Search className="h-5 w-5" />
+                                <p className="text-sm">{item.name}</p>
+                            </div>
+                        ))}
+                        {data.data.data.users.map((item, index) => (
+                            <div
+                                key={index}
+                                className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
+                                onClick={() =>
+                                    handleSuggestionClick(item.username)
+                                }
+                            >
+                                <Search className="h-5 w-5" />
+                                <p className="text-sm">{item.username}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
         </div>
     );
 }
