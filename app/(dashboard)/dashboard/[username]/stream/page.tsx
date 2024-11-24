@@ -1,5 +1,6 @@
 "use client";
 
+import { settingApi } from "@/lib/features/setting/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
 import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-livescreen/local-livestream-player";
@@ -14,12 +15,14 @@ import { LoadingStreamPage } from "@/components/loading-stream-page";
 
 export default function StreamPage() {
     const auth = useAuth();
+    const { data: setting, isPending: isPendingSetting } =
+        settingApi.query.useGetSetting();
     const { isOpenChatComponent } = useLiveInfor();
 
-    if (auth.isPending) {
+    if (auth.isPending || isPendingSetting) {
         return <LoadingStreamPage />;
     }
-    if (!auth.isSignedIn || !auth.stream) {
+    if (!auth.isSignedIn || !auth.stream || !setting) {
         return <p>Error: User is not signed in</p>;
     }
 
@@ -42,7 +45,9 @@ export default function StreamPage() {
             </StreamVideoProvider>
             <div className="col-span-3 col-start-10 row-span-5">
                 <ChatProvider streamId={auth.stream.id}>
-                    {isOpenChatComponent && <Chat />}
+                    {isOpenChatComponent && (
+                        <Chat setting={setting.data.setting} isHost={true} />
+                    )}
                 </ChatProvider>
             </div>
         </section>

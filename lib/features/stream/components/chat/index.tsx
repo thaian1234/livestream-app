@@ -12,6 +12,8 @@ import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
 
+import { SettingDTO } from "@/server/api/dtos/setting.dto";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { ChatMessage } from "./chat-message";
@@ -19,7 +21,12 @@ import { Community } from "./community";
 import { CustomChannelHeader } from "./custom-channel-header";
 import { CustomMessageInput } from "./custom-message-input";
 
-export function Chat() {
+interface ChatProps {
+    setting?: SettingDTO.Select;
+    isHost?: boolean;
+}
+
+export function Chat({ setting, isHost = false }: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { chatStatus } = useLiveInfor();
@@ -66,7 +73,18 @@ export function Chat() {
                             </div>
                         )}
                     </ScrollArea>
-                    <MessageInput Input={CustomMessageInput} />
+                    <MessageInput
+                        Input={() => (
+                            <CustomMessageInput
+                                isChatDelayed={setting?.isChatDelayed}
+                                isChatEnabled={setting?.isChatEnabled}
+                                isChatFollowersOnly={
+                                    setting?.isChatFollowersOnly
+                                }
+                                isHost={false}
+                            />
+                        )}
+                    />
                 </>
             ) : (
                 <ScrollArea
