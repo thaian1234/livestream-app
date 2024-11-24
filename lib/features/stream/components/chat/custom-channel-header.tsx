@@ -1,12 +1,10 @@
 import { ArrowRightToLine, MessageSquareMore, Users } from "lucide-react";
-import { useChannelStateContext } from "stream-chat-react";
 
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { TooltipModel } from "@/components/tooltip-model";
 
 export const CustomChannelHeader = () => {
-    const {} = useChannelStateContext();
     const { onToggleChatComponent, onChangeChatStatus, chatStatus } =
         useLiveInfor();
     return (
@@ -18,11 +16,23 @@ export const CustomChannelHeader = () => {
             </TooltipModel>
             <p className="text-lg font-semibold">{chatStatus}</p>
             <TooltipModel
-                content={chatStatus === "Chat" ? "Community" : "Chat"}
+                content={chatStatus === ChatStatus.Chat ? "Community" : "Chat"}
                 side="bottom"
             >
-                <button onClick={onChangeChatStatus}>
-                    {chatStatus === "Chat" ? <Users /> : <MessageSquareMore />}
+                <button
+                    onClick={() => {
+                        onChangeChatStatus(
+                            chatStatus === ChatStatus.Chat
+                                ? ChatStatus.Community
+                                : ChatStatus.Chat,
+                        );
+                    }}
+                >
+                    {chatStatus === ChatStatus.Chat ? (
+                        <Users />
+                    ) : (
+                        <MessageSquareMore />
+                    )}
                 </button>
             </TooltipModel>
         </div>
