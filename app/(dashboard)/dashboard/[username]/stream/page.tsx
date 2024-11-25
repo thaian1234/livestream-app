@@ -1,5 +1,7 @@
 "use client";
 
+import { CallStats } from "@stream-io/video-react-sdk";
+
 import { settingApi } from "@/lib/features/setting/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
@@ -12,6 +14,7 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function StreamPage() {
     const auth = useAuth();
@@ -40,6 +43,11 @@ export default function StreamPage() {
                     <CustomCall streamId={auth.stream.id}>
                         <LocalLivestreamPlayer />
                         <LocalLiveInformation />
+                        <CallStats
+                            LatencyChartSuspenseFallback={
+                                <Spinner size="large" />
+                            }
+                        />
                     </CustomCall>
                 </div>
             </StreamVideoProvider>
