@@ -1,34 +1,65 @@
 "use client";
 
+import { streamApi } from "../../apis";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Event } from "stream-chat";
+import { useChannelStateContext, useChatContext } from "stream-chat-react";
+
+import { ROUTES } from "@/lib/configs/routes.config";
+import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
+import { client } from "@/lib/shared/client";
 
-const broadcasterData = [{ id: "1", username: "user1" }];
-const moderatorsData = [
-    { id: "1", username: "user1" },
-    { id: "2", username: "user2" },
-    { id: "3", username: "user3" },
-];
-const communityVIPsData = [
-    { id: "1", username: "user1" },
-    { id: "2", username: "user2" },
-    { id: "3", username: "user3" },
-    { id: "4", username: "user4" },
-    { id: "5", username: "user5" },
-    { id: "6", username: "user6" },
-    { id: "7", username: "user7" },
-    { id: "8", username: "user8" },
-    { id: "9", username: "user9" },
-    { id: "10", username: "user10" },
-];
+type ParamsType = {
+    username: string;
+};
+
 export function Community() {
     const [isOpenBroadcaster, setIsOpenBroadcaster] = useState(true);
     const [isOpenModerators, setIsOpenModerators] = useState(true);
+    const {client} = useChatContext();
     const [isOpenCommunityVIPs, setIsOpenCommunityVIPs] = useState(true);
-
+    const { onChangeChatStatus, chatStatus } = useLiveInfor();
+    const [channelUsers, setChannelUsers] = useState<
+        Array<{ name: string; online: boolean; id: string }>
+    >([]);
+    const { channel, watcher_count } = useChannelStateContext();
+    const router = useRouter();
+    const params = useParams<ParamsType>();
+    const {
+        data: streamer,
+        isPending,
+        isError,
+    } = streamApi.query.useGetStreamInformation(params.username);
+    useEffect(() => {
+        const updateChannelUsers = (event?: Event) => {
+            console.log("Call")
+            setChannelUsers(
+                Object.values(channel.state.watchers).map((user) => ({
+                    name: user.name!,
+                    online: !!user.online,
+                    id: user.id,
+                })),
+            );
+        };
+        channel.on("user.watching.start", updateChannelUsers)
+        channel.on("user.watching.stop", updateChannelUsers)
+        updateChannelUsers();
+        return () => {
+            channel.on("user.watching.start", updateChannelUsers)
+            channel.on("user.watching.stop", updateChannelUsers)
+        };
+    }, [channel]);
+    if (isPending) {
+        return <p>Loading...</p>;
+    }
+    if (!streamer || isError || streamer?.data.isBlocked) {
+        return router.replace(ROUTES.HOME_PAGE);
+    }
     return (
         <>
             <div className="mx-1 my-2">
@@ -49,13 +80,14 @@ export function Community() {
                 setIsOpen={setIsOpenBroadcaster}
                 title={"Broadcaster"}
             >
-                {broadcasterData.map((data) => (
-                    <div key={data.id} className="flex items-center py-1">
-                        <p>{data.username}</p>
-                    </div>
-                ))}
+                <div
+                    key={streamer.data.user.id}
+                    className="flex items-center py-1"
+                >
+                    <p>{streamer.data.user.username}</p>
+                </div>
             </CollapsibleSection>
-            <CollapsibleSection
+            {/* <CollapsibleSection
                 isOpen={isOpenModerators}
                 setIsOpen={setIsOpenModerators}
                 title={"Moderators"}
@@ -65,17 +97,24 @@ export function Community() {
                         <p>{data.username}</p>
                     </div>
                 ))}
-            </CollapsibleSection>
+            </CollapsibleSection> */}
             <CollapsibleSection
                 isOpen={isOpenCommunityVIPs}
                 setIsOpen={setIsOpenCommunityVIPs}
-                title={"Community VIPs"}
+                title={"Viewer"}
             >
-                {communityVIPsData.map((data) => (
-                    <div key={data.id} className="flex items-center py-1">
-                        <p>{data.username}</p>
-                    </div>
-                ))}
+                {channelUsers.map(
+                    (data) =>
+                        data.id !== streamer.data.user.id &&
+                        data.online && (
+                            <div
+                                key={data.id}
+                                className="flex items-center py-1"
+                            >
+                                <p>{data.name}</p>
+                            </div>
+                        ),
+                )}
             </CollapsibleSection>
         </>
     );
