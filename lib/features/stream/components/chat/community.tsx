@@ -12,7 +12,6 @@ import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
-import { client } from "@/lib/shared/client";
 
 type ParamsType = {
     username: string;
@@ -21,7 +20,6 @@ type ParamsType = {
 export function Community() {
     const [isOpenBroadcaster, setIsOpenBroadcaster] = useState(true);
     const [isOpenModerators, setIsOpenModerators] = useState(true);
-    const {client} = useChatContext();
     const [isOpenCommunityVIPs, setIsOpenCommunityVIPs] = useState(true);
     const { onChangeChatStatus, chatStatus } = useLiveInfor();
     const [channelUsers, setChannelUsers] = useState<
@@ -37,7 +35,7 @@ export function Community() {
     } = streamApi.query.useGetStreamInformation(params.username);
     useEffect(() => {
         const updateChannelUsers = (event?: Event) => {
-            console.log("Call")
+            console.log("Call");
             setChannelUsers(
                 Object.values(channel.state.watchers).map((user) => ({
                     name: user.name!,
@@ -46,12 +44,12 @@ export function Community() {
                 })),
             );
         };
-        channel.on("user.watching.start", updateChannelUsers)
-        channel.on("user.watching.stop", updateChannelUsers)
+        channel.on("user.watching.start", updateChannelUsers);
+        channel.on("user.watching.stop", updateChannelUsers);
         updateChannelUsers();
         return () => {
-            channel.on("user.watching.start", updateChannelUsers)
-            channel.on("user.watching.stop", updateChannelUsers)
+            channel.on("user.watching.start", updateChannelUsers);
+            channel.on("user.watching.stop", updateChannelUsers);
         };
     }, [channel]);
     if (isPending) {
