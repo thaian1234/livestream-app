@@ -9,17 +9,6 @@ import { useDebounceCallback } from "usehooks-ts";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
-const dummyData: any[] = [
-    { id: "1", title: "abc" },
-    { id: "2", title: "def" },
-    { id: "3", title: "ghi" },
-    { id: "4", title: "jkl" },
-    { id: "5", title: "mno" },
-    { id: "6", title: "pqr" },
-    { id: "7", title: "stu" },
-    { id: "8", title: "vwx" },
-    { id: "9", title: "yz" },
-];
 export function SearchBar() {
     const router = useRouter();
     const [search, setSearch] = useState("");
@@ -62,9 +51,10 @@ export function SearchBar() {
         }
         setSearch(suggestion);
         setShowSuggestions(false);
-        router.push(`/search?search_query=${encodeURIComponent(suggestion)}`);
+        router.push(`/search?searchTerm=${encodeURIComponent(suggestion)}`);
     };
-
+    const streams = data?.data.data.streams || [];
+    const users = data?.data.data.users || [];
     return (
         <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />
@@ -77,7 +67,7 @@ export function SearchBar() {
                 onChange={debounced}
                 onKeyDown={handleKeyDown}
                 onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 500)}
                 autoComplete="off"
             />
             <button
@@ -93,31 +83,34 @@ export function SearchBar() {
             </button>
             {showSuggestions &&
                 data &&
-                data.data.data.streams.length + data.data.data.users.length >
-                    0 && (
+                (streams.length > 0 || users.length > 0) && (
                     <div className="absolute z-10 mt-1 w-full rounded-md bg-black-1 shadow-lg">
-                        {data.data.data.streams.map((item, index) => (
-                            <div
-                                key={index}
-                                className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
-                                onClick={() => handleSuggestionClick(item.name)}
-                            >
-                                <Search className="h-5 w-5" />
-                                <p className="text-sm">{item.name}</p>
-                            </div>
-                        ))}
-                        {data.data.data.users.map((item, index) => (
-                            <div
-                                key={index}
-                                className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
-                                onClick={() =>
-                                    handleSuggestionClick(item.username)
-                                }
-                            >
-                                <Search className="h-5 w-5" />
-                                <p className="text-sm">{item.username}</p>
-                            </div>
-                        ))}
+                        {streams.length > 0 &&
+                            streams.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
+                                    onClick={() =>
+                                        handleSuggestionClick(item.name)
+                                    }
+                                >
+                                    <Search className="h-5 w-5" />
+                                    <p className="text-sm">{item.name}</p>
+                                </div>
+                            ))}
+                        {users.length > 0 &&
+                            users.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="flex cursor-pointer space-x-2 px-3 py-2 hover:bg-white/10"
+                                    onClick={() =>
+                                        handleSuggestionClick(item.username)
+                                    }
+                                >
+                                    <Search className="h-5 w-5" />
+                                    <p className="text-sm">{item.username}</p>
+                                </div>
+                            ))}
                     </div>
                 )}
         </div>
