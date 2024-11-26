@@ -8,7 +8,6 @@ import { Event } from "stream-chat";
 import { useChannelStateContext, useChatContext } from "stream-chat-react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
-import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
@@ -21,10 +20,10 @@ export function Community() {
     const [isOpenBroadcaster, setIsOpenBroadcaster] = useState(true);
     const [isOpenModerators, setIsOpenModerators] = useState(true);
     const [isOpenCommunityVIPs, setIsOpenCommunityVIPs] = useState(true);
-    const { onChangeChatStatus, chatStatus } = useLiveInfor();
-    const [channelUsers, setChannelUsers] = useState<
+    const [channelViewers, setChannelViewers] = useState<
         Array<{ name: string; online: boolean; id: string }>
     >([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const { channel, watcher_count } = useChannelStateContext();
     const router = useRouter();
     const params = useParams<ParamsType>();
@@ -34,9 +33,9 @@ export function Community() {
         isError,
     } = streamApi.query.useGetStreamInformation(params.username);
     useEffect(() => {
-        const updateChannelUsers = (event?: Event) => {
+        const updateChannelViewers = (event?: Event) => {
             console.log("Call");
-            setChannelUsers(
+            setChannelViewers(
                 Object.values(channel.state.watchers).map((user) => ({
                     name: user.name!,
                     online: !!user.online,
@@ -44,12 +43,12 @@ export function Community() {
                 })),
             );
         };
-        channel.on("user.watching.start", updateChannelUsers);
-        channel.on("user.watching.stop", updateChannelUsers);
-        updateChannelUsers();
+        channel.on("user.watching.start", updateChannelViewers);
+        channel.on("user.watching.stop", updateChannelViewers);
+        updateChannelViewers();
         return () => {
-            channel.on("user.watching.start", updateChannelUsers);
-            channel.on("user.watching.stop", updateChannelUsers);
+            channel.on("user.watching.start", updateChannelViewers);
+            channel.on("user.watching.stop", updateChannelViewers);
         };
     }, [channel]);
     if (isPending) {
@@ -58,6 +57,9 @@ export function Community() {
     if (!streamer || isError || streamer?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
     }
+    const filteredViewrs = channelViewers.filter((viewer) =>
+        viewer.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
     return (
         <>
             <div className="mx-1 my-2">
@@ -66,6 +68,7 @@ export function Community() {
                     variant="primary"
                     customSize="sm"
                     className="border-gray-500 bg-transparent pl-12"
+                    onChange={(e) => setSearchQuery(e.target.value)}
                 >
                     <LeftIcon>
                         <Search className="size-5 text-gray-500" />
@@ -101,7 +104,7 @@ export function Community() {
                 setIsOpen={setIsOpenCommunityVIPs}
                 title={"Viewer"}
             >
-                {channelUsers.map(
+                {filteredViewrs.map(
                     (data) =>
                         data.id !== streamer.data.user.id &&
                         data.online && (
