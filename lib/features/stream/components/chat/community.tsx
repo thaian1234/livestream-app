@@ -55,7 +55,8 @@ export function Community() {
         return <p>Loading...</p>;
     }
     if (!streamer || isError || streamer?.data.isBlocked) {
-        return router.replace(ROUTES.HOME_PAGE);
+        router.replace(ROUTES.HOME_PAGE);
+        return <></>;
     }
     const filteredViewrs = channelViewers.filter((viewer) =>
         viewer.name.toLowerCase().includes(searchQuery.toLowerCase()),
