@@ -2,6 +2,7 @@ import {
     FollowController,
     IFollowController,
 } from "../controllers/follow.controller";
+import { NotificationService } from "../external-services/notification.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { BlockRepository } from "../repositories/block.repository";
 import { FollowRepository } from "../repositories/follow.repository";
@@ -27,7 +28,12 @@ function createFollowRoutes(): FollowRoutes {
     const blockRepository = new BlockRepository();
     const blockService = new BlockService(blockRepository);
     const followService = new FollowService(followRepository, blockService);
-    const followController = new FollowController(factory, followService);
+    const notificationService = new NotificationService();
+    const followController = new FollowController(
+        factory,
+        followService,
+        notificationService,
+    );
 
     return new FollowRoutes(factory, followController);
 }
