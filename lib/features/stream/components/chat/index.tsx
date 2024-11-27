@@ -3,6 +3,9 @@
 import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
+    CustomMessageActions,
+    MessageActions,
+    MessageActionsProps,
     MessageInput,
     MessageList,
     useChannelStateContext,
@@ -20,6 +23,12 @@ import { ChatMessage } from "./chat-message";
 import { Community } from "./community";
 import { CustomChannelHeader } from "./custom-channel-header";
 import { CustomMessageInput } from "./custom-message-input";
+
+const customMessageActions: CustomMessageActions = {
+    Yell: (message, event) => {
+      window.alert(`Yell action clicked on message: ${message.id}!`);
+    },
+  };
 
 interface ChatProps {
     setting?: SettingDTO.Select;
@@ -65,6 +74,7 @@ export function Chat({
                     >
                         {messages && messages.length > 0 ? (
                             <MessageList
+                                customMessageActions={customMessageActions}
                                 showUnreadNotificationAlways={false}
                                 disableDateSeparator={false}
                                 Message={ChatMessage}
