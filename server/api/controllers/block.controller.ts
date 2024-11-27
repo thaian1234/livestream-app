@@ -1,5 +1,6 @@
 import { BlockDTO } from "../dtos/block.dto";
 import { QueryDTO } from "../dtos/query.dto";
+import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -18,6 +19,7 @@ export class BlockController implements IBlockController {
     constructor(
         private factory: CreateFactoryType,
         private blockService: IBlockService,
+        private readonly notificationService: INotificationService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -52,6 +54,19 @@ export class BlockController implements IBlockController {
                 let message = "Block user successfully";
                 if (typeof data === "boolean") {
                     message = "Unblock user successfully";
+                    this.notificationService.createUnblockNotification(
+                        currentUser.id,
+                        blockedId,
+                        currentUser.username,
+                        currentUser.imageUrl,
+                    );
+                } else {
+                    this.notificationService.createBlockNotification(
+                        currentUser.id,
+                        blockedId,
+                        currentUser.username,
+                        currentUser.imageUrl,
+                    );
                 }
 
                 return ApiResponse.WriteJSON({

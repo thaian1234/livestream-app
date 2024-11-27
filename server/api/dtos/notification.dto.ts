@@ -4,6 +4,7 @@ export class NotificationDTO {
     static activitySchema = z.object({
         actor: z.string(),
         actorName: z.string().optional(),
+        actorAvatar: z.string().nullable().optional(),
         foreign_id: z.string(),
         id: z.string(),
         object: z.string(),

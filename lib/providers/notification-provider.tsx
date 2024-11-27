@@ -14,6 +14,8 @@ import { NotificationDTO } from "@/server/api/dtos/notification.dto";
 
 interface NotificationContextType {
     notifications: NotificationDTO.Activity[];
+    notificationFeed?: NotificationDTO.FeedResponse;
+    results: NotificationDTO.Result[];
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
@@ -31,6 +33,10 @@ export function NotificationProvider({
     const [notifications, setNotifications] = useState<
         NotificationDTO.Activity[]
     >([]);
+    const [notificationFeed, setnotificationFeed] = useState<
+        NotificationDTO.FeedResponse | undefined
+    >();
+    const [results, setResult] = useState<NotificationDTO.Result[]>([]);
 
     useEffect(() => {
         if (!data) return;
@@ -82,6 +88,8 @@ export function NotificationProvider({
             try {
                 const validatedNotificationsResponse =
                     NotificationDTO.feedResponseSchema.parse(response);
+                setnotificationFeed(validatedNotificationsResponse);
+                setResult(validatedNotificationsResponse.results);
                 validatedNotificationsResponse.results.forEach((result) => {
                     setNotifications((prev) => {
                         const uniqueActivities = [...result.activities, ...prev]
@@ -112,7 +120,9 @@ export function NotificationProvider({
         };
     }, [data, userId]);
     return (
-        <NotificationContext.Provider value={{ notifications }}>
+        <NotificationContext.Provider
+            value={{ notifications, notificationFeed, results }}
+        >
             {children}
         </NotificationContext.Provider>
     );

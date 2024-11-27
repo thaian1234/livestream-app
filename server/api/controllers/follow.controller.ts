@@ -146,12 +146,14 @@ export class FollowController implements IFollowController {
                         currentUser.id,
                         followingId,
                         currentUser.username,
+                        currentUser.imageUrl,
                     );
                 } else {
                     this.notificationService.createFollowNotification(
                         currentUser.id,
                         followingId,
                         currentUser.username,
+                        currentUser.imageUrl,
                     );
                 }
 

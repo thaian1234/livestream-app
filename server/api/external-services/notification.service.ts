@@ -11,6 +11,7 @@ export const NotificationEnum = {
     NEW_FOLLOWER: "new_follower",
     UNFOLLOW: "unfollow",
     BLOCKED: "blocked",
+    UN_BLOCKED: "un_blocked",
 } as const;
 
 export interface INotificationService
@@ -38,6 +39,7 @@ export class NotificationService {
         actorId: string,
         targetId: string,
         actorName: string,
+        actorAvatar: string | null,
         extraData = {},
     ) {
         const targetFeed = this.notificationClient.feed(
@@ -53,6 +55,7 @@ export class NotificationService {
             target: targetId,
             type,
             actorName,
+            actorAvatar,
             ...extraData,
         };
         const activityResponse = await targetFeed.addActivity(activity);
@@ -63,32 +66,57 @@ export class NotificationService {
         followerId: string,
         followedId: string,
         actorName: string,
+        actorAvatar: string | null,
     ) {
         return this.createNotification(
             "NEW_FOLLOWER",
             followerId,
             followedId,
             actorName,
+            actorAvatar,
         );
     }
     public async createUnfollowNotification(
         unfollowerId: string,
         unfollowedId: string,
         actorName: string,
+        actorAvatar: string | null,
     ) {
         return this.createNotification(
             "UNFOLLOW",
             unfollowerId,
             unfollowedId,
             actorName,
+            actorAvatar,
         );
     }
 
-    // public async createStreamStartNotification(streamerId: string) {
-    //     return this.createNotification("STREAM_START", streamerId, streamerId, {
-    //         streamTitle: "Started streaming",
-    //     });
-    // }
+    public async createStreamStartNotification(
+        streamerId: string,
+        streamerName: string,
+        streamTitle: string,
+        followerIds: string[],
+    ) {
+        const targetFeed = this.notificationClient.feed(
+            "notifications",
+            streamerId,
+        );
+
+        const activity: NewActivity<DefaultGenerics> = {
+            actor: streamerId,
+            verb: "STREAM_START",
+            object: streamerId,
+            time: new Date().toISOString(),
+            foreign_id: `STREAM_START:${streamerId}`,
+            target: streamerId,
+            type: "STREAM_START",
+            actorName: streamerName,
+            streamTitle,
+            to: followerIds.map((id) => `notifications:${id}`),
+        };
+
+        return targetFeed.addActivity(activity);
+    }
 
     // public async createStreamEndNotification(streamerId: string) {
     //     return this.createNotification("STREAM_END", streamerId, streamerId);
@@ -98,12 +126,28 @@ export class NotificationService {
         blockerId: string,
         blockedId: string,
         actorName: string,
+        actorAvatar: string | null,
     ) {
         return this.createNotification(
             "BLOCKED",
             blockerId,
             blockedId,
             actorName,
+            actorAvatar,
+        );
+    }
+    public async createUnblockNotification(
+        unblockerId: string,
+        unblockedId: string,
+        actorName: string,
+        actorAvatar: string | null,
+    ) {
+        return this.createNotification(
+            "UN_BLOCKED",
+            unblockerId,
+            unblockedId,
+            actorName,
+            actorAvatar,
         );
     }
 }
