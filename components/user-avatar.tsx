@@ -19,12 +19,12 @@ const avatarSizes = cva("", {
 });
 
 interface UserAvatarProps extends VariantProps<typeof avatarSizes> {
-    imageUrl: string | null;
+    imageUrl?: string | null;
     isLive?: boolean;
 }
 
 export function UserAvatar({
-    imageUrl,
+    imageUrl = null,
     isLive = false,
     size = "default",
 }: UserAvatarProps) {

@@ -6,6 +6,7 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 import { authRoutes } from "../routes/auth.routes";
 import { blockRoutes } from "../routes/block.routes";
 import { followRoutes } from "../routes/follow.routes";
+import { notificationRoutes } from "../routes/notification.routes";
 import { searchRoutes } from "../routes/search.routes";
 import { settingRoutes } from "../routes/setting.routes";
 import { streamRoutes } from "../routes/stream.routes";
@@ -54,7 +55,8 @@ export class App {
             .route("/", blockRoutes)
             .route("/", searchRoutes)
             .route("/", streamRoutes)
-            .route("/", settingRoutes);
+            .route("/", settingRoutes)
+            .route("/", notificationRoutes);
     }
 
     public getApp() {

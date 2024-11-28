@@ -46,7 +46,7 @@ export default function StreamPage() {
                     className={cn(
                         "row-span-5",
                         isOpenChatComponent
-                            ? "col-span-9 aspect-video"
+                            ? "col-span-9"
                             : "col-span-12 mx-14 aspect-[2/1]",
                     )}
                 >
@@ -58,7 +58,7 @@ export default function StreamPage() {
             <div
                 className={cn(
                     isOpenChatComponent
-                        ? "col-span-9 aspect-video"
+                        ? "col-span-9"
                         : "col-span-12 mx-14 aspect-[2/1]",
                 )}
             >

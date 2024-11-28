@@ -11,8 +11,6 @@ const CustomReactionsList = () => {
         ([, countA], [, countB]) => countB - countA, // Descending order by count
     );
 
-    console.log(message.reaction_groups);
-
     if (Object.keys(reactionGroups).length === 0) {
         return null;
     }
@@ -32,7 +30,7 @@ const CustomReactionsList = () => {
                         <span className="reaction-emoji">
                             <reactionOption.Component />
                         </span>
-                        <span className="font-medium text-gray-700">
+                        <span className="font-medium text-slate-400">
                             {count}
                         </span>
                     </div>
@@ -47,7 +45,7 @@ const CustomReactionSelector = () => {
     const { reactionOptions } = useComponentContext();
     if (threadList) return null;
     return (
-        <div className="absolute right-0 top-0 z-10 flex flex-row space-x-2 rounded-md shadow-md">
+        <div className="absolute right-0 top-1 z-10 flex flex-row space-x-2 rounded-md bg-white/30 p-1 shadow-md">
             {reactionOptions?.map(({ Component, name, type }) => (
                 <button
                     key={type}
@@ -72,7 +70,7 @@ export function ChatMessage() {
             onMouseLeave={() => setIsHovered(false)}
         >
             <div>
-                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2">
+                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2 py-2 pr-16">
                     <Avatar className="h-7 w-7">
                         <AvatarImage
                             src={message.user?.image}
@@ -80,11 +78,11 @@ export function ChatMessage() {
                         />
                         <AvatarFallback />
                     </Avatar>
-                    <div className="min-w-0">
+                    <div className="flex min-w-0 items-center space-x-2">
                         <div className="text-sm text-teal-2">
                             {isMyMessage() ? "You" : message.user?.name}
                         </div>
-                        <p className="overflow-wrap-anywhere mr-2 whitespace-pre-wrap break-words text-sm">
+                        <p className="line-clamp-2 whitespace-pre-wrap break-words text-sm">
                             {message.text}
                         </p>
                     </div>
