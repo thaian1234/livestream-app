@@ -28,7 +28,7 @@ function createFollowRoutes(): FollowRoutes {
     const blockRepository = new BlockRepository();
     const blockService = new BlockService(blockRepository);
     const followService = new FollowService(followRepository, blockService);
-    const notificationService = new NotificationService(followService);
+    const notificationService = new NotificationService();
     const followController = new FollowController(
         factory,
         followService,
