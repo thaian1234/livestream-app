@@ -54,7 +54,9 @@ export function NotificationProvider({
             if (data.new?.length > 0) {
                 const newActivity = NotificationDTO.activitySchema
                     .array()
-                    .parse(data.new);
+                    .parse(data.new)
+                    .filter((activity) => activity.actor !== userId);
+
                 setNotifications((prev) => {
                     const uniqueActivities = [...newActivity, ...prev].filter(
                         (activity, index, self) =>
@@ -93,6 +95,7 @@ export function NotificationProvider({
                 validatedNotificationsResponse.results.forEach((result) => {
                     setNotifications((prev) => {
                         const uniqueActivities = [...result.activities, ...prev]
+                            .filter((activity) => activity.actor !== userId)
                             .filter(
                                 (activity, index, self) =>
                                     index ===

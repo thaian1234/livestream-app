@@ -1,4 +1,9 @@
-import { User2Icon, UserMinus2Icon, UserPlus2Icon } from "lucide-react";
+import {
+    User2Icon,
+    UserMinus2Icon,
+    UserPlus2Icon,
+    VideoIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 import { ROUTES } from "@/lib/configs/routes.config";
@@ -50,6 +55,15 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
                         <UserPlus2Icon className="mr-2 h-4 w-4 text-blue-500" />
                         <span className="line-clamp-2">
                             {notification.actorName} blocked you
+                        </span>
+                    </>
+                );
+            case "STREAM_START":
+                return (
+                    <>
+                        <VideoIcon className="mr-2 h-4 w-4 text-green-400" />
+                        <span className="line-clamp-2">
+                            {notification.actorName} started streaming
                         </span>
                     </>
                 );

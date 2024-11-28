@@ -4,6 +4,7 @@ import {
 } from "../controllers/notification.controller";
 import { NotificationService } from "../external-services/notification.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { FollowService } from "../services/follow.service";
 import { createFactory } from "hono/factory";
 
 class NotificationRoutes {

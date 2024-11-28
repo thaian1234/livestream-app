@@ -13,6 +13,7 @@ export class NotificationDTO {
         time: z.string(),
         type: z.string(),
         verb: z.string(),
+        streamTitle: z.string().optional(),
     });
     static resultSchema = z.object({
         activities: z.array(this.activitySchema),

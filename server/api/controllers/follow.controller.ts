@@ -142,19 +142,19 @@ export class FollowController implements IFollowController {
                 let message = "Follow user successfully";
                 if (typeof data === "boolean") {
                     message = "Unfollow user successfully";
-                    this.notificationService.createUnfollowNotification(
-                        currentUser.id,
-                        followingId,
-                        currentUser.username,
-                        currentUser.imageUrl,
-                    );
+                    this.notificationService.createUnfollowNotification({
+                        actorAvatar: currentUser.imageUrl,
+                        actorName: currentUser.username,
+                        actorId: currentUser.id,
+                        targetId: followingId,
+                    });
                 } else {
-                    this.notificationService.createFollowNotification(
-                        currentUser.id,
-                        followingId,
-                        currentUser.username,
-                        currentUser.imageUrl,
-                    );
+                    this.notificationService.createFollowNotification({
+                        actorAvatar: currentUser.imageUrl,
+                        actorName: currentUser.username,
+                        actorId: currentUser.id,
+                        targetId: followingId,
+                    });
                 }
 
                 return ApiResponse.WriteJSON({

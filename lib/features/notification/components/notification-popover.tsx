@@ -7,12 +7,13 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/spinner";
 
 import { NotificationFeed } from "./notification-feed";
 
 export function NotificationPopover() {
     const { notifications, notificationFeed } = useNotification();
-    if (!notificationFeed) return null;
+    if (!notificationFeed) return <Spinner size={"small"} />;
 
     return (
         <Popover>

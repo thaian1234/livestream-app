@@ -1,11 +1,10 @@
-import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { DefaultGenerics, NewActivity, connect } from "getstream";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
-export const NotificationEnum = {
+export const NotificationTypes = {
     STREAM_START: "stream_start",
     STREAM_END: "stream_end",
     NEW_FOLLOWER: "new_follower",
@@ -14,38 +13,57 @@ export const NotificationEnum = {
     UN_BLOCKED: "un_blocked",
 } as const;
 
+type NotificationType = keyof typeof NotificationTypes;
+
+interface NotificationParams {
+    type: NotificationType;
+    actorId: string;
+    targetId: string;
+    actorName: string;
+    actorAvatar: string | null;
+    extraData?: Record<string, any>;
+}
+
+interface StreamNotificationParams {
+    streamerId: string;
+    streamerName: string;
+    streamerAvatar: string | null;
+    followerIds: string[];
+}
+
 export interface INotificationService
     extends Utils.AutoMappedClass<NotificationService> {}
-export class NotificationService {
+
+export class NotificationService implements INotificationService {
     private readonly notificationClient;
+
     constructor() {
         this.notificationClient = connect(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
             envServer.GETSTREAM_PRIVATE_API_KEY,
             envClient.NEXT_PUBLIC_GETSTREAM_APP_ID,
-            {
-                timeout: 10000,
-                location: "singapore",
-            },
+            { timeout: 10000, location: "singapore" },
         );
     }
+
     public generateUserToken(userId: string) {
-        const userToken = this.notificationClient.createUserToken(userId);
-        return userToken;
+        return this.notificationClient.createUserToken(userId);
     }
 
-    public async createNotification(
-        type: keyof typeof NotificationEnum,
-        actorId: string,
-        targetId: string,
-        actorName: string,
-        actorAvatar: string | null,
-        extraData = {},
-    ) {
+    private async createBaseNotification(params: NotificationParams) {
+        const {
+            type,
+            actorId,
+            targetId,
+            actorName,
+            actorAvatar,
+            extraData = {},
+        } = params;
         const targetFeed = this.notificationClient.feed(
             "notifications",
             targetId,
         );
+
         const activity: NewActivity<DefaultGenerics> = {
             actor: actorId,
             verb: type,
@@ -58,45 +76,26 @@ export class NotificationService {
             actorAvatar,
             ...extraData,
         };
-        const activityResponse = await targetFeed.addActivity(activity);
-        return activityResponse;
+
+        return targetFeed.addActivity(activity);
     }
 
     public async createFollowNotification(
-        followerId: string,
-        followedId: string,
-        actorName: string,
-        actorAvatar: string | null,
+        params: Omit<NotificationParams, "type">,
     ) {
-        return this.createNotification(
-            "NEW_FOLLOWER",
-            followerId,
-            followedId,
-            actorName,
-            actorAvatar,
-        );
+        return this.createBaseNotification({ ...params, type: "NEW_FOLLOWER" });
     }
+
     public async createUnfollowNotification(
-        unfollowerId: string,
-        unfollowedId: string,
-        actorName: string,
-        actorAvatar: string | null,
+        params: Omit<NotificationParams, "type">,
     ) {
-        return this.createNotification(
-            "UNFOLLOW",
-            unfollowerId,
-            unfollowedId,
-            actorName,
-            actorAvatar,
-        );
+        return this.createBaseNotification({ ...params, type: "UNFOLLOW" });
     }
 
     public async createStreamStartNotification(
-        streamerId: string,
-        streamerName: string,
-        streamTitle: string,
-        followerIds: string[],
+        params: StreamNotificationParams,
     ) {
+        const { streamerId, streamerName, followerIds } = params;
         const targetFeed = this.notificationClient.feed(
             "notifications",
             streamerId,
@@ -111,43 +110,21 @@ export class NotificationService {
             target: streamerId,
             type: "STREAM_START",
             actorName: streamerName,
-            streamTitle,
             to: followerIds.map((id) => `notifications:${id}`),
         };
 
         return targetFeed.addActivity(activity);
     }
 
-    // public async createStreamEndNotification(streamerId: string) {
-    //     return this.createNotification("STREAM_END", streamerId, streamerId);
-    // }
-
     public async createBlockNotification(
-        blockerId: string,
-        blockedId: string,
-        actorName: string,
-        actorAvatar: string | null,
+        params: Omit<NotificationParams, "type">,
     ) {
-        return this.createNotification(
-            "BLOCKED",
-            blockerId,
-            blockedId,
-            actorName,
-            actorAvatar,
-        );
+        return this.createBaseNotification({ ...params, type: "BLOCKED" });
     }
+
     public async createUnblockNotification(
-        unblockerId: string,
-        unblockedId: string,
-        actorName: string,
-        actorAvatar: string | null,
+        params: Omit<NotificationParams, "type">,
     ) {
-        return this.createNotification(
-            "UN_BLOCKED",
-            unblockerId,
-            unblockedId,
-            actorName,
-            actorAvatar,
-        );
+        return this.createBaseNotification({ ...params, type: "UN_BLOCKED" });
     }
 }
