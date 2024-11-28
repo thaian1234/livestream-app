@@ -4,9 +4,22 @@ import useInitializeChatClient from "../features/stream/hooks/useInitializeChatC
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
 import { Channel, Chat } from "stream-chat-react";
+import { EmojiPicker } from "stream-chat-react/emojis";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+
+const customReactionOptions = [
+    {
+        type: "arrow_up",
+        Component: () => <>⬆️</>,
+        name: "Upvote",
+    },
+    {
+        type: "arrow_down",
+        Component: () => <>⬇️</>,
+        name: "Downvote",
+    },
+];
 
 interface ChatProviderProps {
     streamId: string;
@@ -20,7 +33,13 @@ export function ChatProvider({ streamId, children }: ChatProviderProps) {
 
     return (
         <Chat client={chatClient}>
-            <Channel channel={chatChannel}>{children}</Channel>
+            <Channel
+                reactionOptions={customReactionOptions}
+                EmojiPicker={EmojiPicker}
+                channel={chatChannel}
+            >
+                {children}
+            </Channel>
         </Chat>
     );
 }
