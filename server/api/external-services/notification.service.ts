@@ -41,7 +41,7 @@ export class NotificationService implements INotificationService {
         this.notificationClient = connect(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
             envServer.GETSTREAM_PRIVATE_API_KEY,
-            envClient.NEXT_PUBLIC_GETSTREAM_APP_ID,
+            envClient.NEXT_PUBLIC_GETSTREAM_APP_ID || "1340334",
             { timeout: 10000, location: "singapore" },
         );
     }
