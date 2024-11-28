@@ -1,6 +1,5 @@
 import { useNotification } from "../../../providers/notification-provider";
-import { Bell, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Bell } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,9 +25,13 @@ export function NotificationPopover() {
                     <span className="sr-only">Show notifications</span>
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0">
-                <div className="border-b p-4 text-sm font-medium">
-                    Notifications {notificationFeed.unread}
+            <PopoverContent
+                side="bottom"
+                className="mt-4 w-80 border-white p-0"
+            >
+                <div className="flex items-center gap-2 border-b p-4 text-sm font-medium">
+                    <Bell className="size-6" />
+                    <p>Notifications {notificationFeed.unread}</p>
                 </div>
                 <NotificationFeed notifications={notifications} />
             </PopoverContent>
