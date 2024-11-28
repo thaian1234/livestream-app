@@ -47,7 +47,7 @@ const CustomReactionSelector = () => {
     const { reactionOptions } = useComponentContext();
     if (threadList) return null;
     return (
-        <div className="absolute right-0 z-10 flex flex-row space-x-2 rounded-md shadow-md">
+        <div className="absolute right-0 top-0 z-10 flex flex-row space-x-2 rounded-md shadow-md">
             {reactionOptions?.map(({ Component, name, type }) => (
                 <button
                     key={type}
@@ -67,26 +67,26 @@ export function ChatMessage() {
 
     return (
         <div
-            className="relative flex w-full flex-row"
+            className="relative w-full flex-row"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div>
-                <div className="flex w-full items-center space-x-2">
-                    <button>
-                        <Avatar className="h-7 w-7">
-                            <AvatarImage
-                                src={message.user?.image}
-                                alt={message.user?.name}
-                            />
-                            <AvatarFallback />
-                        </Avatar>
-                    </button>
-                    <div>
+                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2">
+                    <Avatar className="h-7 w-7">
+                        <AvatarImage
+                            src={message.user?.image}
+                            alt={message.user?.name}
+                        />
+                        <AvatarFallback />
+                    </Avatar>
+                    <div className="min-w-0">
                         <div className="text-sm text-teal-2">
                             {isMyMessage() ? "You" : message.user?.name}
                         </div>
-                        <div className="mr-2 text-sm">{message.text}</div>
+                        <p className="overflow-wrap-anywhere mr-2 whitespace-pre-wrap break-words text-sm">
+                            {message.text}
+                        </p>
                     </div>
                 </div>
                 <CustomReactionsList />
