@@ -1,8 +1,10 @@
 import Database from "..";
 import tableSchemas from "../schemas";
+import { table } from "console";
 import { z } from "zod";
 
 import { BlockDTO } from "@/server/api/dtos/block.dto";
+import { CategoryDTO } from "@/server/api/dtos/category.dto";
 import { FollowDTO } from "@/server/api/dtos/follow.dto";
 import { NotificationDTO } from "@/server/api/dtos/notification.dto";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
@@ -39,6 +41,8 @@ const seeds = async () => {
         await db.delete(tableSchemas.settingTable);
         await db.delete(tableSchemas.accountTable);
         await db.delete(tableSchemas.userTable);
+        await db.delete(tableSchemas.streamsToCategoriesTable);
+        await db.delete(tableSchemas.categoryTable);
 
         // Seeding user
         let usersData: UserDTO.Insert[] = [];
@@ -127,6 +131,49 @@ const seeds = async () => {
         await db
             .insert(tableSchemas.notificationTable)
             .values(notificationData)
+            .onConflictDoNothing();
+
+        let categoryData: z.infer<typeof CategoryDTO.insertSchema>[] = [
+            {
+                name: "Strategy",
+                slug: "startegy",
+            },
+            {
+                name: "RPG",
+                slug: "rpg",
+            },
+            {
+                name: "MOBA",
+                slug: "moba",
+            },
+            {
+                name: "FPS",
+                slug: "fps",
+            },
+            {
+                name: "Adventure Game",
+                slug: "adventure_game",
+            },
+            {
+                name: "Role Play",
+                slug: "role_play",
+            },
+            {
+                name: "Indie Game",
+                slug: "indie_game",
+            },
+            {
+                name: "Code Interview",
+                slug: "code_interview",
+            },
+            {
+                name: "Math",
+                slug: "math",
+            },
+        ];
+        await db
+            .insert(tableSchemas.categoryTable)
+            .values(categoryData)
             .onConflictDoNothing();
     } catch (error) {
         console.log(error);

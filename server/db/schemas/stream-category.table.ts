@@ -20,7 +20,6 @@ export const streamsToCategoriesTable = pgTable(
         categoryId: uuid("category_id")
             .notNull()
             .references(() => categoryTable.id, { onDelete: "cascade" }),
-        isActive: boolean("is_active").default(true).notNull(),
         createdAt: timestamp("created_at").defaultNow().notNull(),
     },
     (table) => ({

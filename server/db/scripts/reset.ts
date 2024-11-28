@@ -14,6 +14,8 @@ const resetSeeds = async () => {
     await db.delete(tableSchemas.settingTable);
     await db.delete(tableSchemas.accountTable);
     await db.delete(tableSchemas.userTable);
+    await db.delete(tableSchemas.streamsToCategoriesTable);
+    await db.delete(tableSchemas.categoryTable);
 };
 
 resetSeeds()

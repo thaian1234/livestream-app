@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+    boolean,
     foreignKey,
     pgTable,
     text,
@@ -14,10 +15,10 @@ export const categoryTable = pgTable(
     {
         id: uuid("id").primaryKey().defaultRandom(),
         name: text("name").notNull().unique(),
-        description: text("description"),
-        thumbnailUrl: text("thumbnail_url"),
+        imageUrl: text("thumbnail_url"),
         parentId: uuid("parent_id"),
         slug: text("slug").notNull().unique(),
+        isActive: boolean("is_active").default(true).notNull(),
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at").defaultNow().notNull(),
     },
