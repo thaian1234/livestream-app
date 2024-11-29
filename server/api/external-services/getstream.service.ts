@@ -11,7 +11,7 @@ export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
 export class GetStreamService implements IGetStreamService {
     private readonly streamClient: StreamClient;
-    private readonly streamChatClient: StreamChat
+    private readonly streamChatClient: StreamChat;
     private readonly callType;
     private readonly roles;
     constructor() {
@@ -25,7 +25,7 @@ export class GetStreamService implements IGetStreamService {
         this.streamChatClient = StreamChat.getInstance(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
             envServer.GETSTREAM_PRIVATE_API_KEY,
-        )
+        );
         this.callType = {
             default: "default",
             audio_room: "audio_room",
@@ -94,8 +94,10 @@ export class GetStreamService implements IGetStreamService {
         return callRoom;
     }
 
-    public async createChatChannel(streamId: string) {
-        const channel = this.streamChatClient.channel('livestream', streamId);
+    public async createChatChannel(userId: string, streamId: string) {
+        const channel = this.streamChatClient.channel("livestream", streamId, {
+            created_by_id: userId,
+        });
         await channel.create();
     }
 
