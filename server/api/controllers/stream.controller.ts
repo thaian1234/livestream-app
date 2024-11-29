@@ -38,7 +38,7 @@ export class StreamController implements IStreamController {
             .get("/following", ...this.getFollowingStreams())
             .get("/chat-token", ...this.getStreamChatTokenHandler())
             .post("/add-category", ...this.addCategoriesToStream())
-            .delete("/delete-category", ...this.deleteCategoriesFromStream());
+            .delete("/remove-category", ...this.deleteCategoriesFromStream());
     }
     private getStreamTokenHandler() {
         return this.factory.createHandlers(
