@@ -1,6 +1,7 @@
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
+import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -10,6 +11,8 @@ import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
+import { IFollowRepository } from "../repositories/follow.repository";
+import { IFollowService } from "../services/follow.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
@@ -24,6 +27,8 @@ export class StreamController implements IStreamController {
         private readonly streamService: IStreamService,
         private readonly getStreamService: IGetStreamService,
         private readonly settingService: ISettingService,
+        private readonly followRepository: IFollowRepository,
+        private readonly notificationService: INotificationService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -97,6 +102,26 @@ export class StreamController implements IStreamController {
                 if (!updatedStream) {
                     throw new MyError.BadRequestError("Stream updates fail");
                 }
+                if (updatedStream.isLive) {
+                    const followers =
+                        await this.followRepository.findFollowerByUserId(
+                            currentUser.id,
+                        );
+
+                    if (followers?.length) {
+                        const followersId = followers.map(
+                            (follower) => follower.id,
+                        );
+                        await this.notificationService.createStreamStartNotification(
+                            {
+                                followerIds: followersId,
+                                streamerId: currentUser.id,
+                                streamerName: currentUser.username,
+                                streamerAvatar: currentUser.imageUrl,
+                            },
+                        );
+                    }
+                }
                 return ApiResponse.WriteJSON({
                     c,
                     data: StreamDTO.parse(updatedStream),
@@ -105,6 +130,7 @@ export class StreamController implements IStreamController {
             },
         );
     }
+
     private getAllStreamHandler() {
         const queries = z.object({
             recommendPage: QueryDTO.createQueryParam(1),

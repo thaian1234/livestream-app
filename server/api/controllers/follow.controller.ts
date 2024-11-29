@@ -1,5 +1,6 @@
 import { FollowDTO } from "../dtos/follow.dto";
 import { QueryDTO } from "../dtos/query.dto";
+import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -18,6 +19,7 @@ export class FollowController implements IFollowController {
     constructor(
         private factory: CreateFactoryType,
         private followService: IFollowService,
+        private readonly notificationService: INotificationService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -140,6 +142,19 @@ export class FollowController implements IFollowController {
                 let message = "Follow user successfully";
                 if (typeof data === "boolean") {
                     message = "Unfollow user successfully";
+                    this.notificationService.createUnfollowNotification({
+                        actorAvatar: currentUser.imageUrl,
+                        actorName: currentUser.username,
+                        actorId: currentUser.id,
+                        targetId: followingId,
+                    });
+                } else {
+                    this.notificationService.createFollowNotification({
+                        actorAvatar: currentUser.imageUrl,
+                        actorName: currentUser.username,
+                        actorId: currentUser.id,
+                        targetId: followingId,
+                    });
                 }
 
                 return ApiResponse.WriteJSON({

@@ -8,9 +8,11 @@ import {
     useChannelStateContext,
 } from "stream-chat-react";
 
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
+
+import { SettingDTO } from "@/server/api/dtos/setting.dto";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -19,7 +21,17 @@ import { Community } from "./community";
 import { CustomChannelHeader } from "./custom-channel-header";
 import { CustomMessageInput } from "./custom-message-input";
 
-export function Chat() {
+interface ChatProps {
+    setting?: SettingDTO.Select;
+    isHost?: boolean;
+    isFollowing?: boolean;
+}
+
+export function Chat({
+    setting,
+    isHost = false,
+    isFollowing = false,
+}: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { chatStatus } = useLiveInfor();
@@ -40,7 +52,7 @@ export function Chat() {
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
             <CustomChannelHeader />
-            {chatStatus === "Chat" ? (
+            {chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
                         ref={scrollAreaRef}
@@ -66,7 +78,19 @@ export function Chat() {
                             </div>
                         )}
                     </ScrollArea>
-                    <MessageInput Input={CustomMessageInput} />
+                    <MessageInput
+                        Input={() => (
+                            <CustomMessageInput
+                                isChatDelayed={setting?.isChatDelayed}
+                                isChatEnabled={setting?.isChatEnabled}
+                                isChatFollowersOnly={
+                                    setting?.isChatFollowersOnly
+                                }
+                                isHost={isHost}
+                                isFollowing={isFollowing}
+                            />
+                        )}
+                    />
                 </>
             ) : (
                 <ScrollArea

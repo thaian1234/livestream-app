@@ -36,6 +36,8 @@ export default function StreamPage() {
     const stream = data.data.stream;
     const user = data.data.user;
     const followers = data.data.followers;
+    const setting = data.data.setting;
+    const isFollowing = data.data.isFollowing;
 
     return (
         <section className="grid grid-cols-12 grid-rows-5 gap-4">
@@ -44,7 +46,7 @@ export default function StreamPage() {
                     className={cn(
                         "row-span-5",
                         isOpenChatComponent
-                            ? "col-span-9 aspect-video"
+                            ? "col-span-9"
                             : "col-span-12 mx-14 aspect-[2/1]",
                     )}
                 >
@@ -56,7 +58,7 @@ export default function StreamPage() {
             <div
                 className={cn(
                     isOpenChatComponent
-                        ? "col-span-9 aspect-video"
+                        ? "col-span-9"
                         : "col-span-12 mx-14 aspect-[2/1]",
                 )}
             >
@@ -64,7 +66,7 @@ export default function StreamPage() {
                     followerCount={followers?.length || 0}
                     stream={stream}
                     user={user}
-                    isFollowing={data.data.isFollowing}
+                    isFollowing={isFollowing}
                 />
             </div>
             <div
@@ -74,7 +76,13 @@ export default function StreamPage() {
                 )}
             >
                 <ChatProvider streamId={stream.id}>
-                    {isOpenChatComponent && <Chat />}
+                    {isOpenChatComponent && (
+                        <Chat
+                            isHost={false}
+                            setting={setting}
+                            isFollowing={isFollowing}
+                        />
+                    )}
                 </ChatProvider>
             </div>
         </section>
