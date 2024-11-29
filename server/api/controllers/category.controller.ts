@@ -1,4 +1,5 @@
 import { CategoryDTO } from "../dtos/category.dto";
+import { QueryDTO } from "../dtos/query.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -21,26 +22,63 @@ export class CategoryController implements ICategoryController {
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/", ...this.getAllCategory())
+            .get("/", ...this.getAllCategoryBasicData())
+            .get("/detail", ...this.getAllCategoryDetailData())
             .get("/:categoryId", ...this.getCategoryById())
             .post("/", ...this.addCategory())
             .delete("/:categoryId", ...this.deleteCategory())
-            .patch("/", ...this.updateCategory())
+            .patch("/", ...this.updateCategory());
     }
-    private getAllCategory() {
-        return this.factory.createHandlers(async (c) => {
-            const categories = this.categoryService.findAll();
-            if (!categories) {
-                throw new MyError.BadRequestError("Failed to fetch categories");
-            }
-            return ApiResponse.WriteJSON({
-                c,
-                data: {
-                    categories: CategoryDTO.parseMany(categories),
-                },
-                status: HttpStatus.OK,
-            });
-        });
+    private getAllCategoryBasicData() {
+        const queries = QueryDTO.createFilterSchema(1, 5);
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { page, size, filterBy } = c.req.valid("query");
+                const categories = this.categoryService.findAll(
+                    filterBy,
+                    (page - 1) * size,
+                    size,
+                );
+                if (!categories) {
+                    throw new MyError.BadRequestError(
+                        "Failed to fetch categories",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        categories: CategoryDTO.parseManyBasic(categories),
+                    },
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getAllCategoryDetailData() {
+        const queries = QueryDTO.createPaginationSchema(1, 10);
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const categories = this.categoryService.findAllDetail(
+                    (page - 1) * size,
+                    size,
+                );
+                if (!categories) {
+                    throw new MyError.BadRequestError(
+                        "Failed to fetch categories",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        categories: CategoryDTO.parseManyDetail(categories),
+                    },
+                    status: HttpStatus.OK,
+                });
+            },
+        );
     }
     private getCategoryById() {
         const params = z.object({

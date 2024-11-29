@@ -13,6 +13,26 @@ export class CategoryDTO {
     public static updateSchema = this.baseSchema.partial().omit({
         id: true,
     });
+    public static basicSelectSchema = this.selectSchema.pick({
+        id: true,
+        name: true,
+        slug: true,
+    });
+    public static detailSelectSchema = this.selectSchema
+        .extend({
+            parent: this.basicSelectSchema,
+            child: this.basicSelectSchema.array(),
+        })
+        .omit({
+            parentId: true,
+            isActive: true,
+        });
+    public static parseManyDetail(data: unknown) {
+        return this.detailSelectSchema.array().parse(data);
+    }
+    public static parseManyBasic(data: unknown) {
+        return this.basicSelectSchema.array().parse(data);
+    }
     public static parseMany(data: unknown) {
         return this.selectSchema.array().parse(data);
     }

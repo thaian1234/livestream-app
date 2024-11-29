@@ -7,8 +7,15 @@ export interface ICategoryService
     extends Utils.AutoMappedClass<CategoryService> {}
 export class CategoryService implements ICategoryService {
     constructor(private categoryRepository: ICategoryRepository) {}
-    public async findAll() {
-        return await this.categoryRepository.findAll();
+    public async findAll(
+        filterBy: string = "",
+        offset: number = 0,
+        limit: number = 5,
+    ) {
+        return await this.categoryRepository.findAll(filterBy, offset, limit);
+    }
+    public async findAllDetail(offset: number = 0, limit: number = 10) {
+        return await this.categoryRepository.findAllDetail(offset, limit);
     }
     public async findOne(id: string) {
         return await this.categoryRepository.findOne(id);

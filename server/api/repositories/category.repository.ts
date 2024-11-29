@@ -1,10 +1,10 @@
 import { CategoryDTO } from "../dtos/category.dto";
+import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ilike, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
-import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 
 export interface ICategoryRepository
     extends Utils.AutoMappedClass<CategoryRepository> {}
@@ -14,16 +14,44 @@ export class CategoryRepository implements ICategoryRepository {
         this.db = Database.getInstance().db;
     }
 
-    async findAll() {
+    async findAll(
+        filterBy: string = "",
+        offset: number = 0,
+        limit: number = 5,
+    ) {
         try {
-            const categories = await this.db.query.categoryTable.findMany();
+            const categories = await this.db.query.categoryTable.findMany({
+                where: and(
+                    eq(tableSchemas.categoryTable.isActive, true),
+                    ilike(tableSchemas.categoryTable.name, `%${filterBy}%`),
+                ),
+                offset: offset,
+                limit: limit,
+            });
+            return categories;
+        } catch (error) {}
+    }
+    async findAllDetail(offset: number = 0, limit: number = 10) {
+        try {
+            const categories = await this.db.query.categoryTable.findMany({
+                where: eq(tableSchemas.categoryTable.isActive, true),
+                with: {
+                    children: true,
+                    parent: true,
+                },
+                offset,
+                limit,
+            });
             return categories;
         } catch (error) {}
     }
     async findOne(id: string) {
         try {
             const category = await this.db.query.categoryTable.findFirst({
-                where: eq(tableSchemas.categoryTable.id, id),
+                where: and(
+                    eq(tableSchemas.categoryTable.isActive, true),
+                    eq(tableSchemas.categoryTable.id, id),
+                ),
             });
             return category;
         } catch (error) {}
