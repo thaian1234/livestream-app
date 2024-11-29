@@ -1,10 +1,39 @@
 import { CategoryDTO } from "../dtos/category.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, eq, ilike, inArray, or } from "drizzle-orm";
+import {
+    SQL,
+    and,
+    eq,
+    getTableColumns,
+    ilike,
+    inArray,
+    or,
+    sql,
+} from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
+import { SQLiteTable } from "drizzle-orm/sqlite-core";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+const buildConflictUpdateColumns = <
+    T extends PgTable | SQLiteTable,
+    Q extends keyof T["_"]["columns"],
+>(
+    table: T,
+    columns: Q[],
+) => {
+    const cls = getTableColumns(table);
+    return columns.reduce(
+        (acc, column) => {
+            const colName = cls[column].name;
+            acc[column] = sql.raw(`excluded.${colName}`);
+            return acc;
+        },
+        {} as Record<Q, SQL>,
+    );
+};
 
 export interface ICategoryRepository
     extends Utils.AutoMappedClass<CategoryRepository> {}
@@ -101,6 +130,16 @@ export class CategoryRepository implements ICategoryRepository {
             const streamCategories = await this.db
                 .insert(tableSchemas.streamsToCategoriesTable)
                 .values(data)
+                .onConflictDoUpdate({
+                    target: [
+                        tableSchemas.streamsToCategoriesTable.streamId,
+                        tableSchemas.streamsToCategoriesTable.categoryId,
+                    ],
+                    set: buildConflictUpdateColumns(
+                        tableSchemas.streamsToCategoriesTable,
+                        ["streamId", "categoryId", "createdAt"],
+                    ),
+                })
                 .returning();
             return streamCategories;
         } catch (error) {
