@@ -80,3 +80,8 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* hide default "eye" button in Edge */
+input::-ms-reveal {
+    display: none;
+}
