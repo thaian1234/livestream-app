@@ -1,6 +1,6 @@
 "use client";
 
-import { ListSkeleton } from "@/lib/components/community/list-skeleton";
+import { CommunitySkeleton } from "@/lib/components/community/community-skeleton";
 import { Profile } from "@/lib/components/profile/profile";
 import { BlockTable } from "@/lib/features/block/components/block-table";
 import { followApi } from "@/lib/features/follow/apis";
@@ -8,15 +8,12 @@ import { FollowersTable } from "@/lib/features/follow/components/follow-table/fo
 import { FollowingsTable } from "@/lib/features/follow/components/follow-table/followings-table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { M_PLUS_1 } from "next/font/google";
 
 export default function CommunityPage() {
     const tabs = ["Following", "Followers", "Block"];
-    const { data, isPending, error } = followApi.query.useFollow(
-        '1', '1000'
-    );
+    const { data, isPending, error } = followApi.query.useFollow("1", "1000");
     if (data === undefined || isPending) {
-        return <ListSkeleton />;
+        return <CommunitySkeleton />;
     }
     if (error) {
         return <p>Some thing went wrong</p>;

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Pagination } from "@/components/pagination";
 
 import { LivePreviewCard } from "./live-preview-card";
+import { PreviewSkeleton } from "./preview-skeleton";
 
 interface RecommendStreamProps {}
 
@@ -19,7 +20,7 @@ export function RecommendStream({}: RecommendStreamProps) {
     );
 
     if (isPending) {
-        return <p>Loading recommend stream</p>;
+        return <PreviewSkeleton />;
     }
     if (!data || isError) {
         return <p>Failed to load stream</p>;
