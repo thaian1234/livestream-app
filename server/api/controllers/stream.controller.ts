@@ -1,5 +1,6 @@
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
+import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -10,6 +11,7 @@ import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
+import { ICategoryService } from "../services/category.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
@@ -24,6 +26,7 @@ export class StreamController implements IStreamController {
         private readonly streamService: IStreamService,
         private readonly getStreamService: IGetStreamService,
         private readonly settingService: ISettingService,
+        private readonly categoryService: ICategoryService
     ) {}
     setupHandlers() {
         return this.factory
@@ -33,7 +36,9 @@ export class StreamController implements IStreamController {
             .get("/", ...this.getAllStreamHandler())
             .get("/recommend", ...this.getRecommendStreams())
             .get("/following", ...this.getFollowingStreams())
-            .get("/chat-token", ...this.getStreamChatTokenHandler());
+            .get("/chat-token", ...this.getStreamChatTokenHandler())
+            .post("/add-category", ...this.addCategoriesToStream())
+            .delete("/delete-category", ...this.deleteCategoriesFromStream());
     }
     private getStreamTokenHandler() {
         return this.factory.createHandlers(
@@ -250,6 +255,78 @@ export class StreamController implements IStreamController {
                         token: token,
                     },
                     status: HttpStatus.Created,
+                });
+            },
+        );
+    }
+    private addCategoriesToStream() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                StreamToCategoriesDTO.insertSchema.array(),
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const currentUser = c.get("getUser");
+
+                jsonData.forEach((data) => {
+                    if (data.streamId != currentUser.stream.id) {
+                        throw new MyError.UnauthorizedError();
+                    }
+                });
+
+                const isAtLeastOneSuccess =
+                    this.categoryService.addCategoriesToStream(jsonData);
+
+                if (!isAtLeastOneSuccess) {
+                    throw new MyError.BadRequestError(
+                        "Failed to bulk add category to stream",
+                    );
+                }
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.Created,
+                    msg: "Bulk add category to stream success",
+                });
+            },
+        );
+    }
+    private deleteCategoriesFromStream() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                StreamToCategoriesDTO.deleteSchema.array(),
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const currentUser = c.get("getUser");
+
+                jsonData.forEach((data) => {
+                    if (data.streamId != currentUser.stream.id) {
+                        throw new MyError.UnauthorizedError();
+                    }
+                });
+
+                const isAtLeastOneSuccess =
+                    this.categoryService.deleteCategoriesFromStream(jsonData);
+
+                if (!isAtLeastOneSuccess) {
+                    throw new MyError.BadRequestError(
+                        "Failed to bulk delete category to stream",
+                    );
+                }
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.Created,
+                    msg: "Bulk delete category to stream success",
                 });
             },
         );
