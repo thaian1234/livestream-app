@@ -1,12 +1,10 @@
 import Database from "..";
 import tableSchemas from "../schemas";
-import { table } from "console";
 import { z } from "zod";
 
 import { BlockDTO } from "@/server/api/dtos/block.dto";
 import { CategoryDTO } from "@/server/api/dtos/category.dto";
 import { FollowDTO } from "@/server/api/dtos/follow.dto";
-import { NotificationDTO } from "@/server/api/dtos/notification.dto";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 import { LuciaService } from "@/server/api/external-services/lucia.service";
@@ -109,30 +107,6 @@ const seeds = async () => {
             .onConflictDoNothing()
             .returning();
 
-        // Seeding notifications
-        let notificationData: z.infer<typeof NotificationDTO.insertSchema>[] =
-            [];
-        for (const stream of streams) {
-            for (const user of users) {
-                if (user.id !== stream.userId) {
-                    if (notificationData.length === 150) break;
-                    notificationData.push({
-                        userId: user.id,
-                        streamId: stream.id,
-                        message: `${stream.name} is now live!`,
-                        type:
-                            Math.random() > 0.5 ? "stream_start" : "stream_end",
-                        isRead: Math.random() > 0.5,
-                    });
-                }
-            }
-        }
-        // Insert all the data
-        await db
-            .insert(tableSchemas.notificationTable)
-            .values(notificationData)
-            .onConflictDoNothing();
-
         let categoryData: z.infer<typeof CategoryDTO.insertSchema>[] = [
             {
                 name: "Strategy",
@@ -204,7 +178,7 @@ const seeds = async () => {
 
         categories.push(...childCategory);
 
-        let streamToCategories = []
+        let streamToCategories = [];
         for (const stream of streams) {
             const numberOfCategories = Math.floor(Math.random() * 4); // Random number between 0-3
             const shuffledCategories = [...categories].sort(
@@ -218,7 +192,7 @@ const seeds = async () => {
                 streamId: stream.id,
                 categoryId: category.id,
             }));
-            streamToCategories.push(...streamToCategory)
+            streamToCategories.push(...streamToCategory);
         }
         if (streamToCategories.length !== 0) {
             await db

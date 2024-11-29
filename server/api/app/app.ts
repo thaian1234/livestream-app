@@ -7,6 +7,7 @@ import { authRoutes } from "../routes/auth.routes";
 import { blockRoutes } from "../routes/block.routes";
 import { categoryRoutes } from "../routes/category.routes";
 import { followRoutes } from "../routes/follow.routes";
+import { notificationRoutes } from "../routes/notification.routes";
 import { searchRoutes } from "../routes/search.routes";
 import { settingRoutes } from "../routes/setting.routes";
 import { streamRoutes } from "../routes/stream.routes";
@@ -56,7 +57,8 @@ export class App {
             .route("/", searchRoutes)
             .route("/", streamRoutes)
             .route("/", settingRoutes)
-            .route("/", categoryRoutes);
+            .route("/", categoryRoutes)
+            .route("/", notificationRoutes);
     }
 
     public getApp() {

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Pagination } from "@/components/pagination";
 
 import { LivePreviewCard } from "./live-preview-card";
+import { PreviewSkeleton } from "./preview-skeleton";
 
 interface FollowingStreamProps {}
 
@@ -19,7 +20,7 @@ export function FollowingStream({}: FollowingStreamProps) {
     );
 
     if (isPending) {
-        return <p>Loading following stream</p>;
+        return <PreviewSkeleton />;
     }
     if (!data || isError) {
         return <p>Failed to load stream</p>;
@@ -41,7 +42,7 @@ export function FollowingStream({}: FollowingStreamProps) {
                 />
             </div>
             <ul className="grid grid-cols-3 gap-x-8">
-                {streams ? (
+                {streams && streams.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>
                             <LivePreviewCard {...stream} />

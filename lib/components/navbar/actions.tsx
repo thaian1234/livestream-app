@@ -8,8 +8,10 @@ import React from "react";
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";
 import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
+import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { UserNav } from "@/lib/features/user/components/user-nav";
 import { useAuth } from "@/lib/providers/auth-provider";
+import { NotificationProvider } from "@/lib/providers/notification-provider";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -20,9 +22,9 @@ export const AfterSignin = () => {
     }
     return (
         <>
-            <button>
-                <Bell size={28} color="#ffffff" strokeWidth={2.5} />
-            </button>
+            <NotificationProvider userId={user.id}>
+                <NotificationPopover />
+            </NotificationProvider>
             <Link href={`/dashboard/${user.username}`}>
                 <Heart size={28} color="#ffffff" strokeWidth={2.5} />
             </Link>

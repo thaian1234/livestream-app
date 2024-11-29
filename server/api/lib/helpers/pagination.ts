@@ -26,7 +26,7 @@ export default class PaginationHelper {
         limit,
     }: PaginationInput<T>) {
         const currentPage = Math.floor(currentOffset / limit) + 1;
-        const totalPages = Math.ceil(totalRecords / limit);
+        const totalPages = Math.max(1, Math.ceil(totalRecords / limit));
         const hasNextPage = currentPage < totalPages;
         const hasPrevPage = currentPage > 1;
 
