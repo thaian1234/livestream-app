@@ -52,7 +52,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             label: "Information",
             title: "Edit Stream Profile",
             description:
-                "Make changes to your stream profile here. Click save when you&apos;re done.",
+                "Make changes to your stream profile here. Click save when you're done.",
             content: (
                 <div>
                     {/* Stream Update Form */}

@@ -1,5 +1,6 @@
 import { streamApi } from "../../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SaveAllIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -53,17 +54,21 @@ export function StreamUpdateForm({
 
     return (
         <Form {...form}>
-            <form onSubmit={onSubmit} className="mx-auto w-full space-y-6">
+            <form
+                onSubmit={onSubmit}
+                className="flex w-full items-start justify-between space-x-4 space-y-7"
+            >
                 <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="w-full">
                             <FormLabel>Stream Title</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="Today stream"
                                     type="text"
+                                    className="w-full"
                                     {...field}
                                 />
                             </FormControl>
@@ -74,6 +79,14 @@ export function StreamUpdateForm({
                         </FormItem>
                     )}
                 />
+                <Button
+                    type="submit"
+                    size="icon"
+                    variant="ghost"
+                    className="hover:bg-transparent"
+                >
+                    <SaveAllIcon />
+                </Button>
             </form>
         </Form>
     );
