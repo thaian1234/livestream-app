@@ -27,7 +27,7 @@ export const categoryApi = {
                 },
             );
         },
-        useGetDetail(page = "1", size = "10") {
+        useGetDetail(page = "1", size = "12") {
             const $get = client.api.categorys.detail.$get;
             return Fetcher.useHonoQuery($get, keys.detail(page, size), {
                 query: {

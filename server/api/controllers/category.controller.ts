@@ -35,7 +35,7 @@ export class CategoryController implements ICategoryController {
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
                 const { page, size, filterBy } = c.req.valid("query");
-                const categories = this.categoryService.findAll(
+                const categories = await this.categoryService.findAll(
                     filterBy,
                     (page - 1) * size,
                     size,
@@ -56,12 +56,12 @@ export class CategoryController implements ICategoryController {
         );
     }
     private getAllCategoryDetailData() {
-        const queries = QueryDTO.createPaginationSchema(1, 10);
+        const queries = QueryDTO.createPaginationSchema(1, 15);
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
                 const { page, size } = c.req.valid("query");
-                const categories = this.categoryService.findAllDetail(
+                const categories = await this.categoryService.findAllDetail(
                     (page - 1) * size,
                     size,
                 );
@@ -70,6 +70,8 @@ export class CategoryController implements ICategoryController {
                         "Failed to fetch categories",
                     );
                 }
+                console.log(categories);
+                console.log("here");
                 return ApiResponse.WriteJSON({
                     c,
                     data: {
@@ -89,7 +91,7 @@ export class CategoryController implements ICategoryController {
             async (c) => {
                 const { categoryId } = c.req.valid("param");
 
-                const category = this.categoryService.findOne(categoryId);
+                const category = await this.categoryService.findOne(categoryId);
                 if (!category) {
                     throw new MyError.BadRequestError("Category not found");
                 }
@@ -142,7 +144,7 @@ export class CategoryController implements ICategoryController {
             async (c) => {
                 const { categoryId } = c.req.valid("param");
 
-                const isSuccess = this.categoryService.delete({
+                const isSuccess = await this.categoryService.delete({
                     id: categoryId,
                 });
 
@@ -177,7 +179,7 @@ export class CategoryController implements ICategoryController {
                 const { categoryId } = c.req.valid("param");
                 const jsonData = c.req.valid("json");
 
-                const category = this.categoryService.update(
+                const category = await this.categoryService.update(
                     categoryId,
                     jsonData,
                 );

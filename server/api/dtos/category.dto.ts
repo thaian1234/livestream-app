@@ -20,8 +20,8 @@ export class CategoryDTO {
     });
     public static detailSelectSchema = this.selectSchema
         .extend({
-            parent: this.basicSelectSchema,
-            child: this.basicSelectSchema.array(),
+            parent: this.basicSelectSchema.nullable(),
+            children: this.basicSelectSchema.array().nullable(),
         })
         .omit({
             parentId: true,
