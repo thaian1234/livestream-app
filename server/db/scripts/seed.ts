@@ -139,8 +139,12 @@ const seeds = async () => {
                 slug: "startegy",
             },
             {
-                name: "RPG",
-                slug: "rpg",
+                name: "Horror",
+                slug: "horror",
+            },
+            {
+                name: "Fornite",
+                slug: "fornite",
             },
             {
                 name: "MOBA",
@@ -171,10 +175,57 @@ const seeds = async () => {
                 slug: "math",
             },
         ];
-        await db
+        let categories = await db
             .insert(tableSchemas.categoryTable)
             .values(categoryData)
-            .onConflictDoNothing();
+            .onConflictDoNothing()
+            .returning();
+
+        let childCategory = await db
+            .insert(tableSchemas.categoryTable)
+            .values([
+                {
+                    name: "RPG",
+                    slug: "rpg",
+                    parentId: categories.find(
+                        (category) => category.name === "Fornite",
+                    )?.id,
+                },
+                {
+                    name: "Jumpscare",
+                    slug: "jumpscare",
+                    parentId: categories.find(
+                        (category) => category.name === "Horror",
+                    )?.id,
+                },
+            ])
+            .onConflictDoNothing()
+            .returning();
+
+        categories.push(...childCategory);
+
+        let streamToCategories = []
+        for (const stream of streams) {
+            const numberOfCategories = Math.floor(Math.random() * 4); // Random number between 0-3
+            const shuffledCategories = [...categories].sort(
+                () => Math.random() - 0.5,
+            );
+            const selectedCategories = shuffledCategories.slice(
+                0,
+                numberOfCategories,
+            );
+            const streamToCategory = selectedCategories.map((category) => ({
+                streamId: stream.id,
+                categoryId: category.id,
+            }));
+            streamToCategories.push(...streamToCategory)
+        }
+        if (streamToCategories.length !== 0) {
+            await db
+                .insert(tableSchemas.streamsToCategoriesTable)
+                .values(streamToCategories)
+                .onConflictDoNothing();
+        }
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");
