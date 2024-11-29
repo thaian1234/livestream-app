@@ -41,7 +41,7 @@ export function FollowingStream({}: FollowingStreamProps) {
                 />
             </div>
             <ul className="grid grid-cols-3 gap-x-8">
-                {streams ? (
+                {streams && streams.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>
                             <LivePreviewCard {...stream} />
