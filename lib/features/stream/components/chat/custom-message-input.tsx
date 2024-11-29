@@ -61,7 +61,7 @@ export const CustomMessageInput = ({
                 isDelayed={isChatDelayed}
                 isFollowersOnly={isChatFollowersOnly}
             />
-            <div className="white flex border-t border-gray-700 p-2">
+            <div className="white flex items-center border-t border-gray-700 p-2">
                 <Textarea
                     placeholder="Your message"
                     className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
@@ -72,18 +72,10 @@ export const CustomMessageInput = ({
                     disabled={isChatDisabled}
                     maxLength={50}
                 />
-
-                <Button
-                    variant="ghost"
-                    className="ml-2 p-2 pt-3"
-                    onClick={handleMessageSubmit}
-                    disabled={isChatDisabled}
-                >
-                    <EmojiPicker
-                        buttonClassName="size-6 fill-white"
-                        pickerProps={{ theme: "light" }}
-                    />
-                </Button>
+                <EmojiPicker
+                    buttonClassName="h-8 w-8 mt-1 rounded-md fill-white ml-2 hover:bg-accent disabled:opacity-50e"
+                    pickerProps={{ theme: "light" }}
+                />
                 <Button
                     variant="ghost"
                     className="ml-2 p-2"
