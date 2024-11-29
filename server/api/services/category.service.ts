@@ -34,19 +34,15 @@ export class CategoryService implements ICategoryService {
     }
 
     public async addCategoriesToStream(data: StreamToCategoriesDTO.Insert[]) {
-        return await this.categoryRepository.addCategoriesToStream(data);
+        return this.categoryRepository.addCategoriesToStream(data);
     }
     public async deleteCategoriesFromStream(
-        data: StreamToCategoriesDTO.Delete[],
+        data: StreamToCategoriesDTO.DeleteCategoriesFromStream,
     ) {
-        const deleteionPromises = data.map(({ categoryId, streamId }) =>
-            this.categoryRepository.deleteCategoryFromStream(
-                categoryId,
-                streamId,
-            ),
+        const result = await this.categoryRepository.deleteCategoryFromStream(
+            data.streamId,
+            data.categoryIds,
         );
-
-        const results = await Promise.all(deleteionPromises);
-        return results.every((result) => result === true);
+        return result;
     }
 }

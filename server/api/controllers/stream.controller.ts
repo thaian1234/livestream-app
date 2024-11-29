@@ -288,29 +288,30 @@ export class StreamController implements IStreamController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                StreamToCategoriesDTO.insertSchema.array(),
+                StreamToCategoriesDTO.addCategoriesToStreamSchema,
                 Validator.handleParseError,
             ),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const currentUser = c.get("getUser");
-
-                jsonData.forEach((data) => {
-                    if (data.streamId != currentUser.stream.id) {
-                        throw new MyError.UnauthorizedError();
-                    }
-                });
-
+                if (currentUser.stream.id !== jsonData.streamId) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to add categories to this stream",
+                    );
+                }
                 const isAtLeastOneSuccess =
-                    this.categoryService.addCategoriesToStream(jsonData);
-
+                    this.categoryService.addCategoriesToStream(
+                        jsonData.categoryIds.map((categoryId: string) => ({
+                            categoryId: categoryId,
+                            streamId: jsonData.streamId,
+                        })),
+                    );
                 if (!isAtLeastOneSuccess) {
                     throw new MyError.BadRequestError(
                         "Failed to bulk add category to stream",
                     );
                 }
-
                 return ApiResponse.WriteJSON({
                     c,
                     data: undefined,
@@ -324,7 +325,7 @@ export class StreamController implements IStreamController {
         return this.factory.createHandlers(
             zValidator(
                 "json",
-                StreamToCategoriesDTO.deleteSchema.array(),
+                StreamToCategoriesDTO.deleteCategoriesFromStreamSchema,
                 Validator.handleParseError,
             ),
             AuthMiddleware.isAuthenticated,
@@ -332,21 +333,19 @@ export class StreamController implements IStreamController {
                 const jsonData = c.req.valid("json");
                 const currentUser = c.get("getUser");
 
-                jsonData.forEach((data) => {
-                    if (data.streamId != currentUser.stream.id) {
-                        throw new MyError.UnauthorizedError();
-                    }
-                });
-
-                const isAtLeastOneSuccess =
+                if (currentUser.stream.id != jsonData.streamId) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to delete category from this stream",
+                    );
+                }
+                const isSuccess =
                     this.categoryService.deleteCategoriesFromStream(jsonData);
 
-                if (!isAtLeastOneSuccess) {
+                if (!isSuccess) {
                     throw new MyError.BadRequestError(
                         "Failed to bulk delete category to stream",
                     );
                 }
-
                 return ApiResponse.WriteJSON({
                     c,
                     data: undefined,

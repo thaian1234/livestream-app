@@ -1,7 +1,7 @@
 import { CategoryDTO } from "../dtos/category.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
-import { and, eq, ilike, or } from "drizzle-orm";
+import { and, eq, ilike, inArray, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -98,31 +98,37 @@ export class CategoryRepository implements ICategoryRepository {
     }
     async addCategoriesToStream(data: StreamToCategoriesDTO.Insert[]) {
         try {
-            const streamCategory = await this.db
+            const streamCategories = await this.db
                 .insert(tableSchemas.streamsToCategoriesTable)
                 .values(data)
                 .returning();
-            return streamCategory;
-        } catch (error) {}
+            return streamCategories;
+        } catch (error) {
+            console.error("Error adding categories to stream:", error);
+            return [];
+        }
     }
-    async deleteCategoryFromStream(categoryId: string, streamId: string) {
+    async deleteCategoryFromStream(streamId: string, categoryIds: string[]) {
         try {
             const rows = await this.db
                 .delete(tableSchemas.streamsToCategoriesTable)
                 .where(
                     and(
                         eq(
-                            tableSchemas.streamsToCategoriesTable.categoryId,
-                            categoryId,
-                        ),
-                        eq(
                             tableSchemas.streamsToCategoriesTable.streamId,
                             streamId,
+                        ),
+                        inArray(
+                            tableSchemas.streamsToCategoriesTable.categoryId,
+                            categoryIds,
                         ),
                     ),
                 )
                 .returning();
-            return !(rows.length === 0);
-        } catch (error) {}
+            return rows.length > 0;
+        } catch (error) {
+            console.error("Error deleting categories from stream:", error);
+            return false;
+        }
     }
 }
