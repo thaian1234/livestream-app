@@ -76,7 +76,6 @@ export const CustomMessageInput = ({
                 <Button
                     variant="ghost"
                     className="ml-2 p-2 pt-3"
-                    onClick={handleMessageSubmit}
                     disabled={isChatDisabled}
                 >
                     <EmojiPicker
