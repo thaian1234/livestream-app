@@ -126,14 +126,13 @@ export class AuthController implements IAuthController {
                     );
                 }
                 c.var.executionCtx.waitUntil(
-                    this.nodemailService.sendVerifcationEmailCode(
-                        code,
-                        user.email,
-                    ).catch(() => {
-                        throw new MyError.ServiceUnavailableError(
-                            "Cannot send code to your email",
-                        );
-                    }),
+                    this.nodemailService
+                        .sendVerifcationEmailCode(code, user.email)
+                        .catch(() => {
+                            throw new MyError.ServiceUnavailableError(
+                                "Cannot send code to your email",
+                            );
+                        }),
                 );
                 return ApiResponse.WriteJSON({
                     c,
@@ -171,7 +170,10 @@ export class AuthController implements IAuthController {
                 const stream =
                     await this.streamService.getStreamByUserId(userId);
                 if (stream)
-                    await this.getStreamService.createChatChannel(stream.id);
+                    await this.getStreamService.createChatChannel(
+                        userId,
+                        stream.id,
+                    );
                 const { sessionCookie } =
                     await this.authService.initiateSession(userId);
                 setCookie(c, sessionCookie.name, sessionCookie.value, {

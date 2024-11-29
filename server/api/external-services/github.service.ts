@@ -2,15 +2,15 @@ import { GithubDTO } from "../dtos/github.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { IGitHubAccountRepository } from "../repositories/account.repository";
+import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { GitHub, generateState } from "arctic";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
-import { ILuciaService, LuciaService } from "./lucia.service";
 import { IGetStreamService } from "./getstream.service";
-import { IStreamService } from "../services/stream.service";
+import { ILuciaService, LuciaService } from "./lucia.service";
 
 export interface IGitHubService extends Utils.AutoMappedClass<GitHubService> {}
 
@@ -22,7 +22,7 @@ export class GitHubService implements IGitHubService {
         private readonly accountRepository: IGitHubAccountRepository,
         private readonly userService: IUserService,
         private readonly getStreamService: IGetStreamService,
-        private readonly streamService: IStreamService
+        private readonly streamService: IStreamService,
     ) {
         this.gitHubClient = new GitHub(
             envServer.GITHUB_CLIENT_ID,
@@ -100,9 +100,14 @@ export class GitHubService implements IGitHubService {
                 gitHubData,
             );
         if (newAccount) {
-            const stream = await this.streamService.getStreamByUserId(newAccount?.id);
+            const stream = await this.streamService.getStreamByUserId(
+                newAccount.id,
+            );
             if (stream)
-                await this.getStreamService.createChatChannel(stream.id);
+                await this.getStreamService.createChatChannel(
+                    newAccount.id,
+                    stream.id,
+                );
         }
         await this.getStreamService.upsertUser(UserDTO.parse(newAccount));
         return newAccount?.id;
