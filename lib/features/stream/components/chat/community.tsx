@@ -71,7 +71,8 @@ export function Community() {
 
     if (isPending) return <Spinner />;
     if (!streamer || isError || streamer?.data.isBlocked) {
-        return router.replace(ROUTES.HOME_PAGE);
+        router.replace(ROUTES.HOME_PAGE);
+        return null;
     }
 
     const toggleSection = (section: keyof typeof openSections) => {

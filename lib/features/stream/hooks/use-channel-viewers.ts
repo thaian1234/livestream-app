@@ -15,7 +15,7 @@ export function useChannelViewers() {
         const updateChannelViewers = () => {
             const viewers = Object.values(channel.state.watchers).map(
                 (user) => ({
-                    name: user.name!,
+                    name: user.name || "",
                     online: !!user.online,
                     id: user.id,
                 }),
@@ -27,7 +27,6 @@ export function useChannelViewers() {
         channel.on("user.watching.start", updateChannelViewers);
         channel.on("user.watching.stop", updateChannelViewers);
 
-        // Initial update
         updateChannelViewers();
 
         // Cleanup
