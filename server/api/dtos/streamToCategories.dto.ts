@@ -20,14 +20,14 @@ export class StreamToCategoriesDTO {
             streamId: true,
         })
         .extend({
-            categoryIds: z.string().array(),
+            categoryIds: z.string().uuid().array(),
         });
     public static addCategoriesToStreamSchema = this.baseSchema
         .pick({
             streamId: true,
         })
         .extend({
-            categoryIds: z.string().array(),
+            categoryIds: z.string().uuid().array(),
         });
 }
 

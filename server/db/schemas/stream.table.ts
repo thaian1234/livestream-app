@@ -23,7 +23,7 @@ export const streamTable = pgTable(
         userId: uuid("user_id")
             .notNull()
             .references(() => userTable.id, { onDelete: "cascade" }),
-        categoryId: uuid("category_id").references(() => categoryTable.id),
+
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at")
             .notNull()
@@ -31,7 +31,6 @@ export const streamTable = pgTable(
     },
     (table) => ({
         userUnq: index("user_stream_unq").on(table.userId),
-        categoryIdx: index("category_idx").on(table.categoryId),
     }),
 );
 

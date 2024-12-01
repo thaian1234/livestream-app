@@ -1,15 +1,5 @@
-DO $$ BEGIN
- CREATE TYPE "public"."provider_id" AS ENUM('google', 'github');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."type" AS ENUM('stream_start', 'stream_end', 'new_follower');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
+CREATE TYPE "public"."provider_id" AS ENUM('google', 'github');--> statement-breakpoint
+CREATE TYPE "public"."type" AS ENUM('stream_start', 'stream_end', 'new_follower');--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "accounts" (
 	"provider_id" "provider_id" NOT NULL,
 	"provider_user_id" varchar(255) NOT NULL,
@@ -23,6 +13,19 @@ CREATE TABLE IF NOT EXISTS "blocks" (
 	"blocked_id" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "categories" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"thumbnail_url" text,
+	"parent_id" uuid,
+	"slug" text NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "categories_name_unique" UNIQUE("name"),
+	CONSTRAINT "categories_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "email_verification_codes" (
@@ -65,11 +68,19 @@ CREATE TABLE IF NOT EXISTS "settings" (
 	"stream_id" uuid NOT NULL,
 	"is_chat_delayed" boolean DEFAULT false NOT NULL,
 	"is_chat_followers_only" boolean DEFAULT false NOT NULL,
+	"is_chat_enabled" boolean DEFAULT true NOT NULL,
 	"server_url" text,
 	"stream_key" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	CONSTRAINT "setting_stream_unq" UNIQUE("stream_id")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "stream_categories" (
+	"stream_id" uuid NOT NULL,
+	"category_id" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "stream_categories_stream_id_category_id_pk" PRIMARY KEY("stream_id","category_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "streams" (
@@ -110,6 +121,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "blocks" ADD CONSTRAINT "blocks_blocked_id_users_id_fk" FOREIGN KEY ("blocked_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "categories" ADD CONSTRAINT "category_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -157,6 +174,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "stream_categories" ADD CONSTRAINT "stream_categories_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "stream_categories" ADD CONSTRAINT "stream_categories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "streams" ADD CONSTRAINT "streams_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -170,4 +199,6 @@ CREATE INDEX IF NOT EXISTS "follower_idx" ON "follows" USING btree ("follower_id
 CREATE INDEX IF NOT EXISTS "followed_idx" ON "follows" USING btree ("following_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_notification_idx" ON "notifications" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "stream_notification_idx" ON "notifications" USING btree ("stream_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "stream_category_stream_idx" ON "stream_categories" USING btree ("stream_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "stream_category_category_idx" ON "stream_categories" USING btree ("category_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_stream_unq" ON "streams" USING btree ("user_id");
