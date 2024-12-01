@@ -1,123 +1,156 @@
 "use client";
 
 import { streamApi } from "../../apis";
+import { useChannelViewers } from "../../hooks/use-channel-viewers";
 import { Search } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Event } from "stream-chat";
-import { useChannelStateContext, useChatContext } from "stream-chat-react";
+import { useMemo, useState } from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
+import { Spinner } from "@/components/ui/spinner";
 
 type ParamsType = {
     username: string;
 };
 
+type SectionData = {
+    id: string;
+    username: string;
+    type: "broadcaster" | "viewer";
+};
+
 export function Community() {
-    const [isOpenBroadcaster, setIsOpenBroadcaster] = useState(true);
-    const [isOpenModerators, setIsOpenModerators] = useState(true);
-    const [isOpenCommunityVIPs, setIsOpenCommunityVIPs] = useState(true);
-    const [channelViewers, setChannelViewers] = useState<
-        Array<{ name: string; online: boolean; id: string }>
-    >([]);
+    const [openSections, setOpenSections] = useState({
+        broadcaster: true,
+        viewers: true,
+    });
+
     const [searchQuery, setSearchQuery] = useState("");
-    const { channel, watcher_count } = useChannelStateContext();
     const router = useRouter();
     const params = useParams<ParamsType>();
+
+    const { channelViewers } = useChannelViewers();
+
     const {
         data: streamer,
         isPending,
         isError,
     } = streamApi.query.useGetStreamInformation(params.username);
-    useEffect(() => {
-        const updateChannelViewers = (event?: Event) => {
-            console.log("Call");
-            setChannelViewers(
-                Object.values(channel.state.watchers).map((user) => ({
-                    name: user.name!,
-                    online: !!user.online,
-                    id: user.id,
-                })),
-            );
+
+    // Memoized sections data
+    const sections = useMemo(() => {
+        if (!streamer) return [];
+
+        const broadcasterSection: SectionData = {
+            id: streamer.data.user.id,
+            username: streamer.data.user.username,
+            type: "broadcaster",
         };
-        channel.on("user.watching.start", updateChannelViewers);
-        channel.on("user.watching.stop", updateChannelViewers);
-        updateChannelViewers();
-        return () => {
-            channel.on("user.watching.start", updateChannelViewers);
-            channel.on("user.watching.stop", updateChannelViewers);
-        };
-    }, [channel]);
-    if (isPending) {
-        return <p>Loading...</p>;
-    }
+
+        const viewerSections: SectionData[] = channelViewers
+            .filter(
+                (viewer) =>
+                    viewer.id !== streamer.data.user.id &&
+                    viewer.online &&
+                    viewer.name
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()),
+            )
+            .map((viewer) => ({
+                id: viewer.id,
+                username: viewer.name,
+                type: "viewer",
+            }));
+
+        return [broadcasterSection, ...viewerSections];
+    }, [streamer, channelViewers, searchQuery]);
+
+    if (isPending) return <Spinner />;
     if (!streamer || isError || streamer?.data.isBlocked) {
         router.replace(ROUTES.HOME_PAGE);
-        return <></>;
+        return null;
     }
-    const filteredViewrs = channelViewers.filter((viewer) =>
-        viewer.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    return (
-        <>
-            <div className="mx-1 my-2">
-                <IconInput
-                    placeholder="Filter"
-                    variant="primary"
-                    customSize="sm"
-                    className="border-gray-500 bg-transparent pl-12"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                >
-                    <LeftIcon>
-                        <Search className="size-5 text-gray-500" />
-                    </LeftIcon>
-                </IconInput>
-            </div>
 
-            <CollapsibleSection
-                isOpen={isOpenBroadcaster}
-                setIsOpen={setIsOpenBroadcaster}
-                title={"Broadcaster"}
-            >
-                <div
-                    key={streamer.data.user.id}
-                    className="flex items-center py-1"
-                >
-                    <p>{streamer.data.user.username}</p>
-                </div>
-            </CollapsibleSection>
-            {/* <CollapsibleSection
-                isOpen={isOpenModerators}
-                setIsOpen={setIsOpenModerators}
-                title={"Moderators"}
-            >
-                {moderatorsData.map((data) => (
-                    <div key={data.id} className="flex items-center py-1">
-                        <p>{data.username}</p>
-                    </div>
-                ))}
-            </CollapsibleSection> */}
-            <CollapsibleSection
-                isOpen={isOpenCommunityVIPs}
-                setIsOpen={setIsOpenCommunityVIPs}
-                title={"Viewer"}
-            >
-                {filteredViewrs.map(
-                    (data) =>
-                        data.id !== streamer.data.user.id &&
-                        data.online && (
-                            <div
-                                key={data.id}
-                                className="flex items-center py-1"
-                            >
-                                <p>{data.name}</p>
-                            </div>
-                        ),
+    const toggleSection = (section: keyof typeof openSections) => {
+        setOpenSections((prev) => ({
+            ...prev,
+            [section]: !prev[section],
+        }));
+    };
+
+    return (
+        <div className="community-container">
+            <SearchInput
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+            />
+
+            <CommunitySection
+                title="Broadcaster"
+                isOpen={openSections.broadcaster}
+                onToggle={() => toggleSection("broadcaster")}
+                data={sections.filter(
+                    (section) => section.type === "broadcaster",
                 )}
-            </CollapsibleSection>
-        </>
+            />
+
+            <CommunitySection
+                title="Viewers"
+                isOpen={openSections.viewers}
+                onToggle={() => toggleSection("viewers")}
+                data={sections.filter((section) => section.type === "viewer")}
+            />
+        </div>
+    );
+}
+
+// Reusable Section Component
+function CommunitySection({
+    title,
+    isOpen,
+    onToggle,
+    data,
+}: {
+    title: string;
+    isOpen: boolean;
+    onToggle: () => void;
+    data: SectionData[];
+}) {
+    return (
+        <CollapsibleSection isOpen={isOpen} setIsOpen={onToggle} title={title}>
+            {data.map((item) => (
+                <div key={item.id} className="flex items-center py-1">
+                    <p>{item.username}</p>
+                </div>
+            ))}
+        </CollapsibleSection>
+    );
+}
+
+function SearchInput({
+    searchQuery,
+    onSearchChange,
+}: {
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
+}) {
+    return (
+        <div className="mx-1 my-2">
+            <IconInput
+                placeholder="Filter"
+                variant="primary"
+                customSize="sm"
+                className="border-gray-500 bg-transparent pl-12"
+                onChange={(e) => onSearchChange(e.target.value)}
+            >
+                <LeftIcon>
+                    <SearchIcon className="size-5 text-gray-500" />
+                </LeftIcon>
+            </IconInput>
+        </div>
     );
 }
