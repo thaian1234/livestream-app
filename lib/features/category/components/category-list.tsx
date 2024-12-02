@@ -52,7 +52,7 @@ const categories: Category[] = [
 ];
 
 export function CategoryList() {
-    const { data, isPending, isError } = categoryApi.query.useGetDetail();
+    const { data, isPending, isError } = categoryApi.query.useGetDetail({});
 
     if (isPending) {
         return <p>Loading category</p>;

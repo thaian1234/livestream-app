@@ -1,39 +1,26 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
+import { FilterType, PaginationType } from "@/lib/types";
 
 const keys = {
-    basic: (filterBy: string, page: string, size: string) => [
-        "category-basic",
-        filterBy,
-        page,
-        size,
-    ],
-    detail: (page: string, size: string) => ["category-detail", page, size],
+    basic: (queryParams: PaginationType & FilterType) =>
+        ["category-basic", queryParams] as string[],
+    detail: (pagination: PaginationType) =>
+        ["category-detail", pagination] as string[],
 };
 
 export const categoryApi = {
     query: {
-        useGetBasic(filterBy = "", page = "1", size = "5") {
+        useGetBasic(queryParams: PaginationType & FilterType) {
             const $get = client.api.categorys.$get;
-            return Fetcher.useHonoQuery(
-                $get,
-                keys.basic(filterBy, page, size),
-                {
-                    query: {
-                        filterBy,
-                        page,
-                        size,
-                    },
-                },
-            );
+            return Fetcher.useHonoQuery($get, keys.basic(queryParams), {
+                query: queryParams,
+            });
         },
-        useGetDetail(page = "1", size = "12") {
+        useGetDetail(pagination: PaginationType) {
             const $get = client.api.categorys.detail.$get;
-            return Fetcher.useHonoQuery($get, keys.detail(page, size), {
-                query: {
-                    page,
-                    size,
-                },
+            return Fetcher.useHonoQuery($get, keys.detail(pagination), {
+                query: pagination,
             });
         },
     },

@@ -8,6 +8,7 @@ import {
     getTableColumns,
     ilike,
     inArray,
+    notInArray,
     or,
     sql,
 } from "drizzle-orm";
@@ -127,24 +128,41 @@ export class CategoryRepository implements ICategoryRepository {
     }
     async addCategoriesToStream(data: StreamToCategoriesDTO.Insert[]) {
         try {
-            const streamCategories = await this.db
-                .insert(tableSchemas.streamsToCategoriesTable)
-                .values(data)
-                .onConflictDoUpdate({
-                    target: [
-                        tableSchemas.streamsToCategoriesTable.streamId,
-                        tableSchemas.streamsToCategoriesTable.categoryId,
-                    ],
-                    set: buildConflictUpdateColumns(
-                        tableSchemas.streamsToCategoriesTable,
-                        ["streamId", "categoryId", "createdAt"],
-                    ),
-                })
-                .returning();
-            return streamCategories;
+            return this.db.transaction(async (tx) => {
+                const categoryIds = data.map((item) => item.categoryId);
+                await tx
+                    .delete(tableSchemas.streamsToCategoriesTable)
+                    .where(
+                        and(
+                            eq(
+                                tableSchemas.streamsToCategoriesTable.streamId,
+                                data[0].streamId,
+                            ),
+                            notInArray(
+                                tableSchemas.streamsToCategoriesTable
+                                    .categoryId,
+                                categoryIds,
+                            ),
+                        ),
+                    );
+                await this.db
+                    .insert(tableSchemas.streamsToCategoriesTable)
+                    .values(data)
+                    .onConflictDoUpdate({
+                        target: [
+                            tableSchemas.streamsToCategoriesTable.streamId,
+                            tableSchemas.streamsToCategoriesTable.categoryId,
+                        ],
+                        set: buildConflictUpdateColumns(
+                            tableSchemas.streamsToCategoriesTable,
+                            ["streamId", "categoryId", "createdAt"],
+                        ),
+                    });
+                return true;
+            });
         } catch (error) {
             console.error("Error adding categories to stream:", error);
-            return [];
+            return false;
         }
     }
     async deleteCategoryFromStream(streamId: string, categoryIds: string[]) {

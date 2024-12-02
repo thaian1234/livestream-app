@@ -41,7 +41,8 @@ export class StreamController implements IStreamController {
             .get("/recommend", ...this.getRecommendStreams())
             .get("/following", ...this.getFollowingStreams())
             .get("/chat-token", ...this.getStreamChatTokenHandler())
-            .post("/add-category", ...this.addCategoriesToStream())
+            .get("/categories", ...this.getCategoriesHandler())
+            .post("/add-categories", ...this.addCategoriesToStream())
             .delete("/remove-category", ...this.deleteCategoriesFromStream());
     }
     private getStreamTokenHandler() {
@@ -134,7 +135,6 @@ export class StreamController implements IStreamController {
             },
         );
     }
-
     private getAllStreamHandler() {
         const queries = z.object({
             recommendPage: QueryDTO.createQueryParam(1),
@@ -300,14 +300,14 @@ export class StreamController implements IStreamController {
                         "You are not allowed to add categories to this stream",
                     );
                 }
-                const isAtLeastOneSuccess =
-                    this.categoryService.addCategoriesToStream(
+                const isSuccess =
+                    await this.categoryService.addCategoriesToStream(
                         jsonData.categoryIds.map((categoryId: string) => ({
                             categoryId: categoryId,
                             streamId: jsonData.streamId,
                         })),
                     );
-                if (!isAtLeastOneSuccess) {
+                if (!isSuccess) {
                     throw new MyError.BadRequestError(
                         "Failed to bulk add category to stream",
                     );
@@ -351,6 +351,28 @@ export class StreamController implements IStreamController {
                     data: undefined,
                     status: HttpStatus.Created,
                     msg: "Bulk delete category to stream success",
+                });
+            },
+        );
+    }
+    private getCategoriesHandler() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                if (!currentUser.stream.id) {
+                    throw new MyError.BadRequestError(
+                        "You are not allowed to get categories",
+                    );
+                }
+                const streamCategories =
+                    await this.streamService.getStreamCategories(
+                        currentUser.stream.id,
+                    );
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: streamCategories,
+                    status: HttpStatus.OK,
                 });
             },
         );

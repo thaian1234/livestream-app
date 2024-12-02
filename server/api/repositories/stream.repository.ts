@@ -269,4 +269,21 @@ export class StreamRepository implements IStreamRepository {
             return { streams, totalRecords };
         } catch (error) {}
     }
+    public async getStreamCategories(streamId: string) {
+        try {
+            const categories =
+                await this.db.query.streamsToCategoriesTable.findMany({
+                    where: eq(
+                        tableSchemas.streamsToCategoriesTable.streamId,
+                        streamId,
+                    ),
+                    with: {
+                        category: true,
+                    },
+                });
+            return categories;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

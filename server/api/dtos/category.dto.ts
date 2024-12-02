@@ -17,6 +17,7 @@ export class CategoryDTO {
         id: true,
         name: true,
         slug: true,
+        imageUrl: true,
     });
     public static detailSelectSchema = this.selectSchema
         .extend({
@@ -46,4 +47,5 @@ export namespace CategoryDTO {
     export type Update = z.infer<typeof CategoryDTO.updateSchema>;
     export type Delete = z.infer<typeof CategoryDTO.deleteSchema>;
     export type Select = z.infer<typeof CategoryDTO.selectSchema>;
+    export type BasicSelect = z.infer<typeof CategoryDTO.basicSelectSchema>;
 }

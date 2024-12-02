@@ -3,6 +3,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
+import { PaginationType } from "@/lib/types";
 
 type DefaultQueries = {
     recommendPage?: string | string[] | undefined;
@@ -11,20 +12,17 @@ type DefaultQueries = {
     followSize?: string | string[] | undefined;
 };
 
-type PagitionType = {
-    page?: string | string[] | undefined;
-    size?: string | string[] | undefined;
-};
-
 const keys = {
     stream_token: ["stream_token"],
     stream_information: (username: string) => ["stream_information", username],
     streams: (queries: DefaultQueries) => ["streams", queries] as string[],
     chat_token: ["chat_token"],
-    recommend_streams: (pagination: PagitionType) =>
+    recommend_streams: (pagination: PaginationType) =>
         ["recommend_streams", pagination] as string[],
-    following_streams: (pagination: PagitionType) =>
+    following_streams: (pagination: PaginationType) =>
         ["following_streams", pagination] as string[],
+    stream_categories: (streamId: string) =>
+        ["stream_categories", streamId] as string[],
 };
 
 export const streamApi = {
@@ -76,7 +74,7 @@ export const streamApi = {
                 },
             );
         },
-        useGetRecommendStreams(pagination: PagitionType) {
+        useGetRecommendStreams(pagination: PaginationType) {
             const $get = client.api.streams.recommend.$get;
             return Fetcher.useHonoQuery(
                 $get,
@@ -90,7 +88,7 @@ export const streamApi = {
                 },
             );
         },
-        useGetFollowingStreams(pagination: PagitionType) {
+        useGetFollowingStreams(pagination: PaginationType) {
             const $get = client.api.streams.following.$get;
             return Fetcher.useHonoQuery(
                 $get,
@@ -102,6 +100,15 @@ export const streamApi = {
                     retry: 1,
                     placeholderData: keepPreviousData,
                 },
+            );
+        },
+        useGetStreamCategories(streamId: string) {
+            const $get = client.api.streams.categories.$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.stream_categories(streamId),
+                {},
+                {},
             );
         },
     },
@@ -121,6 +128,20 @@ export const streamApi = {
                     },
                 },
             );
+            return mutation;
+        },
+        useAddCategoriesToStream() {
+            const $post = client.api.streams["add-categories"].$post;
+            const { mutation, queryClient } = Fetcher.useHonoMutation($post, {
+                onError(err) {
+                    console.error(err);
+                },
+                onSuccess({}, { json }) {
+                    queryClient.invalidateQueries({
+                        queryKey: keys.stream_categories(json.streamId),
+                    });
+                },
+            });
             return mutation;
         },
     },
