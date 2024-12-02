@@ -5,6 +5,7 @@ import { accountTable } from "./account.table";
 import { blockTable } from "./block.table";
 import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
+import { forgetPasswordTable } from "./forget-password.table";
 import { sessionTable } from "./session.table";
 import { streamTable } from "./stream.table";
 
@@ -32,4 +33,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     accounts: many(accountTable),
     stream: one(streamTable),
     session: one(sessionTable),
+    forgetPassword: many(forgetPasswordTable),
 }));

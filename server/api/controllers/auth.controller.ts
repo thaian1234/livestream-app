@@ -12,10 +12,13 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IAuthService } from "../services/auth.service";
 import { IEmailVerificationService } from "../services/email-verification.service";
+import { IForgetPasswordService } from "../services/forget-password.service";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
+import { isWithinExpirationDate } from "oslo";
+import { z } from "zod";
 
 export interface IAuthController
     extends Utils.PickMethods<AuthController, "setupHandlers"> {}
@@ -29,6 +32,7 @@ export class AuthController implements IAuthController {
         private readonly nodemailService: INodemailService,
         private readonly getStreamService: GetStreamService,
         private readonly streamService: IStreamService,
+        private readonly forgetPasswordService: IForgetPasswordService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -38,7 +42,9 @@ export class AuthController implements IAuthController {
             .post("/sign-up", ...this.signUpHandler())
             .post("/verify-email", ...this.verifyEmailHandler())
             .post("/resend-verify", ...this.resendVerifyCodeHandler())
-            .get("/verify-session", ...this.verifySessionHandler());
+            .get("/verify-session", ...this.verifySessionHandler())
+            .post("/reset-password", ...this.sendforgetPasswordLink())
+            .post("/reset-password/:token", ...this.resetPassword());
     }
     private signInHandler() {
         return this.factory.createHandlers(
@@ -255,5 +261,107 @@ export class AuthController implements IAuthController {
                 },
             });
         });
+    }
+    private sendforgetPasswordLink() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                AuthDTO.userForgetPassword,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const { email } = c.req.valid("json");
+                const user = await this.userService.getUserByEmail(email);
+                if (!user) {
+                    throw new MyError.BadRequestError("user does not exist");
+                }
+
+                const storedUserTokens =
+                    await this.forgetPasswordService.findByUserId(user.id);
+
+                if (storedUserTokens) {
+                    await this.forgetPasswordService.deleteById(
+                        storedUserTokens.id,
+                    );
+                }
+
+                const token = await this.forgetPasswordService.save(user.id);
+
+                if (!token) {
+                    throw new MyError.BadRequestError("Try again later");
+                }
+
+                const url = `http://localhost:3000/reset-password/${token.id}`;
+                c.var.executionCtx.waitUntil(
+                    this.nodemailService
+                        .sendForgetPasswordLink(url, email)
+                        .catch(() => {
+                            throw new MyError.ServiceUnavailableError(
+                                "Cannot send foget password link to your email",
+                            );
+                        }),
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    status: HttpStatus.OK,
+                    data: undefined,
+                    msg: "Please check your email for forget password link",
+                });
+            },
+        );
+    }
+    private resetPassword() {
+        const params = z.object({
+            token: z.string().trim().min(1),
+        });
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            zValidator(
+                "json",
+                AuthDTO.resetPasswordSchema,
+                Validator.handleParseError,
+            ),
+            async (c) => {
+                const { token } = c.req.valid("param");
+                const jsonData = c.req.valid("json");
+
+                console.log(jsonData);
+
+                const savedToken =
+                    await this.forgetPasswordService.findById(token);
+
+                if (!savedToken) {
+                    throw new MyError.BadRequestError("Wrong token try again");
+                }
+
+                if (
+                    !savedToken.expiresAt ||
+                    !isWithinExpirationDate(savedToken.expiresAt)
+                ) {
+                    await this.forgetPasswordService.deleteById(savedToken.id);
+                    throw new MyError.BadRequestError("Token has expired");
+                }
+
+                //Check password reset token
+                const updatedUser = await this.userService.updatePassword(
+                    savedToken.userId,
+                    jsonData.password,
+                );
+                if (!updatedUser) {
+                    throw new MyError.ServiceUnavailableError(
+                        "Cannot create new Password",
+                    );
+                }
+
+                await this.forgetPasswordService.deleteById(savedToken.id);
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    status: HttpStatus.OK,
+                    msg: "Reset password successfully",
+                    data: undefined,
+                });
+            },
+        );
     }
 }
