@@ -130,13 +130,15 @@ export class CategoryRepository implements ICategoryRepository {
         try {
             return this.db.transaction(async (tx) => {
                 const categoryIds = data.map((item) => item.categoryId);
+                const streamId = data[0].streamId;
+
                 await tx
                     .delete(tableSchemas.streamsToCategoriesTable)
                     .where(
                         and(
                             eq(
                                 tableSchemas.streamsToCategoriesTable.streamId,
-                                data[0].streamId,
+                                streamId,
                             ),
                             notInArray(
                                 tableSchemas.streamsToCategoriesTable
@@ -179,6 +181,23 @@ export class CategoryRepository implements ICategoryRepository {
                             tableSchemas.streamsToCategoriesTable.categoryId,
                             categoryIds,
                         ),
+                    ),
+                )
+                .returning();
+            return rows.length > 0;
+        } catch (error) {
+            console.error("Error deleting categories from stream:", error);
+            return false;
+        }
+    }
+    async deleteAllCategoriesFromStream(streamId: string) {
+        try {
+            const rows = await this.db
+                .delete(tableSchemas.streamsToCategoriesTable)
+                .where(
+                    eq(
+                        tableSchemas.streamsToCategoriesTable.streamId,
+                        streamId,
                     ),
                 )
                 .returning();

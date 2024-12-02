@@ -300,6 +300,17 @@ export class StreamController implements IStreamController {
                         "You are not allowed to add categories to this stream",
                     );
                 }
+                if (!jsonData.categoryIds.length) {
+                    await this.categoryService.deleteAllCategoriesFromStream(
+                        jsonData.streamId,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        data: undefined,
+                        status: HttpStatus.Created,
+                        msg: "Bulk add category to stream success",
+                    });
+                }
                 const isSuccess =
                     await this.categoryService.addCategoriesToStream(
                         jsonData.categoryIds.map((categoryId: string) => ({

@@ -45,4 +45,11 @@ export class CategoryService implements ICategoryService {
         );
         return result;
     }
+    public async deleteAllCategoriesFromStream(streamId: string) {
+        const result =
+            await this.categoryRepository.deleteAllCategoriesFromStream(
+                streamId,
+            );
+        return result;
+    }
 }

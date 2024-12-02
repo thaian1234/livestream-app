@@ -74,7 +74,7 @@ export function StreamCategoriesForm({
                     variant={"ghost"}
                     size={"icon"}
                     className="hover:bg-transparent"
-                    disabled={streamMutation.isPending || !ref.current}
+                    disabled={streamMutation.isPending}
                 >
                     <SaveAllIcon />
                 </Button>
