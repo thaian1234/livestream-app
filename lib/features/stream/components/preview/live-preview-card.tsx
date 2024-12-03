@@ -53,7 +53,7 @@ export function LivePreviewCard({
                         <p className="text-lg">{name}</p>
                         <p className="text-sm">{user.username}</p>
                         <div className="flex justify-between py-1">
-                            <div className="flex w-2/3 space-x-2 overflow-x-hidden">
+                            <div className="flex w-full space-x-1 overflow-x-hidden">
                                 {categories.map((category) => {
                                     return (
                                         <Badge

@@ -36,10 +36,6 @@ export function LiveInformation({
                         <div className="text-sm">{user.username}</div>
                         <div className="flex space-x-6 text-sm text-white/70">
                             <span> Followers: {followerCount}</span>
-                            <span className="flex space-x-1">
-                                <UsersRound size={16} />
-                                <span className="text-sm">{"100"}</span>
-                            </span>
                         </div>
                     </div>
                 </div>
