@@ -10,6 +10,7 @@ import {
     emailVerificationTable,
 } from "./email-verification.table";
 import { followRelations, followTable } from "./follow.table";
+import { forgetPasswordTable } from "./forget-password.table";
 import { notificationTable, typeEnum } from "./notification.table";
 import { sessionRelations, sessionTable } from "./session.table";
 import { settingRelations, settingTable } from "./setting.table";
@@ -32,6 +33,7 @@ const tableSchemas = {
     accountTable,
     categoryTable,
     streamsToCategoriesTable,
+    forgetPasswordTable
 } as const;
 
 export const tableRelations = {
@@ -47,6 +49,7 @@ export const tableRelations = {
     providerNameEnum,
     streamsToCategoriesRelations,
     categoryRelations,
+    forgetPasswordTable
 } as const;
 
 export default tableSchemas;

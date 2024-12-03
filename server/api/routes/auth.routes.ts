@@ -13,10 +13,12 @@ import { NodemailService } from "../external-services/nodemail.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { AccountRepository } from "../repositories/account.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
+import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
 import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AuthService } from "../services/auth.service";
 import { EmailVerificationService } from "../services/email-verification.service";
+import { ForgetPasswordService } from "../services/forget-password.service";
 import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { createFactory } from "hono/factory";
@@ -42,6 +44,7 @@ function createAuthRoutes() {
     const emailVerificationRepository = new EmailVerificationRepository();
     const accountRepository = new AccountRepository();
     const streamRepository = new StreamRepository();
+    const forgetPasswordRepository = new ForgetPasswordRepository();
     // Service
     const userService = new UserService(userRepository);
     const getStreamService = new GetStreamService();
@@ -64,6 +67,9 @@ function createAuthRoutes() {
         getStreamService,
         streamService,
     );
+    const forgetPasswordService = new ForgetPasswordService(
+        forgetPasswordRepository,
+    );
     const authController = new AuthController(
         factory,
         authService,
@@ -72,6 +78,7 @@ function createAuthRoutes() {
         nodemailService,
         getStreamService,
         streamService,
+        forgetPasswordService,
     );
     const oauthController = new OauthController(
         factory,

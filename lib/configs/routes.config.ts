@@ -2,6 +2,8 @@ export const ROUTES = {
     HOME_PAGE: "/",
     SIGNIN_PAGE: "/sign-in",
     SIGNUP_PAGE: "/sign-up",
+    RESET_PASSWORD_PAGE: (token: string) => `/reset-password/${token}`,
+    FORGET_PASSWORD_PAGE: "/forget-password",
     OTP_VERIFY_PAGE: "/otp-verify",
     STREAM_PAGE: (username: string) => `/${username}`,
     DASHBOARD_PAGE: (username: string) => `/dashboard/${username}`,
