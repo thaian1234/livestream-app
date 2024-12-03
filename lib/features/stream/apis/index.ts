@@ -21,7 +21,7 @@ const keys = {
         ["recommend_streams", pagination] as string[],
     following_streams: (pagination: PaginationType) =>
         ["following_streams", pagination] as string[],
-    stream_categories: (streamId: string) =>
+    stream_categories: (streamId?: string) =>
         ["stream_categories", streamId] as string[],
 };
 
@@ -102,12 +102,16 @@ export const streamApi = {
                 },
             );
         },
-        useGetStreamCategories(streamId: string) {
+        useGetStreamCategories(streamId?: string) {
             const $get = client.api.streams.categories.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream_categories(streamId),
-                {},
+                {
+                    query: {
+                        id: streamId,
+                    },
+                },
                 {},
             );
         },

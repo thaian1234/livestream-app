@@ -380,19 +380,23 @@ export class StreamController implements IStreamController {
         );
     }
     private getCategoriesHandler() {
+        const queries = z.object({
+            id: z.string().uuid().optional(),
+        });
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
+            zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const currentUser = c.get("getUser");
-                if (!currentUser.stream.id) {
+                const currentUser = c.get("user");
+                const id = c.req.valid("query").id;
+                const streamId = id || currentUser?.stream.id;
+
+                if (!streamId) {
                     throw new MyError.BadRequestError(
-                        "You are not allowed to get categories",
+                        "Please provide a valid stream id",
                     );
                 }
                 const streamCategories =
-                    await this.streamService.getStreamCategories(
-                        currentUser.stream.id,
-                    );
+                    await this.streamService.getStreamCategories(streamId);
                 return ApiResponse.WriteJSON({
                     c,
                     data: streamCategories,
