@@ -3,6 +3,7 @@
 import { authApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, LockIcon, MailIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -92,8 +93,8 @@ export function SignInForm() {
                 >
                     Login
                 </Button>
-                <CardTitle className="text-base font-normal">
-                    <a className="hover:underline"> Forgot password ?</a>
+                <CardTitle className="text-base font-normal hover:underline">
+                    <Link href={"/forget-password"}>Forgot password ?</Link>
                 </CardTitle>
             </CardFooter>
         </form>

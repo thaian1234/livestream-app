@@ -144,5 +144,30 @@ export const authApi = {
                 });
             return mutation;
         },
+        useSendForgetPasswordLink() {
+            const $post = client.api.auth["reset-password"].$post;
+            const { mutation, toast } = Fetcher.useHonoMutation($post, {
+                onSuccess(data) {
+                    toast.success(data.msg);
+                },
+                onError(err) {
+                    toast.error(err.message);
+                },
+            });
+            return mutation;
+        },
+        useResetPassword() {
+            const $post = client.api.auth["reset-password"][":token"].$post;
+            const { mutation, toast, router } = Fetcher.useHonoMutation($post, {
+                onSuccess(data) {
+                    toast.success(data.msg);
+                    router.replace(ROUTES.SIGNIN_PAGE);
+                },
+                onError(err) {
+                    toast.error(err.message);
+                },
+            });
+            return mutation;
+        },
     },
 };
