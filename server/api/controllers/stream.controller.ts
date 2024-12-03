@@ -219,13 +219,20 @@ export class StreamController implements IStreamController {
                           offset,
                           size,
                       );
+                const formattedData = recommends?.streams.map((stream) => {
+                    const categories = stream.streamsToCategories.map(
+                        (streamToCategory) => streamToCategory.category,
+                    );
+                    return {
+                        ...stream,
+                        categories,
+                    };
+                });
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.OK,
                     data: PaginationHelper.getPaginationMetadata({
-                        data: StreamDTO.parseStreamWithUser(
-                            recommends?.streams,
-                        ),
+                        data: StreamDTO.parseStreamWithUser(formattedData),
                         currentOffset: offset,
                         limit: size,
                         totalRecords: recommends?.totalRecords,
@@ -249,14 +256,20 @@ export class StreamController implements IStreamController {
                           size,
                       )
                     : null;
-
+                const formattedData = followings?.streams.map((stream) => {
+                    const categories = stream.streamsToCategories.map(
+                        (streamToCategory) => streamToCategory.category,
+                    );
+                    return {
+                        ...stream,
+                        categories,
+                    };
+                });
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.OK,
                     data: PaginationHelper.getPaginationMetadata({
-                        data: StreamDTO.parseStreamWithUser(
-                            followings?.streams,
-                        ),
+                        data: StreamDTO.parseStreamWithUser(formattedData),
                         currentOffset: offset,
                         limit: size,
                         totalRecords: followings?.totalRecords,
