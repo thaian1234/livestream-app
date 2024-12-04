@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { AspectRatio } from "./ui/aspect-ratio";
 import { UserAvatar } from "./user-avatar";
 
