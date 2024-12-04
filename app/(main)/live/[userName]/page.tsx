@@ -36,6 +36,7 @@ export default function LivePage() {
     if (isPending) {
         return <p>Loading...</p>;
     }
+    
     if (!data || isError || data?.data.isBlocked) {
         return router.replace(ROUTES.HOME_PAGE);
     }
@@ -59,6 +60,7 @@ export default function LivePage() {
                             stream={data.data.stream}
                             user={data.data.user}
                             isFollowing={data.data.isFollowing}
+                            isOwnedStream={true}
                         />
                         <div className="">
                             <p className="mb-4 text-lg text-white">
