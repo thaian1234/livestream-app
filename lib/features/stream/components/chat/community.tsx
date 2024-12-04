@@ -8,6 +8,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
+import { BlockButton } from "@/lib/features/block/components/block-button";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
@@ -32,6 +34,7 @@ export function Community() {
     const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
     const params = useParams<ParamsType>();
+    const user = useUser();
 
     const { channelViewers } = useChannelViewers();
 
@@ -96,6 +99,7 @@ export function Community() {
                 data={sections.filter(
                     (section) => section.type === "broadcaster",
                 )}
+                canBlock={false}
             />
 
             <CommunitySection
@@ -103,6 +107,7 @@ export function Community() {
                 isOpen={openSections.viewers}
                 onToggle={() => toggleSection("viewers")}
                 data={sections.filter((section) => section.type === "viewer")}
+                canBlock={user.user.id === streamer.data.user.id}
             />
         </div>
     );
@@ -114,19 +119,33 @@ function CommunitySection({
     isOpen,
     onToggle,
     data,
+    canBlock,
 }: {
     title: string;
     isOpen: boolean;
     onToggle: () => void;
     data: SectionData[];
+    canBlock: boolean;
 }) {
     return (
         <CollapsibleSection isOpen={isOpen} setIsOpen={onToggle} title={title}>
-            {data.map((item) => (
-                <div key={item.id} className="flex items-center py-1">
-                    <p>{item.username}</p>
-                </div>
-            ))}
+            {data.map((item) => {
+                return (
+                    <div
+                        key={item.id}
+                        className="flex items-center justify-between py-1"
+                    >
+                        <p>{item.username}</p>
+                        {canBlock && (
+                            <BlockButton
+                                blockedId={item.id}
+                                isBlock={false}
+                                key={item.id}
+                            />
+                        )}
+                    </div>
+                );
+            })}
         </CollapsibleSection>
     );
 }

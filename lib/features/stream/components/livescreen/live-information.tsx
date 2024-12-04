@@ -1,6 +1,8 @@
 import { Forward, UsersRound } from "lucide-react";
 
+import { BlockButton } from "@/lib/features/block/components/block-button";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
@@ -13,6 +15,7 @@ interface LiveInformationProps {
     user: UserDTO.Select;
     followerCount: number;
     isFollowing: boolean;
+    isOwnedStream: boolean;
 }
 
 export function LiveInformation({
@@ -21,6 +24,7 @@ export function LiveInformation({
     followerCount,
     isFollowing,
 }: LiveInformationProps) {
+    const currentUser = useUser();
     return (
         <div className="mt-2 flex justify-between px-2">
             <div className="w-full space-y-1 truncate text-white">
@@ -45,6 +49,12 @@ export function LiveInformation({
                 </div>
             </div>
             <div className="space-x-2"></div>
+
+            {currentUser.user.id !== user.id && (
+                <div className="mr-2">
+                    <BlockButton blockedId={user.id} isBlock={false} />
+                </div>
+            )}
 
             <FollowButton followingId={user.id} isFollowed={isFollowing} />
 
