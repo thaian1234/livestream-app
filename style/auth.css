@@ -10,13 +10,11 @@
 }
 
 .popup {
-    background-color: rgba(0, 0, 0, 0.14);
-    height: 650px;
-    width: 400px;
     border-radius: 20px;
     border-color: #4d4d4d;
     border-width: 1px;
 }
+
 .logoContainer {
     height: 25vw;
     width: 25vw;

@@ -34,7 +34,6 @@ import { Switch } from "@/components/ui/switch";
 export function ChangePasswordForm() {
     const { mutate: handleChangePassword, isPending } =
         userApi.mutation.useChangePassword();
-    const { user } = useUser();
     const form = useForm<UserDTO.UpdatePassword>({
         resolver: zodResolver(UserDTO.updatePasswordSchema),
         defaultValues: {
@@ -72,7 +71,10 @@ export function ChangePasswordForm() {
                     <Switch
                         id="change-password"
                         checked={changePassword}
-                        onCheckedChange={setChangePassword}
+                        onCheckedChange={() => {
+                            setChangePassword((prev) => !prev);
+                            form.reset();
+                        }}
                     />
                 </div>
             </div>
