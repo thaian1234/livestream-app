@@ -1,8 +1,9 @@
-import { CircleSlash2, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { blockApi } from "@/lib/features/block/apis";
-import { useUser } from "@/lib/hooks/use-user";
+import { BlockButton } from "@/lib/features/block/components/block-button";
 
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
@@ -18,48 +19,20 @@ interface MoreActionProps {
 }
 
 export function MoreActionPopover({ streamer }: MoreActionProps) {
-    const router = useRouter();
-    const currentUser = useUser();
-    const { mutate: handleBlockToggle, isPending } =
-        blockApi.mutation.useBlockToggle();
-    const handleClick = () => {
-        handleBlockToggle(
-            { param: { blockedId: streamer.id } },
-            {
-                onSuccess: () => {
-                    router.replace("/");
-                },
-                onError: () => {},
-            },
-        );
-    };
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="border border-slate-400">
                     <MoreHorizontal />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-40">
-                <div>
-                    <div className="mb-2">
-                        <h4 className="font-medium leading-none">Action</h4>
-                    </div>
-                    {currentUser.user.id !== streamer.id && (
-                        <div>
-                            <Button
-                                onClick={handleClick}
-                                variant={"ghost"}
-                                className="flex w-full items-center justify-between"
-                            >
-                                <CircleSlash2 />
-                                <p className="text-sm text-muted-foreground">
-                                    Block
-                                </p>
-                            </Button>
-                        </div>
-                    )}
-                </div>
+            <PopoverContent className="w-40 px-2">
+                <BlockButton
+                    blockedId={streamer.id}
+                    isBlock={false}
+                    showText={true}
+                    redirectTo={ROUTES.HOME_PAGE}
+                />
             </PopoverContent>
         </Popover>
     );

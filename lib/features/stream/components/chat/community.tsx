@@ -141,6 +141,7 @@ function CommunitySection({
                                 blockedId={item.id}
                                 isBlock={false}
                                 key={item.id}
+                                showText={false}
                             />
                         )}
                     </div>

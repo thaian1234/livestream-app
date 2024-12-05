@@ -24,11 +24,9 @@ export function LiveInformation({
     user,
     followerCount,
     isFollowing,
+    isOwnedStream,
 }: LiveInformationProps) {
-    const currentUser = useUser();
-    const { data, isPending } = streamApi.query.useGetStreamCategories(
-        stream.id,
-    );
+    const { data } = streamApi.query.useGetStreamCategories(stream.id);
     const categories = data?.data;
 
     return (
@@ -64,13 +62,15 @@ export function LiveInformation({
                     </div>
                 </div>
             </div>
-            <div className="space-x-2"></div>
-
-            <div className="mr-2">
-                <FollowButton followingId={user.id} isFollowed={isFollowing} />
-            </div>
-
-            <MoreActionPopover streamer={user} />
+            {!isOwnedStream && (
+                <div className="flex space-x-4">
+                    <FollowButton
+                        followingId={user.id}
+                        isFollowed={isFollowing}
+                    />
+                    <MoreActionPopover streamer={user} />
+                </div>
+            )}
         </div>
     );
 }
