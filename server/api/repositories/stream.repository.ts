@@ -22,6 +22,7 @@ export interface IStreamRepository
 
 export class StreamRepository implements IStreamRepository {
     private db;
+    private categorySize = 3;
     constructor() {
         this.db = Database.getInstance().db;
     }
@@ -172,6 +173,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -210,6 +217,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 offset: offset,
                 limit: limit,
@@ -229,6 +242,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -268,5 +287,22 @@ export class StreamRepository implements IStreamRepository {
             );
             return { streams, totalRecords };
         } catch (error) {}
+    }
+    public async getStreamCategories(streamId: string) {
+        try {
+            const categories =
+                await this.db.query.streamsToCategoriesTable.findMany({
+                    where: eq(
+                        tableSchemas.streamsToCategoriesTable.streamId,
+                        streamId,
+                    ),
+                    with: {
+                        category: true,
+                    },
+                });
+            return categories;
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
