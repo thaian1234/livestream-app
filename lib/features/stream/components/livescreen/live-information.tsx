@@ -1,13 +1,5 @@
 import { streamApi } from "../../apis";
-import { Forward, UsersRound } from "lucide-react";
-import {
-    CircleSlash2,
-    Forward,
-    MoreHorizontal,
-    UsersRound,
-} from "lucide-react";
 
-import { BlockButton } from "@/lib/features/block/components/block-button";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useUser } from "@/lib/hooks/use-user";
 
@@ -15,14 +7,6 @@ import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import { UserAvatar } from "@/components/user-avatar";
 
 import { MoreActionPopover } from "./more-action-popover";
