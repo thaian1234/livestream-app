@@ -8,6 +8,7 @@ import {
     getTableColumns,
     ilike,
     inArray,
+    isNull,
     notInArray,
     or,
     sql,
@@ -64,10 +65,17 @@ export class CategoryRepository implements ICategoryRepository {
     async findAllDetail(offset: number = 0, limit: number = 10) {
         try {
             const categories = await this.db.query.categoryTable.findMany({
-                where: eq(tableSchemas.categoryTable.isActive, true),
+                where: and(
+                    eq(tableSchemas.categoryTable.isActive, true),
+                    isNull(tableSchemas.categoryTable.parentId), // Get root categories first
+                ),
                 with: {
-                    children: true,
-                    parent: true,
+                    children: {
+                        where: eq(tableSchemas.categoryTable.isActive, true),
+                        with: {
+                            children: true, // For deeper nesting if needed
+                        },
+                    },
                 },
                 offset,
                 limit,

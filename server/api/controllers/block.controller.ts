@@ -90,7 +90,7 @@ export class BlockController implements IBlockController {
 
                 const blockedQuery =
                     await this.blockService.findBlockedByUserIdWithUsername(
-                        filterBy,
+                        filterBy || "",
                         currentUser.id,
                         (page - 1) * size,
                         size,

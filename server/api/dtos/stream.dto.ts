@@ -39,9 +39,10 @@ export class StreamDTO {
         user: userSchema,
         categories: CategoryDTO.basicSelectSchema.array(),
     });
-    public static streamSearch = this.selectSchema.extend({
+public static streamSearch = this.selectSchema.extend({
         username: z.string(),
         avatar: z.string().nullish(),
+        categories: CategoryDTO.basicSelectSchema.array(),
     });
     public static streamWithSetting = this.selectSchema.extend({
         setting: SettingDTO.selectSchema.nullable(),

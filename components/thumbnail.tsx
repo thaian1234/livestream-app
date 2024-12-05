@@ -32,6 +32,7 @@ export function VideoThumbnail({
                         alt={"thumbnail"}
                         objectFit="object-cover"
                         fill
+                        className="overflow-hidden rounded-lg"
                         onError={() => setThumbnailError(true)}
                     />
                 )}
