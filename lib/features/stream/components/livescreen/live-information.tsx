@@ -3,6 +3,7 @@ import { Forward, UsersRound } from "lucide-react";
 
 import { BlockButton } from "@/lib/features/block/components/block-button";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
@@ -25,6 +26,7 @@ export function LiveInformation({
     followerCount,
     isFollowing,
 }: LiveInformationProps) {
+    const currentUser = useUser();
     const { data, isPending } = streamApi.query.useGetStreamCategories(
         stream.id,
     );
