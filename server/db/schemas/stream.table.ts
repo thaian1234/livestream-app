@@ -8,7 +8,9 @@ import {
     uuid,
 } from "drizzle-orm/pg-core";
 
+import { categoryTable } from "./category.table";
 import { settingTable } from "./setting.table";
+import { streamsToCategoriesTable } from "./stream-category.table";
 import { userTable } from "./user.table";
 
 export const streamTable = pgTable(
@@ -21,6 +23,7 @@ export const streamTable = pgTable(
         userId: uuid("user_id")
             .notNull()
             .references(() => userTable.id, { onDelete: "cascade" }),
+
         createdAt: timestamp("created_at").defaultNow().notNull(),
         updatedAt: timestamp("updated_at")
             .notNull()
@@ -31,10 +34,11 @@ export const streamTable = pgTable(
     }),
 );
 
-export const streamRelations = relations(streamTable, ({ one }) => ({
+export const streamRelations = relations(streamTable, ({ one, many }) => ({
     user: one(userTable, {
         fields: [streamTable.userId],
         references: [userTable.id],
     }),
     setting: one(settingTable),
+    streamsToCategories: many(streamsToCategoriesTable),
 }));

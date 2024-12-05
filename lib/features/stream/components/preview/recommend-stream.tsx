@@ -15,7 +15,7 @@ export function RecommendStream({}: RecommendStreamProps) {
     const { data, isPending, isError } = streamApi.query.useGetRecommendStreams(
         {
             page: currentPage.toString(),
-            size: "6",
+            size: "8",
         },
     );
 
@@ -30,7 +30,6 @@ export function RecommendStream({}: RecommendStreamProps) {
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
     };
-
     return (
         <div className="flex flex-col space-y-6">
             <div className="flex items-center justify-between">
@@ -41,7 +40,7 @@ export function RecommendStream({}: RecommendStreamProps) {
                     onPageChange={handlePageChange}
                 />
             </div>
-            <ul className="grid grid-cols-3 gap-x-8">
+            <ul className="grid grid-cols-4 gap-x-6 gap-y-4">
                 {streams && streams?.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>

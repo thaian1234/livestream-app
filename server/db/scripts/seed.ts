@@ -3,6 +3,7 @@ import tableSchemas from "../schemas";
 import { z } from "zod";
 
 import { BlockDTO } from "@/server/api/dtos/block.dto";
+import { CategoryDTO } from "@/server/api/dtos/category.dto";
 import { FollowDTO } from "@/server/api/dtos/follow.dto";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
@@ -38,6 +39,8 @@ const seeds = async () => {
         await db.delete(tableSchemas.settingTable);
         await db.delete(tableSchemas.accountTable);
         await db.delete(tableSchemas.userTable);
+        await db.delete(tableSchemas.streamsToCategoriesTable);
+        await db.delete(tableSchemas.categoryTable);
 
         // Seeding user
         let usersData: UserDTO.Insert[] = [];
@@ -103,6 +106,100 @@ const seeds = async () => {
             .values(streamData)
             .onConflictDoNothing()
             .returning();
+
+        let categoryData: z.infer<typeof CategoryDTO.insertSchema>[] = [
+            {
+                name: "Strategy",
+                slug: "startegy",
+            },
+            {
+                name: "Horror",
+                slug: "horror",
+            },
+            {
+                name: "Fornite",
+                slug: "fornite",
+            },
+            {
+                name: "MOBA",
+                slug: "moba",
+            },
+            {
+                name: "FPS",
+                slug: "fps",
+            },
+            {
+                name: "Adventure Game",
+                slug: "adventure_game",
+            },
+            {
+                name: "Role Play",
+                slug: "role_play",
+            },
+            {
+                name: "Indie Game",
+                slug: "indie_game",
+            },
+            {
+                name: "Code Interview",
+                slug: "code_interview",
+            },
+            {
+                name: "Math",
+                slug: "math",
+            },
+        ];
+        let categories = await db
+            .insert(tableSchemas.categoryTable)
+            .values(categoryData)
+            .onConflictDoNothing()
+            .returning();
+
+        let childCategory = await db
+            .insert(tableSchemas.categoryTable)
+            .values([
+                {
+                    name: "RPG",
+                    slug: "rpg",
+                    parentId: categories.find(
+                        (category) => category.name === "Fornite",
+                    )?.id,
+                },
+                {
+                    name: "Jumpscare",
+                    slug: "jumpscare",
+                    parentId: categories.find(
+                        (category) => category.name === "Horror",
+                    )?.id,
+                },
+            ])
+            .onConflictDoNothing()
+            .returning();
+
+        categories.push(...childCategory);
+
+        let streamToCategories = [];
+        for (const stream of streams) {
+            const numberOfCategories = Math.floor(Math.random() * 4); // Random number between 0-3
+            const shuffledCategories = [...categories].sort(
+                () => Math.random() - 0.5,
+            );
+            const selectedCategories = shuffledCategories.slice(
+                0,
+                numberOfCategories,
+            );
+            const streamToCategory = selectedCategories.map((category) => ({
+                streamId: stream.id,
+                categoryId: category.id,
+            }));
+            streamToCategories.push(...streamToCategory);
+        }
+        if (streamToCategories.length !== 0) {
+            await db
+                .insert(tableSchemas.streamsToCategoriesTable)
+                .values(streamToCategories)
+                .onConflictDoNothing();
+        }
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");

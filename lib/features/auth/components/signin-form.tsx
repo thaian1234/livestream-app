@@ -13,6 +13,7 @@ import { ErrorField } from "@/components/error-field";
 import { IconInput, LeftIcon, RightIcon } from "@/components/icon-input";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { PasswordInput } from "@/components/ui/password-input";
 
 import "@/style/auth.css";
 
@@ -50,38 +51,12 @@ export function SignInForm() {
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
                 )}
-                <IconInput
+                <PasswordInput
                     {...register("password")}
-                    type={showPassword ? "text" : "password"}
+                    showStrengthIndicator
                     placeholder="Enter your password"
-                    variant={errors.password ? "error" : "primary"}
-                    disabled={isPending}
-                    tabIndex={1}
-                    className="px-12"
-                >
-                    <LeftIcon>
-                        <LockIcon className="size-5 text-gray-500" />
-                    </LeftIcon>
-                    <RightIcon>
-                        <button
-                            className="size-5 text-white"
-                            type="button"
-                            onClick={() => {
-                                setShowPassword(!showPassword);
-                            }}
-                            disabled={isPending}
-                        >
-                            {showPassword ? (
-                                <EyeOff size={22} />
-                            ) : (
-                                <Eye size={22} />
-                            )}
-                        </button>
-                    </RightIcon>
-                </IconInput>
-                {errors.password && (
-                    <ErrorField>{errors.password.message}</ErrorField>
-                )}
+                    tabIndex={2}
+                />
             </CardContent>
             <CardFooter className="mt-8 flex flex-col items-center space-y-4">
                 <Button

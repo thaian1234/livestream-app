@@ -63,4 +63,7 @@ export class StreamService implements IStreamService {
             limit,
         );
     }
+    public async getStreamCategories(streamId: string) {
+        return this.streamRepository.getStreamCategories(streamId);
+    }
 }

@@ -1,6 +1,8 @@
 import { ROUTES } from "../configs/routes.config";
+import { categoryApi } from "../features/category/apis";
 import { SettingUpdateForm } from "../features/setting/components/setting-update-form";
 import { streamApi } from "../features/stream/apis";
+import { StreamCategoriesForm } from "../features/stream/components/local-livescreen/stream-categories-form";
 import { StreamUpdateForm } from "../features/stream/components/local-livescreen/stream-update-form";
 import { UploadThumbnailForm } from "../features/upload/components/upload-thumbnail-form";
 import { SettingsIcon } from "lucide-react";
@@ -38,11 +40,15 @@ interface StreamUpdateDialogProps {
 export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
     const { isPending, data, isError } =
         streamApi.query.useGetStreamInformation(username);
+    const { data: categories, isPending: isPendingCategory } =
+        categoryApi.query.useGetBasic({
+            size: "100",
+        });
 
-    if (isPending) {
+    if (isPending || isPendingCategory) {
         return <p>Loading information</p>;
     }
-    if (isError || !data) {
+    if (isError || !data || !categories) {
         return <p>Cannot load form</p>;
     }
 
@@ -54,11 +60,16 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
             description:
                 "Make changes to your stream profile here. Click save when you're done.",
             content: (
-                <div>
+                <div className="space-y-4 px-2">
                     {/* Stream Update Form */}
                     <StreamUpdateForm
                         initialValues={data.data.stream}
                         username={username}
+                    />
+                    {/* Add Categories Form */}
+                    <StreamCategoriesForm
+                        streamId={data.data.stream.id}
+                        categories={categories.data.categories}
                     />
                     {/* Stream Upload Image */}
                     <div>

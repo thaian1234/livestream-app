@@ -41,14 +41,14 @@ export function LivePreviewCarousel() {
                                     : "xl:basis-1/2 2xl:basis-1/3",
                             )}
                         >
-                            <LivePreviewCard
+                            {/* <LivePreviewCard
                                 id={card.id}
                                 isLive={card.isLive}
                                 name={card.name}
                                 thumbnailUrl={card.thumbnailUrl}
                                 user={card.user}
                                 userId={card.userId}
-                            />
+                            /> */}
                         </CarouselItem>
                     ))}
                 </CarouselContent>

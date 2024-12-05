@@ -15,7 +15,7 @@ export function FollowingStream({}: FollowingStreamProps) {
     const { data, isPending, isError } = streamApi.query.useGetFollowingStreams(
         {
             page: currentPage.toString(),
-            size: "3",
+            size: "4",
         },
     );
 
@@ -41,7 +41,7 @@ export function FollowingStream({}: FollowingStreamProps) {
                     onPageChange={handlePageChange}
                 />
             </div>
-            <ul className="grid grid-cols-3 gap-x-8">
+            <ul className="grid grid-cols-4 gap-x-8">
                 {streams && streams.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>

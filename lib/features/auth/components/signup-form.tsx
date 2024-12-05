@@ -2,27 +2,19 @@
 
 import { authApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Eye,
-    EyeOff,
-    KeyIcon,
-    LockIcon,
-    MailIcon,
-    UserIcon,
-} from "lucide-react";
+import { MailIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
 import { ErrorField } from "@/components/error-field";
-import { IconInput, LeftIcon, RightIcon } from "@/components/icon-input";
+import { IconInput, LeftIcon } from "@/components/icon-input";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export function SignUpForm() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showconfirmPass, setShowconfirmPass] = useState(false);
     const {
         register, // register field name
         handleSubmit, //pass a callback to handle successful
@@ -69,67 +61,20 @@ export function SignUpForm() {
                 {errors.email && (
                     <ErrorField>{errors.email.message}</ErrorField>
                 )}
-                <IconInput
+
+                <PasswordInput
                     {...register("password")}
-                    type={showPassword ? "text" : "password"}
+                    showStrengthIndicator
                     placeholder="Password"
                     disabled={isPending}
-                    variant={errors.password ? "error" : "primary"}
                     tabIndex={3}
-                    className="px-12"
-                >
-                    <LeftIcon>
-                        <LockIcon className="size-5 text-gray-500" />
-                    </LeftIcon>
-                    <RightIcon>
-                        <button
-                            className="text-white"
-                            type="button"
-                            onClick={() => {
-                                setShowPassword(!showPassword);
-                            }}
-                            disabled={isPending}
-                        >
-                            {showPassword ? (
-                                <EyeOff size={22} />
-                            ) : (
-                                <Eye size={22} />
-                            )}
-                        </button>
-                    </RightIcon>
-                </IconInput>
-                {errors.password && (
-                    <ErrorField>{errors.password.message}</ErrorField>
-                )}
-                <IconInput
+                />
+                <PasswordInput
                     {...register("confirmPassword")}
-                    type={showconfirmPass ? "text" : "password"}
+                    showStrengthIndicator={false}
                     placeholder="Confirm Password"
-                    disabled={isPending}
-                    variant={errors.confirmPassword ? "error" : "primary"}
                     tabIndex={4}
-                    className="px-12"
-                >
-                    <LeftIcon>
-                        <KeyIcon className="size-5 text-gray-500" />
-                    </LeftIcon>
-                    <RightIcon>
-                        <button
-                            className="text-white"
-                            type="button"
-                            onClick={() => {
-                                setShowconfirmPass(!showconfirmPass);
-                            }}
-                            disabled={isPending}
-                        >
-                            {showconfirmPass ? (
-                                <EyeOff size={22} />
-                            ) : (
-                                <Eye size={22} />
-                            )}
-                        </button>
-                    </RightIcon>
-                </IconInput>
+                />
                 {errors.confirmPassword && (
                     <ErrorField>{errors.confirmPassword.message}</ErrorField>
                 )}

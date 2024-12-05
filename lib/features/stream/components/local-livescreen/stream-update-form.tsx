@@ -72,9 +72,6 @@ export function StreamUpdateForm({
                                     {...field}
                                 />
                             </FormControl>
-                            <FormDescription>
-                                This is your public stream title.
-                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}

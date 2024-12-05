@@ -1,3 +1,4 @@
+import { streamApi } from "../../apis";
 import { Forward, UsersRound } from "lucide-react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
@@ -5,6 +6,7 @@ import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 
@@ -21,6 +23,11 @@ export function LiveInformation({
     followerCount,
     isFollowing,
 }: LiveInformationProps) {
+    const { data, isPending } = streamApi.query.useGetStreamCategories(
+        stream.id,
+    );
+    const categories = data?.data;
+
     return (
         <div className="mt-2 flex justify-between px-2">
             <div className="w-full space-y-1 truncate text-white">
@@ -32,15 +39,25 @@ export function LiveInformation({
                         isLive={stream.isLive}
                         size={"lg"}
                     />
-                    <div>
+                    <div className="flex flex-col space-y-1">
                         <div className="text-sm">{user.username}</div>
                         <div className="flex space-x-6 text-sm text-white/70">
                             <span> Followers: {followerCount}</span>
-                            <span className="flex space-x-1">
-                                <UsersRound size={16} />
-                                <span className="text-sm">{"100"}</span>
-                            </span>
                         </div>
+                        {categories && (
+                            <div className="flex w-full space-x-1 overflow-x-hidden">
+                                {categories?.map((category) => {
+                                    return (
+                                        <Badge
+                                            key={category.categoryId}
+                                            className="bg-gray-500 hover:bg-gray-600"
+                                        >
+                                            {category.category.name}
+                                        </Badge>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
