@@ -128,16 +128,16 @@ export default function SearchPage() {
     });
     const searchParams = useSearchParams();
     const searchQuery = searchParams.get("searchTerm");
-    const { data, error, isPending } = searchApi.query.useSearch(
-        currentPage,
-        "10",
-        searchQuery || "",
-    );
+    const { data, error, isPending } = searchApi.query.useSearch({
+        filterBy: searchQuery,
+        page: parseInt(currentPage),
+        size: 4,
+    });
     const tabs = ["All", "Live", "Channel"];
 
     if (data === undefined || isPending) return <Loader2 />;
-
     if (error) return <p>Something went wrong</p>;
+    const streams = data.data.data.streams;
 
     const handleChangePage = (page: number) => {
         setCurrentPage(page.toString());
@@ -158,21 +158,21 @@ export default function SearchPage() {
             </TabsList>
             <TabsContent value="All">
                 <div className="space-y-4">
-                    <p className="text-2xl">Channel</p>
+                    <p className="text-2xl">User</p>
                     <div className="flex max-w-[700px] flex-col">
                         <UserPreview users={data.data.data.users} limit={4} />
                     </div>
 
-                    <p className="text-2xl">Live</p>
+                    <p className="text-2xl">Channel</p>
                     <div className="flex flex-col space-y-4">
-                        <LivesPreview streams={data.data.data.streams} />
+                        <LivesPreview streams={streams} />
                     </div>
                 </div>
             </TabsContent>
 
-            <TabsContent value="Live">
+            <TabsContent value="User">
                 <div className="flex flex-col space-y-4">
-                    <LivesPreview streams={data.data.data.streams} />
+                    <LivesPreview streams={streams} />
                 </div>
             </TabsContent>
             <TabsContent value="Channel">

@@ -1,16 +1,18 @@
 import { useRouter } from "next/navigation";
 
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { ROUTES } from "@/lib/configs/routes.config";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { CategoryDTO } from "@/server/api/dtos/category.dto";
+
+import { VideoThumbnail } from "@/components/thumbnail";
 import { Badge } from "@/components/ui/badge";
 
 interface LivePreviewCardProps {
     id: string;
     title: string;
     userName: string;
-    category?: string;
-    thumbnail: string;
+    categories: CategoryDTO.BasicSelect[];
+    thumbnail: string | null;
     viewers: string;
     avatar: string;
 }
@@ -18,50 +20,41 @@ export function LivePreviewCard({
     id,
     title,
     userName,
-    category,
+    categories,
     thumbnail,
-    viewers,
     avatar,
 }: LivePreviewCardProps) {
     const router = useRouter();
 
     const handleNavigateLive = () => {
-        // Navigate to live room
-        router.push(`/live/${userName.replace(/\s+/g, "-")}`);
+        router.push(ROUTES.STREAM_PAGE(userName));
     };
+
     return (
-        <div className="flex space-x-4">
+        <div
+            className="flex cursor-pointer space-x-4"
+            onClick={handleNavigateLive}
+        >
             <div className="w-72">
-                <AspectRatio
-                    onClick={handleNavigateLive}
-                    ratio={16 / 9}
-                    className="cursor-pointer rounded-xl bg-gray-1"
-                ></AspectRatio>
+                <VideoThumbnail avatarUrl={avatar} thumbnailUrl={thumbnail} />
             </div>
             <div className="flex flex-col space-y-1">
-                <a
-                    className="cursor-pointer text-xl hover:underline"
-                    href={`/username`}
-                >
-                    {title}
-                </a>
-                <a
-                    className="cursor-pointer text-sm text-white/70 hover:underline"
-                    href={`/dashboard/username`}
-                >
-                    {userName}
-                </a>
-                <p className="text-sm text-white/70">{viewers} Viewers</p>
-                <div className="flex">
-                    <div className="flex space-x-2 overflow-x-hidden">
-                        <Badge className="bg-gray-500 hover:bg-gray-600">
-                            {category}
-                        </Badge>
-                        <Badge className="bg-gray-500 hover:bg-gray-600">
-                            {category}
-                        </Badge>
+                <p className="text-xl">{title}</p>
+                <p className="text-sm text-white/70">{userName}</p>
+                {categories.length > 0 && (
+                    <div className="flex">
+                        <div className="flex space-x-2 overflow-x-hidden">
+                            {categories.map((category) => (
+                                <Badge
+                                    className="bg-gray-500 hover:bg-gray-600"
+                                    key={category.id}
+                                >
+                                    {category.name}
+                                </Badge>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
