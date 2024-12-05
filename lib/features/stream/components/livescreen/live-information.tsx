@@ -1,4 +1,9 @@
-import { Forward, UsersRound } from "lucide-react";
+import {
+    CircleSlash2,
+    Forward,
+    MoreHorizontal,
+    UsersRound,
+} from "lucide-react";
 
 import { BlockButton } from "@/lib/features/block/components/block-button";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
@@ -8,7 +13,16 @@ import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { UserAvatar } from "@/components/user-avatar";
+
+import { MoreActionPopover } from "./more-action-popover";
 
 interface LiveInformationProps {
     stream: StreamDTO.Select;
@@ -24,7 +38,6 @@ export function LiveInformation({
     followerCount,
     isFollowing,
 }: LiveInformationProps) {
-    const currentUser = useUser();
     return (
         <div className="mt-2 flex justify-between px-2">
             <div className="w-full space-y-1 truncate text-white">
@@ -50,21 +63,11 @@ export function LiveInformation({
             </div>
             <div className="space-x-2"></div>
 
-            {currentUser.user.id !== user.id && (
-                <div className="mr-2">
-                    <BlockButton blockedId={user.id} isBlock={false} />
-                </div>
-            )}
+            <div className="mr-2">
+                <FollowButton followingId={user.id} isFollowed={isFollowing} />
+            </div>
 
-            <FollowButton followingId={user.id} isFollowed={isFollowing} />
-
-            <Button
-                size="sm"
-                className="ml-2 rounded-xl bg-white/10 text-white"
-            >
-                <Forward className="mr-1" />
-                Share
-            </Button>
+            <MoreActionPopover streamer={user} />
         </div>
     );
 }
