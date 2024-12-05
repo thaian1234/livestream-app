@@ -61,6 +61,15 @@ export class QueryDTO {
             sortOrder: z.string().default("asc"),
         });
     }
+
+    public static createAdvancedSchemaWithCategory(
+        defaultPage = 1,
+        defaultSize = 8,
+    ) {
+        return this.createAdvancedSchema(defaultPage, defaultSize).extend({
+            categoryIds: z.string().uuid().array(),
+        });
+    }
 }
 
 export namespace QueryDTO {
@@ -72,5 +81,8 @@ export namespace QueryDTO {
     >;
     export type Advanced = z.infer<
         ReturnType<typeof QueryDTO.createAdvancedSchema>
+    >;
+    export type AdvancedWithCategory = z.infer<
+        ReturnType<typeof QueryDTO.createAdvancedSchemaWithCategory>
     >;
 }

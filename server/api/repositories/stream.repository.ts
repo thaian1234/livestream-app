@@ -27,7 +27,7 @@ export class StreamRepository implements IStreamRepository {
     constructor() {
         this.db = Database.getInstance().db;
     }
-    async advancedSearchStream(query: QueryDTO.Advanced) {
+    async advancedSearchStream(query: QueryDTO.AdvancedWithCategory) {
         const conditions = [];
         let orderBy;
         if (query.filterBy) {
@@ -52,6 +52,25 @@ export class StreamRepository implements IStreamRepository {
                 ? asc(tableSchemas.streamTable.createdAt)
                 : desc(tableSchemas.streamTable.createdAt);
         }
+
+        if (query.categoryIds && query.categoryIds.length > 0) {
+            conditions.push(
+                inArray(
+                    tableSchemas.streamTable.id,
+                    this.db
+                        .select({ id: tableSchemas.streamTable.id })
+                        .from(tableSchemas.streamsToCategoriesTable)
+                        .where(
+                            inArray(
+                                tableSchemas.streamsToCategoriesTable
+                                    .categoryId,
+                                query.categoryIds,
+                            ),
+                        ),
+                ),
+            );
+        }
+
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
             extras(fields, operators) {

@@ -24,7 +24,7 @@ export class SearchController implements ISearchController {
         return this.factory.createApp().get("/", ...this.search());
     }
     private search() {
-        const queries = QueryDTO.createAdvancedSchema();
+        const queries = QueryDTO.createAdvancedSchemaWithCategory();
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
