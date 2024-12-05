@@ -36,7 +36,7 @@ export class CategoryController implements ICategoryController {
             async (c) => {
                 const { page, size, filterBy } = c.req.valid("query");
                 const categories = await this.categoryService.findAll(
-                    filterBy,
+                    filterBy || "",
                     (page - 1) * size,
                     size,
                 );

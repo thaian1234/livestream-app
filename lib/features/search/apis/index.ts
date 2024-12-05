@@ -1,34 +1,29 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
 
+import { QueryDTO } from "@/server/api/dtos/query.dto";
+
 const keys = {
-    search: (page: string, size: string, filterBy: string) => [
-        "search",
-        page,
-        size,
-        filterBy,
-    ],
-    session: ["session"],
+    search: (query: QueryDTO.Filter) => ["search", query] as string[],
 };
 
 export const searchApi = {
     query: {
-        useSearch(page: string, size: string, filterBy: string) {
+        useSearch(query: QueryDTO.Filter) {
             const $get = client.api.search.$get;
             return Fetcher.useHonoQuery(
                 $get,
-                keys.search(page, size, filterBy),
+                keys.search(query),
                 {
                     query: {
-                        page,
-                        size,
-                        filterBy,
+                        filterBy: query.filterBy || "",
+                        page: query.page?.toString(),
+                        size: query.size?.toString(),
                     },
                 },
                 {
-                    enabled: filterBy !== "",
+                    enabled: !!query.filterBy,
                 },
-
             );
         },
     },

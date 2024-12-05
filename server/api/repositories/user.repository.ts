@@ -1,3 +1,4 @@
+import { QueryDTO } from "../dtos/query.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { table } from "console";
@@ -97,34 +98,31 @@ export class UserRepository implements IUserRepository {
         } catch (error) {}
     }
     async advancedSearchUser(
-        username: string = "",
-        dateFrom: Date = new Date("2000-01-01"),
-        dateTo: Date = new Date(),
-        isSortByCreatedAt: boolean = false,
-        sortOrder: string = "asc",
-        offset: number = 0,
-        limit: number = 10,
+        query: QueryDTO.Advanced,
         currentUserId: string | null,
     ) {
         const conditions = [];
         let orderBy = desc(tableSchemas.userTable.createdAt);
-        if (username) {
+        if (query.filterBy) {
             conditions.push(
-                ilike(tableSchemas.userTable.username, `%${username}%`),
+                ilike(tableSchemas.userTable.username, `%${query.filterBy}%`),
             );
         }
-        if (dateFrom) {
-            conditions.push(gte(tableSchemas.userTable.createdAt, dateFrom));
+        if (query.dateFrom) {
+            conditions.push(
+                gte(tableSchemas.userTable.createdAt, query.dateFrom),
+            );
         }
-        if (dateTo) {
-            conditions.push(lte(tableSchemas.userTable.createdAt, dateTo));
+        if (query.dateTo) {
+            conditions.push(
+                lte(tableSchemas.userTable.createdAt, query.dateTo),
+            );
         }
-        if (isSortByCreatedAt) {
-            orderBy = sortOrder.toLowerCase().localeCompare("asc")
+        if (query.isSortByCreatedAt) {
+            orderBy = query.sortOrder.toLowerCase().localeCompare("asc")
                 ? asc(tableSchemas.userTable.createdAt)
                 : orderBy;
         }
-        console.log(currentUserId);
         let isFollowSql = sql`false`;
         if (currentUserId) {
             isFollowSql = sql`CASE 
@@ -161,8 +159,8 @@ export class UserRepository implements IUserRepository {
                 tableSchemas.userTable.bio,
                 tableSchemas.streamTable.isLive,
             )
-            .limit(limit)
-            .offset(offset)
+            .limit(query.size)
+            .offset(query.size * (query.page - 1))
             .orderBy(orderBy);
 
         const totalRecords = await this.db.$count(

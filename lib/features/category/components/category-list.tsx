@@ -93,15 +93,6 @@ export function CategoryList() {
                                     <h2 className="mb-2 truncate text-sm font-semibold transition-colors duration-300 ease-in-out group-hover:text-primary">
                                         {category.name}
                                     </h2>
-                                    <div className="flex flex-wrap gap-1">
-                                        {category.parent ? (
-                                            <span className="rounded-full bg-secondary px-2 py-1 text-xs text-secondary-foreground">
-                                                {category.parent.name}
-                                            </span>
-                                        ) : (
-                                            <></>
-                                        )}
-                                    </div>
                                 </div>
                             </CardContent>
                         </div>

@@ -28,12 +28,12 @@ export function FollowButton({ followingId, isFollowed }: FollowButtonProps) {
     const [isHovering, setIsHovering] = useState<Boolean>(false);
     const { mutate: handleFollowToggle, isPending } =
         followApi.mutation.useFollowToggle();
+
     const handleClick = () => {
         if (!currentUser) {
             toast.error("Please Sign in for further action");
             return;
         }
-
         handleFollowToggle(
             {
                 param: { followingId },

@@ -46,7 +46,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
         });
 
     if (isPending || isPendingCategory) {
-        return <p>Loading information</p>;
+        return <Spinner />;
     }
     if (isError || !data || !categories) {
         return <p>Cannot load form</p>;

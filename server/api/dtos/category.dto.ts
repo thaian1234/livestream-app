@@ -19,15 +19,11 @@ export class CategoryDTO {
         slug: true,
         imageUrl: true,
     });
-    public static detailSelectSchema = this.selectSchema
-        .extend({
-            parent: this.basicSelectSchema.nullable(),
-            children: this.basicSelectSchema.array().nullable(),
-        })
-        .omit({
-            parentId: true,
-            isActive: true,
-        });
+    public static detailSelectSchema = this.selectSchema.extend({
+        // parent: this.basicSelectSchema.nullable(),
+        children: this.selectSchema.array().nullable(),
+    });
+
     public static parseManyDetail(data: unknown) {
         return this.detailSelectSchema.array().parse(data);
     }
@@ -48,4 +44,5 @@ export namespace CategoryDTO {
     export type Delete = z.infer<typeof CategoryDTO.deleteSchema>;
     export type Select = z.infer<typeof CategoryDTO.selectSchema>;
     export type BasicSelect = z.infer<typeof CategoryDTO.basicSelectSchema>;
+    export type DetailSelect = z.infer<typeof CategoryDTO.detailSelectSchema>;
 }

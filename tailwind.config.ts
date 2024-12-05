@@ -21,17 +21,17 @@ const config = {
         extend: {
             colors: {
                 teal: {
-                    1: "#94FFD8",
-                    2: "#00B9AE",
-                    3: "#247881",
+                    "1": "#94FFD8",
+                    "2": "#00B9AE",
+                    "3": "#247881",
                 },
                 gray: {
-                    1: "#4D4D4D",
+                    "1": "#4D4D4D",
                 },
                 black: {
-                    0: "#000000",
-                    1: "#16181E",
-                    2: "#130B29",
+                    "0": "#000000",
+                    "1": "#16181E",
+                    "2": "#130B29",
                 },
                 search: "#F9F9F94D",
                 border: "hsl(var(--border))",
@@ -75,23 +75,34 @@ const config = {
             },
             keyframes: {
                 "accordion-down": {
-                    from: { height: "0" },
-                    to: { height: "var(--radix-accordion-content-height)" },
+                    from: {
+                        height: "0",
+                    },
+                    to: {
+                        height: "var(--radix-accordion-content-height)",
+                    },
                 },
                 "accordion-up": {
-                    from: { height: "var(--radix-accordion-content-height)" },
-                    to: { height: "0" },
+                    from: {
+                        height: "var(--radix-accordion-content-height)",
+                    },
+                    to: {
+                        height: "0",
+                    },
                 },
                 "caret-blink": {
-                    //input otp
-                    "0%,70%,100%": { opacity: "1" },
-                    "20%,50%": { opacity: "0" },
+                    "0%,70%,100%": {
+                        opacity: "1",
+                    },
+                    "20%,50%": {
+                        opacity: "0",
+                    },
                 },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
-                "caret-blink": "caret-blink 1.25s ease-out infinite", //input otp
+                "caret-blink": "caret-blink 1.25s ease-out infinite",
             },
         },
     },

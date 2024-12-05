@@ -15,11 +15,11 @@ export function SearchBar() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const debounced = useDebounceCallback(handleChange, 500);
-    const { data, isPending, error } = searchApi.query.useSearch(
-        "1",
-        "5",
-        search,
-    );
+    const { data, isPending, error } = searchApi.query.useSearch({
+        filterBy: search,
+        page: 1,
+        size: 3,
+    });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         console.log("From debounced: ", e.target.value);
@@ -55,6 +55,7 @@ export function SearchBar() {
     };
     const streams = data?.data.data.streams || [];
     const users = data?.data.data.users || [];
+
     return (
         <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white" />
