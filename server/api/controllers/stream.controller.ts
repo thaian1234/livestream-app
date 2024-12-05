@@ -1,5 +1,6 @@
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
+import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { IGetStreamService } from "../external-services/getstream.service";
 import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
@@ -12,7 +13,7 @@ import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IFollowRepository } from "../repositories/follow.repository";
-import { IFollowService } from "../services/follow.service";
+import { ICategoryService } from "../services/category.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { zValidator } from "@hono/zod-validator";
@@ -27,6 +28,7 @@ export class StreamController implements IStreamController {
         private readonly streamService: IStreamService,
         private readonly getStreamService: IGetStreamService,
         private readonly settingService: ISettingService,
+        private readonly categoryService: ICategoryService,
         private readonly followRepository: IFollowRepository,
         private readonly notificationService: INotificationService,
     ) {}
@@ -38,7 +40,10 @@ export class StreamController implements IStreamController {
             .get("/", ...this.getAllStreamHandler())
             .get("/recommend", ...this.getRecommendStreams())
             .get("/following", ...this.getFollowingStreams())
-            .get("/chat-token", ...this.getStreamChatTokenHandler());
+            .get("/chat-token", ...this.getStreamChatTokenHandler())
+            .get("/categories", ...this.getCategoriesHandler())
+            .post("/add-categories", ...this.addCategoriesToStream())
+            .delete("/remove-category", ...this.deleteCategoriesFromStream());
     }
     private getStreamTokenHandler() {
         return this.factory.createHandlers(
@@ -130,7 +135,6 @@ export class StreamController implements IStreamController {
             },
         );
     }
-
     private getAllStreamHandler() {
         const queries = z.object({
             recommendPage: QueryDTO.createQueryParam(1),
@@ -215,13 +219,20 @@ export class StreamController implements IStreamController {
                           offset,
                           size,
                       );
+                const formattedData = recommends?.streams.map((stream) => {
+                    const categories = stream.streamsToCategories.map(
+                        (streamToCategory) => streamToCategory.category,
+                    );
+                    return {
+                        ...stream,
+                        categories,
+                    };
+                });
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.OK,
                     data: PaginationHelper.getPaginationMetadata({
-                        data: StreamDTO.parseStreamWithUser(
-                            recommends?.streams,
-                        ),
+                        data: StreamDTO.parseStreamWithUser(formattedData),
                         currentOffset: offset,
                         limit: size,
                         totalRecords: recommends?.totalRecords,
@@ -245,14 +256,20 @@ export class StreamController implements IStreamController {
                           size,
                       )
                     : null;
-
+                const formattedData = followings?.streams.map((stream) => {
+                    const categories = stream.streamsToCategories.map(
+                        (streamToCategory) => streamToCategory.category,
+                    );
+                    return {
+                        ...stream,
+                        categories,
+                    };
+                });
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.OK,
                     data: PaginationHelper.getPaginationMetadata({
-                        data: StreamDTO.parseStreamWithUser(
-                            followings?.streams,
-                        ),
+                        data: StreamDTO.parseStreamWithUser(formattedData),
                         currentOffset: offset,
                         limit: size,
                         totalRecords: followings?.totalRecords,
@@ -276,6 +293,114 @@ export class StreamController implements IStreamController {
                         token: token,
                     },
                     status: HttpStatus.Created,
+                });
+            },
+        );
+    }
+    private addCategoriesToStream() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                StreamToCategoriesDTO.addCategoriesToStreamSchema,
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const currentUser = c.get("getUser");
+                if (currentUser.stream.id !== jsonData.streamId) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to add categories to this stream",
+                    );
+                }
+                if (!jsonData.categoryIds.length) {
+                    await this.categoryService.deleteAllCategoriesFromStream(
+                        jsonData.streamId,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        data: undefined,
+                        status: HttpStatus.Created,
+                        msg: "Bulk add category to stream success",
+                    });
+                }
+                const isSuccess =
+                    await this.categoryService.addCategoriesToStream(
+                        jsonData.categoryIds.map((categoryId: string) => ({
+                            categoryId: categoryId,
+                            streamId: jsonData.streamId,
+                        })),
+                    );
+                if (!isSuccess) {
+                    throw new MyError.BadRequestError(
+                        "Failed to bulk add category to stream",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.Created,
+                    msg: "Bulk add category to stream success",
+                });
+            },
+        );
+    }
+    private deleteCategoriesFromStream() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                StreamToCategoriesDTO.deleteCategoriesFromStreamSchema,
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const currentUser = c.get("getUser");
+
+                if (currentUser.stream.id != jsonData.streamId) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to delete category from this stream",
+                    );
+                }
+                const isSuccess =
+                    this.categoryService.deleteCategoriesFromStream(jsonData);
+
+                if (!isSuccess) {
+                    throw new MyError.BadRequestError(
+                        "Failed to bulk delete category to stream",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.Created,
+                    msg: "Bulk delete category to stream success",
+                });
+            },
+        );
+    }
+    private getCategoriesHandler() {
+        const queries = z.object({
+            id: z.string().uuid().optional(),
+        });
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const currentUser = c.get("user");
+                const id = c.req.valid("query").id;
+                const streamId = id || currentUser?.stream.id;
+
+                if (!streamId) {
+                    throw new MyError.BadRequestError(
+                        "Please provide a valid stream id",
+                    );
+                }
+                const streamCategories =
+                    await this.streamService.getStreamCategories(streamId);
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: streamCategories,
+                    status: HttpStatus.OK,
                 });
             },
         );

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
 
+import { CategoryDTO } from "./category.dto";
 import { SettingDTO } from "./setting.dto";
 
 const userSchema = createSelectSchema(tableSchemas.userTable, {
@@ -36,6 +37,7 @@ export class StreamDTO {
     });
     public static streamWithUser = this.selectSchema.extend({
         user: userSchema,
+        categories: CategoryDTO.basicSelectSchema.array(),
     });
     public static streamSearch = this.selectSchema.extend({
         username: z.string(),

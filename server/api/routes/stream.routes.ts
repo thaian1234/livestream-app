@@ -5,9 +5,11 @@ import {
 import { GetStreamService } from "../external-services/getstream.service";
 import { NotificationService } from "../external-services/notification.service";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { CategoryRepository } from "../repositories/category.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { SettingRepository } from "../repositories/setting.repository";
 import { StreamRepository } from "../repositories/stream.repository";
+import { CategoryService } from "../services/category.service";
 import { SettingService } from "../services/setting.service";
 import { StreamService } from "../services/stream.service";
 import { createFactory } from "hono/factory";
@@ -29,11 +31,13 @@ function createStreamContainer() {
     // Repositories
     const streamRepository = new StreamRepository();
     const settingRepository = new SettingRepository();
+    const categoryRepository = new CategoryRepository();
     const followRepository = new FollowRepository();
     // Services
     const getStreamService = new GetStreamService();
     const streamService = new StreamService(streamRepository);
     const settingService = new SettingService(settingRepository);
+    const categoryService = new CategoryService(categoryRepository);
     const notificationService = new NotificationService();
     // Controllers
     const streamController = new StreamController(
@@ -41,6 +45,7 @@ function createStreamContainer() {
         streamService,
         getStreamService,
         settingService,
+        categoryService,
         followRepository,
         notificationService,
     );
