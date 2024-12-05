@@ -27,7 +27,7 @@ export const followApi = {
                     onError(err) {
                         toast.error("Cannot follow yourself");
                     },
-                    onSuccess(data) {
+                    onSuccess(data, variables) {
                         toast.success(data.msg);
                         queryClient.invalidateQueries({
                             queryKey: keys.stream_information,

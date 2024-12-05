@@ -8,7 +8,10 @@ const nextConfig = {
     },
     reactStrictMode: false,
     images: {
-        domains: ["lh3.googleusercontent.com"], // Thêm domain của Google cho phép dùng trong src của next/image
+        domains: [
+            "lh3.googleusercontent.com",
+            "pub-6150734308204bf898283cd938e34668.r2.dev",
+        ],
     },
 };
 

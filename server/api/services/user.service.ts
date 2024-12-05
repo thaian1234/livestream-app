@@ -1,3 +1,4 @@
+import { QueryDTO } from "../dtos/query.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { Utils } from "../lib/helpers/utils";
 import { IUserRepository } from "../repositories/user.repository";
@@ -25,23 +26,11 @@ export class UserService implements IUserService {
         return await this.userRepository.findByEmail(email);
     }
     public async advancedSearchUser(
-        username: string = "",
-        dateFrom: Date = new Date("2000-01-01"),
-        dateTo: Date = new Date(),
-        isSortByCreatedAt: boolean = false,
-        sortOrder: string = "asc",
-        offset: number = 0,
-        limit: number = 10,
+        query: QueryDTO.Advanced,
         currentUserId: string | null,
     ) {
         return await this.userRepository.advancedSearchUser(
-            username,
-            dateFrom,
-            dateTo,
-            isSortByCreatedAt,
-            sortOrder,
-            offset,
-            limit,
+            query,
             currentUserId,
         );
     }
@@ -72,4 +61,7 @@ export class UserService implements IUserService {
         return this.userRepository.findByUsername(username);
     }
     public async createUserWithStreamAndSetting() {}
+    public async getUserById(userId: string) {
+        return this.userRepository.findById(userId);
+    }
 }

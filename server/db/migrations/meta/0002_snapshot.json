@@ -1,6 +1,6 @@
 {
-  "id": "a78fd6f7-b82f-4740-a7e7-5ba63ca46478",
-  "prevId": "ae1da2df-bdab-4193-81ae-7090040c1e6d",
+  "id": "b34410fe-f95d-4693-9b91-ddd3b379f684",
+  "prevId": "a78fd6f7-b82f-4740-a7e7-5ba63ca46478",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -358,6 +358,58 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "public.forget-passwords": {
+      "name": "forget-passwords",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "forget-passwords_user_id_users_id_fk": {
+          "name": "forget-passwords_user_id_users_id_fk",
+          "tableFrom": "forget-passwords",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "forget-passwords_user_id_unique": {
+          "name": "forget-passwords_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        }
+      },
       "checkConstraints": {}
     },
     "public.notifications": {

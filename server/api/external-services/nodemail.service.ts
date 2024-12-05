@@ -46,4 +46,24 @@ export class NodemailService implements INodemailService {
             );
         }
     }
+    public async sendForgetPasswordLink(url: string, toEmail: string) {
+        const htmlMessage = `
+        <div>
+            <h2>Click the link below to reset your password:</h2>
+            <a href="${url}">link</a>
+        </div>
+        `;
+        const options = this.emailConfig(
+            "Forget Password",
+            htmlMessage,
+            toEmail,
+        );
+        const { accepted } = await this.transporter.sendMail(options);
+
+        if (!accepted) {
+            throw new MyError.ServiceUnavailableError(
+                "Fail to send reset password link to your email. Please try again!",
+            );
+        }
+    }
 }

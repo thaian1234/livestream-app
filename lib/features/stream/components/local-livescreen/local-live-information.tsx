@@ -53,7 +53,6 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         username={user.username}
                     />
-                    <StreamUpdateDialog username={user.username} />
                 </div>
             )}
         </section>

@@ -29,9 +29,11 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
 
 # vercel
 .vercel
+.drizzle
 
 # typescript
 *.tsbuildinfo

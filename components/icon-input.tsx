@@ -22,14 +22,14 @@ function RightIcon({ children }: IconProps) {
     );
 }
 const inputVariants = cva(
-    "flex h-10 w-full rounded-md border bg-background px-3 py-2 hover:opacity-80  ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  focus-visible:ring-2  disabled:cursor-not-allowed disabled:opacity-50",
+    "flex h-10 w-full rounded-md border bg-background px-3 py-2 hover:opacity-80  ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
     {
         variants: {
             variant: {
                 default: "border-input focus-visible:ring-ring text-white",
                 primary:
-                    "border-white focus-visible:ring-teal-2 text-white placeholder:text-white bg-black-0",
-                error: "border-red-500 focus-visible:ring-red-500 text-red-500 placeholder:text-white bg-black-0",
+                    "border-white focus-visible:ring-teal-2 text-white bg-black-0",
+                error: "border-red-500 focus-visible:ring-red-500 text-red-500 bg-black-0",
             },
             customSize: {
                 default: "h-10 px-3.5 text-base",

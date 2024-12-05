@@ -1,3 +1,4 @@
+import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
 import { Utils } from "../lib/helpers/utils";
 import {
@@ -22,33 +23,32 @@ export interface IStreamRepository
 
 export class StreamRepository implements IStreamRepository {
     private db;
+    private categorySize = 3;
     constructor() {
         this.db = Database.getInstance().db;
     }
-    async advancedSearchStream(
-        name: string = "",
-        dateFrom: Date = new Date("2000-01-01"),
-        dateTo: Date = new Date(),
-        isSortByCreatedAt: boolean = false,
-        sortOrder: string = "asc",
-        offset: number = 0,
-        limit: number = 10,
-    ) {
+    async advancedSearchStream(query: QueryDTO.Advanced) {
         const conditions = [];
         let orderBy;
-        if (name) {
-            conditions.push(ilike(tableSchemas.streamTable.name, `%${name}%`));
+        if (query.filterBy) {
+            conditions.push(
+                ilike(tableSchemas.streamTable.name, `%${query.filterBy}%`),
+            );
         }
 
-        if (dateFrom) {
-            conditions.push(gte(tableSchemas.streamTable.createdAt, dateFrom));
+        if (query.dateFrom) {
+            conditions.push(
+                gte(tableSchemas.streamTable.createdAt, query.dateFrom),
+            );
         }
-        if (dateTo) {
-            conditions.push(lte(tableSchemas.streamTable.createdAt, dateTo));
+        if (query.dateTo) {
+            conditions.push(
+                lte(tableSchemas.streamTable.createdAt, query.dateTo),
+            );
         }
 
-        if (isSortByCreatedAt) {
-            orderBy = sortOrder.toLowerCase().localeCompare("asc")
+        if (query.isSortByCreatedAt) {
+            orderBy = query.sortOrder.toLowerCase().localeCompare("asc")
                 ? asc(tableSchemas.streamTable.createdAt)
                 : desc(tableSchemas.streamTable.createdAt);
         }
@@ -65,8 +65,19 @@ export class StreamRepository implements IStreamRepository {
                     ),
                 };
             },
-            limit: limit,
-            offset: offset,
+            with: {
+                streamsToCategories: {
+                    orderBy: desc(
+                        tableSchemas.streamsToCategoriesTable.createdAt,
+                    ),
+                    limit: this.categorySize,
+                    with: {
+                        category: true,
+                    },
+                },
+            },
+            limit: query.size,
+            offset: query.size * (query.page - 1),
             orderBy: orderBy,
         });
 
@@ -172,6 +183,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -210,6 +227,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 offset: offset,
                 limit: limit,
@@ -229,6 +252,12 @@ export class StreamRepository implements IStreamRepository {
             const streams = await this.db.query.streamTable.findMany({
                 with: {
                     user: true,
+                    streamsToCategories: {
+                        with: {
+                            category: true,
+                        },
+                        limit: this.categorySize,
+                    },
                 },
                 where: and(
                     ne(tableSchemas.streamTable.userId, userId),
@@ -268,5 +297,22 @@ export class StreamRepository implements IStreamRepository {
             );
             return { streams, totalRecords };
         } catch (error) {}
+    }
+    public async getStreamCategories(streamId: string) {
+        try {
+            const categories =
+                await this.db.query.streamsToCategoriesTable.findMany({
+                    where: eq(
+                        tableSchemas.streamsToCategoriesTable.streamId,
+                        streamId,
+                    ),
+                    with: {
+                        category: true,
+                    },
+                });
+            return categories;
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

@@ -1,13 +1,11 @@
-import { UsersRound } from "lucide-react";
-
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function PreviewSkeleton() {
     return (
-        <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {[1, 2, 3].map((index) => (
-                <li key={index}>
+        <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+                <li key={i}>
                     <AspectRatio
                         ratio={5 / 4}
                         className="min-h-72 overflow-y-hidden"
@@ -28,13 +26,6 @@ export function PreviewSkeleton() {
                                         <div className="flex w-2/3 space-x-2">
                                             <Skeleton className="h-4 w-16" />
                                             <Skeleton className="h-4 w-16" />
-                                        </div>
-                                        <div className="flex items-center space-x-1">
-                                            <UsersRound
-                                                size={16}
-                                                className="text-gray-400"
-                                            />
-                                            <Skeleton className="h-4 w-8" />
                                         </div>
                                     </div>
                                 </div>
