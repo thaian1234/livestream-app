@@ -1,20 +1,22 @@
 import { streamApi } from "../../apis";
-import { Forward, UsersRound } from "lucide-react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
+
+import { MoreActionPopover } from "./more-action-popover";
 
 interface LiveInformationProps {
     stream: StreamDTO.Select;
     user: UserDTO.Select;
     followerCount: number;
     isFollowing: boolean;
+    isOwnedStream: boolean;
 }
 
 export function LiveInformation({
@@ -22,10 +24,9 @@ export function LiveInformation({
     user,
     followerCount,
     isFollowing,
+    isOwnedStream,
 }: LiveInformationProps) {
-    const { data, isPending } = streamApi.query.useGetStreamCategories(
-        stream.id,
-    );
+    const { data } = streamApi.query.useGetStreamCategories(stream.id);
     const categories = data?.data;
 
     return (
@@ -61,17 +62,15 @@ export function LiveInformation({
                     </div>
                 </div>
             </div>
-            <div className="space-x-2"></div>
-
-            <FollowButton followingId={user.id} isFollowed={isFollowing} />
-
-            <Button
-                size="sm"
-                className="ml-2 rounded-xl bg-white/10 text-white"
-            >
-                <Forward className="mr-1" />
-                Share
-            </Button>
+            {!isOwnedStream && (
+                <div className="flex space-x-4">
+                    <FollowButton
+                        followingId={user.id}
+                        isFollowed={isFollowing}
+                    />
+                    <MoreActionPopover streamer={user} />
+                </div>
+            )}
         </div>
     );
 }
