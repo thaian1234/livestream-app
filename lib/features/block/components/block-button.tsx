@@ -25,7 +25,14 @@ export function BlockButton({ blockedId, isBlock }: BlockButtonProps) {
         blockApi.mutation.useBlockToggle();
     const handleClick = () => {
         setIsBlocking(!isBlocking);
-        handleBlockToggle({ param: { blockedId } });
+        handleBlockToggle({ param: { blockedId } }, {
+            onSuccess: () => {
+                setIsBlocking(!isBlocking);
+            },
+            onError: () => {
+                setIsBlocking(isBlocking);
+            },
+        });
     };
 
     return (
