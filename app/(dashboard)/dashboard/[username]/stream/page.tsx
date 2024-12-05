@@ -2,6 +2,7 @@
 
 import { CallStats } from "@stream-io/video-react-sdk";
 
+import { StreamUpdateDialog } from "@/lib/components/stream-update-dialog";
 import { settingApi } from "@/lib/features/setting/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
@@ -25,7 +26,7 @@ export default function StreamPage() {
     if (auth.isPending || isPendingSetting) {
         return <LoadingStreamPage />;
     }
-    if (!auth.isSignedIn || !auth.stream || !setting) {
+    if (!auth.isSignedIn || !auth.stream || !setting || !auth.user) {
         return <p>Error: User is not signed in</p>;
     }
 
@@ -34,7 +35,7 @@ export default function StreamPage() {
             <StreamVideoProvider>
                 <div
                     className={cn(
-                        "row-span-5",
+                        "relative row-span-5",
                         isOpenChatComponent
                             ? "col-span-9 aspect-video"
                             : "col-span-12 mx-14 aspect-[2/1]",

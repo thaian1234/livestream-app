@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
