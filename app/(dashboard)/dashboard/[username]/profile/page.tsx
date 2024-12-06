@@ -22,7 +22,7 @@ export default function AccountPage() {
                         title="Your avatar"
                         description="Upload your avatar"
                     >
-                        <UploadImageForm />
+                        <UploadImageForm  />
                     </CardSection>
                 </div>
                 <div className="lg:col-span-5">
