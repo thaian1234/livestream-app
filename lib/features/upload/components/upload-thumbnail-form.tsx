@@ -2,6 +2,7 @@
 
 import { uploadApi } from "../apis";
 import { Upload, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -54,11 +55,25 @@ export function UploadThumbnailForm({
         <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
-                    <img src={file.preview} alt={file.name} />
+                    <div className="relative aspect-video h-full w-full">
+                        <Image
+                            src={file.preview}
+                            alt={file.name}
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
                 ) : (
                     <div className="flex aspect-video h-full flex-col items-center justify-center">
                         {!!initialImageUrl ? (
-                            <img src={initialImageUrl} alt="Thumbnail Image" />
+                            <div className="relative aspect-video h-full w-full">
+                                <Image
+                                    src={initialImageUrl}
+                                    alt="Thumbnail Image"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
                         ) : (
                             <>
                                 <Upload className="mx-auto h-12 w-12 text-gray-400" />

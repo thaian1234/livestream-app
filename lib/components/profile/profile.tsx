@@ -24,7 +24,7 @@ export function Profile({ followers, followings }: ProfileProps) {
     }
 
     return (
-        <div className="flex w-[350px] flex-col items-center space-y-4">
+        <div className="flex w-[400px] flex-col items-center space-y-4">
             <UserAvatar imageUrl={user.imageUrl} size={"xxl"} />
             <p className="max-w-full break-words text-2xl">{user.username}</p>
             <div className="flex w-full justify-around">
@@ -47,14 +47,11 @@ export function Profile({ followers, followings }: ProfileProps) {
                     <span>{followings}</span>
                 </Link>
             </div>
-            <div className="max-w-full break-words font-extralight text-white/70">
+            <div className="max-w-full whitespace-pre-wrap break-words font-extralight text-white/70">
                 {user.bio}
             </div>
             <Link href={`/dashboard/${user.username}/profile`}>
-                <Button
-                    variant="gradient"
-                    className="w-full"
-                >
+                <Button variant="gradient" className="w-full">
                     Edit profile
                 </Button>
             </Link>
