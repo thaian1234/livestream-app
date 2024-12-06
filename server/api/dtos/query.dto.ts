@@ -67,7 +67,19 @@ export class QueryDTO {
         defaultSize = 8,
     ) {
         return this.createAdvancedSchema(defaultPage, defaultSize).extend({
-            categoryIds: z.string().uuid().array(),
+            categoryIds: z
+                .string()
+                .optional()
+                .transform((ids) =>
+                    ids ? ids.split(",").map((id) => id.trim()) : [],
+                ) // Split by commas and trim spaces
+                .refine(
+                    (ids) =>
+                        ids.every(
+                            (id) => z.string().uuid().safeParse(id).success,
+                        ),
+                    { message: "All ids must be valid UUIDs" },
+                ),
         });
     }
 }

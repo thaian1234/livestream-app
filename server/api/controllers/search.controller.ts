@@ -35,6 +35,7 @@ export class SearchController implements ISearchController {
                     queries,
                     currentUser ? currentUser.id : null,
                 );
+                console.log(queries)
                 const streams =
                     await this.streamService.advancedSearchStream(queries);
                 const formattedStreams = streams.result.map((stream) => {
