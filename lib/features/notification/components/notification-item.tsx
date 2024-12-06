@@ -1,4 +1,5 @@
 import {
+    LockIcon,
     User2Icon,
     UserMinus2Icon,
     UserPlus2Icon,
@@ -7,6 +8,7 @@ import {
 import Link from "next/link";
 
 import { ROUTES } from "@/lib/configs/routes.config";
+import { cn } from "@/lib/utils";
 
 import { NotificationDTO } from "@/server/api/dtos/notification.dto";
 
@@ -29,6 +31,7 @@ const formatDate = (dateString: string) => {
 };
 
 export const NotificationItem = ({ notification }: NotificationItemProps) => {
+    const isBlocked = notification.type === "BLOCKED";
     const renderNotification = () => {
         switch (notification.type) {
             case "NEW_FOLLOWER":
@@ -40,19 +43,10 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
                         </span>
                     </>
                 );
-            case "UNFOLLOW":
-                return (
-                    <>
-                        <UserMinus2Icon className="mr-2 h-4 w-4 text-pink-500" />
-                        <span className="line-clamp-2">
-                            {notification.actorName} unfollow you
-                        </span>
-                    </>
-                );
             case "BLOCKED":
                 return (
                     <>
-                        <UserPlus2Icon className="mr-2 h-4 w-4 text-blue-500" />
+                        <LockIcon className="mr-2 h-4 w-4 text-rose-500" />
                         <span className="line-clamp-2">
                             {notification.actorName} blocked you
                         </span>
@@ -74,8 +68,16 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
 
     return (
         <Link
-            href={ROUTES.STREAM_PAGE(notification.actorName || "")}
-            className="flex items-center gap-2 border-b p-2 last:border-b-0"
+            href={
+                isBlocked
+                    ? "/"
+                    : ROUTES.STREAM_PAGE(notification.actorName || "")
+            }
+            className={cn(
+                "flex items-center gap-2 border-b p-2 last:border-b-0",
+                isBlocked && "cursor-not-allowed",
+            )}
+            prefetch={false}
         >
             <UserAvatar imageUrl={notification?.actorAvatar} />
             <div className="flex flex-col space-y-1">
