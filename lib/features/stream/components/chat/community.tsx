@@ -135,14 +135,16 @@ function CommunitySection({
                         key={item.id}
                         className="flex items-center justify-between py-1"
                     >
-                        <p>{item.username}</p>
+                        <p className="truncate">{item.username}</p>
                         {canBlock && (
-                            <BlockButton
-                                blockedId={item.id}
-                                isBlock={false}
-                                key={item.id}
-                                showText={false}
-                            />
+                            <div className="w-10">
+                                <BlockButton
+                                    blockedId={item.id}
+                                    isBlock={false}
+                                    key={item.id}
+                                    showText={false}
+                                />
+                            </div>
                         )}
                     </div>
                 );

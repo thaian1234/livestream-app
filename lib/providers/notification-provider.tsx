@@ -1,5 +1,6 @@
 import { notificationApi } from "../features/notification/apis";
 import { DefaultGenerics, RealTimeMessage, connect } from "getstream";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
     ReactNode,
     createContext,
@@ -22,6 +23,10 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
     undefined,
 );
 
+type ParamsType = {
+    username: string;
+};
+
 export function NotificationProvider({
     children,
     userId,
@@ -37,6 +42,9 @@ export function NotificationProvider({
         NotificationDTO.FeedResponse | undefined
     >();
     const [results, setResult] = useState<NotificationDTO.Result[]>([]);
+    const pathname = usePathname();
+    const router = useRouter();
+    const params = useParams<ParamsType>();
 
     useEffect(() => {
         if (!data) return;
@@ -65,8 +73,29 @@ export function NotificationProvider({
                     );
                     return uniqueActivities;
                 });
+                const latestActivity = newActivity.sort((a, b) => {
+                    if (a.time && b.time) {
+                        return (
+                            new Date(b.time).getTime() -
+                            new Date(a.time).getTime()
+                        );
+                    }
+                    return 0;
+                })[0];
+                if (
+                    isUsernamePage() &&
+                    params.username === latestActivity.actorName &&
+                    latestActivity.type === "BLOCKED"
+                ) {
+                    router.replace("/");
+                }
                 console.log("New notification:", newActivity);
             }
+        };
+
+        const isUsernamePage = () => {
+            const pathSegments = pathname.split("/");
+            return pathSegments.length === 2 && pathSegments[1] !== "";
         };
 
         const successCallback = () => {
