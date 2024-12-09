@@ -8,10 +8,13 @@ import {
     useEffect,
     useState,
 } from "react";
+import { toast } from "sonner";
 
 import { envClient } from "@/lib/env/env.client";
 
 import { NotificationDTO } from "@/server/api/dtos/notification.dto";
+
+import StreamNotification from "@/components/stream-notification";
 
 interface NotificationContextType {
     notifications: NotificationDTO.Activity[];
@@ -59,6 +62,7 @@ export function NotificationProvider({
         const notificationFeed = client.feed("notifications", userId);
 
         const handleNotification = (data: RealTimeMessage<DefaultGenerics>) => {
+            console.log("data", data);
             if (data.new?.length > 0) {
                 const newActivity = NotificationDTO.activitySchema
                     .array()
@@ -82,20 +86,43 @@ export function NotificationProvider({
                     }
                     return 0;
                 })[0];
-                if (
-                    isUsernamePage() &&
-                    params.username === latestActivity.actorName &&
-                    latestActivity.type === "BLOCKED"
-                ) {
-                    router.replace("/");
+                if (latestActivity) {
+                    handleNotificationEvent(latestActivity);
                 }
                 console.log("New notification:", newActivity);
             }
         };
-
+        const handleNotificationEvent = (
+            latestActivity: NotificationDTO.Activity,
+        ) => {
+            switch (latestActivity.type) {
+                case "BLOCKED":
+                    if (
+                        isUsernamePage() &&
+                        params.username === latestActivity.actorName
+                    ) {
+                        router.replace("/");
+                    }
+                    break;
+                case "STREAM_START":
+                    toast.custom(() => (
+                        <StreamNotification
+                            streamerName={latestActivity.actorName}
+                            time={latestActivity.time}
+                        />
+                    ));
+                    break;
+                default:
+                    break;
+            }
+        };
         const isUsernamePage = () => {
             const pathSegments = pathname.split("/");
-            return pathSegments.length === 2 && pathSegments[1] !== "";
+            return (
+                params.username &&
+                pathSegments.length === 2 &&
+                pathSegments[1] !== ""
+            );
         };
 
         const successCallback = () => {
