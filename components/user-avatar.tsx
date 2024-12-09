@@ -10,7 +10,7 @@ const avatarSizes = cva("", {
             default: "size-10",
             lg: "size-14",
             xl: "size-24",
-            xxl: "size-34",
+            xxl: "size-56",
         },
     },
     defaultVariants: {

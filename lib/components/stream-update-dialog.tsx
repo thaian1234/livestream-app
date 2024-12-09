@@ -106,7 +106,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                 <SettingsIcon />
             </DialogTrigger>
             <DialogContent
-                className="h-[calc(100vh-4rem)] px-5 lg:max-w-4xl"
+                className="px-5 lg:max-w-4xl"
                 aria-describedby="stream-update-dialog-description"
             >
                 <DialogTitle></DialogTitle>
@@ -122,7 +122,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                             </TabsTrigger>
                         ))}
                     </TabsList>
-                    <ScrollArea className="h-[calc(100vh-10rem)] px-4">
+                    <ScrollArea className="h-[calc(100vh-14rem)] px-4">
                         {tabList.map((tab) => (
                             <TabsContent
                                 key={tab.value}

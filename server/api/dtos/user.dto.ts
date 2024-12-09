@@ -4,7 +4,6 @@ import { z } from "zod";
 import tableSchemas from "@/server/db/schemas";
 
 import { AccountDTO } from "./account.dto";
-import { AuthDTO } from "./auth.dto";
 import { StreamDTO } from "./stream.dto";
 
 const passwordValidation = {
@@ -15,6 +14,26 @@ const passwordValidation = {
     hasUpperCase: /(?=.*[A-Z])/,
     hasSpecialChar: /(?=.*[@$!%*?&])/,
 };
+
+const usernameValidation = {
+    startsWithLetter: /^[a-zA-Z]/, // Must start with letter
+    validCharacters: /^[a-zA-Z0-9_]+$/, // Only letters, numbers, underscores allowed
+    endsWithLetterOrNumber: /[a-zA-Z0-9]$/, // Must end with letter or number
+};
+
+const usernameSchema = z
+    .string()
+    .min(4, "Must be at least 4 characters")
+    .max(16, "Must be at most 16 characters")
+    .regex(usernameValidation.startsWithLetter, "Must start with a letter")
+    .regex(
+        usernameValidation.validCharacters,
+        "Can only contain letters, numbers, and underscores",
+    )
+    .regex(
+        usernameValidation.endsWithLetterOrNumber,
+        "Must end with a letter or number",
+    );
 
 const passwordSchema = z
     .string()
@@ -41,7 +60,7 @@ export class UserDTO {
         hashedPassword: true,
     });
     public static insertSchema = createInsertSchema(tableSchemas.userTable, {
-        username: z.string().min(4).max(50),
+        username: usernameSchema,
         email: z.string().email(),
     });
     public static updateSchema = this.baseSchema.partial().omit({

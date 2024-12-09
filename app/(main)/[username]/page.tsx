@@ -14,6 +14,7 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
+import { useUser } from "@/lib/hooks/use-user";
 
 type ParamsType = {
     username: string;
@@ -22,6 +23,7 @@ type ParamsType = {
 export default function StreamPage() {
     const router = useRouter();
     const params = useParams<ParamsType>();
+    const currentUser = useUser();
     const { data, isPending, isError } =
         streamApi.query.useGetStreamInformation(params.username);
     const { isOpenChatComponent } = useLiveInfor();
@@ -67,6 +69,7 @@ export default function StreamPage() {
                     stream={stream}
                     user={user}
                     isFollowing={isFollowing}
+                    isOwnedStream={currentUser.user.id === user.id}
                 />
             </div>
             <div

@@ -81,7 +81,13 @@ export const columns = (): ColumnDef<Block>[] => [
         id: "actions",
         cell: ({ row }) => {
             const block = row.original;
-            return <BlockButton blockedId={block.id} isBlock={true}/>;
+            return (
+                <BlockButton
+                    blockedId={block.id}
+                    isBlock={true}
+                    showText={true}
+                />
+            );
         },
         size: 50,
     },

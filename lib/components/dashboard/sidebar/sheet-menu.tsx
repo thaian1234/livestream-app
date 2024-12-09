@@ -36,7 +36,7 @@ export function SheetMenu() {
                         >
                             <PanelsTopLeft className="mr-1 h-6 w-6" />
                             <SheetTitle className="text-lg font-bold">
-                                Brand
+                                Dashboard
                             </SheetTitle>
                         </Link>
                     </Button>

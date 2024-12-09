@@ -1,5 +1,6 @@
 import { useNotification } from "../../../providers/notification-provider";
 import { Bell } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,26 +14,54 @@ import { NotificationFeed } from "./notification-feed";
 
 export function NotificationPopover() {
     const { notifications, notificationFeed } = useNotification();
+    const [unseenCount, setUnseenCount] = useState(
+        notificationFeed?.unseen || 0,
+    );
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (notificationFeed) {
+            setUnseenCount(notificationFeed.unseen);
+        }
+    }, [notificationFeed]);
+
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open);
+        if (open) {
+            setUnseenCount(0);
+        }
+    };
+
     if (!notificationFeed) return <Spinner size={"small"} />;
 
     return (
-        <Popover>
+        <Popover open={isOpen} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="size-6" />
-                    {notificationFeed.unread > 0 && (
-                        <span className="absolute right-1 top-1 size-2 rounded-full bg-red-500" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative"
+                    aria-label="Notifications"
+                >
+                    <Bell
+                        className="size-6"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                    />
+                    {unseenCount > 0 && (
+                        <span className="absolute left-full right-1 top-0 inline-flex size-2 h-5 min-w-[20px] -translate-x-1/2 items-center justify-center rounded-full bg-rose-500 px-1 text-xs font-medium text-white">
+                            {unseenCount > 99 ? "99+" : unseenCount}
+                        </span>
                     )}
-                    <span className="sr-only">Show notifications</span>
                 </Button>
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"
-                className="mt-4 w-80 border-slate-500 p-0"
+                className="mt-4 w-[350px] border-slate-500 p-0"
             >
                 <div className="flex items-center gap-2 border-b p-4 text-sm font-medium">
                     <Bell className="size-6" />
-                    <p>Notifications {notificationFeed.unread}</p>
+                    <p>Notifications</p>
                 </div>
                 <NotificationFeed notifications={notifications} />
             </PopoverContent>
