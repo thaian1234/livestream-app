@@ -13,18 +13,14 @@ export class QueryDTO {
 
     private static createBaseSchema(defaultPage: number, defaultSize: number) {
         return z.object({
-            page: z
-                .preprocess(
-                    this.defaultPreprocess,
-                    z.coerce.number().int().min(1).default(defaultPage),
-                )
-                .optional(),
-            size: z
-                .preprocess(
-                    this.defaultPreprocess,
-                    z.coerce.number().int().min(0).default(defaultSize),
-                )
-                .optional(),
+            page: z.preprocess(
+                this.defaultPreprocess,
+                z.coerce.number().int().min(1).default(defaultPage),
+            ),
+            size: z.preprocess(
+                this.defaultPreprocess,
+                z.coerce.number().int().min(0).default(defaultSize),
+            ),
         });
     }
 

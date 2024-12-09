@@ -34,12 +34,8 @@ export class CategoryController implements ICategoryController {
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const { page, size, filterBy } = c.req.valid("query");
-                const categories = await this.categoryService.findAll(
-                    filterBy || "",
-                    (page - 1) * size,
-                    size,
-                );
+                const query = c.req.valid("query");
+                const categories = await this.categoryService.findAll(query);
                 if (!categories) {
                     throw new MyError.BadRequestError(
                         "Failed to fetch categories",
@@ -60,18 +56,15 @@ export class CategoryController implements ICategoryController {
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const { page, size } = c.req.valid("query");
-                const categories = await this.categoryService.findAllDetail(
-                    (page - 1) * size,
-                    size,
-                );
+                const query = c.req.valid("query");
+                const categories =
+                    await this.categoryService.findAllDetail(query);
                 if (!categories) {
                     throw new MyError.BadRequestError(
                         "Failed to fetch categories",
                     );
                 }
                 console.log(categories);
-                console.log("here");
                 return ApiResponse.WriteJSON({
                     c,
                     data: {

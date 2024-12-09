@@ -40,15 +40,11 @@ interface StreamUpdateDialogProps {
 export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
     const { isPending, data, isError } =
         streamApi.query.useGetStreamInformation(username);
-    const { data: categories, isPending: isPendingCategory } =
-        categoryApi.query.useGetBasic({
-            size: "100",
-        });
 
-    if (isPending || isPendingCategory) {
+    if (isPending) {
         return <p>Loading information</p>;
     }
-    if (isError || !data || !categories) {
+    if (isError || !data) {
         return <p>Cannot load form</p>;
     }
 
@@ -67,10 +63,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
                         username={username}
                     />
                     {/* Add Categories Form */}
-                    <StreamCategoriesForm
-                        streamId={data.data.stream.id}
-                        categories={categories.data.categories}
-                    />
+                    <StreamCategoriesForm streamId={data.data.stream.id} />
                     {/* Stream Upload Image */}
                     <div>
                         <Label>Upload Stream Thumbnail</Label>
