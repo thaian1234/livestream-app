@@ -48,9 +48,11 @@ export class StreamRepository implements IStreamRepository {
         }
 
         if (query.isSortByCreatedAt) {
-            orderBy = query.sortOrder.toLowerCase().localeCompare("asc")
-                ? asc(tableSchemas.streamTable.createdAt)
-                : desc(tableSchemas.streamTable.createdAt);
+            orderBy =
+                query.sortOrder &&
+                query.sortOrder.toLowerCase().localeCompare("asc")
+                    ? asc(tableSchemas.streamTable.createdAt)
+                    : desc(tableSchemas.streamTable.createdAt);
         }
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
