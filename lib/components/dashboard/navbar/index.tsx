@@ -1,4 +1,5 @@
 import { UserNav } from "../../../features/user/components/user-nav";
+import { StreamUpdateDialog } from "../../stream-update-dialog";
 import { SheetMenu } from "../sidebar/sheet-menu";
 
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
@@ -15,10 +16,11 @@ export function Navbar({}: NavbarProps) {
                 <div className="flex items-center space-x-4 lg:space-x-0">
                     <SheetMenu />
                 </div>
-                <div className="flex flex-1 items-center justify-end space-x-8 pr-8">
+                <div className="flex flex-1 items-center justify-end space-x-8 pr-4">
                     <NotificationProvider userId={user.id}>
                         <NotificationPopover />
                     </NotificationProvider>
+                    <StreamUpdateDialog username={user.username} />
                     <UserNav />
                 </div>
             </div>

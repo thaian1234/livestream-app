@@ -123,6 +123,7 @@ function PaginationComponent({
 }
 
 export default function SearchPage() {
+    const { selectedIds } = useCategoryTree();
     const [currentPage, setCurrentPage] = useQueryState("page", {
         defaultValue: "1",
         throttleMs: 500,

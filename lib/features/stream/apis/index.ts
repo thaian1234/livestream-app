@@ -136,16 +136,22 @@ export const streamApi = {
         },
         useAddCategoriesToStream() {
             const $post = client.api.streams["add-categories"].$post;
-            const { mutation, queryClient } = Fetcher.useHonoMutation($post, {
-                onError(err) {
-                    console.error(err);
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onError(err) {
+                        console.error(err);
+                    },
+                    onSuccess({}, { json }) {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.stream_categories(json.streamId),
+                        });
+                        toast.success(
+                            "Successfully added categories to stream",
+                        );
+                    },
                 },
-                onSuccess({}, { json }) {
-                    queryClient.invalidateQueries({
-                        queryKey: keys.stream_categories(json.streamId),
-                    });
-                },
-            });
+            );
             return mutation;
         },
     },

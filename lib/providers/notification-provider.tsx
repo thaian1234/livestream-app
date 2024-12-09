@@ -1,5 +1,6 @@
 import { notificationApi } from "../features/notification/apis";
 import { DefaultGenerics, RealTimeMessage, connect } from "getstream";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
     ReactNode,
     createContext,
@@ -7,10 +8,13 @@ import {
     useEffect,
     useState,
 } from "react";
+import { toast } from "sonner";
 
 import { envClient } from "@/lib/env/env.client";
 
 import { NotificationDTO } from "@/server/api/dtos/notification.dto";
+
+import StreamNotification from "@/components/stream-notification";
 
 interface NotificationContextType {
     notifications: NotificationDTO.Activity[];
@@ -21,6 +25,10 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(
     undefined,
 );
+
+type ParamsType = {
+    username: string;
+};
 
 export function NotificationProvider({
     children,
@@ -37,6 +45,9 @@ export function NotificationProvider({
         NotificationDTO.FeedResponse | undefined
     >();
     const [results, setResult] = useState<NotificationDTO.Result[]>([]);
+    const pathname = usePathname();
+    const router = useRouter();
+    const params = useParams<ParamsType>();
 
     useEffect(() => {
         if (!data) return;
@@ -51,6 +62,7 @@ export function NotificationProvider({
         const notificationFeed = client.feed("notifications", userId);
 
         const handleNotification = (data: RealTimeMessage<DefaultGenerics>) => {
+            console.log("data", data);
             if (data.new?.length > 0) {
                 const newActivity = NotificationDTO.activitySchema
                     .array()
@@ -65,8 +77,52 @@ export function NotificationProvider({
                     );
                     return uniqueActivities;
                 });
+                const latestActivity = newActivity.sort((a, b) => {
+                    if (a.time && b.time) {
+                        return (
+                            new Date(b.time).getTime() -
+                            new Date(a.time).getTime()
+                        );
+                    }
+                    return 0;
+                })[0];
+                if (latestActivity) {
+                    handleNotificationEvent(latestActivity);
+                }
                 console.log("New notification:", newActivity);
             }
+        };
+        const handleNotificationEvent = (
+            latestActivity: NotificationDTO.Activity,
+        ) => {
+            switch (latestActivity.type) {
+                case "BLOCKED":
+                    if (
+                        isUsernamePage() &&
+                        params.username === latestActivity.actorName
+                    ) {
+                        router.replace("/");
+                    }
+                    break;
+                case "STREAM_START":
+                    toast.custom(() => (
+                        <StreamNotification
+                            streamerName={latestActivity.actorName}
+                            time={latestActivity.time}
+                        />
+                    ));
+                    break;
+                default:
+                    break;
+            }
+        };
+        const isUsernamePage = () => {
+            const pathSegments = pathname.split("/");
+            return (
+                params.username &&
+                pathSegments.length === 2 &&
+                pathSegments[1] !== ""
+            );
         };
 
         const successCallback = () => {
@@ -86,7 +142,7 @@ export function NotificationProvider({
             .subscribe(handleNotification)
             .then(successCallback, failCallback);
 
-        notificationFeed.get({ limit: 2 }).then((response) => {
+        notificationFeed.get({ limit: 2, mark_seen: true }).then((response) => {
             try {
                 const validatedNotificationsResponse =
                     NotificationDTO.feedResponseSchema.parse(response);

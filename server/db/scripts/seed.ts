@@ -15,7 +15,7 @@ const lucia = LuciaService.getInstance();
 
 async function signUpAllUser(users: UserDTO.Select[]) {
     for (const user of users) {
-        const password = "123456";
+        const password = "An@123456";
         const hashedPassword = await Utils.PasswordUtils.hashPassword(password);
         await db.update(tableSchemas.userTable).set({
             hashedPassword,
