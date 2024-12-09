@@ -119,9 +119,11 @@ export class UserRepository implements IUserRepository {
             );
         }
         if (query.isSortByCreatedAt) {
-            orderBy = query.sortOrder.toLowerCase().localeCompare("asc")
-                ? asc(tableSchemas.userTable.createdAt)
-                : orderBy;
+            orderBy =
+                query.sortOrder &&
+                query.sortOrder.toLowerCase().localeCompare("asc")
+                    ? asc(tableSchemas.userTable.createdAt)
+                    : orderBy;
         }
         let isFollowSql = sql`false`;
         if (currentUserId) {

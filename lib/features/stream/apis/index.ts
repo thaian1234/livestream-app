@@ -48,6 +48,9 @@ export const streamApi = {
                         username,
                     },
                 },
+                {
+                    retry: 0,
+                },
             );
         },
         useGetDefaultStreams(queries: DefaultQueries) {
