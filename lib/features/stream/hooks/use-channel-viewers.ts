@@ -40,7 +40,7 @@ export function useChannelViewers() {
             channel.off("user.watching.start", updateChannelViewers);
             channel.off("user.watching.stop", updateChannelViewers);
         };
-    }, [channel]);
+    }, [channel, channel.state.watchers]);
 
     return { channelViewers };
 }
