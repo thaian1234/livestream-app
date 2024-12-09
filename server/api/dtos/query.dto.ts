@@ -13,14 +13,18 @@ export class QueryDTO {
 
     private static createBaseSchema(defaultPage: number, defaultSize: number) {
         return z.object({
-            page: z.preprocess(
-                this.defaultPreprocess,
-                z.coerce.number().int().min(1).default(defaultPage),
-            ),
-            size: z.preprocess(
-                this.defaultPreprocess,
-                z.coerce.number().int().min(0).default(defaultSize),
-            ),
+            page: z
+                .preprocess(
+                    this.defaultPreprocess,
+                    z.coerce.number().int().min(1).default(defaultPage),
+                )
+                .optional(),
+            size: z
+                .preprocess(
+                    this.defaultPreprocess,
+                    z.coerce.number().int().min(0).default(defaultSize),
+                )
+                .optional(),
         });
     }
 
@@ -46,19 +50,22 @@ export class QueryDTO {
         const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
 
         return this.createFilterSchema(defaultPage, defaultSize).extend({
-            dateFrom: z.preprocess(
-                this.parseDatePreprocess,
-                z.date().default(thirtyDaysAgo),
-            ),
-            dateTo: z.preprocess(
-                this.parseDatePreprocess,
-                z.date().default(new Date()),
-            ),
-            isSortByCreatedAt: z.preprocess(
-                this.defaultPreprocess,
-                z.coerce.boolean(),
-            ),
-            sortOrder: z.string().default("asc"),
+            dateFrom: z
+                .preprocess(
+                    this.parseDatePreprocess,
+                    z.date().default(thirtyDaysAgo),
+                )
+                .optional(),
+            dateTo: z
+                .preprocess(
+                    this.parseDatePreprocess,
+                    z.date().default(new Date()),
+                )
+                .optional(),
+            isSortByCreatedAt: z
+                .preprocess(this.defaultPreprocess, z.coerce.boolean())
+                .optional(),
+            sortOrder: z.string().default("asc").optional(),
         });
     }
 }

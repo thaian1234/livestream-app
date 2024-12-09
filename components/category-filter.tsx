@@ -20,14 +20,13 @@ export function CategoryFilter() {
     const { data: categories, isPending } = categoryApi.query.useGetDetail({
         page: "1",
     });
-    const { expandedIds, selectedIds, handleSelect, handleExpand } =
-        useCategoryTree();
+    const { selectedIds, handleSelect } = useCategoryTree();
 
     if (isPending) return <Spinner />;
     if (!categories) return <div>No categories found</div>;
 
     return (
-        <Accordion type="single" className="w-full max-w-sm">
+        <Accordion type="single" collapsible className="w-full max-w-sm">
             <AccordionItem value="categories">
                 <AccordionTrigger className="text-lg font-semibold">
                     Categories
