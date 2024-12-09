@@ -136,6 +136,7 @@ export default function SearchPage() {
         filterBy: searchQuery,
         page: parseInt(currentPage),
         size: 4,
+        categoryIds: selectedIds,
     });
     const tabs = ["All", "Live", "Channel"];
 
@@ -166,13 +167,17 @@ export default function SearchPage() {
                 </TabsList>
                 <TabsContent value="All">
                     <div className="space-y-4">
-                        <p className="text-2xl">User</p>
-                        <div className="flex max-w-[700px] flex-col">
-                            <UserPreview
-                                users={data.data.data.users}
-                                limit={4}
-                            />
-                        </div>
+                        {!selectedIds?.length && (
+                            <>
+                                <p className="text-2xl">User</p>
+                                <div className="flex max-w-[700px] flex-col">
+                                    <UserPreview
+                                        users={data.data.data.users}
+                                        limit={4}
+                                    />
+                                </div>
+                            </>
+                        )}
 
                         <p className="text-2xl">Channel</p>
                         <div className="flex flex-col space-y-4">

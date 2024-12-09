@@ -12,45 +12,6 @@ interface Category {
     tags: string[];
 }
 
-const categories: Category[] = [
-    {
-        id: 1,
-        title: "Just Chatting",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["IRL"],
-    },
-    {
-        id: 2,
-        title: "League of Legends",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["MOBA", "Action"],
-    },
-    {
-        id: 3,
-        title: "VALORANT",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["FPS", "Shooter"],
-    },
-    {
-        id: 4,
-        title: "Grand Theft Auto V",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["Adventure", "Action"],
-    },
-    {
-        id: 5,
-        title: "Minecraft",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["Adventure", "Sandbox"],
-    },
-    {
-        id: 6,
-        title: "Counter-Strike: Global Offensive",
-        imageUrl: "/placeholder.svg?height=136&width=96",
-        tags: ["FPS", "Shooter"],
-    },
-];
-
 export function CategoryList() {
     const { data, isPending, isError } = categoryApi.query.useGetDetail({});
 

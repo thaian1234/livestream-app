@@ -54,13 +54,15 @@ export class StreamRepository implements IStreamRepository {
                     ? asc(tableSchemas.streamTable.createdAt)
                     : desc(tableSchemas.streamTable.createdAt);
         }
-        console.log(query.categoryIds);
+        console.log("from repo: ", query.categoryIds);
         if (query.categoryIds && query.categoryIds.length > 0) {
             conditions.push(
                 inArray(
                     tableSchemas.streamTable.id,
                     this.db
-                        .select({ id: tableSchemas.streamsToCategoriesTable.streamId })
+                        .select({
+                            id: tableSchemas.streamsToCategoriesTable.streamId,
+                        })
                         .from(tableSchemas.streamsToCategoriesTable)
                         .where(
                             inArray(
