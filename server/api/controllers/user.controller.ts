@@ -5,6 +5,7 @@ import { StreamDTO } from "../dtos/stream.dto";
 import { UserDTO } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { BlockUtils } from "../lib/helpers/block-util";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
@@ -135,29 +136,27 @@ export class UserController {
             async (c) => {
                 const { username } = c.req.valid("param");
                 const user = await this.userService.findByUsername(username);
+                const currentUser = c.get("user");
 
                 if (!user) {
                     throw new MyError.NotFoundError("User not found");
                 }
 
-                const [stream, followings, followers, blocks] =
-                    await Promise.all([
-                        this.streamService.getStreamByUserId(user.id),
-                        this.followService.findFollowingByUserId(user.id),
-                        this.followService.findFollowerByUserId(user.id),
-                        this.blockSerice.findBlockedByUserId(user.id),
-                    ]);
+                currentUser &&
+                    (await BlockUtils.checkUserBlock(currentUser.id, user.id));
 
-                const currentUser = c.get("user");
+                const [stream, followers] = await Promise.all([
+                    this.streamService.getStreamByUserId(user.id),
+                    this.followService.findFollowerByUserId(user.id),
+                ]);
+
                 const isCurrentUserDifferent =
                     currentUser && currentUser.id !== user.id;
 
                 const responseData = {
                     user: UserDTO.parse(user),
                     stream: StreamDTO.parse(stream),
-                    followings: FollowDTO.parseUserOnlyMany(followings),
                     followers: FollowDTO.parseUserOnlyMany(followers),
-                    blocks: BlockDTO.parseUserOnlyMany(blocks),
                     isFollowing: false,
                     isBlocked: false,
                 };
@@ -170,9 +169,6 @@ export class UserController {
                 if (isCurrentUserDifferent) {
                     responseData.isFollowing = !!followers?.find(
                         (follower) => follower.id === currentUser.id,
-                    );
-                    responseData.isBlocked = !!blocks?.find(
-                        (block) => block.id === currentUser.id,
                     );
                 }
 

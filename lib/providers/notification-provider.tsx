@@ -142,7 +142,7 @@ export function NotificationProvider({
             .subscribe(handleNotification)
             .then(successCallback, failCallback);
 
-        notificationFeed.get({ limit: 2 }).then((response) => {
+        notificationFeed.get({ limit: 2, mark_seen: true }).then((response) => {
             try {
                 const validatedNotificationsResponse =
                     NotificationDTO.feedResponseSchema.parse(response);

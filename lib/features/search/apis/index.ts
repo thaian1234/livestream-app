@@ -4,12 +4,12 @@ import { client } from "@/lib/shared/client";
 import { QueryDTO } from "@/server/api/dtos/query.dto";
 
 const keys = {
-    search: (query: QueryDTO.Filter) => ["search", query] as string[],
+    search: (query: QueryDTO.Advanced) => ["search", query] as string[],
 };
 
 export const searchApi = {
     query: {
-        useSearch(query: QueryDTO.Filter) {
+        useSearch(query: QueryDTO.Advanced) {
             const $get = client.api.search.$get;
             return Fetcher.useHonoQuery(
                 $get,

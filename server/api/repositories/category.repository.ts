@@ -1,4 +1,5 @@
 import { CategoryDTO } from "../dtos/category.dto";
+import { QueryDTO } from "../dtos/query.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
 import {
@@ -45,40 +46,39 @@ export class CategoryRepository implements ICategoryRepository {
         this.db = Database.getInstance().db;
     }
 
-    async findAll(
-        filterBy: string = "",
-        offset: number = 0,
-        limit: number = 5,
-    ) {
+    async findAll(query: QueryDTO.Filter) {
         try {
             const categories = await this.db.query.categoryTable.findMany({
                 where: and(
                     eq(tableSchemas.categoryTable.isActive, true),
-                    ilike(tableSchemas.categoryTable.name, `%${filterBy}%`),
+                    ilike(
+                        tableSchemas.categoryTable.name,
+                        `%${query.filterBy}%`,
+                    ),
                 ),
-                offset: offset,
-                limit: limit,
+                offset: (query.page - 1) * query.size,
+                limit: query.size,
             });
             return categories;
         } catch (error) {}
     }
-    async findAllDetail(offset: number = 0, limit: number = 10) {
+    async findAllDetail(query: QueryDTO.Pagination) {
         try {
             const categories = await this.db.query.categoryTable.findMany({
                 where: and(
                     eq(tableSchemas.categoryTable.isActive, true),
-                    isNull(tableSchemas.categoryTable.parentId), // Get root categories first
+                    isNull(tableSchemas.categoryTable.parentId),
                 ),
                 with: {
                     children: {
                         where: eq(tableSchemas.categoryTable.isActive, true),
                         with: {
-                            children: true, // For deeper nesting if needed
+                            children: true,
                         },
                     },
                 },
-                offset,
-                limit,
+                offset: (query.page - 1) * query.size,
+                limit: query.size,
             });
             return categories;
         } catch (error) {}
