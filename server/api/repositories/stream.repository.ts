@@ -4,6 +4,7 @@ import { Utils } from "../lib/helpers/utils";
 import {
     and,
     asc,
+    count,
     desc,
     eq,
     gte,
@@ -70,6 +71,16 @@ export class StreamRepository implements IStreamRepository {
                                     .categoryId,
                                 query.categoryIds,
                             ),
+                        )
+                        .groupBy(tableSchemas.streamsToCategoriesTable.streamId)
+                        .having(
+                            gte(
+                                count(
+                                    tableSchemas.streamsToCategoriesTable
+                                        .categoryId,
+                                ),
+                                query.categoryIds.length,
+                            ),
                         ),
                 ),
             );
@@ -108,7 +119,6 @@ export class StreamRepository implements IStreamRepository {
             tableSchemas.streamTable,
             and(...conditions),
         );
-
         return { result, totalRecords };
     }
     async getStreamByUserId(userId: string) {
