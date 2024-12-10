@@ -139,17 +139,16 @@ export class UserController {
                 if (!user) {
                     throw new MyError.NotFoundError("User not found");
                 }
+                const isCurrentUserDifferent =
+                    currentUser && currentUser.id !== user.id;
 
-                currentUser &&
+                isCurrentUserDifferent &&
                     (await BlockUtils.checkUserBlock(currentUser.id, user.id));
 
                 const [stream, followers] = await Promise.all([
                     this.streamService.getStreamByUserId(user.id),
                     this.followService.findFollowerByUserId(user.id),
                 ]);
-
-                const isCurrentUserDifferent =
-                    currentUser && currentUser.id !== user.id;
 
                 const responseData = {
                     user: UserDTO.parse(user),
