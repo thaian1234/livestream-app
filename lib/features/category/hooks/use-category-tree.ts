@@ -5,6 +5,7 @@ interface CategoryTreeState {
     expandedIds: string[];
     handleSelect: (categoryId: string) => void;
     handleExpand: (categoryId: string) => void;
+    handleSelectAll: (categoryIds: string[]) => void;
     reset: () => void;
 }
 
@@ -27,4 +28,8 @@ export const useCategoryTree = create<CategoryTreeState>((set) => ({
         })),
 
     reset: () => set({ selectedIds: [], expandedIds: [] }),
+    handleSelectAll: (categoryIds: string[]) =>
+        set((state) => ({
+            selectedIds: [...state.selectedIds, ...categoryIds],
+        })),
 }));

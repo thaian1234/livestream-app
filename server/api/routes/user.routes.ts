@@ -46,7 +46,6 @@ function createUserRoutes(): UserRoutes {
         userService,
         followService,
         streamService,
-        blockService,
         settingService,
     );
 

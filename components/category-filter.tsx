@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckSquare, Square } from "lucide-react";
 import * as React from "react";
 
 import { categoryApi } from "@/lib/features/category/apis";
@@ -14,25 +15,62 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
+import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+
+const getAllCategoryIds = (categories: any[]): string[] => {
+    return categories.reduce((acc: string[], category) => {
+        acc.push(category.id);
+        if (category.children && category.children.length > 0) {
+            acc.push(...getAllCategoryIds(category.children));
+        }
+        return acc;
+    }, []);
+};
 
 export function CategoryFilter() {
     const { data: categories, isPending } = categoryApi.query.useGetDetail({
         page: "1",
     });
-    const { selectedIds, handleSelect } = useCategoryTree();
+    const { selectedIds, handleSelect, reset, handleSelectAll } =
+        useCategoryTree();
 
     if (isPending) return <Spinner />;
     if (!categories) return <div>No categories found</div>;
 
+    const allCategoryIds = getAllCategoryIds(categories.data.categories);
+
     return (
-        <Accordion type="single" collapsible className="w-full max-w-sm">
+        <Accordion
+            type="single"
+            collapsible
+            className="relative w-full max-w-sm"
+            defaultValue="categories"
+        >
             <AccordionItem value="categories">
                 <AccordionTrigger className="text-lg font-semibold">
                     Categories
                 </AccordionTrigger>
                 <AccordionContent>
-                    <div className="space-y-4">
+                    <div className="absolute right-5 top-2 space-x-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleSelectAll(allCategoryIds)}
+                            title="Select All"
+                        >
+                            <CheckSquare className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => reset()}
+                            title="Deselect All"
+                        >
+                            <Square className="h-4 w-4" />
+                        </Button>
+                    </div>
+                    <div className="space-y-2">
                         {categories.data.categories.map((category) => (
                             <div key={category.id} className="space-y-2">
                                 <div className="flex items-center space-x-2">

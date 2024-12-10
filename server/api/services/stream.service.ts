@@ -7,7 +7,7 @@ export interface IStreamService extends Utils.AutoMappedClass<StreamService> {}
 
 export class StreamService implements IStreamService {
     constructor(private streamRepository: IStreamRepository) {}
-    public async advancedSearchStream(query: QueryDTO.Advanced) {
+    public async advancedSearchStream(query: QueryDTO.AdvancedWithCategory) {
         return await this.streamRepository.advancedSearchStream(query);
     }
     public async getStreamByUserId(userId: string) {

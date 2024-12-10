@@ -64,6 +64,27 @@ export class QueryDTO {
             sortOrder: z.string().default("asc").optional(),
         });
     }
+
+    public static createAdvancedSchemaWithCategory(
+        defaultPage = 1,
+        defaultSize = 8,
+    ) {
+        return this.createAdvancedSchema(defaultPage, defaultSize).extend({
+            categoryIds: z
+                .string()
+                .transform((ids) =>
+                    ids ? ids.split(",").map((id) => id.trim()) : [],
+                ) // Split by commas and trim spaces
+                .refine(
+                    (ids) =>
+                        ids.every(
+                            (id) => z.string().uuid().safeParse(id).success,
+                        ),
+                    { message: "All ids must be valid UUIDs" },
+                )
+                .optional(),
+        });
+    }
 }
 
 export namespace QueryDTO {
@@ -75,5 +96,8 @@ export namespace QueryDTO {
     >;
     export type Advanced = z.infer<
         ReturnType<typeof QueryDTO.createAdvancedSchema>
+    >;
+    export type AdvancedWithCategory = z.infer<
+        ReturnType<typeof QueryDTO.createAdvancedSchemaWithCategory>
     >;
 }
