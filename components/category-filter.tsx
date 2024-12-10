@@ -45,6 +45,7 @@ export function CategoryFilter() {
             type="single"
             collapsible
             className="relative w-full max-w-sm"
+            defaultValue="categories"
         >
             <AccordionItem value="categories">
                 <AccordionTrigger className="text-lg font-semibold">
