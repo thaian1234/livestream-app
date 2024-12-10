@@ -138,11 +138,12 @@ export default function SearchPage() {
         size: 4,
         categoryIds: selectedIds,
     });
-    const tabs = ["All", "Live", "Channel"];
+    const tabs = ["All", "User", "Channel"];
 
     if (data === undefined || isPending) return <Loader2 />;
     if (error) return <p>Something went wrong</p>;
     const streams = data.data.data.streams;
+    const users = data.data.data.users;
 
     const handleChangePage = (page: number) => {
         setCurrentPage(page.toString());
@@ -167,18 +168,14 @@ export default function SearchPage() {
                 </TabsList>
                 <TabsContent value="All">
                     <div className="space-y-4">
-                        {!selectedIds?.length && (
+                        {!selectedIds?.length && users && (
                             <>
                                 <p className="text-2xl">User</p>
                                 <div className="flex max-w-[700px] flex-col">
-                                    <UserPreview
-                                        users={data.data.data.users}
-                                        limit={4}
-                                    />
+                                    <UserPreview users={users} limit={4} />
                                 </div>
                             </>
                         )}
-
                         <p className="text-2xl">Channel</p>
                         <div className="flex flex-col space-y-4">
                             <LivesPreview streams={streams} />
@@ -186,16 +183,18 @@ export default function SearchPage() {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="User">
+                <TabsContent value="Channel">
                     <div className="flex flex-col space-y-4">
                         <LivesPreview streams={streams} />
                     </div>
                 </TabsContent>
-                <TabsContent value="Channel">
-                    <div className="flex max-w-[700px] flex-col">
-                        <UserPreview users={data.data.data.users} />
-                    </div>
-                </TabsContent>
+                {!selectedIds?.length && users && (
+                    <TabsContent value="Users">
+                        <div className="flex max-w-[700px] flex-col">
+                            <UserPreview users={users} />
+                        </div>
+                    </TabsContent>
+                )}
                 <PaginationComponent
                     currentPage={data.data.pagination.currentPage}
                     totalPages={data.data.pagination.totalPages}

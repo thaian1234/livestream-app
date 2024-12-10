@@ -31,11 +31,14 @@ export class SearchController implements ISearchController {
                 const currentUser = c.get("user");
                 const queries = c.req.valid("query");
 
-                const users = await this.userService.advancedSearchUser(
-                    queries,
-                    currentUser ? currentUser.id : null,
-                );
-                console.log(queries)
+                const isFilterWithCategory = queries?.categoryIds.length > 0;
+
+                const users = !isFilterWithCategory
+                    ? await this.userService.advancedSearchUser(
+                          queries,
+                          currentUser ? currentUser.id : null,
+                      )
+                    : null;
                 const streams =
                     await this.streamService.advancedSearchStream(queries);
                 const formattedStreams = streams.result.map((stream) => {
@@ -49,20 +52,22 @@ export class SearchController implements ISearchController {
                         categories,
                     };
                 });
+                const totalRecords = isFilterWithCategory
+                    ? streams.totalRecords
+                    : Math.max(streams.totalRecords, users?.totalRecords || 0);
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: PaginationHelper.getPaginationMetadata({
                         data: {
-                            users: UserDTO.parseManySearch(users.result),
+                            users:
+                                users && UserDTO.parseManySearch(users.result),
                             streams:
                                 StreamDTO.parseManySearch(formattedStreams),
                         },
                         currentOffset: queries.size * (queries.page - 1),
                         limit: queries.size,
-                        totalRecords: Math.max(
-                            streams.totalRecords,
-                            users.totalRecords,
-                        ),
+                        totalRecords: totalRecords,
                     }),
                     status: HttpStatus.OK,
                 });
