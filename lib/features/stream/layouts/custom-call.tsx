@@ -27,7 +27,12 @@ export function CustomCall({ streamId, children }: CustomCallProps) {
             );
         }
         if (error.status === HttpStatus.NotFound) {
-            <LiveStreamPlayerState stateMessage="Stream not found" isError />;
+            return (
+                <LiveStreamPlayerState
+                    stateMessage="Stream not found"
+                    isError
+                />
+            );
         }
         return (
             <LiveStreamPlayerState
