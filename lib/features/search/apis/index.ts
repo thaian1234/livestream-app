@@ -23,7 +23,7 @@ export const searchApi = {
                         page: query.page?.toString(),
                         size: query.size?.toString(),
                         categoryIds:
-                            query.categoryIds?.length > 0
+                            query?.categoryIds && query.categoryIds.length > 0
                                 ? query.categoryIds.join(",")
                                 : undefined,
                     },

@@ -31,7 +31,8 @@ export class SearchController implements ISearchController {
                 const currentUser = c.get("user");
                 const queries = c.req.valid("query");
 
-                const isFilterWithCategory = queries?.categoryIds.length > 0;
+                const isFilterWithCategory =
+                    queries.categoryIds && queries?.categoryIds.length > 0;
 
                 const users = !isFilterWithCategory
                     ? await this.userService.advancedSearchUser(
