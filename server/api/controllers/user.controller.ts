@@ -11,7 +11,6 @@ import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
-import { IBlockService } from "../services/block.service";
 import { IFollowService } from "../services/follow.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
@@ -28,7 +27,6 @@ export class UserController {
         private userService: IUserService,
         private followService: IFollowService,
         private streamService: IStreamService,
-        private blockSerice: IBlockService,
         private settingService: ISettingService,
     ) {}
     setupHandlers() {
