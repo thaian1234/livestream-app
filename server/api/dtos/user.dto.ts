@@ -21,7 +21,7 @@ const usernameValidation = {
     endsWithLetterOrNumber: /[a-zA-Z0-9]$/, // Must end with letter or number
 };
 
-const usernameSchema = z
+export const usernameSchema = z
     .string()
     .min(4, "Must be at least 4 characters")
     .max(16, "Must be at most 16 characters")

@@ -177,7 +177,7 @@ export function NotificationProvider({
         return () => {
             notificationFeed.unsubscribe();
         };
-    }, [data, userId]);
+    }, [data, params.username, pathname, router, userId]);
     return (
         <NotificationContext.Provider
             value={{ notifications, notificationFeed, results }}

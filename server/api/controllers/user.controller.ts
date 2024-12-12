@@ -2,7 +2,7 @@ import { BlockDTO } from "../dtos/block.dto";
 import { FollowDTO } from "../dtos/follow.dto";
 import { SettingDTO } from "../dtos/setting.dto";
 import { StreamDTO } from "../dtos/stream.dto";
-import { UserDTO } from "../dtos/user.dto";
+import { UserDTO, usernameSchema } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { BlockUtils } from "../lib/helpers/block-util";
@@ -127,7 +127,7 @@ export class UserController {
     }
     private getUserByUsername() {
         const params = z.object({
-            username: z.string().trim().min(1),
+            username: usernameSchema,
         });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
