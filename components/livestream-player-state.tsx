@@ -19,9 +19,10 @@ export function LiveStreamPlayerState({
     isError = false,
 }: LiveStreamPlayerStateProps) {
     const { isOpenChatComponent, onToggleChatComponent } = useLiveInfor();
+
     return (
-        <div className="relative flex h-full min-w-[950px] items-center justify-center rounded-xl bg-gray-900/60 lg:min-w-[1300px]">
-            <div className="absolute inset-x-0 left-0 right-0 top-0 h-14 w-full bg-gradient-to-b from-black-0/60 to-transparent" />
+        <div className="relative flex aspect-video items-center justify-center rounded-xl bg-gray-900/60 xl:col-span-9 xl:h-full">
+            <div className="absolute inset-x-0 left-0 right-0 top-0 h-14 w-full bg-gradient-to-b from-black-0/60 to-transparent"></div>
             <div className="absolute inset-x-0 right-4 top-0 flex h-14 justify-end">
                 {!isOpenChatComponent && (
                     <TooltipModel content="Expand" side="bottom">
@@ -31,7 +32,6 @@ export function LiveStreamPlayerState({
                     </TooltipModel>
                 )}
             </div>
-
             <div className="flex flex-col items-center justify-center space-y-4 text-muted-foreground">
                 {isError && <VideoOffIcon className="size-16" />}
                 {!isError && (

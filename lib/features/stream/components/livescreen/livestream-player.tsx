@@ -14,9 +14,7 @@ export function LivestreamPlayer({}: LivestreamPlayerProps) {
     switch (callingState) {
         case CallingState.UNKNOWN:
         case CallingState.IDLE:
-            return (
-                <LiveStreamPlayerState stateMessage="Please wait" isLoading />
-            );
+            <LiveStreamPlayerState stateMessage="Loading..." isLoading />;
 
         case CallingState.JOINING:
             return (

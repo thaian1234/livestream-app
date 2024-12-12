@@ -36,24 +36,22 @@ export default function StreamPage() {
             <StreamVideoProvider>
                 <CustomCall streamId={auth.stream.id}>
                     {desktopScreen ? (
-                        <>
-                            <div
-                                className={cn(
-                                    "row-span-5",
-                                    isOpenChatComponent
-                                        ? "col-span-9 aspect-video"
-                                        : "col-span-12 mx-6 aspect-[2/1]",
-                                )}
-                            >
-                                <LocalLivestreamPlayer />
-                                <LocalLiveInformation />
-                                <CallStats
-                                    LatencyChartSuspenseFallback={
-                                        <Spinner size="large" />
-                                    }
-                                />
-                            </div>
-                        </>
+                        <div
+                            className={cn(
+                                "row-span-5",
+                                isOpenChatComponent
+                                    ? "col-span-9 aspect-video"
+                                    : "col-span-12 mx-6 aspect-[2/1]",
+                            )}
+                        >
+                            <LocalLivestreamPlayer />
+                            <LocalLiveInformation />
+                            <CallStats
+                                LatencyChartSuspenseFallback={
+                                    <Spinner size="large" />
+                                }
+                            />
+                        </div>
                     ) : (
                         <>
                             <div className="col-span-12 aspect-video">
