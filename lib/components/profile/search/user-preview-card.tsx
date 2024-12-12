@@ -31,7 +31,7 @@ export function UserPreviewCard({
         router.push(ROUTES.STREAM_PAGE(username));
     };
     return (
-        <Card className="w-[400px] overflow-hidden py-4 transition-all duration-300 ease-in-out hover:bg-accent/50 hover:shadow-lg lg:w-[550px] xl:w-[700px]">
+        <Card className="w-[300px] overflow-hidden px-0 py-4 transition-all duration-300 ease-in-out hover:bg-accent/50 hover:shadow-lg lg:w-[520px] lg:px-4 xl:w-[700px]">
             <CardContent className="px-6">
                 <div className="flex cursor-pointer flex-col items-end justify-between lg:flex-row lg:items-center">
                     <div
