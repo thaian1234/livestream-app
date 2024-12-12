@@ -31,15 +31,15 @@ export function UserPreviewCard({
         router.push(ROUTES.STREAM_PAGE(username));
     };
     return (
-        <Card className="w-full overflow-hidden py-4 transition-all duration-300 ease-in-out hover:bg-accent/50 hover:shadow-lg">
+        <Card className="w-[400px] overflow-hidden py-4 transition-all duration-300 ease-in-out hover:bg-accent/50 hover:shadow-lg lg:w-[550px] xl:w-[700px]">
             <CardContent className="px-6">
-                <div className="flex cursor-pointer items-center justify-between">
+                <div className="flex cursor-pointer flex-col items-end justify-between lg:flex-row lg:items-center">
                     <div
                         className="flex flex-grow items-center space-x-6"
                         onClick={handleNavigateLive}
                     >
                         <UserAvatar imageUrl={imageUrl} size="xl" />
-                        <div className="min-w-0 flex-grow">
+                        <div className="flex-grow">
                             <div className="mb-2 flex items-center space-x-2">
                                 <h3 className="line-clamp-1 text-lg font-semibold transition-colors duration-300 ease-in-out hover:text-primary hover:underline">
                                     {username}
