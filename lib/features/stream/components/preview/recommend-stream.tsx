@@ -40,7 +40,7 @@ export function RecommendStream({}: RecommendStreamProps) {
                     onPageChange={handlePageChange}
                 />
             </div>
-            <ul className="grid grid-cols-4 gap-x-6 gap-y-4">
+            <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {streams && streams?.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>
