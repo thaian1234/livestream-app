@@ -13,11 +13,7 @@ interface StreamProviderProps {
 export function StreamVideoProvider({ children }: StreamProviderProps) {
     const { videoClient, isError, isPending } = useVideoClient();
     if (isPending) {
-        return (
-            <div className="col-span-9 h-[750px]">
-                <LiveStreamPlayerState stateMessage="Loading..." isLoading />
-            </div>
-        );
+        return <LiveStreamPlayerState stateMessage="Loading..." isLoading />;
     }
 
     if (!videoClient || isError) {

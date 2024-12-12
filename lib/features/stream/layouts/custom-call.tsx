@@ -14,11 +14,7 @@ export function CustomCall({ streamId, children }: CustomCallProps) {
     const { call, isPending, error } = useJoinCall(streamId);
 
     if (isPending) {
-        return (
-            <div className="h-[750px] w-full">
-                <LiveStreamPlayerState stateMessage="Loading..." isLoading />
-            </div>
-        );
+        <LiveStreamPlayerState stateMessage="Loading..." isLoading />;
     }
     if (error) {
         if (error.status === HttpStatus.Forbidden) {

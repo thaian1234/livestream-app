@@ -5,7 +5,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 1;
 const RETRY_DELAY = 2000; // 2 seconds
 
 export function useJoinCall(streamId: string) {

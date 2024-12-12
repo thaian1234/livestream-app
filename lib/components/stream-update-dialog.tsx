@@ -42,7 +42,7 @@ export function StreamUpdateDialog({ username }: StreamUpdateDialogProps) {
         streamApi.query.useGetStreamInformation(username);
 
     if (isPending) {
-        return <p>Loading information</p>;
+        return <Spinner size="small" />;
     }
     if (isError || !data) {
         return <p>Cannot load form</p>;
