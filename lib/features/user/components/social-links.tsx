@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 
 export function SocialLinks() {
     const user = useUser();
-    const [value, setValue, removeValue] = useLocalStorage(user.user.id, {
+    const [value, setValue] = useLocalStorage(user.user.id, {
         instagramUrl: "",
         twitterUrl: "",
         websiteUrl: "",
