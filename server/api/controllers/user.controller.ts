@@ -2,15 +2,15 @@ import { BlockDTO } from "../dtos/block.dto";
 import { FollowDTO } from "../dtos/follow.dto";
 import { SettingDTO } from "../dtos/setting.dto";
 import { StreamDTO } from "../dtos/stream.dto";
-import { UserDTO } from "../dtos/user.dto";
+import { UserDTO, usernameSchema } from "../dtos/user.dto";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { BlockUtils } from "../lib/helpers/block-util";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
-import { IBlockService } from "../services/block.service";
 import { IFollowService } from "../services/follow.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
@@ -27,7 +27,6 @@ export class UserController {
         private userService: IUserService,
         private followService: IFollowService,
         private streamService: IStreamService,
-        private blockSerice: IBlockService,
         private settingService: ISettingService,
     ) {}
     setupHandlers() {
@@ -128,36 +127,33 @@ export class UserController {
     }
     private getUserByUsername() {
         const params = z.object({
-            username: z.string().trim().min(1),
+            username: usernameSchema,
         });
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const { username } = c.req.valid("param");
                 const user = await this.userService.findByUsername(username);
+                const currentUser = c.get("user");
 
                 if (!user) {
                     throw new MyError.NotFoundError("User not found");
                 }
-
-                const [stream, followings, followers, blocks] =
-                    await Promise.all([
-                        this.streamService.getStreamByUserId(user.id),
-                        this.followService.findFollowingByUserId(user.id),
-                        this.followService.findFollowerByUserId(user.id),
-                        this.blockSerice.findBlockedByUserId(user.id),
-                    ]);
-
-                const currentUser = c.get("user");
                 const isCurrentUserDifferent =
                     currentUser && currentUser.id !== user.id;
+
+                isCurrentUserDifferent &&
+                    (await BlockUtils.checkUserBlock(currentUser.id, user.id));
+
+                const [stream, followers] = await Promise.all([
+                    this.streamService.getStreamByUserId(user.id),
+                    this.followService.findFollowerByUserId(user.id),
+                ]);
 
                 const responseData = {
                     user: UserDTO.parse(user),
                     stream: StreamDTO.parse(stream),
-                    followings: FollowDTO.parseUserOnlyMany(followings),
                     followers: FollowDTO.parseUserOnlyMany(followers),
-                    blocks: BlockDTO.parseUserOnlyMany(blocks),
                     isFollowing: false,
                     isBlocked: false,
                 };
@@ -170,9 +166,6 @@ export class UserController {
                 if (isCurrentUserDifferent) {
                     responseData.isFollowing = !!followers?.find(
                         (follower) => follower.id === currentUser.id,
-                    );
-                    responseData.isBlocked = !!blocks?.find(
-                        (block) => block.id === currentUser.id,
                     );
                 }
 

@@ -25,7 +25,7 @@ export const followApi = {
                 $post,
                 {
                     onError(err) {
-                        toast.error("Cannot follow yourself");
+                        toast.error(err.message);
                     },
                     onSuccess(data, variables) {
                         toast.success(data.msg);

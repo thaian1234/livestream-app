@@ -50,8 +50,8 @@ export function LivePreviewCard({
                         size={"lg"}
                     />
                     <div className="w-full truncate text-white">
-                        <p className="text-lg">{name}</p>
-                        <p className="text-sm">{user.username}</p>
+                        <p className="truncate text-lg">{name}</p>
+                        <p className="truncate text-sm">{user.username}</p>
                         <div className="flex justify-between py-1">
                             <div className="flex w-full space-x-1 overflow-x-hidden">
                                 {categories.map((category) => {

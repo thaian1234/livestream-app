@@ -35,7 +35,6 @@ export function Chat({
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { chatStatus } = useLiveInfor();
-    const sidebar = useSidebarToggle((state) => state);
 
     //chat scrolls to the bottom
     useEffect(() => {
@@ -57,10 +56,7 @@ export function Chat({
                     <ScrollArea
                         ref={scrollAreaRef}
                         className={cn(
-                            "px-4 transition-all duration-300 ease-in-out",
-                            sidebar.isOpen
-                                ? "h-[calc(100vh-20rem)]"
-                                : "h-[calc(100vh-15rem)]",
+                            "h-[calc(100vh-13rem)] px-4 transition-all duration-300 ease-in-out",
                         )}
                     >
                         {messages && messages.length > 0 ? (
@@ -95,10 +91,7 @@ export function Chat({
             ) : (
                 <ScrollArea
                     className={cn(
-                        "flex flex-col px-4 transition-all duration-300 ease-in-out",
-                        sidebar.isOpen
-                            ? "h-[calc(100vh-16rem)]"
-                            : "h-[calc(100vh-11rem)]",
+                        "flex h-[calc(100vh-9rem)] flex-col px-4 transition-all duration-300 ease-in-out",
                     )}
                 >
                     <Community />

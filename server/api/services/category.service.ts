@@ -1,4 +1,5 @@
 import { CategoryDTO } from "../dtos/category.dto";
+import { QueryDTO } from "../dtos/query.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
 import { ICategoryRepository } from "../repositories/category.repository";
@@ -7,15 +8,11 @@ export interface ICategoryService
     extends Utils.AutoMappedClass<CategoryService> {}
 export class CategoryService implements ICategoryService {
     constructor(private categoryRepository: ICategoryRepository) {}
-    public async findAll(
-        filterBy: string = "",
-        offset: number = 0,
-        limit: number = 5,
-    ) {
-        return await this.categoryRepository.findAll(filterBy, offset, limit);
+    public async findAll(query: QueryDTO.Filter) {
+        return await this.categoryRepository.findAll(query);
     }
-    public async findAllDetail(offset: number = 0, limit: number = 10) {
-        return await this.categoryRepository.findAllDetail(offset, limit);
+    public async findAllDetail(query: QueryDTO.Pagination) {
+        return await this.categoryRepository.findAllDetail(query);
     }
     public async findOne(id: string) {
         return await this.categoryRepository.findOne(id);

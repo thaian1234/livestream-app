@@ -95,7 +95,8 @@ export class NotificationService implements INotificationService {
     public async createStreamStartNotification(
         params: StreamNotificationParams,
     ) {
-        const { streamerId, streamerName, followerIds } = params;
+        const { streamerId, streamerName, followerIds, streamerAvatar } =
+            params;
         const targetFeed = this.notificationClient.feed(
             "notifications",
             streamerId,
@@ -111,6 +112,7 @@ export class NotificationService implements INotificationService {
             type: "STREAM_START",
             actorName: streamerName,
             to: followerIds.map((id) => `notifications:${id}`),
+            actorAvatar: streamerAvatar,
         };
 
         return targetFeed.addActivity(activity);

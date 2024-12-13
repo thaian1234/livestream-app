@@ -3,6 +3,7 @@ import { QueryDTO } from "../dtos/query.dto";
 import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { BlockUtils } from "../lib/helpers/block-util";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
@@ -127,8 +128,9 @@ export class FollowController implements IFollowController {
                 const { followingId } = c.req.valid("param");
                 const currentUser = c.get("getUser");
                 if (currentUser.id === followingId) {
-                    throw new MyError.BadRequestError();
+                    throw new MyError.BadRequestError("Cannot follow yourself");
                 }
+                await BlockUtils.checkUserBlock(currentUser.id, followingId);
 
                 const data = await this.followService.followToggle({
                     followerId: currentUser.id,
@@ -136,18 +138,12 @@ export class FollowController implements IFollowController {
                 });
 
                 if (!data) {
-                    throw new MyError.BadRequestError();
+                    throw new MyError.BadRequestError("Failed to follow");
                 }
 
                 let message = "Follow user successfully";
                 if (typeof data === "boolean") {
                     message = "Unfollow user successfully";
-                    this.notificationService.createUnfollowNotification({
-                        actorAvatar: currentUser.imageUrl,
-                        actorName: currentUser.username,
-                        actorId: currentUser.id,
-                        targetId: followingId,
-                    });
                 } else {
                     this.notificationService.createFollowNotification({
                         actorAvatar: currentUser.imageUrl,

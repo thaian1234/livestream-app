@@ -20,6 +20,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function PaginationComponent({
@@ -50,9 +51,7 @@ function PaginationComponent({
             <PaginationContent>
                 <PaginationItem>
                     <PaginationPrevious
-                        href="#"
                         onClick={(e) => {
-                            e.preventDefault();
                             if (currentPage > 1) onPageChange(currentPage - 1);
                         }}
                     />
@@ -62,9 +61,7 @@ function PaginationComponent({
                     <>
                         <PaginationItem>
                             <PaginationLink
-                                href="#"
                                 onClick={(e) => {
-                                    e.preventDefault();
                                     onPageChange(1);
                                 }}
                             >
@@ -78,10 +75,8 @@ function PaginationComponent({
                 {pageNumbers.map((page) => (
                     <PaginationItem key={page}>
                         <PaginationLink
-                            href="#"
                             isActive={page === currentPage}
                             onClick={(e) => {
-                                e.preventDefault();
                                 onPageChange(page);
                             }}
                         >
@@ -95,9 +90,7 @@ function PaginationComponent({
                         {endPage < totalPages - 1 && <PaginationEllipsis />}
                         <PaginationItem>
                             <PaginationLink
-                                href="#"
                                 onClick={(e) => {
-                                    e.preventDefault();
                                     onPageChange(totalPages);
                                 }}
                             >
@@ -109,9 +102,7 @@ function PaginationComponent({
 
                 <PaginationItem>
                     <PaginationNext
-                        href="#"
                         onClick={(e) => {
-                            e.preventDefault();
                             if (currentPage < totalPages)
                                 onPageChange(currentPage + 1);
                         }}
@@ -122,25 +113,33 @@ function PaginationComponent({
     );
 }
 
+const TABS = ["All", "Channel"] as const;
+const SIZE = 4;
+
 export default function SearchPage() {
+    const { selectedIds } = useCategoryTree();
     const [currentPage, setCurrentPage] = useQueryState("page", {
         defaultValue: "1",
         throttleMs: 500,
         clearOnDefault: false,
-        shallow: false,
+        shallow: true,
     });
+
     const searchParams = useSearchParams();
     const searchQuery = searchParams.get("searchTerm");
+
     const { data, error, isPending } = searchApi.query.useSearch({
         filterBy: searchQuery,
         page: parseInt(currentPage),
-        size: 4,
+        size: SIZE,
+        categoryIds: selectedIds,
     });
-    const tabs = ["All", "Live", "Channel"];
 
-    if (data === undefined || isPending) return <Loader2 />;
-    if (error) return <p>Something went wrong</p>;
-    const streams = data.data.data.streams;
+    if (isPending) return <Spinner />;
+    if (error || !data) return <p>Something went wrong</p>;
+
+    const { streams, users } = data.data.data;
+    const { currentPage: page, totalPages } = data.data.pagination;
 
     const handleChangePage = (page: number) => {
         setCurrentPage(page.toString());
@@ -148,12 +147,12 @@ export default function SearchPage() {
 
     return (
         <section className="relative">
-            <div className="absolute right-1/4 top-0 flex min-w-72 items-center justify-center rounded-lg border border-slate-500 p-4">
+            <div className="fixed right-10 flex min-w-72 items-center justify-center rounded-lg border border-slate-500 p-3">
                 <CategoryFilter />
             </div>
-            <Tabs defaultValue="All" className="w-full px-10">
+            <Tabs defaultValue="All" className="w-full space-y-12 px-10">
                 <TabsList className="mb-8 grid w-[300px] grid-cols-3 space-x-4 bg-black-1">
-                    {tabs.map((tabName, index) => (
+                    {TABS.map((tabName, index) => (
                         <TabsTrigger
                             className="w-auto rounded-full bg-search text-white data-[state=active]:bg-teal-2"
                             value={tabName}
@@ -165,14 +164,14 @@ export default function SearchPage() {
                 </TabsList>
                 <TabsContent value="All">
                     <div className="space-y-4">
-                        <p className="text-2xl">User</p>
-                        <div className="flex max-w-[700px] flex-col">
-                            <UserPreview
-                                users={data.data.data.users}
-                                limit={4}
-                            />
-                        </div>
-
+                        {!selectedIds?.length && users && (
+                            <>
+                                <p className="text-2xl">User</p>
+                                <div className="flex max-w-[700px] flex-col">
+                                    <UserPreview users={users} />
+                                </div>
+                            </>
+                        )}
                         <p className="text-2xl">Channel</p>
                         <div className="flex flex-col space-y-4">
                             <LivesPreview streams={streams} />
@@ -180,19 +179,14 @@ export default function SearchPage() {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="User">
+                <TabsContent value="Channel">
                     <div className="flex flex-col space-y-4">
                         <LivesPreview streams={streams} />
                     </div>
                 </TabsContent>
-                <TabsContent value="Channel">
-                    <div className="flex max-w-[700px] flex-col">
-                        <UserPreview users={data.data.data.users} />
-                    </div>
-                </TabsContent>
                 <PaginationComponent
-                    currentPage={data.data.pagination.currentPage}
-                    totalPages={data.data.pagination.totalPages}
+                    currentPage={page}
+                    totalPages={totalPages}
                     onPageChange={handleChangePage}
                 />
             </Tabs>

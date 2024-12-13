@@ -1,8 +1,8 @@
 "use client";
 
 import { CallStats } from "@stream-io/video-react-sdk";
+import { useMediaQuery } from "usehooks-ts";
 
-import { StreamUpdateDialog } from "@/lib/components/stream-update-dialog";
 import { settingApi } from "@/lib/features/setting/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
 import { LocalLiveInformation } from "@/lib/features/stream/components/local-livescreen/local-live-information";
@@ -22,6 +22,7 @@ export default function StreamPage() {
     const { data: setting, isPending: isPendingSetting } =
         settingApi.query.useGetSetting();
     const { isOpenChatComponent } = useLiveInfor();
+    const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (auth.isPending || isPendingSetting) {
         return <LoadingStreamPage />;
@@ -31,34 +32,65 @@ export default function StreamPage() {
     }
 
     return (
-        <section className="grid grid-cols-12 grid-rows-5 gap-4">
+        <section className="grid grid-cols-12 gap-4">
             <StreamVideoProvider>
-                <div
-                    className={cn(
-                        "relative row-span-5",
-                        isOpenChatComponent
-                            ? "col-span-9 aspect-video"
-                            : "col-span-12 mx-14 aspect-[2/1]",
+                <CustomCall streamId={auth.stream.id}>
+                    {desktopScreen ? (
+                        <div
+                            className={cn(
+                                "row-span-5",
+                                isOpenChatComponent
+                                    ? "col-span-9 aspect-video"
+                                    : "col-span-12 mx-6 aspect-[2/1]",
+                            )}
+                        >
+                            <LocalLivestreamPlayer />
+                            <LocalLiveInformation />
+                            <CallStats
+                                LatencyChartSuspenseFallback={
+                                    <Spinner size="large" />
+                                }
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="col-span-12 aspect-video">
+                                <LocalLivestreamPlayer />
+                            </div>
+                            <div className="col-span-12 grid grid-cols-4 gap-4">
+                                <div className="col-span-2">
+                                    <LocalLiveInformation />
+                                    <CallStats
+                                        LatencyChartSuspenseFallback={
+                                            <Spinner size="large" />
+                                        }
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <ChatProvider streamId={auth.stream.id}>
+                                        <Chat
+                                            setting={setting.data.setting}
+                                            isHost={true}
+                                        />
+                                    </ChatProvider>
+                                </div>
+                            </div>
+                        </>
                     )}
-                >
-                    <CustomCall streamId={auth.stream.id}>
-                        <LocalLivestreamPlayer />
-                        <LocalLiveInformation />
-                        <CallStats
-                            LatencyChartSuspenseFallback={
-                                <Spinner size="large" />
-                            }
-                        />
-                    </CustomCall>
-                </div>
+                </CustomCall>
             </StreamVideoProvider>
-            <div className="col-span-3 col-start-10 row-span-5">
-                <ChatProvider streamId={auth.stream.id}>
-                    {isOpenChatComponent && (
-                        <Chat setting={setting.data.setting} isHost={true} />
-                    )}
-                </ChatProvider>
-            </div>
+            {desktopScreen && (
+                <div className="col-span-3 col-start-10">
+                    <ChatProvider streamId={auth.stream.id}>
+                        {isOpenChatComponent && (
+                            <Chat
+                                setting={setting.data.setting}
+                                isHost={true}
+                            />
+                        )}
+                    </ChatProvider>
+                </div>
+            )}
         </section>
     );
 }

@@ -4,6 +4,7 @@ import { Utils } from "../lib/helpers/utils";
 import {
     and,
     asc,
+    count,
     desc,
     eq,
     gte,
@@ -27,7 +28,7 @@ export class StreamRepository implements IStreamRepository {
     constructor() {
         this.db = Database.getInstance().db;
     }
-    async advancedSearchStream(query: QueryDTO.Advanced) {
+    async advancedSearchStream(query: QueryDTO.AdvancedWithCategory) {
         const conditions = [];
         let orderBy;
         if (query.filterBy) {
@@ -48,10 +49,43 @@ export class StreamRepository implements IStreamRepository {
         }
 
         if (query.isSortByCreatedAt) {
-            orderBy = query.sortOrder.toLowerCase().localeCompare("asc")
-                ? asc(tableSchemas.streamTable.createdAt)
-                : desc(tableSchemas.streamTable.createdAt);
+            orderBy =
+                query.sortOrder &&
+                query.sortOrder.toLowerCase().localeCompare("asc")
+                    ? asc(tableSchemas.streamTable.createdAt)
+                    : desc(tableSchemas.streamTable.createdAt);
         }
+        console.log("from repo: ", query.categoryIds);
+        if (query.categoryIds && query.categoryIds.length > 0) {
+            conditions.push(
+                inArray(
+                    tableSchemas.streamTable.id,
+                    this.db
+                        .select({
+                            id: tableSchemas.streamsToCategoriesTable.streamId,
+                        })
+                        .from(tableSchemas.streamsToCategoriesTable)
+                        .where(
+                            inArray(
+                                tableSchemas.streamsToCategoriesTable
+                                    .categoryId,
+                                query.categoryIds,
+                            ),
+                        )
+                        .groupBy(tableSchemas.streamsToCategoriesTable.streamId)
+                        .having(
+                            gte(
+                                count(
+                                    tableSchemas.streamsToCategoriesTable
+                                        .categoryId,
+                                ),
+                                query.categoryIds.length,
+                            ),
+                        ),
+                ),
+            );
+        }
+
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
             extras(fields, operators) {
@@ -85,7 +119,6 @@ export class StreamRepository implements IStreamRepository {
             tableSchemas.streamTable,
             and(...conditions),
         );
-
         return { result, totalRecords };
     }
     async getStreamByUserId(userId: string) {

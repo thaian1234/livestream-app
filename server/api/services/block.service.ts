@@ -45,4 +45,10 @@ export class BlockService implements IBlockService {
             blockedId,
         );
     }
+    public async findBlockedOrBlocking(blockedId: string, blockerId: string) {
+        return await this.blockRepository.findBlockedOrBlocking(
+            blockerId,
+            blockedId,
+        );
+    }
 }
