@@ -150,7 +150,7 @@ export default function SearchPage() {
             <div className="fixed right-10 z-50 flex min-w-72 items-center justify-center rounded-lg border border-slate-500 bg-black-1 p-3">
                 <CategoryFilter />
             </div>
-            <Tabs defaultValue="All" className="w-full space-y-12 px-20">
+            <Tabs defaultValue="All" className="w-full space-y-12 px-[70px]">
                 <TabsList className="mb-8 grid w-[200px] grid-cols-2 space-x-4 bg-transparent">
                     {TABS.map((tabName, index) => (
                         <TabsTrigger
@@ -167,7 +167,7 @@ export default function SearchPage() {
                         {!selectedIds?.length && users && (
                             <>
                                 <p className="text-2xl">User</p>
-                                <div className="flex max-w-[700px] flex-col">
+                                <div className="flex flex-col">
                                     <UserPreview users={users} />
                                 </div>
                             </>
