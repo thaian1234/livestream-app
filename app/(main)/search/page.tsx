@@ -147,7 +147,7 @@ export default function SearchPage() {
 
     return (
         <section className="relative">
-            <div className="fixed right-10 flex min-w-72 items-center justify-center rounded-lg border border-slate-500 bg-black-1 p-3">
+            <div className="fixed right-10 z-50 flex min-w-72 items-center justify-center rounded-lg border border-slate-500 bg-black-1 p-3">
                 <CategoryFilter />
             </div>
             <Tabs defaultValue="All" className="w-full space-y-12 px-20">

@@ -1,9 +1,9 @@
 import { Users } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useMediaQuery, useScreen } from "usehooks-ts";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
-import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,6 +26,7 @@ export function UserPreviewCard({
     isFollow,
 }: UserPreviewCardProps) {
     const router = useRouter();
+    const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     const handleNavigateLive = () => {
         router.push(ROUTES.STREAM_PAGE(username));
@@ -54,9 +55,19 @@ export function UserPreviewCard({
                                 <Users className="mr-1 h-4 w-4" />
                                 <span>{followers} Followers</span>
                             </div>
+                            {!desktopScreen && (
+                                <div className="mt-2">
+                                    <FollowButton
+                                        followingId={id}
+                                        isFollowed={isFollow}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <FollowButton followingId={id} isFollowed={isFollow} />
+                    {desktopScreen && (
+                        <FollowButton followingId={id} isFollowed={isFollow} />
+                    )}
                 </div>
             </CardContent>
         </Card>
