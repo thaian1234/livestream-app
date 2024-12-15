@@ -7,10 +7,9 @@ import { RecommendStream } from "@/lib/features/stream/components/preview/recomm
 export default function HomePage() {
     return (
         <section>
-            <h2 className="mb-6 text-2xl font-bold text-white">
-                Welcome to Your Dashboard
-            </h2>
-            <RecommendStream />
+            <div className="mb-8">
+                <RecommendStream />
+            </div>
             {/* <CategoryList /> */}
             <FollowingStream />
         </section>
