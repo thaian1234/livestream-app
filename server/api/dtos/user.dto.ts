@@ -51,7 +51,7 @@ export class UserDTO {
     private static baseSchema = createSelectSchema(tableSchemas.userTable, {
         email: z.string().email(),
         imageUrl: z.string().url(),
-        username: z.string().min(4).max(50),
+        username: usernameSchema,
     }).omit({
         createdAt: true,
         updatedAt: true,
