@@ -102,7 +102,7 @@ export class OauthController implements IOauthController {
                 const googleData = GoogleDTO.responseSchema.parse(
                     await googleResponse.json(),
                 );
-                googleData.name = `user_${generateIdFromEntropySize(10)}`;
+                googleData.name = `user_${generateIdFromEntropySize(3)}`;
                 const { session, sessionCookie, isNew } =
                     await this.googleSerivce.authenticateUser(googleData);
                 if (!session || !sessionCookie) {
@@ -193,7 +193,7 @@ export class OauthController implements IOauthController {
                 const gitHubDataS = GithubDTO.responseSchema.parse({
                     id: gitHubData.id,
                     email: gitHubEmail[0].email,
-                    name: `user_${generateIdFromEntropySize(10)}`,
+                    name: `user_${generateIdFromEntropySize(3)}`,
                     avatar_url: gitHubData.avatar_url,
                     verified_email: true,
                 });
