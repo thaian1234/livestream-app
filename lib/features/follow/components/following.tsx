@@ -1,3 +1,7 @@
+import { useRouter } from "next/navigation";
+
+import { ROUTES } from "@/lib/configs/routes.config";
+
 import { UserAvatar } from "@/components/user-avatar";
 
 interface FollowingProps {
@@ -9,15 +13,16 @@ interface FollowingProps {
 }
 
 export function Following({ followings }: FollowingProps) {
-    const handleNavigate = (userId: String) => {
-        console.log("Navigate to user profile");
+    const router = useRouter();
+    const handleNavigate = (username: string) => {
+        router.push(ROUTES.STREAM_PAGE(username));
     };
     return (
         <div>
             {followings ? (
                 followings.map((following, index) => (
                     <button
-                        onClick={() => handleNavigate(following.id)}
+                        onClick={() => handleNavigate(following.username)}
                         key={index}
                         className="flex w-full items-center space-x-4 rounded-sm bg-transparent py-2 pr-4 hover:bg-search"
                     >

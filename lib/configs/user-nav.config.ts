@@ -1,10 +1,4 @@
-import {
-    LayoutGridIcon,
-    LucideIcon,
-    Settings2Icon,
-    UserIcon,
-    VideoIcon,
-} from "lucide-react";
+import { LucideIcon, UserIcon, Users2Icon, VideoIcon } from "lucide-react";
 
 import { ROUTES } from "./routes.config";
 
@@ -17,24 +11,19 @@ type Menu = {
 export function getUserNavConfig(username: string): Menu[] {
     return [
         {
-            label: "Dashboard",
-            href: ROUTES.DASHBOARD_PAGE(username),
-            icon: LayoutGridIcon,
-        },
-        {
             label: "Stream",
             href: ROUTES.DASHBOARD_STREAM_PAGE(username),
             icon: VideoIcon,
         },
         {
+            label: "Community",
+            href: ROUTES.COMMUNITY_PAGE(username),
+            icon: Users2Icon,
+        },
+        {
             label: "Account",
             href: ROUTES.ACCOUNT_PAGE(username),
             icon: UserIcon,
-        },
-        {
-            label: "Settings",
-            href: ROUTES.SETTINGS_PAGE(username),
-            icon: Settings2Icon,
         },
     ];
 }
