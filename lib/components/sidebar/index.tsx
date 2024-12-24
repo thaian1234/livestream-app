@@ -20,21 +20,21 @@ export function Sidebar() {
     const { isOpenSidebar, onCollapseSidebar, onExpandSidebar, isHideSidebar } =
         useSidebar();
     const { data, isPending, error } = followApi.query.useFollow();
-    if (data === undefined || isPending) {
+    if (isPending) {
         return <SidebarSkeleton />;
     }
-    if (error) {
+    if (error || !data) {
         return <p>Some thing went wrong</p>;
     }
-    const following = data?.data.followings;
-    const recommends = data?.data.recommends;
+    const following = data?.data.followings ?? [];
+    const recommends = data?.data.recommends ?? [];
 
     return (
         <>
             {!isHideSidebar && (
                 <div
                     className={cn(
-                        "fixed left-0 top-20 z-20 h-2/4 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
+                        "fixed left-0 top-20 z-20 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
                         isOpenSidebar && "h-full w-72",
                     )}
                 >
@@ -73,7 +73,9 @@ export function Sidebar() {
                                     />
                                 </button>
                             </TooltipModel>
-                            <CollapseSidebar />
+                            <CollapseSidebar
+                                users={[...recommends, ...following]}
+                            />
                         </div>
                     )}
                 </div>
