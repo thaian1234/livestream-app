@@ -19,7 +19,6 @@ export function useChannelViewers() {
 
     useEffect(() => {
         const updateChannelViewers = () => {
-            console.log("Go in here", channel.state.watchers);
             const viewers = Object.values(channel.state.watchers).map(
                 (user) => ({
                     name: user.name || "",
