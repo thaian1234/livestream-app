@@ -35,7 +35,6 @@ export function useChannelViewers() {
                 channel.state.watcher_count !==
                 Object.keys(channel.state.watchers).length
             ) {
-                console.log("Go in this");
                 await channel.query({
                     watchers: {
                         limit: 5,
