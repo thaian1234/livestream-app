@@ -19,6 +19,7 @@ export function useChannelViewers() {
 
     useEffect(() => {
         const updateChannelViewers = () => {
+            console.log("Go in here", channel.state.watchers);
             const viewers = Object.values(channel.state.watchers).map(
                 (user) => ({
                     name: user.name || "",
@@ -29,11 +30,25 @@ export function useChannelViewers() {
             setChannelViewers(viewers);
         };
 
+        const checkWatcherCount = async () => {
+            if (
+                channel.state.watcher_count !==
+                Object.keys(channel.state.watchers).length
+            ) {
+                console.log("Go in this");
+                await channel.query({
+                    watchers: {
+                        limit: 5,
+                    },
+                });
+            }
+        };
+
         // Event listeners
         channel.on("user.watching.start", updateChannelViewers);
         channel.on("user.watching.stop", updateChannelViewers);
 
-        // updateChannelViewers();
+        checkWatcherCount();
 
         // Cleanup
         return () => {
@@ -41,6 +56,5 @@ export function useChannelViewers() {
             channel.off("user.watching.stop", updateChannelViewers);
         };
     }, [channel, channel.state.watchers]);
-
     return { channelViewers };
 }
