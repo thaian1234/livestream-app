@@ -9,50 +9,42 @@ interface Viewer {
 
 export function useChannelViewers() {
     const { channel } = useChannelStateContext();
-    const [channelViewers, setChannelViewers] = useState<Viewer[]>(
-        Object.values(channel.state.watchers).map((user) => ({
-            name: user.name || "",
-            online: !!user.online,
-            id: user.id,
-        })),
-    );
+    const [channelViewers, setChannelViewers] = useState<Viewer[]>([]);
 
     useEffect(() => {
-        const updateChannelViewers = () => {
-            const viewers = Object.values(channel.state.watchers).map(
-                (user) => ({
+        if (!channel) return;
+
+        const updateChannelViewers = async () => {
+            try {
+                const watchers = await channel.query({
+                    watchers: {
+                        offset: 0,
+                        limit: 10,
+                    },
+                });
+                if (!watchers.watchers) return;
+                const viewers = watchers.watchers.map((user) => ({
                     name: user.name || "",
                     online: !!user.online,
                     id: user.id,
-                }),
-            );
-            setChannelViewers(viewers);
-        };
-
-        const checkWatcherCount = async () => {
-            if (
-                channel.state.watcher_count !==
-                Object.keys(channel.state.watchers).length
-            ) {
-                await channel.query({
-                    watchers: {
-                        limit: 5,
-                    },
-                });
+                }));
+                setChannelViewers(viewers);
+            } catch (error) {
+                console.error("Failed to fetch channel viewers:", error);
             }
         };
+        updateChannelViewers();
 
         // Event listeners
         channel.on("user.watching.start", updateChannelViewers);
         channel.on("user.watching.stop", updateChannelViewers);
-
-        checkWatcherCount();
 
         // Cleanup
         return () => {
             channel.off("user.watching.start", updateChannelViewers);
             channel.off("user.watching.stop", updateChannelViewers);
         };
-    }, [channel, channel.state.watchers]);
+    }, [channel]);
+
     return { channelViewers };
 }

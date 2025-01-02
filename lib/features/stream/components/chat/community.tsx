@@ -2,7 +2,6 @@
 
 import { streamApi } from "../../apis";
 import { useChannelViewers } from "../../hooks/use-channel-viewers";
-import { Search } from "lucide-react";
 import { Search as SearchIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
