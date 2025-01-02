@@ -1,7 +1,7 @@
 import { HttpStatus } from "../constant/http.type";
 import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
 
-class AppError extends Error {
+export class AppError extends Error {
     constructor(
         public statusCode: Exclude<StatusCode, SuccessStatusCode>,
         message: string,

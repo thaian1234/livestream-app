@@ -31,7 +31,7 @@ export function useVideoClient() {
                     apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
                     user: { id: user.id, name: user.username },
                     token: tokenData.data.token,
-                    options: { enableWSFallback: true, timeout: 10000 },
+                    options: { timeout: 10000 },
                 });
 
                 setState({
