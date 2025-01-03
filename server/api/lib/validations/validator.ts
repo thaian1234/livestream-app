@@ -1,6 +1,6 @@
 import { HttpStatus } from "../constant/http.type";
 import { ApiResponse } from "../helpers/api-response";
-import { MyError } from "../helpers/errors";
+import { AppError, MyError } from "../helpers/errors";
 import { Context } from "hono";
 import { HTTPResponseError } from "hono/types";
 import { ZodError } from "zod";
@@ -49,7 +49,7 @@ export class Validator {
             case err instanceof MyError.BadRequestError:
                 return ApiResponse.WriteErrorJSON({
                     c,
-                    status: err.statusCode,
+                    status: (err as AppError).statusCode,
                     msg: err.message,
                 });
             default:

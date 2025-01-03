@@ -9,7 +9,6 @@ import {
 } from "stream-chat-react";
 
 import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
-import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
 
 import { SettingDTO } from "@/server/api/dtos/setting.dto";
