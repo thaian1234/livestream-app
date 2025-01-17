@@ -54,19 +54,6 @@ export class BlockController implements IBlockController {
                 let message = "Block user successfully";
                 if (typeof data === "boolean") {
                     message = "Unblock user successfully";
-                    this.notificationService.createUnblockNotification({
-                        actorAvatar: currentUser.imageUrl,
-                        actorId: currentUser.id,
-                        actorName: currentUser.username,
-                        targetId: blockedId,
-                    });
-                } else {
-                    this.notificationService.createBlockNotification({
-                        actorAvatar: currentUser.imageUrl,
-                        actorId: currentUser.id,
-                        actorName: currentUser.username,
-                        targetId: blockedId,
-                    });
                 }
 
                 return ApiResponse.WriteJSON({
