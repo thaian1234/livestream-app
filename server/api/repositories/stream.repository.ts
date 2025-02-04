@@ -55,7 +55,7 @@ export class StreamRepository implements IStreamRepository {
                     ? asc(tableSchemas.streamTable.createdAt)
                     : desc(tableSchemas.streamTable.createdAt);
         }
-        console.log("from repo: ", query.categoryIds);
+
         if (query.categoryIds && query.categoryIds.length > 0) {
             conditions.push(
                 inArray(
@@ -85,6 +85,13 @@ export class StreamRepository implements IStreamRepository {
                 ),
             );
         }
+
+        conditions.push(
+            inArray(
+                tableSchemas.streamTable.id,
+                this.getStreamSettingSubQuery(),
+            ),
+        );
 
         const result = await this.db.query.streamTable.findMany({
             where: and(...conditions),
@@ -207,6 +214,14 @@ export class StreamRepository implements IStreamRepository {
             .where(eq(tableSchemas.followTable.followerId, userId));
         return followersSubQuery;
     }
+    private getStreamSettingSubQuery() {
+        const settingSubQuery = this.db
+            .select({
+                streamId: tableSchemas.settingTable.streamId,
+            })
+            .from(tableSchemas.settingTable);
+        return settingSubQuery;
+    }
     public async getRecommendedStreamsByUserId(
         userId: string,
         offset: number = 0,
@@ -233,10 +248,14 @@ export class StreamRepository implements IStreamRepository {
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
                     ),
+                    inArray(
+                        tableSchemas.streamTable.id,
+                        this.getStreamSettingSubQuery(),
+                    ),
                 ),
                 offset: offset,
                 limit: limit,
-                orderBy: sql`RANDOM()`,
+                orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
@@ -249,6 +268,10 @@ export class StreamRepository implements IStreamRepository {
                     notInArray(
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
+                    ),
+                    inArray(
+                        tableSchemas.streamTable.id,
+                        this.getStreamSettingSubQuery(),
                     ),
                 ),
             );
@@ -267,11 +290,21 @@ export class StreamRepository implements IStreamRepository {
                         limit: this.categorySize,
                     },
                 },
+                where: inArray(
+                    tableSchemas.streamTable.id,
+                    this.getStreamSettingSubQuery(),
+                ),
                 offset: offset,
                 limit: limit,
-                orderBy: sql`RANDOM()`,
+                orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
             });
-            const totalRecords = await this.db.$count(tableSchemas.streamTable);
+            const totalRecords = await this.db.$count(
+                tableSchemas.streamTable,
+                inArray(
+                    tableSchemas.streamTable.id,
+                    this.getStreamSettingSubQuery(),
+                ),
+            );
 
             return { streams, totalRecords };
         } catch (error) {}
