@@ -41,7 +41,7 @@ export default function useInitializeChatClient(
                 "private-stream-chat",
                 `${streamId.replace(/-/g, "")}${user.id.replace(/-/g, "")}`,
                 {
-                    member: [streamerId, user.id],
+                    members: [streamerId, user.id],
                 },
             );
         } else channel = client.channel("livestream", streamId);
