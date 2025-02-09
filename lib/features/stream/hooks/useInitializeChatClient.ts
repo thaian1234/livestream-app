@@ -5,7 +5,10 @@ import { Channel, DefaultGenerics, StreamChat } from "stream-chat";
 import { envClient } from "@/lib/env/env.client";
 import { useAuth } from "@/lib/providers/auth-provider";
 
-export default function useInitializeChatClient(streamId: string) {
+export default function useInitializeChatClient(
+    streamId: string,
+    streamerId?: string,
+) {
     const { user } = useAuth();
     const { data: tokenData } = streamApi.query.useGetChatToken();
     const [chatClient, setChatClient] = useState<StreamChat | null>(null);
@@ -32,7 +35,16 @@ export default function useInitializeChatClient(streamId: string) {
             .then(() => {
                 setChatClient(client);
             });
-        const channel = client.channel("livestream", streamId);
+        let channel;
+        if (streamerId) {
+            channel = client.channel(
+                "private-stream-chat",
+                `${streamId.replace(/-/g, "")}${user.id.replace(/-/g, "")}`,
+                {
+                    members: [streamerId, user.id],
+                },
+            );
+        } else channel = client.channel("livestream", streamId);
         setChatChannel(channel);
         return () => {
             setChatClient(null);
@@ -43,7 +55,7 @@ export default function useInitializeChatClient(streamId: string) {
                 )
                 .then(() => console.log("Connection close"));
         };
-    }, [streamId, user, tokenData]);
+    }, [streamId, user, tokenData, streamerId]);
 
     return { chatClient, chatChannel };
 }
