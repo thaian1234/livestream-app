@@ -24,11 +24,18 @@ const customReactionOptions = [
 interface ChatProviderProps {
     streamId: string;
     children: React.ReactNode;
+    streamerId?: string;
 }
 
-export function ChatProvider({ streamId, children }: ChatProviderProps) {
-    const { chatClient, chatChannel } = useInitializeChatClient(streamId);
-
+export function ChatProvider({
+    streamId,
+    children,
+    streamerId,
+}: ChatProviderProps) {
+    const { chatClient, chatChannel } = useInitializeChatClient(
+        streamId,
+        streamerId,
+    );
     if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
 
     return (
