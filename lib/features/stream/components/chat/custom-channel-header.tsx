@@ -1,13 +1,19 @@
-import { ArrowRightToLine, MessageSquareMore, Users } from "lucide-react";
+import { ArrowRightToLine, MessageSquareMore, User, Users } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
+import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
 
 export const CustomChannelHeader = () => {
-    const { onToggleChatComponent, onChangeChatStatus, chatStatus } =
-        useLiveInfor();
+    const {
+        onToggleChatComponent,
+        onChangeChatStatus,
+        chatStatus,
+        onToggleCommunity,
+        isOpenCommunity,
+    } = useLiveInfor();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     return (
@@ -21,27 +27,40 @@ export const CustomChannelHeader = () => {
             ) : (
                 <div></div>
             )}
-            <p className="text-lg font-semibold">{chatStatus}</p>
-            <TooltipModel
-                content={chatStatus === ChatStatus.Chat ? "Community" : "Chat"}
-                side="bottom"
-            >
-                <button
-                    onClick={() => {
-                        onChangeChatStatus(
-                            chatStatus === ChatStatus.Chat
-                                ? ChatStatus.Community
-                                : ChatStatus.Chat,
-                        );
-                    }}
+            <p className="text-lg font-semibold">
+                {isOpenCommunity ? "COMMUNITY" : chatStatus}
+            </p>
+            <div className="flex items-center space-x-2">
+                <TooltipModel content="Community" side="bottom">
+                    <button onClick={onToggleCommunity}>
+                        <MessageSquareMore
+                            className={cn(
+                                "",
+                                isOpenCommunity ? "text-teal-2" : "",
+                            )}
+                        />
+                    </button>
+                </TooltipModel>
+
+                <TooltipModel
+                    content={
+                        chatStatus === ChatStatus.Chat ? "Private chat" : "Chat"
+                    }
+                    side="bottom"
                 >
-                    {chatStatus === ChatStatus.Chat ? (
-                        <Users />
-                    ) : (
-                        <MessageSquareMore />
-                    )}
-                </button>
-            </TooltipModel>
+                    <button
+                        onClick={() => {
+                            onChangeChatStatus(
+                                chatStatus === ChatStatus.Chat
+                                    ? ChatStatus.PrivateChat
+                                    : ChatStatus.Chat,
+                            );
+                        }}
+                    >
+                        {chatStatus === ChatStatus.Chat ? <User /> : <Users />}
+                    </button>
+                </TooltipModel>
+            </div>
         </div>
     );
 };
