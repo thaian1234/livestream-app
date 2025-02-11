@@ -17,7 +17,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { ChatMessage } from "./chat-message";
 import { Community } from "./community";
+import { CommunitySample } from "./community-sample";
 import { CustomChannelHeader } from "./custom-channel-header";
+import { CustomChannelHeaderSample } from "./custom-channel-header-sample";
 import { CustomMessageInput } from "./custom-message-input";
 
 interface ChatProps {
@@ -49,14 +51,16 @@ export function Chat({
 
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
-            <CustomChannelHeader />
+            {/* <CustomChannelHeader /> */}
+            <CustomChannelHeaderSample isHost={isHost} />
             {isOpenCommunity ? (
                 <ScrollArea
                     className={cn(
                         "flex h-[calc(100vh-9rem)] flex-col px-4 transition-all duration-300 ease-in-out",
                     )}
                 >
-                    <Community />
+                    <CommunitySample isHost={isHost} />
+                    {/* <Community /> */}
                 </ScrollArea>
             ) : chatStatus === ChatStatus.Chat ? (
                 <>
