@@ -1,4 +1,3 @@
-import { BlockDTO } from "../dtos/block.dto";
 import { FollowDTO } from "../dtos/follow.dto";
 import { SettingDTO } from "../dtos/setting.dto";
 import { StreamDTO } from "../dtos/stream.dto";

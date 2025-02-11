@@ -122,7 +122,7 @@ export class StreamController implements IStreamController {
                                 followerIds: followersId,
                                 streamerId: currentUser.id,
                                 streamerName: currentUser.username,
-                                streamerAvatar: currentUser.imageUrl,
+                                streamerAvatar: currentUser.imageUrl || "",
                             },
                         );
                     }

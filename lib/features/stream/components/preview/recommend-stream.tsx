@@ -30,6 +30,8 @@ export function RecommendStream({}: RecommendStreamProps) {
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
     };
+    console.log("streams: ", streams);
+
     return (
         <div className="flex flex-col space-y-6">
             <div className="flex items-center justify-between">
@@ -41,7 +43,7 @@ export function RecommendStream({}: RecommendStreamProps) {
                 />
             </div>
             <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {streams && streams?.length > 0 ? (
+                {!!streams && streams.length > 0 ? (
                     streams.map((stream) => (
                         <li key={stream.id}>
                             <LivePreviewCard {...stream} />

@@ -18,7 +18,7 @@ export const streamTable = pgTable(
     {
         id: uuid("id").primaryKey().defaultRandom(),
         name: text("name").notNull(),
-        thumbnailUrl: text("thumbnail_url"),
+        thumbnailUrl: text("thumbnail_url").default("").notNull(),
         isLive: boolean("is_live").default(false).notNull(),
         userId: uuid("user_id")
             .notNull()

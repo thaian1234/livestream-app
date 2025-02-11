@@ -8,7 +8,6 @@ import { SettingDTO } from "./setting.dto";
 
 const userSchema = createSelectSchema(tableSchemas.userTable, {
     email: z.string().email(),
-    imageUrl: z.string().url(),
     username: z.string().min(4).max(50),
 }).omit({
     createdAt: true,
@@ -39,7 +38,7 @@ export class StreamDTO {
         user: userSchema,
         categories: CategoryDTO.basicSelectSchema.array(),
     });
-public static streamSearch = this.selectSchema.extend({
+    public static streamSearch = this.selectSchema.extend({
         username: z.string(),
         avatar: z.string().nullish(),
         categories: CategoryDTO.basicSelectSchema.array(),
@@ -58,7 +57,9 @@ public static streamSearch = this.selectSchema.extend({
     public static parseStreamWithUser(data: unknown) {
         try {
             return this.streamWithUser.array().parse(data);
-        } catch (error) {}
+        } catch (error) {
+            console.error(error);
+        }
     }
     public static parse(data: unknown) {
         return this.selectSchema.parse(data);

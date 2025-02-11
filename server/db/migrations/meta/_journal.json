@@ -22,6 +22,13 @@
       "when": 1739261020461,
       "tag": "0003_loose_snowbird",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1739265163973,
+      "tag": "0004_spicy_rockslide",
+      "breakpoints": true
     }
   ]
 }

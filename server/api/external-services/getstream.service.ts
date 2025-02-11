@@ -89,15 +89,6 @@ export class GetStreamService implements IGetStreamService {
                         role: this.roles.host,
                     },
                 ],
-                settings_override: {
-                    recording: {
-                        mode: "available",
-                        layout: {
-                            name: "single-participant",
-                        },
-                        audio_only: false,
-                    },
-                },
             },
         });
         return callRoom;

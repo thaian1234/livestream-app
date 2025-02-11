@@ -248,15 +248,12 @@ export class StreamRepository implements IStreamRepository {
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
                     ),
-                    inArray(
-                        tableSchemas.streamTable.id,
-                        this.getStreamSettingSubQuery(),
-                    ),
                 ),
                 offset: offset,
                 limit: limit,
                 orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
             });
+            console.log(streams);
             const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
                 and(
@@ -268,10 +265,6 @@ export class StreamRepository implements IStreamRepository {
                     notInArray(
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
-                    ),
-                    inArray(
-                        tableSchemas.streamTable.id,
-                        this.getStreamSettingSubQuery(),
                     ),
                 ),
             );
@@ -298,6 +291,7 @@ export class StreamRepository implements IStreamRepository {
                 limit: limit,
                 orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
             });
+            console.log("streams::", streams);
             const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
                 inArray(
