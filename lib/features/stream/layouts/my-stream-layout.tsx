@@ -90,7 +90,7 @@ export function MyLivestreamLayout(props: LivestreamLayoutProps) {
             showDuration={floatingParticipantProps?.showDuration ?? false}
             showLiveBadge={floatingParticipantProps?.showLiveBadge ?? false}
             showSpeakerName={floatingParticipantProps?.showSpeakerName ?? true}
-            enableFullScreen={false}
+            enableFullScreen={true}
         />
     );
 
