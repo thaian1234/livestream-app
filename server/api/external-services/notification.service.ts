@@ -117,16 +117,4 @@ export class NotificationService implements INotificationService {
 
         return targetFeed.addActivity(activity);
     }
-
-    public async createBlockNotification(
-        params: Omit<NotificationParams, "type">,
-    ) {
-        return this.createBaseNotification({ ...params, type: "BLOCKED" });
-    }
-
-    public async createUnblockNotification(
-        params: Omit<NotificationParams, "type">,
-    ) {
-        return this.createBaseNotification({ ...params, type: "UN_BLOCKED" });
-    }
 }
