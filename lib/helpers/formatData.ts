@@ -4,7 +4,6 @@ export interface CommunityData {
     username: string;
     imageUrl: string | null;
     email: string;
-    emailVerified: boolean;
 }
 
 export function formatCommunityData(data: CommunityData) {

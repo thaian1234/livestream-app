@@ -20,6 +20,12 @@ import {
 } from "./stream-category.table";
 import { streamRelations, streamTable } from "./stream.table";
 import { userRelations, userTable } from "./user.table";
+import {
+    videoPrivacyEnum,
+    videoRelations,
+    videoStatusEnum,
+    videoTable,
+} from "./video.table";
 
 const tableSchemas = {
     userTable,
@@ -33,7 +39,8 @@ const tableSchemas = {
     accountTable,
     categoryTable,
     streamsToCategoriesTable,
-    forgetPasswordTable
+    forgetPasswordTable,
+    videoTable,
 } as const;
 
 export const tableRelations = {
@@ -49,7 +56,10 @@ export const tableRelations = {
     providerNameEnum,
     streamsToCategoriesRelations,
     categoryRelations,
-    forgetPasswordTable
+    forgetPasswordTable,
+    videoRelations,
+    videoStatusEnum,
+    videoPrivacyEnum,
 } as const;
 
 export default tableSchemas;

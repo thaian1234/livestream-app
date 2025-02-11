@@ -1,5 +1,4 @@
 import { streamApi } from "../../apis";
-import { useVideoClient } from "../../hooks/use-stream-video";
 import { ToggleLiveButton } from "../controls/toggle-live-button";
 import {
     RecordCallButton,
@@ -15,7 +14,6 @@ import { UserAvatar } from "@/components/user-avatar";
 
 export function LocalLiveInformation() {
     const { isPending, user, stream, isSignedIn } = useAuth();
-    const client = useVideoClient();
     const { useParticipants, useIsCallLive } = useCallStateHooks();
     const participants = useParticipants();
     const isHost =
