@@ -8,10 +8,10 @@ import {
     uuid,
 } from "drizzle-orm/pg-core";
 
-import { categoryTable } from "./category.table";
 import { settingTable } from "./setting.table";
 import { streamsToCategoriesTable } from "./stream-category.table";
 import { userTable } from "./user.table";
+import { videoTable } from "./video.table";
 
 export const streamTable = pgTable(
     "streams",
@@ -41,4 +41,5 @@ export const streamRelations = relations(streamTable, ({ one, many }) => ({
     }),
     setting: one(settingTable),
     streamsToCategories: many(streamsToCategoriesTable),
+    videos: many(videoTable),
 }));

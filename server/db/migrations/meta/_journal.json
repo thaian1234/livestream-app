@@ -15,6 +15,13 @@
       "when": 1733150889836,
       "tag": "0002_nasty_gressill",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1739261020461,
+      "tag": "0003_loose_snowbird",
+      "breakpoints": true
     }
   ]
 }
