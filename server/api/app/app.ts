@@ -23,6 +23,7 @@ import { ForgetPasswordRepository } from "../repositories/forget-password.reposi
 import { SettingRepository } from "../repositories/setting.repository";
 import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
+import { VideoRepository } from "../repositories/video.repository";
 
 import { AuthService } from "../services/auth.service";
 import { BlockService } from "../services/block.service";
@@ -33,6 +34,7 @@ import { ForgetPasswordService } from "../services/forget-password.service";
 import { SettingService } from "../services/setting.service";
 import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
+import { VideoService } from "../services/video.service";
 
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
@@ -52,6 +54,7 @@ import { SettingController } from "../controllers/setting.controller";
 import { StreamController } from "../controllers/stream.controller";
 import { UploadController } from "../controllers/upload.controller";
 import { UserController } from "../controllers/user.controller";
+import { VideoController } from "../controllers/video.controller";
 
 import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
@@ -63,12 +66,10 @@ import { SettingRoutes } from "../routes/setting.routes";
 import { StreamRoutes } from "../routes/stream.routes";
 import { UploadRoutes } from "../routes/upload.routes";
 import { UserRoutes } from "../routes/user.routes";
+import { VideoRoutes } from "../routes/video.routes";
 
 export class App {
-    constructor(
-        private readonly app: Hono,
-        private readonly db: Database,
-    ) {
+    constructor(private readonly app: Hono) {
         this.setupMiddleware();
         this.setupErrorHandling();
         this.setupRoutes();
@@ -105,6 +106,7 @@ export class App {
         const categoryRepository = new CategoryRepository();
         const emailVerificationRepository = new EmailVerificationRepository();
         const forgetPasswordRepository = new ForgetPasswordRepository();
+        const videoRepository = new VideoRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -136,6 +138,7 @@ export class App {
             streamService,
         );
         const categoryService = new CategoryService(categoryRepository);
+        const videoService = new VideoService(videoRepository);
 
         // Controllers
         const userController = new UserController(
@@ -203,6 +206,7 @@ export class App {
             factory,
             notificationService,
         );
+        const videoController = new VideoController(factory, videoService);
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -222,6 +226,7 @@ export class App {
             factory,
             notificationController,
         );
+        const videoRoutes = new VideoRoutes(factory, videoController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -234,6 +239,7 @@ export class App {
             .route("/", streamRoutes.setupRoutes())
             .route("/", settingRoutes.setupRoutes())
             .route("/", categoryRoutes.setupRoutes())
-            .route("/", notificationRoutes.setupRoutes());
+            .route("/", notificationRoutes.setupRoutes())
+            .route("/", videoRoutes.setupRoutes());
     }
 }

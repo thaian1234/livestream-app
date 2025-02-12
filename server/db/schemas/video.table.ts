@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+    index,
     integer,
     pgEnum,
     pgTable,
@@ -50,7 +51,7 @@ export const videoTable = pgTable(
         updatedAt: timestamp("updated_at").defaultNow(),
     },
     (table) => ({
-        user_stream_id_unq: uniqueIndex("user_stream_id_unq").on(
+        user_stream_id_unq: index("user_stream_idx").on(
             table.userId,
             table.streamId,
         ),

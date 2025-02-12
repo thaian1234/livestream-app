@@ -1,7 +1,8 @@
-import { IVideoController } from "../controllers/video.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
 
-class VideoRoutes {
+import { IVideoController } from "../controllers/video.controller";
+
+export class VideoRoutes {
     constructor(
         private factory: CreateFactoryType,
         private videoController: IVideoController,
@@ -12,5 +13,3 @@ class VideoRoutes {
             .route("/videos", this.videoController.setupHandlers());
     }
 }
-
-function createVideoRoutes() {}

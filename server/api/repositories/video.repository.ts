@@ -1,9 +1,11 @@
-import { VideoDTO } from "../dtos/video.dto";
-import { Utils } from "../lib/helpers/utils";
 import { eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { VideoDTO } from "../dtos/video.dto";
 
 export interface IVideoRepository
     extends Utils.AutoMappedClass<VideoRepository> {}
@@ -59,10 +61,9 @@ export class VideoRepository implements IVideoRepository {
     }
     async delete(id: string) {
         try {
-            const rows = await this.db
+            return await this.db
                 .delete(tableSchemas.videoTable)
                 .where(eq(tableSchemas.videoTable.id, id));
-            return rows.length !== 0;
         } catch (error) {
             console.error(error);
         }
