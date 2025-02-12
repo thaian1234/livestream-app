@@ -1,3 +1,24 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { AccountRepository } from "../repositories/account.repository";
+import { EmailVerificationRepository } from "../repositories/email-verification.repository";
+import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
+import { StreamRepository } from "../repositories/stream.repository";
+import { UserRepository } from "../repositories/user.repository";
+
+import { AuthService } from "../services/auth.service";
+import { EmailVerificationService } from "../services/email-verification.service";
+import { ForgetPasswordService } from "../services/forget-password.service";
+import { StreamService } from "../services/stream.service";
+import { UserService } from "../services/user.service";
+
+import { GetStreamService } from "../external-services/getstream.service";
+import { GitHubService } from "../external-services/github.service";
+import { GoogleService } from "../external-services/google.service";
+import { NodemailService } from "../external-services/nodemail.service";
+
 import {
     AuthController,
     IAuthController,
@@ -6,24 +27,8 @@ import {
     IOauthController,
     OauthController,
 } from "../controllers/oauth.controller";
-import { GetStreamService } from "../external-services/getstream.service";
-import { GitHubService } from "../external-services/github.service";
-import { GoogleService } from "../external-services/google.service";
-import { NodemailService } from "../external-services/nodemail.service";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { AccountRepository } from "../repositories/account.repository";
-import { EmailVerificationRepository } from "../repositories/email-verification.repository";
-import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
-import { StreamRepository } from "../repositories/stream.repository";
-import { UserRepository } from "../repositories/user.repository";
-import { AuthService } from "../services/auth.service";
-import { EmailVerificationService } from "../services/email-verification.service";
-import { ForgetPasswordService } from "../services/forget-password.service";
-import { StreamService } from "../services/stream.service";
-import { UserService } from "../services/user.service";
-import { createFactory } from "hono/factory";
 
-class AuthRoutes {
+export class AuthRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly authController: IAuthController,

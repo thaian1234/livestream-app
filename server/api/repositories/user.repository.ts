@@ -1,6 +1,3 @@
-import { QueryDTO } from "../dtos/query.dto";
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
 import { table } from "console";
 import {
     and,
@@ -18,6 +15,11 @@ import {
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { QueryDTO } from "../dtos/query.dto";
+import { UserDTO } from "../dtos/user.dto";
 
 export interface IUserRepository
     extends Utils.AutoMappedClass<UserRepository> {}

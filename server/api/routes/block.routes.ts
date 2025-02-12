@@ -1,14 +1,19 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { BlockRepository } from "../repositories/block.repository";
+
+import { BlockService } from "../services/block.service";
+
+import { NotificationService } from "../external-services/notification.service";
+
 import {
     BlockController,
     IBlockController,
 } from "../controllers/block.controller";
-import { NotificationService } from "../external-services/notification.service";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { BlockRepository } from "../repositories/block.repository";
-import { BlockService } from "../services/block.service";
-import { createFactory } from "hono/factory";
 
-class BlockRoutes {
+export class BlockRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly blockController: IBlockController,

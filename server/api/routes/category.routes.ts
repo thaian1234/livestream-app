@@ -1,13 +1,17 @@
-import {
-    ICategoryController,
-    CategoryController,
-} from "../controllers/category.controller";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { CategoryRepository } from "../repositories/category.repository";
-import { CategoryService } from "../services/category.service";
 import { createFactory } from "hono/factory";
 
-class CategoryRoutes {
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { CategoryRepository } from "../repositories/category.repository";
+
+import { CategoryService } from "../services/category.service";
+
+import {
+    CategoryController,
+    ICategoryController,
+} from "../controllers/category.controller";
+
+export class CategoryRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly categoryController: ICategoryController,
@@ -26,10 +30,7 @@ function createCategoryContainer() {
     // Services
     const categoryService = new CategoryService(categoryRepository);
     // Controllers
-    const categoryController = new CategoryController(
-        factory,
-        categoryService,
-    );
+    const categoryController = new CategoryController(factory, categoryService);
 
     return new CategoryRoutes(factory, categoryController);
 }

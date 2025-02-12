@@ -1,17 +1,21 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { StreamRepository } from "../repositories/stream.repository";
+import { UserRepository } from "../repositories/user.repository";
+
+import { StreamService } from "../services/stream.service";
+import { UserService } from "../services/user.service";
+
+import { R2BucketService } from "../external-services/r2-bucket.service";
+
 import {
     IUploadController,
     UploadController,
 } from "../controllers/upload.controller";
-import { R2BucketService } from "../external-services/r2-bucket.service";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { AuthMiddleware } from "../middleware/auth.middleware";
-import { StreamRepository } from "../repositories/stream.repository";
-import { UserRepository } from "../repositories/user.repository";
-import { StreamService } from "../services/stream.service";
-import { UserService } from "../services/user.service";
-import { createFactory } from "hono/factory";
 
-class UploadRoutes {
+export class UploadRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly uploadController: IUploadController,

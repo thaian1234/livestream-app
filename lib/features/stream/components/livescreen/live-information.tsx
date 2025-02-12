@@ -1,5 +1,3 @@
-import { streamApi } from "../../apis";
-
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useUser } from "@/lib/hooks/use-user";
 
@@ -7,8 +5,10 @@ import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 
 import { Badge } from "@/components/ui/badge";
+
 import { UserAvatar } from "@/components/user-avatar";
 
+import { streamApi } from "../../apis";
 import { MoreActionPopover } from "./more-action-popover";
 
 interface LiveInformationProps {

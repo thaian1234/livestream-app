@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
+import { ImageUrlType } from "@/lib/types";
 
 import { UserAvatar } from "@/components/user-avatar";
 
@@ -8,7 +9,7 @@ interface RecommendProps {
     recommends: {
         id: string;
         username: string;
-        imageUrl: string | null;
+        imageUrl?: ImageUrlType;
     }[];
 }
 

@@ -1,15 +1,15 @@
-import { CustomAdapter } from "../api/configs/adapter.config";
 import { drizzle } from "drizzle-orm/postgres-js";
 
 import { envServer } from "@/lib/env/env.server";
 
+import { CustomAdapter } from "../api/configs/adapter.config";
 import tableSchemas, { tableRelations } from "./schemas";
 
 class Database {
     private static instance: Database;
     public db;
     public adapter: CustomAdapter;
-    private constructor() {
+    public constructor() {
         this.db = drizzle({
             connection: envServer.DB_URL,
             schema: {

@@ -2,15 +2,17 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
+import { ImageUrlType } from "@/lib/types";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { TooltipModel } from "@/components/tooltip-model";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface CollapseSidebarProps {
     users: {
         id: string;
         username: string;
-        imageUrl: string | null;
+        imageUrl?: ImageUrlType;
     }[];
 }
 

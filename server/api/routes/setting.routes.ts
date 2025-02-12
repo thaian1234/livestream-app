@@ -1,14 +1,19 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { SettingRepository } from "../repositories/setting.repository";
+
+import { SettingService } from "../services/setting.service";
+
+import { GetStreamService } from "../external-services/getstream.service";
+
 import {
     ISettingController,
     SettingController,
 } from "../controllers/setting.controller";
-import { GetStreamService } from "../external-services/getstream.service";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { SettingRepository } from "../repositories/setting.repository";
-import { SettingService } from "../services/setting.service";
-import { createFactory } from "hono/factory";
 
-class SettingRoutes {
+export class SettingRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly settingController: ISettingController,

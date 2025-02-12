@@ -1,20 +1,25 @@
-import {
-    IStreamController,
-    StreamController,
-} from "../controllers/stream.controller";
-import { GetStreamService } from "../external-services/getstream.service";
-import { NotificationService } from "../external-services/notification.service";
+import { createFactory } from "hono/factory";
+
 import { CreateFactoryType } from "../lib/types/factory.type";
+
 import { CategoryRepository } from "../repositories/category.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { SettingRepository } from "../repositories/setting.repository";
 import { StreamRepository } from "../repositories/stream.repository";
+
 import { CategoryService } from "../services/category.service";
 import { SettingService } from "../services/setting.service";
 import { StreamService } from "../services/stream.service";
-import { createFactory } from "hono/factory";
 
-class StreamRoutes {
+import { GetStreamService } from "../external-services/getstream.service";
+import { NotificationService } from "../external-services/notification.service";
+
+import {
+    IStreamController,
+    StreamController,
+} from "../controllers/stream.controller";
+
+export class StreamRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly streamController: IStreamController,

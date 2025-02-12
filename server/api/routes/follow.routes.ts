@@ -1,16 +1,21 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { BlockRepository } from "../repositories/block.repository";
+import { FollowRepository } from "../repositories/follow.repository";
+
+import { BlockService } from "../services/block.service";
+import { FollowService } from "../services/follow.service";
+
+import { NotificationService } from "../external-services/notification.service";
+
 import {
     FollowController,
     IFollowController,
 } from "../controllers/follow.controller";
-import { NotificationService } from "../external-services/notification.service";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { BlockRepository } from "../repositories/block.repository";
-import { FollowRepository } from "../repositories/follow.repository";
-import { BlockService } from "../services/block.service";
-import { FollowService } from "../services/follow.service";
-import { createFactory } from "hono/factory";
 
-class FollowRoutes {
+export class FollowRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly followController: IFollowController,

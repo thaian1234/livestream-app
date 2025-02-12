@@ -1,8 +1,10 @@
+import { ImageUrlType } from "../types";
+
 export interface CommunityData {
     createdAt: string;
     id: string;
     username: string;
-    imageUrl: string | null;
+    imageUrl?: ImageUrlType;
     email: string;
 }
 

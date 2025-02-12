@@ -1,18 +1,22 @@
 "use client";
 
-import { BlockButton } from "../block-button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
+import { ImageUrlType } from "@/lib/types";
+
 import { Button } from "@/components/ui/button";
+
 import { UserAvatar } from "@/components/user-avatar";
+
+import { BlockButton } from "../block-button";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Block = {
     id: string;
     username: string;
-    imageUrl: string | null;
+    imageUrl?: ImageUrlType;
     createdAt: string;
 };
 const handleNavigate = (username: string) => {

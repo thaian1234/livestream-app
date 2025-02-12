@@ -1,16 +1,21 @@
-import { BlockDTO } from "../dtos/block.dto";
-import { QueryDTO } from "../dtos/query.dto";
-import { INotificationService } from "../external-services/notification.service";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { IBlockService } from "../services/block.service";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+
+import { INotificationService } from "../external-services/notification.service";
+
+import { BlockDTO } from "../dtos/block.dto";
+import { QueryDTO } from "../dtos/query.dto";
 
 export interface IBlockController
     extends Utils.PickMethods<BlockController, "setupHandlers"> {}

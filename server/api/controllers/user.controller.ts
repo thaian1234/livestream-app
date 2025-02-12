@@ -1,7 +1,6 @@
-import { FollowDTO } from "../dtos/follow.dto";
-import { SettingDTO } from "../dtos/setting.dto";
-import { StreamDTO } from "../dtos/stream.dto";
-import { UserDTO, usernameSchema } from "../dtos/user.dto";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { BlockUtils } from "../lib/helpers/block-util";
@@ -9,13 +8,18 @@ import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { IFollowService } from "../services/follow.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+
+import { FollowDTO } from "../dtos/follow.dto";
+import { SettingDTO } from "../dtos/setting.dto";
+import { StreamDTO } from "../dtos/stream.dto";
+import { UserDTO, usernameSchema } from "../dtos/user.dto";
 
 export interface IUserController
     extends Utils.PickMethods<UserController, "setupHandlers"> {}

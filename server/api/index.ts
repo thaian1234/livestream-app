@@ -1,9 +1,14 @@
+import { Hono } from "hono";
+
+import Database from "../db";
 import { App } from "./app/app";
 
-const appInstance = new App();
-const app = appInstance.getApp();
-const routes = appInstance.setupRoutes();
+const db = new Database();
+const honoApp = new Hono();
+
+const app = new App(honoApp, db);
+const routes = app.setupRoutes();
 
 type AppType = typeof routes;
 export { type AppType };
-export default app;
+export default honoApp;

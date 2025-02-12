@@ -1,15 +1,19 @@
+import { createFactory } from "hono/factory";
+
+import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { StreamRepository } from "../repositories/stream.repository";
+import { UserRepository } from "../repositories/user.repository";
+
+import { StreamService } from "../services/stream.service";
+import { UserService } from "../services/user.service";
+
 import {
     ISearchController,
     SearchController,
 } from "../controllers/search.controller";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { StreamRepository } from "../repositories/stream.repository";
-import { UserRepository } from "../repositories/user.repository";
-import { StreamService } from "../services/stream.service";
-import { UserService } from "../services/user.service";
-import { createFactory } from "hono/factory";
 
-class SearchRoutes {
+export class SearchRoutes {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly searchController: ISearchController,
