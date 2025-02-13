@@ -104,72 +104,14 @@ export function CommunitySample({ isHost }: CommunitySampleProps) {
                 canBlock={false}
             />
 
-            {isHost ? (
-                <ViewerSectionForChat
-                    title="Viewers"
-                    isOpen={openSections.viewers}
-                    onToggle={() => toggleSection("viewers")}
-                    data={sections.filter(
-                        (section) => section.type === "viewer",
-                    )}
-                    canBlock={user.user.id === streamer.data.user.id}
-                />
-            ) : (
-                <CommunitySection
-                    title="Viewers"
-                    isOpen={openSections.viewers}
-                    onToggle={() => toggleSection("viewers")}
-                    data={sections.filter(
-                        (section) => section.type === "viewer",
-                    )}
-                    canBlock={user.user.id === streamer.data.user.id}
-                />
-            )}
+            <CommunitySection
+                title="Viewers"
+                isOpen={openSections.viewers}
+                onToggle={() => toggleSection("viewers")}
+                data={sections.filter((section) => section.type === "viewer")}
+                canBlock={user.user.id === streamer.data.user.id}
+            />
         </div>
-    );
-}
-
-function ViewerSectionForChat({
-    title,
-    isOpen,
-    onToggle,
-    data,
-    canBlock,
-}: {
-    title: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    data: SectionData[];
-    canBlock: boolean;
-}) {
-    const { onChangeChatStatus } = useLiveInfor();
-    return (
-        <CollapsibleSection isOpen={isOpen} setIsOpen={onToggle} title={title}>
-            {data.map((item) => {
-                return (
-                    <div
-                        key={item.id}
-                        className="flex cursor-pointer items-center justify-between rounded-sm py-1 hover:bg-white/10"
-                        onClick={() => {
-                            //navigate private chat tab
-                            onChangeChatStatus(ChatStatus.PrivateChat);
-                        }}
-                    >
-                        <p className="truncate px-2">{item.username}</p>
-                        {canBlock && (
-                            <div className="w-10">
-                                <BlockButton
-                                    blockedId={item.id}
-                                    isBlock={false}
-                                    key={item.id}
-                                    showText={false}
-                                />
-                            </div>
-                        )}
-                    </div>
-                );
-            })}
-        </CollapsibleSection>
     );
 }
 
