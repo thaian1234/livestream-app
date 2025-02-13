@@ -17,10 +17,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { ChatMessage } from "./chat-message";
 import { Community } from "./community";
-import { CommunitySample } from "./community-sample";
 import { CustomChannelHeader } from "./custom-channel-header";
-import { CustomChannelHeaderSample } from "./custom-channel-header-sample";
 import { CustomMessageInput } from "./custom-message-input";
+import { PrivateChat } from "./private-chat";
+import { BoxChatViewer } from "./private-chat/box-chat-viewer";
 
 interface ChatProps {
     setting?: SettingDTO.Select;
@@ -52,45 +52,12 @@ export function Chat({
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
             <CustomChannelHeader />
-            {/* <CustomChannelHeaderSample isHost={isHost} /> */}
             {isOpenPrivateChat ? (
-                <>
-                    {/* private chat */}
-                    <ScrollArea
-                        ref={scrollAreaRef}
-                        className={cn(
-                            "h-[calc(100vh-13rem)] px-4 transition-all duration-300 ease-in-out",
-                        )}
-                    >
-                        {messages && messages.length > 0 ? (
-                            <MessageList
-                                showUnreadNotificationAlways={false}
-                                disableDateSeparator={false}
-                                Message={ChatMessage}
-                            />
-                        ) : (
-                            <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
-                                <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
-                                <p className="max-w-[250px] text-center text-lg text-muted-foreground">
-                                    Private chat
-                                </p>
-                            </div>
-                        )}
-                    </ScrollArea>
-                    <MessageInput
-                        Input={() => (
-                            <CustomMessageInput
-                                isChatDelayed={setting?.isChatDelayed}
-                                isChatEnabled={setting?.isChatEnabled}
-                                isChatFollowersOnly={
-                                    setting?.isChatFollowersOnly
-                                }
-                                isHost={isHost}
-                                isFollowing={isFollowing}
-                            />
-                        )}
-                    />
-                </>
+                isHost ? (
+                    <PrivateChat />
+                ) : (
+                    <BoxChatViewer />
+                )
             ) : chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
@@ -134,8 +101,7 @@ export function Chat({
                         "flex h-[calc(100vh-9rem)] flex-col px-4 transition-all duration-300 ease-in-out",
                     )}
                 >
-                    <CommunitySample isHost={isHost} />
-                    {/* <Community /> */}
+                    <Community />
                 </ScrollArea>
             )}
         </div>

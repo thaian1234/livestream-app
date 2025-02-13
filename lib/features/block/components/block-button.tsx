@@ -32,8 +32,7 @@ export function BlockButton({
     const [isBlocking, setIsBlocking] = useState(isBlock);
     const { mutate: handleBlockToggle, isPending } =
         blockApi.mutation.useBlockToggle();
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
+    const handleClick = () => {
         handleBlockToggle(
             { param: { blockedId } },
             {
