@@ -11,8 +11,8 @@ export const CustomChannelHeader = () => {
         onToggleChatComponent,
         onChangeChatStatus,
         chatStatus,
-        onToggleCommunity,
-        isOpenCommunity,
+        onTogglePrivateChat,
+        isOpenPrivateChat,
     } = useLiveInfor();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
@@ -28,15 +28,15 @@ export const CustomChannelHeader = () => {
                 <div></div>
             )}
             <p className="text-lg font-semibold">
-                {isOpenCommunity ? "COMMUNITY" : chatStatus}
+                {isOpenPrivateChat ? "PRIVATE CHAT" : chatStatus}
             </p>
             <div className="flex items-center space-x-2">
                 <TooltipModel content="Community" side="bottom">
-                    <button onClick={onToggleCommunity}>
-                        <MessageSquareMore
+                    <button onClick={onTogglePrivateChat}>
+                        <User
                             className={cn(
                                 "",
-                                isOpenCommunity ? "text-teal-2" : "",
+                                isOpenPrivateChat ? "text-teal-2" : "",
                             )}
                         />
                     </button>
@@ -44,7 +44,7 @@ export const CustomChannelHeader = () => {
 
                 <TooltipModel
                     content={
-                        chatStatus === ChatStatus.Chat ? "Private chat" : "Chat"
+                        chatStatus === ChatStatus.Chat ? "Community" : "Chat"
                     }
                     side="bottom"
                 >
@@ -52,12 +52,16 @@ export const CustomChannelHeader = () => {
                         onClick={() => {
                             onChangeChatStatus(
                                 chatStatus === ChatStatus.Chat
-                                    ? ChatStatus.PrivateChat
+                                    ? ChatStatus.Community
                                     : ChatStatus.Chat,
                             );
                         }}
                     >
-                        {chatStatus === ChatStatus.Chat ? <User /> : <Users />}
+                        {chatStatus === ChatStatus.Chat ? (
+                            <MessageSquareMore />
+                        ) : (
+                            <Users />
+                        )}
                     </button>
                 </TooltipModel>
             </div>

@@ -35,7 +35,7 @@ export function Chat({
 }: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const { chatStatus, isOpenCommunity } = useLiveInfor();
+    const { chatStatus, isOpenPrivateChat } = useLiveInfor();
 
     //chat scrolls to the bottom
     useEffect(() => {
@@ -51,17 +51,46 @@ export function Chat({
 
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
-            {/* <CustomChannelHeader /> */}
-            <CustomChannelHeaderSample isHost={isHost} />
-            {isOpenCommunity ? (
-                <ScrollArea
-                    className={cn(
-                        "flex h-[calc(100vh-9rem)] flex-col px-4 transition-all duration-300 ease-in-out",
-                    )}
-                >
-                    <CommunitySample isHost={isHost} />
-                    {/* <Community /> */}
-                </ScrollArea>
+            <CustomChannelHeader />
+            {/* <CustomChannelHeaderSample isHost={isHost} /> */}
+            {isOpenPrivateChat ? (
+                <>
+                    {/* private chat */}
+                    <ScrollArea
+                        ref={scrollAreaRef}
+                        className={cn(
+                            "h-[calc(100vh-13rem)] px-4 transition-all duration-300 ease-in-out",
+                        )}
+                    >
+                        {messages && messages.length > 0 ? (
+                            <MessageList
+                                showUnreadNotificationAlways={false}
+                                disableDateSeparator={false}
+                                Message={ChatMessage}
+                            />
+                        ) : (
+                            <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
+                                <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
+                                <p className="max-w-[250px] text-center text-lg text-muted-foreground">
+                                    Private chat
+                                </p>
+                            </div>
+                        )}
+                    </ScrollArea>
+                    <MessageInput
+                        Input={() => (
+                            <CustomMessageInput
+                                isChatDelayed={setting?.isChatDelayed}
+                                isChatEnabled={setting?.isChatEnabled}
+                                isChatFollowersOnly={
+                                    setting?.isChatFollowersOnly
+                                }
+                                isHost={isHost}
+                                isFollowing={isFollowing}
+                            />
+                        )}
+                    />
+                </>
             ) : chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
@@ -100,43 +129,14 @@ export function Chat({
                     />
                 </>
             ) : (
-                <>
-                    {/* private chat */}
-                    <ScrollArea
-                        ref={scrollAreaRef}
-                        className={cn(
-                            "h-[calc(100vh-13rem)] px-4 transition-all duration-300 ease-in-out",
-                        )}
-                    >
-                        {messages && messages.length > 0 ? (
-                            <MessageList
-                                showUnreadNotificationAlways={false}
-                                disableDateSeparator={false}
-                                Message={ChatMessage}
-                            />
-                        ) : (
-                            <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
-                                <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
-                                <p className="max-w-[250px] text-center text-lg text-muted-foreground">
-                                    Private chat
-                                </p>
-                            </div>
-                        )}
-                    </ScrollArea>
-                    <MessageInput
-                        Input={() => (
-                            <CustomMessageInput
-                                isChatDelayed={setting?.isChatDelayed}
-                                isChatEnabled={setting?.isChatEnabled}
-                                isChatFollowersOnly={
-                                    setting?.isChatFollowersOnly
-                                }
-                                isHost={isHost}
-                                isFollowing={isFollowing}
-                            />
-                        )}
-                    />
-                </>
+                <ScrollArea
+                    className={cn(
+                        "flex h-[calc(100vh-9rem)] flex-col px-4 transition-all duration-300 ease-in-out",
+                    )}
+                >
+                    <CommunitySample isHost={isHost} />
+                    {/* <Community /> */}
+                </ScrollArea>
             )}
         </div>
     );

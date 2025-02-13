@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export enum ChatStatus {
     Chat = "CHAT",
-    PrivateChat = "PRIVATE CHAT",
+    Community = "COMMUNITY",
 }
 
 interface LiveInforStore {
@@ -13,8 +13,8 @@ interface LiveInforStore {
     onChangeChatStatus: (chatStatus: ChatStatus) => void;
     isOpenChatComponent: boolean;
     onToggleChatComponent: () => void;
-    isOpenCommunity: boolean;
-    onToggleCommunity: () => void;
+    isOpenPrivateChat: boolean;
+    onTogglePrivateChat: () => void;
 }
 
 export const useLiveInfor = create<LiveInforStore>((set, get) => ({
@@ -23,12 +23,12 @@ export const useLiveInfor = create<LiveInforStore>((set, get) => ({
     },
     chatStatus: ChatStatus.Chat,
     isOpenChatComponent: true,
-    isOpenCommunity: false,
-    onToggleCommunity: () => {
-        set((state) => ({ isOpenCommunity: !state.isOpenCommunity }));
+    isOpenPrivateChat: false,
+    onTogglePrivateChat: () => {
+        set((state) => ({ isOpenPrivateChat: !state.isOpenPrivateChat }));
     },
     onChangeChatStatus(chatStatus) {
-        set(() => ({ chatStatus, isOpenCommunity: false }));
+        set(() => ({ chatStatus, isOpenPrivateChat: false }));
     },
     onToggleChatComponent: () => {
         set((state) => ({
