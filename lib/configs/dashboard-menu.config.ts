@@ -6,6 +6,9 @@ import {
     Users,
     Video,
 } from "lucide-react";
+import { BsDatabaseFillDown } from "react-icons/bs";
+import { IconType } from "react-icons/lib";
+import { SiYoutubestudio } from "react-icons/si";
 
 import { ROUTES } from "./routes.config";
 
@@ -19,7 +22,7 @@ type Menu = {
     href: string;
     label: string;
     active: boolean;
-    icon: LucideIcon;
+    icon: LucideIcon | IconType;
     submenus: Submenu[];
 };
 
@@ -55,6 +58,25 @@ export function getDashboardMenuList(
                     label: "Community",
                     active: pathname === ROUTES.COMMUNITY_PAGE(username),
                     icon: Users,
+                    submenus: [],
+                },
+            ],
+        },
+        {
+            groupLabel: "Recordings",
+            menus: [
+                {
+                    href: ROUTES.STUDIO_PAGE(username),
+                    label: "Studio",
+                    active: pathname === ROUTES.STUDIO_PAGE(username),
+                    icon: SiYoutubestudio,
+                    submenus: [],
+                },
+                {
+                    href: ROUTES.STORAGE_PAGE(username),
+                    label: "Storage",
+                    active: pathname === ROUTES.STORAGE_PAGE(username),
+                    icon: BsDatabaseFillDown,
                     submenus: [],
                 },
             ],

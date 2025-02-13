@@ -29,6 +29,13 @@
       "when": 1739350919280,
       "tag": "0004_tranquil_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1739430134916,
+      "tag": "0005_whole_azazel",
+      "breakpoints": true
     }
   ]
 }

@@ -1,11 +1,13 @@
-import { StreamDTO } from "../dtos/stream.dto";
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
 import { StreamClient, UserRequest } from "@stream-io/node-sdk";
 import { StreamChat } from "stream-chat";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { StreamDTO } from "../dtos/stream.dto";
+import { UserDTO } from "../dtos/user.dto";
 
 export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
