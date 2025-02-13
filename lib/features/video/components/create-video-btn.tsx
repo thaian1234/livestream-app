@@ -12,8 +12,7 @@ export function CreateVideoButton() {
     const handleCreateVideo = () => {
         mutate({
             json: {
-                title: "Enter your video title",
-                description: "Enter your video description",
+                title: "Untitled",
             },
         });
     };

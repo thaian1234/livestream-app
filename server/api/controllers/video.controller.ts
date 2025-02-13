@@ -16,10 +16,10 @@ import { VideoDTO } from "../dtos/video.dto";
 
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
-export class VideoController {
+export class VideoController implements IVideoController {
     constructor(
         private factory: CreateFactoryType,
-        private videoSerivce: IVideoService,
+        private videoService: IVideoService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -33,7 +33,7 @@ export class VideoController {
     private getAllVideos() {
         const respSchema = VideoDTO.selectSchema.array();
         return this.factory.createHandlers(async (c) => {
-            const videos = await this.videoSerivce.getAllVideos();
+            const videos = await this.videoService.getAllVideos();
             return ApiResponse.WriteJSON({
                 c,
                 data: respSchema.parse(videos),
@@ -54,7 +54,7 @@ export class VideoController {
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const user = c.get("getUser");
-                const video = await this.videoSerivce.createVideo({
+                const video = await this.videoService.createVideo({
                     ...jsonData,
                     userId: user.id,
                     streamId: user.stream.id,
@@ -78,7 +78,7 @@ export class VideoController {
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const params = c.req.valid("param");
-                const video = await this.videoSerivce.getVideoById(params.id);
+                const video = await this.videoService.getVideoById(params.id);
                 if (!video) {
                     throw new MyError.BadRequestError("Video not found");
                 }
@@ -108,7 +108,7 @@ export class VideoController {
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const params = c.req.valid("param");
-                const video = await this.videoSerivce.updateVideo(
+                const video = await this.videoService.updateVideo(
                     params.id,
                     jsonData,
                 );
@@ -133,7 +133,7 @@ export class VideoController {
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const params = c.req.valid("param");
-                const isSuccess = await this.videoSerivce.deleteVideo(
+                const isSuccess = await this.videoService.deleteVideo(
                     params.id,
                 );
                 if (!isSuccess) {

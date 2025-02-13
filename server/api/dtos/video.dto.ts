@@ -8,10 +8,18 @@ import { z } from "zod";
 import tableSchemas from "@/server/db/schemas";
 
 export class VideoDTO {
-    private static baseSchema = createSelectSchema(tableSchemas.videoTable);
-    public static selectSchema = this.baseSchema;
+    private static baseSchema = createSelectSchema(tableSchemas.videoTable, {
+        createdAt: z.date().transform((date) => date.toISOString()),
+        updatedAt: z.date().transform((date) => date.toISOString()),
+    });
+    public static selectSchema = this.baseSchema.omit({});
     public static insertSchema = createInsertSchema(tableSchemas.videoTable);
-    public static updateSchema = createUpdateSchema(tableSchemas.videoTable);
+    public static updateSchema = createUpdateSchema(
+        tableSchemas.videoTable,
+    ).omit({
+        createdAt: true,
+        updatedAt: true,
+    });
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });
