@@ -11,7 +11,6 @@ export default function VideoEditPage() {
     }>();
 
     const { data, isPending, error } = videoApi.query.useGetVideo(id);
-    console.log(error);
     if (!!error) {
         redirect("/");
     }

@@ -38,6 +38,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { videoApi } from "../apis";
 import { DeleteVideoButton } from "./delete-video-btn";
+import { VideoPreviewSection } from "./video-preview-section";
 
 interface EditVideoFormProps {
     videoId: string;
@@ -70,7 +71,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={onSubmit} className="col-span-5 space-y-8 text-2xl">
-                <Card className="mx-auto max-w-screen-2xl">
+                <Card className="mx-auto">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div className="space-y-2">
                             <CardTitle>Video details</CardTitle>
@@ -92,83 +93,91 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         </div>
                     </CardHeader>
                     <Separator />
-                    <CardContent>
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Title</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter your video title"
-                                            disabled={isPending}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Description</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            {...field}
-                                            placeholder="Enter your video description"
-                                            className="resize-none"
-                                            value={field.value || ""}
-                                            disabled={isPending}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="visibility"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Visibility</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isPending}
-                                    >
+                    <CardContent className="grid grid-cols-8 gap-x-8">
+                        {/* Information Section */}
+                        <section className="col-span-5">
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Title</FormLabel>
                                         <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a verified email to display" />
-                                            </SelectTrigger>
+                                            <Input
+                                                placeholder="Enter your video title"
+                                                disabled={isPending}
+                                                {...field}
+                                            />
                                         </FormControl>
-                                        <SelectContent>
-                                            {VISIBILITY_OPTIONS.map(
-                                                ({
-                                                    value,
-                                                    label,
-                                                    icon: Icon,
-                                                }) => (
-                                                    <SelectItem
-                                                        key={value}
-                                                        value={value}
-                                                    >
-                                                        <div className="flex items-center gap-2">
-                                                            <Icon className="h-4 w-4" />
-                                                            {label}
-                                                        </div>
-                                                    </SelectItem>
-                                                ),
-                                            )}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                {...field}
+                                                placeholder="Enter your video description"
+                                                value={field.value || ""}
+                                                className="h-56 resize-none"
+                                                maxLength={1000}
+                                                disabled={isPending}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="visibility"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Visibility</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            disabled={isPending}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a visibility to display" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {VISIBILITY_OPTIONS.map(
+                                                    ({
+                                                        value,
+                                                        label,
+                                                        icon: Icon,
+                                                    }) => (
+                                                        <SelectItem
+                                                            key={value}
+                                                            value={value}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <Icon className="h-4 w-4" />
+                                                                {label}
+                                                            </div>
+                                                        </SelectItem>
+                                                    ),
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </section>
+                        {/* Preview Section */}
+                        <section className="col-span-3">
+                            <VideoPreviewSection />
+                        </section>
                     </CardContent>
                 </Card>
             </form>
