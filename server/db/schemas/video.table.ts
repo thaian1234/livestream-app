@@ -38,7 +38,7 @@ export const videoTable = pgTable(
             .notNull(),
         title: varchar("title", { length: 255 }).notNull(),
         description: text("description"),
-        videoUrl: text("video_url"),
+        videoUrl: text("video_url").notNull(),
         thumbnailUrl: text("thumbnail_url"),
         duration: integer("duration"),
         viewCount: integer("view_count").default(0).notNull(),

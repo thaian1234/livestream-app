@@ -20,7 +20,6 @@ export function RecordingsPicker({
     onSelect,
 }: RecordingsPickerProps) {
     const [searchTerm, setSearchTerm] = useState("");
-
     const { data, isPending } = videoApi.query.useGetRecordings();
 
     if (isPending || !data) return <div>Loading...</div>;
@@ -28,6 +27,7 @@ export function RecordingsPicker({
     const filteredRecordings = data.data.recordings.filter((recording) =>
         recording.filename.toLowerCase().includes(searchTerm.toLowerCase()),
     );
+
     const handleRecordingSelect = (url: string) => {
         const recording = data.data.recordings.find(
             (recording) => recording.url === url,

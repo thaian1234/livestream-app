@@ -176,7 +176,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         </section>
                         {/* Preview Section */}
                         <section className="col-span-3">
-                            <VideoPreviewSection />
+                            <VideoPreviewSection video={defaultVideo} />
                         </section>
                     </CardContent>
                 </Card>

@@ -63,7 +63,7 @@ export function getDashboardMenuList(
             ],
         },
         {
-            groupLabel: "Recordings",
+            groupLabel: "Channels",
             menus: [
                 {
                     href: ROUTES.STUDIO_PAGE(username),

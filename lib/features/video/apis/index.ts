@@ -34,7 +34,7 @@ export const videoApi = {
             const { mutation, toast, router, user, queryClient } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg, data }) {
-                        router.replace(
+                        router.push(
                             ROUTES.VIDEO_EDIT_PAGE(user.username, data.id),
                         );
                         queryClient.invalidateQueries({
