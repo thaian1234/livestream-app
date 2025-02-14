@@ -10,10 +10,11 @@ export default function VideoEditPage() {
         id: string;
     }>();
 
-    if (!id) {
+    const { data, isPending, error } = videoApi.query.useGetVideo(id);
+    console.log(error);
+    if (!!error) {
         redirect("/");
     }
-    const { data, isPending } = videoApi.query.useGetVideo(id);
 
     if (!data || isPending) {
         return null;

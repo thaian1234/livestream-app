@@ -26,6 +26,7 @@ export function DeleteVideoButton({ videoId }: DeleteVideoButtonProps) {
             onClick={handleDeleteVideo}
             loading={isPending}
             variant="destructive"
+            type="button"
         >
             {!isPending && <Trash2Icon className="mr-2" />} Delete
         </Button>
