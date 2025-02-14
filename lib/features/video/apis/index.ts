@@ -5,6 +5,7 @@ import { client } from "@/lib/shared/client";
 const keys = {
     videos: ["videos"],
     video: (id: string) => [...keys.videos, id],
+    recordings: ["recordings"],
 };
 
 const baseApi = client.api.videos;
@@ -21,6 +22,10 @@ export const videoApi = {
                     id,
                 },
             });
+        },
+        useGetRecordings() {
+            const $get = baseApi.recordings.$get;
+            return Fetcher.useHonoQuery($get, keys.recordings, {});
         },
     },
     mutation: {

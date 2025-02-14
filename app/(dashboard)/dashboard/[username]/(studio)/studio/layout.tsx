@@ -1,4 +1,4 @@
-import { CreateVideoButton } from "@/lib/features/video/components/create-video-btn";
+import { CreateVideoDialog } from "@/lib/features/video/components/create-video-dialog";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -11,7 +11,7 @@ export default function StudioLayout({
         <Card className="mx-auto max-w-screen-2xl">
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Channel content</CardTitle>
-                <CreateVideoButton />
+                <CreateVideoDialog />
             </CardHeader>
             <CardContent>{children}</CardContent>
         </Card>
