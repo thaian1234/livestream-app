@@ -97,9 +97,13 @@ export class GetStreamService implements IGetStreamService {
     }
 
     public async createChatChannel(userId: string, streamId: string) {
-        const channel = this.streamChatClient.channel("livestream", streamId, {
-            created_by_id: userId,
-        });
+        const channel = this.streamChatClient.channel(
+            this.callType.livestream,
+            streamId,
+            {
+                created_by_id: userId,
+            },
+        );
         await channel.create();
     }
 
@@ -112,5 +116,13 @@ export class GetStreamService implements IGetStreamService {
             issuedAt,
         );
         return token;
+    }
+
+    public async getRecordings(id: string) {
+        const recording = await this.streamClient.video.listRecordings({
+            id: id,
+            type: this.callType.livestream,
+        });
+        return recording;
     }
 }

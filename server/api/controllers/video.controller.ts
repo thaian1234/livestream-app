@@ -12,19 +12,24 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 
 import { IVideoService } from "../services/video.service";
 
+import { IGetStreamService } from "../external-services/getstream.service";
+
 import { VideoDTO } from "../dtos/video.dto";
 
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
 export class VideoController implements IVideoController {
     constructor(
-        private factory: CreateFactoryType,
-        private videoService: IVideoService,
+        private readonly factory: CreateFactoryType,
+        private readonly videoService: IVideoService,
+        private readonly getStreamService: IGetStreamService,
     ) {}
     public setupHandlers() {
         return this.factory
             .createApp()
+            .use(AuthMiddleware.isAuthenticated)
             .get("/", ...this.getAllVideos())
+            .get("/recordings", ...this.getRecordings())
             .get("/:id", ...this.getVideoById())
             .post("/", ...this.createVideo())
             .patch("/:id", ...this.updateVideo())
@@ -49,7 +54,6 @@ export class VideoController implements IVideoController {
         const respSchema = VideoDTO.selectSchema;
 
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
             zValidator("json", reqSchema),
             async (c) => {
                 const jsonData = c.req.valid("json");
@@ -102,7 +106,6 @@ export class VideoController implements IVideoController {
         });
 
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
             zValidator("json", reqSchema, Validator.handleParseError),
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
@@ -147,5 +150,23 @@ export class VideoController implements IVideoController {
                 });
             },
         );
+    }
+    private getRecordings() {
+        return this.factory.createHandlers(async (c) => {
+            const user = c.get("getUser");
+            const resp = await this.getStreamService.getRecordings(
+                user.stream.id,
+            );
+
+            if (resp.metadata.responseCode !== HttpStatus.OK) {
+                throw new MyError.BadRequestError("Failed to get recordings");
+            }
+
+            return ApiResponse.WriteJSON({
+                c,
+                data: resp,
+                status: HttpStatus.OK,
+            });
+        });
     }
 }

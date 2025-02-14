@@ -4,12 +4,11 @@ import { csrf } from "hono/csrf";
 import { createFactory } from "hono/factory";
 import { logger } from "hono/logger";
 
-import Database from "@/server/db";
-
 import { AppConfig } from "../configs/app.config";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { Utils } from "../lib/helpers/utils";
 import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -72,7 +71,6 @@ export class App {
     constructor(private readonly app: Hono) {
         this.setupMiddleware();
         this.setupErrorHandling();
-        this.setupRoutes();
     }
 
     private setupMiddleware(): void {
@@ -206,7 +204,11 @@ export class App {
             factory,
             notificationService,
         );
-        const videoController = new VideoController(factory, videoService);
+        const videoController = new VideoController(
+            factory,
+            videoService,
+            getstreamService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);

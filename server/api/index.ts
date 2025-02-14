@@ -3,9 +3,7 @@ import { Hono } from "hono";
 import { App } from "./app/app";
 
 const honoApp = new Hono();
-
-const app = new App(honoApp);
-const routes = app.setupRoutes();
+const routes = new App(honoApp).setupRoutes();
 
 type AppType = typeof routes;
 export { type AppType };
