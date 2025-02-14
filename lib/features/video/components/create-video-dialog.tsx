@@ -3,12 +3,12 @@
 import { CallRecording } from "@stream-io/node-sdk";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -21,14 +21,21 @@ import { RecordingsPicker } from "./recordings-picker";
 export function CreateVideoDialog() {
     const [selectedRecording, setSelectedRecording] =
         useState<CallRecording | null>(null);
-    const { mutate } = videoApi.mutation.useCreateVideo();
+    const { mutate, isPending } = videoApi.mutation.useCreateVideo();
 
     const handleCreateVideo = () => {
         if (selectedRecording) {
-            console.log(
-                "Creating video with selected recording URL:",
-                selectedRecording,
-            );
+            mutate({
+                json: {
+                    title: "Untitled",
+                    videoUrl: selectedRecording.url,
+                    duration:
+                        selectedRecording.end_time.getTime() -
+                        selectedRecording.start_time.getTime(),
+                },
+            });
+        } else {
+            toast.error("Please select a recording first");
         }
     };
 
@@ -51,7 +58,14 @@ export function CreateVideoDialog() {
                     />
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Create</Button>
+                    <Button
+                        type="submit"
+                        onClick={handleCreateVideo}
+                        disabled={!selectedRecording}
+                        loading={isPending}
+                    >
+                        Create
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
