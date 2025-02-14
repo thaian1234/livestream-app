@@ -36,6 +36,13 @@
       "when": 1739430134916,
       "tag": "0005_whole_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1739501691763,
+      "tag": "0006_swift_shocker",
+      "breakpoints": true
     }
   ]
 }

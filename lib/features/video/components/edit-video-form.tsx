@@ -3,6 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SaveIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { AiOutlineGlobal } from "react-icons/ai";
+import { FaUsers } from "react-icons/fa";
+import { SiPrivateinternetaccess } from "react-icons/si";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
 
@@ -23,6 +26,13 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -33,6 +43,12 @@ interface EditVideoFormProps {
     videoId: string;
     defaultVideo: VideoDTO.Select;
 }
+
+const VISIBILITY_OPTIONS = [
+    { value: "private", icon: SiPrivateinternetaccess, label: "Private" },
+    { value: "public", icon: AiOutlineGlobal, label: "Public" },
+    { value: "followers_only", icon: FaUsers, label: "Followers Only" },
+] as const;
 
 export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     const form = useForm<VideoDTO.Update>({
@@ -66,6 +82,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                             <Button
                                 type="submit"
                                 loading={isPending}
+                                disabled={!form.formState.isDirty}
                                 className="flex items-center gap-2"
                             >
                                 {!isPending && <SaveIcon />}
@@ -79,13 +96,13 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         <FormField
                             control={form.control}
                             name="title"
-                            disabled={isPending}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Title</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Enter your video title"
+                                            disabled={isPending}
                                             {...field}
                                         />
                                     </FormControl>
@@ -96,7 +113,6 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         <FormField
                             control={form.control}
                             name="description"
-                            disabled={isPending}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Description</FormLabel>
@@ -109,6 +125,46 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                             disabled={isPending}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="visibility"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Visibility</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isPending}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a verified email to display" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {VISIBILITY_OPTIONS.map(
+                                                ({
+                                                    value,
+                                                    label,
+                                                    icon: Icon,
+                                                }) => (
+                                                    <SelectItem
+                                                        key={value}
+                                                        value={value}
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <Icon className="h-4 w-4" />
+                                                            {label}
+                                                        </div>
+                                                    </SelectItem>
+                                                ),
+                                            )}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}

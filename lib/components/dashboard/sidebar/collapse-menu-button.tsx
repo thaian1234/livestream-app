@@ -4,6 +4,7 @@ import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Dot, LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { IconType } from "react-icons/lib";
 
 import { cn } from "@/lib/utils";
 
@@ -35,7 +36,7 @@ type Submenu = {
 };
 
 interface CollapseMenuButtonProps {
-    icon: LucideIcon;
+    icon: LucideIcon | IconType;
     label: string;
     active: boolean;
     submenus: Submenu[];

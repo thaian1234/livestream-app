@@ -6,7 +6,6 @@ import {
     pgTable,
     text,
     timestamp,
-    uniqueIndex,
     uuid,
     varchar,
 } from "drizzle-orm/pg-core";
@@ -14,7 +13,7 @@ import {
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
 
-export const videoPrivacyEnum = pgEnum("video_privacy", [
+export const videoVisibilityEnum = pgEnum("video_privacy", [
     "public",
     "private",
     "followers_only",
@@ -42,20 +41,18 @@ export const videoTable = pgTable(
         videoUrl: text("video_url"),
         thumbnailUrl: text("thumbnail_url"),
         duration: integer("duration"),
-        viewCount: integer("view_count").default(0),
-        likeCount: integer("like_count").default(0),
-        privacy: videoPrivacyEnum("privacy").default("private"),
-        status: videoStatusEnum("processing").default("processing"),
+        viewCount: integer("view_count").default(0).notNull(),
+        likeCount: integer("like_count").default(0).notNull(),
+        visibility: videoVisibilityEnum().default("private").notNull(),
+        status: videoStatusEnum("processing").default("processing").notNull(),
 
-        createdAt: timestamp("created_at").defaultNow(),
-        updatedAt: timestamp("updated_at").defaultNow(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .defaultNow()
+            .$onUpdate(() => new Date())
+            .notNull(),
     },
-    (table) => ({
-        user_stream_id_unq: index("user_stream_idx").on(
-            table.userId,
-            table.streamId,
-        ),
-    }),
+    (table) => [index("user_stream_idx").on(table.userId, table.streamId)],
 );
 
 export const videoRelations = relations(videoTable, ({ one }) => ({

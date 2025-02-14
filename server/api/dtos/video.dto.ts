@@ -5,7 +5,7 @@ import {
 } from "drizzle-zod";
 import { z } from "zod";
 
-import tableSchemas from "@/server/db/schemas";
+import tableSchemas, { tableRelations } from "@/server/db/schemas";
 
 export class VideoDTO {
     private static baseSchema = createSelectSchema(tableSchemas.videoTable, {
