@@ -1,7 +1,8 @@
 "use client";
 
 import { ChatMessage } from "../chat-message";
-import { ArrowLeft, MessageSquare } from "lucide-react";
+import { CustomMessageInput } from "../custom-message-input";
+import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
     MessageInput,
@@ -11,7 +12,6 @@ import {
 
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function BoxChatViewer() {
@@ -51,17 +51,7 @@ export function BoxChatViewer() {
                     </div>
                 )}
             </ScrollArea>
-            {/* <MessageInput
-                Input={() => (
-                    <CustomMessageInput
-                        isChatDelayed={setting?.isChatDelayed}
-                        isChatEnabled={setting?.isChatEnabled}
-                        isChatFollowersOnly={setting?.isChatFollowersOnly}
-                        isHost={isHost}
-                        isFollowing={isFollowing}
-                    />
-                )}
-            /> */}
+            <MessageInput Input={() => <CustomMessageInput />} />
         </>
     );
 }

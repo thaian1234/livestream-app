@@ -1,6 +1,7 @@
 "use client";
 
 import { ChatMessage } from "../chat-message";
+import { CustomMessageInput } from "../custom-message-input";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
@@ -9,15 +10,14 @@ import {
     useChannelStateContext,
 } from "stream-chat-react";
 
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface PrivateChatProps {
-    setIsOpenBoxChat: (value: boolean) => void;
-}
-export function BoxChat({ setIsOpenBoxChat }: PrivateChatProps) {
+export function BoxChat() {
+    const { setViewerId } = useViewerId();
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -40,7 +40,7 @@ export function BoxChat({ setIsOpenBoxChat }: PrivateChatProps) {
                     size="icon"
                     className="h-8 w-8 p-0"
                     onClick={() => {
-                        setIsOpenBoxChat(false);
+                        if (setViewerId) setViewerId(undefined);
                     }}
                 >
                     <ArrowLeft className="h-4 w-4" />
@@ -67,17 +67,7 @@ export function BoxChat({ setIsOpenBoxChat }: PrivateChatProps) {
                     </div>
                 )}
             </ScrollArea>
-            {/* <MessageInput
-                Input={() => (
-                    <CustomMessageInput
-                        isChatDelayed={setting?.isChatDelayed}
-                        isChatEnabled={setting?.isChatEnabled}
-                        isChatFollowersOnly={setting?.isChatFollowersOnly}
-                        isHost={isHost}
-                        isFollowing={isFollowing}
-                    />
-                )}
-            /> */}
+            <MessageInput Input={() => <CustomMessageInput />} />
         </div>
     );
 }

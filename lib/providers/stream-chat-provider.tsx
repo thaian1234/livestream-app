@@ -25,16 +25,19 @@ interface ChatProviderProps {
     streamId: string;
     children: React.ReactNode;
     streamerId?: string;
+    viewerId?: string;
 }
 
 export function ChatProvider({
     streamId,
     children,
     streamerId,
+    viewerId
 }: ChatProviderProps) {
     const { chatClient, chatChannel } = useInitializeChatClient(
         streamId,
         streamerId,
+        viewerId
     );
     if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
 

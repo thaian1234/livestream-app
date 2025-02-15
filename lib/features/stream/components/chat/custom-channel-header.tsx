@@ -2,6 +2,7 @@ import { ArrowRightToLine, MessageSquareMore, User, Users } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
@@ -14,6 +15,7 @@ export const CustomChannelHeader = () => {
         onTogglePrivateChat,
         isOpenPrivateChat,
     } = useLiveInfor();
+    const { setViewerId } = useViewerId();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     return (
@@ -32,7 +34,12 @@ export const CustomChannelHeader = () => {
             </p>
             <div className="flex items-center space-x-2">
                 <TooltipModel content="Community" side="bottom">
-                    <button onClick={onTogglePrivateChat}>
+                    <button
+                        onClick={() => {
+                            onTogglePrivateChat();
+                            setViewerId(undefined);
+                        }}
+                    >
                         <User
                             className={cn(
                                 "",

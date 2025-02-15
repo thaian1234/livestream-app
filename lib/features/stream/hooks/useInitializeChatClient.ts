@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/providers/auth-provider";
 export default function useInitializeChatClient(
     streamId: string,
     streamerId?: string,
+    viewerId?: string
 ) {
     const { user } = useAuth();
     const { data: tokenData } = streamApi.query.useGetChatToken();
@@ -36,7 +37,13 @@ export default function useInitializeChatClient(
                 setChatClient(client);
             });
         let channel;
-        if (streamerId) {
+        if (viewerId) {
+            channel = client.channel(
+                "private-stream-chat",
+                `${streamId.replace(/-/g, "")}${viewerId.replace(/-/g, "")}`,
+            );
+        }
+        else if (streamerId) {
             channel = client.channel(
                 "private-stream-chat",
                 `${streamId.replace(/-/g, "")}${user.id.replace(/-/g, "")}`,
@@ -55,7 +62,7 @@ export default function useInitializeChatClient(
                 )
                 .then(() => console.log("Connection close"));
         };
-    }, [streamId, user, tokenData, streamerId]);
+    }, [streamId, user, tokenData, streamerId, viewerId]);
 
     return { chatClient, chatChannel };
 }

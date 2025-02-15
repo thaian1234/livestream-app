@@ -1,113 +1,21 @@
 "use client";
 
-import { ArrowLeft, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import useStreamerPrivateChats from "../../../hooks/use-streamer-private-chats";
+import { MessageSquare } from "lucide-react";
 
+import { timeAgo } from "@/lib/helpers/formatData";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface Message {
-    id: number;
-    sender: {
-        name: string;
-        avatar: string;
-    };
-    content: string;
-    timestamp: string;
-    unread: boolean;
-}
-
-const messages: Message[] = [
-    {
-        id: 1,
-        sender: {
-            name: "Alice Johnson",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Hey, have you seen the latest project update?",
-        timestamp: "5m ago",
-        unread: true,
-    },
-    {
-        id: 2,
-        sender: {
-            name: "Bob Smith",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Can we schedule a meeting for tomorrow?",
-        timestamp: "15m ago",
-        unread: true,
-    },
-    {
-        id: 3,
-        sender: {
-            name: "Charlie Brown",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "I've sent you the files you requested. Please check...",
-        timestamp: "1h ago",
-        unread: false,
-    },
-    {
-        id: 4,
-        sender: {
-            name: "Diana Prince",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Don't forget about the team lunch today!",
-        timestamp: "2h ago",
-        unread: false,
-    },
-    {
-        id: 4,
-        sender: {
-            name: "Diana Prince",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Don't forget about the team lunch today!",
-        timestamp: "2h ago",
-        unread: true,
-    },
-    {
-        id: 4,
-        sender: {
-            name: "Diana Prince",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content:
-            "Don't forget about the team lunch today! the team lthe team lthe team lthe team lthe team l",
-        timestamp: "2h ago",
-        unread: false,
-    },
-    {
-        id: 4,
-        sender: {
-            name: "Diana Prince",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Don't forget ",
-        timestamp: "2h ago",
-        unread: true,
-    },
-    {
-        id: 4,
-        sender: {
-            name: "Diana Prince",
-            avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Don't forget ",
-        timestamp: "2h ago",
-        unread: true,
-    },
-];
 interface PreviewProps {
-    setIsOpenBoxChat: (value: boolean) => void;
+    streamerId?: string;
 }
-export function Preview({ setIsOpenBoxChat }: PreviewProps) {
+export function Preview({ streamerId }: PreviewProps) {
+    const chats = useStreamerPrivateChats(streamerId);
+    const { setViewerId } = useViewerId();
     return (
         <ScrollArea
             className={cn(
@@ -115,51 +23,59 @@ export function Preview({ setIsOpenBoxChat }: PreviewProps) {
             )}
         >
             <div className="space-y-2">
-                {messages.length > 0 ? (
-                    messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={cn(
-                                "grid cursor-pointer grid-cols-[40px_1fr] items-start px-2 py-3",
-                                message.unread ? "rounded-lg bg-primary/5" : "",
-                            )}
-                            onClick={() => {
-                                //navigate box chat
-                                setIsOpenBoxChat(true);
-                            }}
-                        >
-                            <div className="relative">
-                                <Avatar className="h-10 w-10">
-                                    <AvatarImage
-                                        src={message.sender.avatar}
-                                        alt={message.sender.name}
-                                    />
-                                    <AvatarFallback />
-                                </Avatar>
-                                {message.unread && (
-                                    <span className="absolute right-0 top-0 block h-2 w-2 rounded-full bg-red-600" />
+                {chats.length > 0 ? (
+                    chats.map((chat) => {
+                        const isUnread = chat.state.unreadCount > 0;
+                        const sender = Object.values(chat.state.members).find(
+                            (m) => m?.user?.id !== streamerId,
+                        )?.user;
+                        const unreadMessage =
+                            chat.state.messages[chat.state.messages.length - 1];
+                        if (!unreadMessage) return;
+                        return (
+                            <div
+                                key={chat.id}
+                                className={cn(
+                                    "grid cursor-pointer grid-cols-[40px_1fr] items-start px-2 py-3",
+                                    isUnread ? "rounded-lg bg-primary/5" : "",
                                 )}
-                            </div>
-                            <div className="ml-4 space-y-1">
-                                <p className="text-sm leading-none text-teal-2">
-                                    {message.sender.name}
-                                </p>
-                                <p
-                                    className={cn(
-                                        "line-clamp-1 text-sm",
-                                        message.unread
-                                            ? ""
-                                            : "text-muted-foreground",
+                                onClick={() => {
+                                    setViewerId?.(sender?.id);
+                                }}
+                            >
+                                <div className="relative">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarImage
+                                            src={sender?.image}
+                                            alt={sender?.name}
+                                        />
+                                        <AvatarFallback />
+                                    </Avatar>
+                                    {isUnread && (
+                                        <span className="absolute right-0 top-0 block h-2 w-2 rounded-full bg-red-600" />
                                     )}
-                                >
-                                    {message.content}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                    {message.timestamp}
-                                </p>
+                                </div>
+                                <div className="ml-4 space-y-1">
+                                    <p className="text-sm leading-none text-teal-2">
+                                        {sender?.name}
+                                    </p>
+                                    <p
+                                        className={cn(
+                                            "line-clamp-1 text-sm",
+                                            isUnread
+                                                ? ""
+                                                : "text-muted-foreground",
+                                        )}
+                                    >
+                                        {unreadMessage?.text}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {timeAgo(unreadMessage?.created_at)}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 ) : (
                     <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
                         <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
