@@ -27,8 +27,6 @@ interface ChatProps {
     isHost?: boolean;
     isFollowing?: boolean;
     streamerId?: string;
-    setViewerId?: (value?: string) => void;
-    viewerId?: string;
 }
 
 export function Chat({
@@ -36,8 +34,6 @@ export function Chat({
     isHost = false,
     isFollowing = false,
     streamerId,
-    setViewerId,
-    viewerId,
 }: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -62,8 +58,6 @@ export function Chat({
                 isHost ? (
                     <PrivateChat
                         streamerId={streamerId}
-                        setViewerId={setViewerId}
-                        viewerId={viewerId}
                     />
                 ) : (
                     <BoxChatViewer />

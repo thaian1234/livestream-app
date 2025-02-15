@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Channel } from "stream-chat";
+import { Channel, Event } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 
 export default function useStreamerPrivateChats(streamerId?: string) {
@@ -24,7 +24,16 @@ export default function useStreamerPrivateChats(streamerId?: string) {
         };
 
         fetchChats();
-    }, [streamerId, chatClient]);
 
+        const handleEvent = (event: Event<DefaultStreamChatGenerics>) => {
+            if (event.type === "message.new") {
+                fetchChats();
+            }
+        };
+
+        chatClient.on(handleEvent);
+
+        return () => chatClient.off(handleEvent); 
+    }, [streamerId, chatClient]);
     return chats;
 }

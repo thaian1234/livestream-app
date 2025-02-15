@@ -1,26 +1,15 @@
 "use client";
 
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
+
 import { BoxChat } from "./box-chat";
 import { Preview } from "./preview";
 
 interface PrivateChatProps {
     streamerId?: string;
-    setViewerId?: (value?: string) => void;
-    viewerId?: string;
 }
 
-export function PrivateChat({
-    streamerId,
-    setViewerId,
-    viewerId,
-}: PrivateChatProps) {
-    return (
-        <>
-            {viewerId ? (
-                <BoxChat setViewerId={setViewerId} />
-            ) : (
-                <Preview streamerId={streamerId} setViewerId={setViewerId} />
-            )}
-        </>
-    );
+export function PrivateChat({ streamerId }: PrivateChatProps) {
+    const { viewerId } = useViewerId();
+    return <>{viewerId ? <BoxChat /> : <Preview streamerId={streamerId} />}</>;
 }

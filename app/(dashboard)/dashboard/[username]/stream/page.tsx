@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/providers/auth-provider";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
@@ -23,7 +24,7 @@ export default function StreamPage() {
     const { data: setting, isPending: isPendingSetting } =
         settingApi.query.useGetSetting();
     const { isOpenChatComponent } = useLiveInfor();
-    const [viewerId, setViewerId] = useState<string | undefined>();
+    const { viewerId } = useViewerId();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (auth.isPending || isPendingSetting) {
@@ -77,8 +78,6 @@ export default function StreamPage() {
                                             setting={setting.data.setting}
                                             isHost={true}
                                             streamerId={auth.user.id}
-                                            setViewerId={setViewerId}
-                                            viewerId={viewerId}
                                         />
                                     </ChatProvider>
                                 </div>
@@ -95,8 +94,6 @@ export default function StreamPage() {
                                 setting={setting.data.setting}
                                 isHost={true}
                                 streamerId={auth.user.id}
-                                setViewerId={setViewerId}
-                                viewerId={viewerId}
                             />
                         )}
                     </ChatProvider>

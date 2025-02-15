@@ -4,6 +4,7 @@ import useStreamerPrivateChats from "../../../hooks/use-streamer-private-chats";
 import { MessageSquare } from "lucide-react";
 
 import { timeAgo } from "@/lib/helpers/formatData";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,11 +12,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PreviewProps {
     streamerId?: string;
-    setViewerId?: (value?: string) => void;
 }
-export function Preview({ streamerId, setViewerId }: PreviewProps) {
+export function Preview({ streamerId }: PreviewProps) {
     const chats = useStreamerPrivateChats(streamerId);
-
+    const { setViewerId } = useViewerId();
     return (
         <ScrollArea
             className={cn(
@@ -31,7 +31,6 @@ export function Preview({ streamerId, setViewerId }: PreviewProps) {
                         )?.user;
                         const unreadMessage =
                             chat.state.messages[chat.state.messages.length - 1];
-                        console.log(unreadMessage);
                         if (!unreadMessage) return;
                         return (
                             <div

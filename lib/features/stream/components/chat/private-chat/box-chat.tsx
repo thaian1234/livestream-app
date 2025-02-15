@@ -10,15 +10,14 @@ import {
     useChannelStateContext,
 } from "stream-chat-react";
 
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface PrivateChatProps {
-    setViewerId?: (value?: string) => void;
-}
-export function BoxChat({ setViewerId }: PrivateChatProps) {
+export function BoxChat() {
+    const { setViewerId } = useViewerId();
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
