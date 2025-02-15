@@ -1,13 +1,21 @@
-import { ArrowRightToLine, MessageSquareMore, Users } from "lucide-react";
+import { ArrowRightToLine, MessageSquareMore, User, Users } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
+import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
 
 export const CustomChannelHeader = () => {
-    const { onToggleChatComponent, onChangeChatStatus, chatStatus } =
-        useLiveInfor();
+    const {
+        onToggleChatComponent,
+        onChangeChatStatus,
+        chatStatus,
+        onTogglePrivateChat,
+        isOpenPrivateChat,
+    } = useLiveInfor();
+    const { setViewerId } = useViewerId();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     return (
@@ -21,27 +29,49 @@ export const CustomChannelHeader = () => {
             ) : (
                 <div></div>
             )}
-            <p className="text-lg font-semibold">{chatStatus}</p>
-            <TooltipModel
-                content={chatStatus === ChatStatus.Chat ? "Community" : "Chat"}
-                side="bottom"
-            >
-                <button
-                    onClick={() => {
-                        onChangeChatStatus(
-                            chatStatus === ChatStatus.Chat
-                                ? ChatStatus.Community
-                                : ChatStatus.Chat,
-                        );
-                    }}
+            <p className="text-lg font-semibold">
+                {isOpenPrivateChat ? "PRIVATE CHAT" : chatStatus}
+            </p>
+            <div className="flex items-center space-x-2">
+                <TooltipModel content="Community" side="bottom">
+                    <button
+                        onClick={() => {
+                            onTogglePrivateChat();
+                            setViewerId(undefined);
+                        }}
+                    >
+                        <User
+                            className={cn(
+                                "",
+                                isOpenPrivateChat ? "text-teal-2" : "",
+                            )}
+                        />
+                    </button>
+                </TooltipModel>
+
+                <TooltipModel
+                    content={
+                        chatStatus === ChatStatus.Chat ? "Community" : "Chat"
+                    }
+                    side="bottom"
                 >
-                    {chatStatus === ChatStatus.Chat ? (
-                        <Users />
-                    ) : (
-                        <MessageSquareMore />
-                    )}
-                </button>
-            </TooltipModel>
+                    <button
+                        onClick={() => {
+                            onChangeChatStatus(
+                                chatStatus === ChatStatus.Chat
+                                    ? ChatStatus.Community
+                                    : ChatStatus.Chat,
+                            );
+                        }}
+                    >
+                        {chatStatus === ChatStatus.Chat ? (
+                            <MessageSquareMore />
+                        ) : (
+                            <Users />
+                        )}
+                    </button>
+                </TooltipModel>
+            </div>
         </div>
     );
 };

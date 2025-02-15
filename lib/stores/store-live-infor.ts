@@ -13,6 +13,8 @@ interface LiveInforStore {
     onChangeChatStatus: (chatStatus: ChatStatus) => void;
     isOpenChatComponent: boolean;
     onToggleChatComponent: () => void;
+    isOpenPrivateChat: boolean;
+    onTogglePrivateChat: () => void;
 }
 
 export const useLiveInfor = create<LiveInforStore>((set, get) => ({
@@ -21,8 +23,12 @@ export const useLiveInfor = create<LiveInforStore>((set, get) => ({
     },
     chatStatus: ChatStatus.Chat,
     isOpenChatComponent: true,
+    isOpenPrivateChat: false,
+    onTogglePrivateChat: () => {
+        set((state) => ({ isOpenPrivateChat: !state.isOpenPrivateChat }));
+    },
     onChangeChatStatus(chatStatus) {
-        set(() => ({ chatStatus }));
+        set(() => ({ chatStatus, isOpenPrivateChat: false }));
     },
     onToggleChatComponent: () => {
         set((state) => ({
