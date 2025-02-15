@@ -26,12 +26,18 @@ interface ChatProps {
     setting?: SettingDTO.Select;
     isHost?: boolean;
     isFollowing?: boolean;
+    streamerId?: string;
+    setViewerId?: (value?: string) => void;
+    viewerId?: string;
 }
 
 export function Chat({
     setting,
     isHost = false,
     isFollowing = false,
+    streamerId,
+    setViewerId,
+    viewerId,
 }: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -54,7 +60,11 @@ export function Chat({
             <CustomChannelHeader />
             {isOpenPrivateChat ? (
                 isHost ? (
-                    <PrivateChat />
+                    <PrivateChat
+                        streamerId={streamerId}
+                        setViewerId={setViewerId}
+                        viewerId={viewerId}
+                    />
                 ) : (
                     <BoxChatViewer />
                 )

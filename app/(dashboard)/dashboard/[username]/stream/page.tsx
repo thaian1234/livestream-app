@@ -1,6 +1,7 @@
 "use client";
 
 import { CallStats } from "@stream-io/video-react-sdk";
+import { useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { settingApi } from "@/lib/features/setting/apis";
@@ -22,6 +23,7 @@ export default function StreamPage() {
     const { data: setting, isPending: isPendingSetting } =
         settingApi.query.useGetSetting();
     const { isOpenChatComponent } = useLiveInfor();
+    const [viewerId, setViewerId] = useState<string | undefined>();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (auth.isPending || isPendingSetting) {
@@ -67,10 +69,16 @@ export default function StreamPage() {
                                     />
                                 </div>
                                 <div className="col-span-2">
-                                    <ChatProvider streamId={auth.stream.id}>
+                                    <ChatProvider
+                                        streamId={auth.stream.id}
+                                        viewerId={viewerId}
+                                    >
                                         <Chat
                                             setting={setting.data.setting}
                                             isHost={true}
+                                            streamerId={auth.user.id}
+                                            setViewerId={setViewerId}
+                                            viewerId={viewerId}
                                         />
                                     </ChatProvider>
                                 </div>
@@ -81,11 +89,14 @@ export default function StreamPage() {
             </StreamVideoProvider>
             {desktopScreen && (
                 <div className="col-span-3 col-start-10">
-                    <ChatProvider streamId={auth.stream.id}>
+                    <ChatProvider streamId={auth.stream.id} viewerId={viewerId}>
                         {isOpenChatComponent && (
                             <Chat
                                 setting={setting.data.setting}
                                 isHost={true}
+                                streamerId={auth.user.id}
+                                setViewerId={setViewerId}
+                                viewerId={viewerId}
                             />
                         )}
                     </ChatProvider>

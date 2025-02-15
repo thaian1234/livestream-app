@@ -27,7 +27,7 @@ export default function StreamPage() {
     const currentUser = useUser();
     const { data, isPending, isError } =
         streamApi.query.useGetStreamInformation(params.username);
-    const { isOpenChatComponent, chatStatus } = useLiveInfor();
+    const { isOpenChatComponent, isOpenPrivateChat } = useLiveInfor();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (isPending) {
@@ -86,7 +86,7 @@ export default function StreamPage() {
                         <ChatProvider
                             streamId={stream.id}
                             streamerId={
-                                chatStatus === ChatStatus.PrivateChat
+                                isOpenPrivateChat
                                     ? stream.userId
                                     : undefined
                             }
@@ -124,7 +124,7 @@ export default function StreamPage() {
                         <ChatProvider
                             streamId={stream.id}
                             streamerId={
-                                chatStatus === ChatStatus.PrivateChat
+                                isOpenPrivateChat
                                     ? stream.userId
                                     : undefined
                             }

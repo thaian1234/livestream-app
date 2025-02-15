@@ -1,20 +1,25 @@
 "use client";
 
-import { useState } from "react";
-
 import { BoxChat } from "./box-chat";
-import { BoxChatViewer } from "./box-chat-viewer";
 import { Preview } from "./preview";
 
-export function PrivateChat() {
-    const [isOpenBoxChat, setIsOpenBoxChat] = useState(false);
-    console.log("render private chat");
+interface PrivateChatProps {
+    streamerId?: string;
+    setViewerId?: (value?: string) => void;
+    viewerId?: string;
+}
+
+export function PrivateChat({
+    streamerId,
+    setViewerId,
+    viewerId,
+}: PrivateChatProps) {
     return (
         <>
-            {isOpenBoxChat ? (
-                <BoxChat setIsOpenBoxChat={setIsOpenBoxChat} />
+            {viewerId ? (
+                <BoxChat setViewerId={setViewerId} />
             ) : (
-                <Preview setIsOpenBoxChat={setIsOpenBoxChat} />
+                <Preview streamerId={streamerId} setViewerId={setViewerId} />
             )}
         </>
     );
