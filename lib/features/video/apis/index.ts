@@ -34,12 +34,14 @@ export const videoApi = {
             const { mutation, toast, router, user, queryClient } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg, data }) {
-                        router.push(
-                            ROUTES.VIDEO_EDIT_PAGE(user.username, data.id),
-                        );
-                        queryClient.invalidateQueries({
-                            queryKey: keys.videos,
-                        });
+                        if (user) {
+                            router.push(
+                                ROUTES.VIDEO_EDIT_PAGE(user.username, data.id),
+                            );
+                            queryClient.invalidateQueries({
+                                queryKey: keys.videos,
+                            });
+                        }
                     },
                     onError(err) {
                         toast.error(err.message);
@@ -70,8 +72,10 @@ export const videoApi = {
                 $delete,
                 {
                     onSuccess({ msg }) {
-                        router.replace(ROUTES.STUDIO_PAGE(user.username));
-                        toast.success("Video deleted");
+                        if (user) {
+                            router.replace(ROUTES.STUDIO_PAGE(user.username));
+                            toast.success("Video deleted");
+                        }
                     },
                     onError(err) {
                         toast.error(err.message);
