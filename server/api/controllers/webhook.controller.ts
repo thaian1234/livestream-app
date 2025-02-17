@@ -1,7 +1,11 @@
+import { CallRecordingStartedEvent } from "@stream-io/node-sdk";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { IStorageService } from "../services/storage.service";
 
 import { IGetStreamService } from "../external-services/getstream.service";
 
@@ -9,6 +13,7 @@ export class WebhookController {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly getstreamService: IGetStreamService,
+        private readonly storageService: IStorageService,
     ) {}
 
     public setupHandlers() {
@@ -53,7 +58,8 @@ export class WebhookController {
                         // await this.handleRecordingReady(body);
                         break;
                     case "call.recording_started":
-                        // await this.handleRecordingStarted(body);
+                        const storage = await this.handleRecordingStarted(body);
+                        console.log("Storage: ", storage);
                         break;
                     case "call.recording_stopped":
                         // await this.handleRecordingStopped(body);
@@ -79,6 +85,15 @@ export class WebhookController {
                     data: undefined,
                 });
             }
+        });
+    }
+    private async handleRecordingStarted(body: CallRecordingStartedEvent) {
+        const streamId = body.call_cid.split(":")[1];
+        if (!streamId) {
+            throw new MyError.ValidationError("Invalid streamId");
+        }
+        return this.storageService.createAsset({
+            streamId: streamId,
         });
     }
 }

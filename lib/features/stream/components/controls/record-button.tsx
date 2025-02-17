@@ -19,7 +19,7 @@ export const RecordButton = () => {
         // we wait until call.recording_started/stopped event
         // to remove the loading indicator
         const eventHandlers = [
-            call.on("call.recording_started", () => {
+            call.on("call.recording_started", (data) => {
                 console.log("Started recording");
                 setIsAwaitingResponse(false);
             }),

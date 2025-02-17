@@ -20,6 +20,7 @@ import { EmailVerificationRepository } from "../repositories/email-verification.
 import { FollowRepository } from "../repositories/follow.repository";
 import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
 import { SettingRepository } from "../repositories/setting.repository";
+import { StorageRepository } from "../repositories/storage.repository";
 import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { VideoRepository } from "../repositories/video.repository";
@@ -31,6 +32,7 @@ import { EmailVerificationService } from "../services/email-verification.service
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
 import { SettingService } from "../services/setting.service";
+import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { VideoService } from "../services/video.service";
@@ -107,6 +109,7 @@ export class App {
         const emailVerificationRepository = new EmailVerificationRepository();
         const forgetPasswordRepository = new ForgetPasswordRepository();
         const videoRepository = new VideoRepository();
+        const storageRepository = new StorageRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -139,6 +142,7 @@ export class App {
         );
         const categoryService = new CategoryService(categoryRepository);
         const videoService = new VideoService(videoRepository);
+        const storageService = new StorageService(storageRepository);
 
         // Controllers
         const userController = new UserController(
@@ -214,6 +218,7 @@ export class App {
         const webhookController = new WebhookController(
             factory,
             getstreamService,
+            storageService,
         );
 
         // Routes

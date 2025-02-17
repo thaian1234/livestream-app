@@ -89,9 +89,9 @@ CREATE TABLE "settings" (
 CREATE TABLE "storages" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"stream_id" uuid,
-	"file_name" text NOT NULL,
-	"file_url" text NOT NULL,
-	"file_type" text NOT NULL,
+	"file_name" text,
+	"file_url" text,
+	"file_type" text,
 	"start_time" text,
 	"end_time" text,
 	"duration" numeric,
