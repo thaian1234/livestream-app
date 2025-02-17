@@ -37,5 +37,4 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     session: one(sessionTable),
     forgetPassword: many(forgetPasswordTable),
     videos: many(videoTable),
-    storages: many(storageTable),
 }));

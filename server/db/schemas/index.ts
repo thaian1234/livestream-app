@@ -14,6 +14,7 @@ import { forgetPasswordTable } from "./forget-password.table";
 import { notificationTable, typeEnum } from "./notification.table";
 import { sessionRelations, sessionTable } from "./session.table";
 import { settingRelations, settingTable } from "./setting.table";
+import { storageStatusEnum, storageTable } from "./storage.table";
 import {
     streamsToCategoriesRelations,
     streamsToCategoriesTable,
@@ -41,6 +42,7 @@ const tableSchemas = {
     streamsToCategoriesTable,
     forgetPasswordTable,
     videoTable,
+    storageTable,
 } as const;
 
 export const tableRelations = {
@@ -60,6 +62,7 @@ export const tableRelations = {
     videoRelations,
     videoStatusEnum,
     videoVisibilityEnum,
+    storageStatusEnum,
 } as const;
 
 export default tableSchemas;

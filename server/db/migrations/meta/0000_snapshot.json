@@ -1,5 +1,5 @@
 {
-  "id": "7a0b0285-2e01-4660-8aa6-1e6284f11326",
+  "id": "9a988c2e-47f5-457f-a6d9-dbfbaccaf423",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -803,23 +803,11 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "stream_id": {
           "name": "stream_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
-        },
-        "external_id": {
-          "name": "external_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "file_name": {
           "name": "file_name",
@@ -857,6 +845,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "status": {
+          "name": "status",
+          "type": "storage_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'processing'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -874,19 +870,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "storages_user_id_users_id_fk": {
-          "name": "storages_user_id_users_id_fk",
-          "tableFrom": "storages",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
         "storages_stream_id_streams_id_fk": {
           "name": "storages_stream_id_streams_id_fk",
           "tableFrom": "storages",
@@ -1208,7 +1191,7 @@
           "name": "storage_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "title": {
           "name": "title",
@@ -1372,6 +1355,15 @@
         "stream_start",
         "stream_end",
         "new_follower"
+      ]
+    },
+    "public.storage_status": {
+      "name": "storage_status",
+      "schema": "public",
+      "values": [
+        "processing",
+        "ready",
+        "error"
       ]
     },
     "public.video_status": {

@@ -1,5 +1,6 @@
 CREATE TYPE "public"."provider_id" AS ENUM('google', 'github');--> statement-breakpoint
 CREATE TYPE "public"."type" AS ENUM('stream_start', 'stream_end', 'new_follower');--> statement-breakpoint
+CREATE TYPE "public"."storage_status" AS ENUM('processing', 'ready', 'error');--> statement-breakpoint
 CREATE TYPE "public"."video_status" AS ENUM('processing', 'ready', 'error');--> statement-breakpoint
 CREATE TYPE "public"."video_privacy" AS ENUM('public', 'private', 'followers_only', 'unlisted');--> statement-breakpoint
 CREATE TABLE "accounts" (
@@ -87,15 +88,14 @@ CREATE TABLE "settings" (
 --> statement-breakpoint
 CREATE TABLE "storages" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid,
 	"stream_id" uuid,
-	"external_id" text NOT NULL,
 	"file_name" text NOT NULL,
 	"file_url" text NOT NULL,
 	"file_type" text NOT NULL,
 	"start_time" text,
 	"end_time" text,
 	"duration" numeric,
+	"status" "storage_status" DEFAULT 'processing' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -135,7 +135,7 @@ CREATE TABLE "videos" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"stream_id" uuid NOT NULL,
 	"user_id" uuid NOT NULL,
-	"storage_id" uuid NOT NULL,
+	"storage_id" uuid,
 	"title" varchar(255) NOT NULL,
 	"description" text,
 	"video_url" text NOT NULL,
@@ -161,7 +161,6 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_user_id_users_id_fk" F
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "settings" ADD CONSTRAINT "settings_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "storages" ADD CONSTRAINT "storages_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "storages" ADD CONSTRAINT "storages_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "stream_categories" ADD CONSTRAINT "stream_categories_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "stream_categories" ADD CONSTRAINT "stream_categories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
