@@ -7,6 +7,7 @@ import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
 import { forgetPasswordTable } from "./forget-password.table";
 import { sessionTable } from "./session.table";
+import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { videoTable } from "./video.table";
 
@@ -36,4 +37,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     session: one(sessionTable),
     forgetPassword: many(forgetPasswordTable),
     videos: many(videoTable),
+    storages: many(storageTable),
 }));

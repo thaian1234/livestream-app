@@ -10,6 +10,7 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 
+import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
 
@@ -35,6 +36,11 @@ export const videoTable = pgTable(
             .notNull(),
         userId: uuid("user_id")
             .references(() => userTable.id, { onDelete: "cascade" })
+            .notNull(),
+        storageId: uuid("storage_id")
+            .references(() => storageTable.id, {
+                onDelete: "cascade",
+            })
             .notNull(),
         title: varchar("title", { length: 255 }).notNull(),
         description: text("description"),
@@ -63,5 +69,9 @@ export const videoRelations = relations(videoTable, ({ one }) => ({
     user: one(userTable, {
         fields: [videoTable.userId],
         references: [userTable.id],
+    }),
+    storage: one(storageTable, {
+        fields: [videoTable.storageId],
+        references: [storageTable.id],
     }),
 }));

@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { settingTable } from "./setting.table";
+import { storageTable } from "./storage.table";
 import { streamsToCategoriesTable } from "./stream-category.table";
 import { userTable } from "./user.table";
 import { videoTable } from "./video.table";
@@ -29,9 +30,7 @@ export const streamTable = pgTable(
             .notNull()
             .$onUpdate(() => new Date()),
     },
-    (table) => ({
-        userUnq: index("user_stream_unq").on(table.userId),
-    }),
+    (table) => [index("user_stream_unq").on(table.userId)],
 );
 
 export const streamRelations = relations(streamTable, ({ one, many }) => ({
@@ -42,4 +41,5 @@ export const streamRelations = relations(streamTable, ({ one, many }) => ({
     setting: one(settingTable),
     streamsToCategories: many(streamsToCategoriesTable),
     videos: many(videoTable),
+    storages: many(storageTable),
 }));
