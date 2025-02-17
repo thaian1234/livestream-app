@@ -19,7 +19,7 @@ class Database {
             query_timeout: 10000, // Query timeout in milliseconds
             statement_timeout: 10000, // Statement timeout in milliseconds
             lock_timeout: 10000, // Lock timeout in milliseconds
-            ssl: process.env.NODE_ENV === "production" ? true : false,
+            ssl: false,
         });
         this.db = drizzle({
             schema: {

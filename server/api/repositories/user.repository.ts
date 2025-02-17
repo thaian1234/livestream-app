@@ -82,10 +82,7 @@ export class UserRepository implements IUserRepository {
             const rows = await this.db
                 .delete(tableSchemas.userTable)
                 .where(eq(tableSchemas.userTable.id, id));
-            if (rows.length == 0) {
-                return false;
-            }
-            return true;
+            return rows;
         } catch (error) {}
     }
     async findByEmailOrUsername(email: string, username: string) {

@@ -37,11 +37,9 @@ export const videoTable = pgTable(
         userId: uuid("user_id")
             .references(() => userTable.id, { onDelete: "cascade" })
             .notNull(),
-        storageId: uuid("storage_id")
-            .references(() => storageTable.id, {
-                onDelete: "cascade",
-            })
-            .notNull(),
+        storageId: uuid("storage_id").references(() => storageTable.id, {
+            onDelete: "cascade",
+        }),
         title: varchar("title", { length: 255 }).notNull(),
         description: text("description"),
         videoUrl: text("video_url").notNull(),

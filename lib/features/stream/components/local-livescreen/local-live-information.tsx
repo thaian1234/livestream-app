@@ -1,5 +1,3 @@
-import { streamApi } from "../../apis";
-import { ToggleLiveButton } from "../controls/toggle-live-button";
 import {
     RecordCallButton,
     useCallStateHooks,
@@ -10,7 +8,12 @@ import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { UserAvatar } from "@/components/user-avatar";
+
+import { streamApi } from "../../apis";
+import { RecordButton } from "../controls/record-button";
+import { ToggleLiveButton } from "../controls/toggle-live-button";
 
 export function LocalLiveInformation() {
     const { isPending, user, stream, isSignedIn } = useAuth();
@@ -55,6 +58,7 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         username={user.username}
                     />
+                    <RecordButton />
                     <RecordCallButton />
                 </div>
             )}

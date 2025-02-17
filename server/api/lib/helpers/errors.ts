@@ -1,5 +1,6 @@
-import { HttpStatus } from "../constant/http.type";
 import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
+
+import { HttpStatus } from "../constant/http.type";
 
 export class AppError extends Error {
     constructor(
@@ -39,7 +40,7 @@ export class MyError {
     );
     static ValidationError = ErrorFactory.createError(
         "Validation failed",
-        HttpStatus.BadRequest,
+        HttpStatus.UnprocessableEntity,
     );
     static BadRequestError = ErrorFactory.createError(
         "Bad request",

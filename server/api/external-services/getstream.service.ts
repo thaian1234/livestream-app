@@ -125,4 +125,9 @@ export class GetStreamService implements IGetStreamService {
         });
         return recording;
     }
+
+    public verifyWebhook(body: string | Buffer, signature: string) {
+        const isValid = this.streamClient.verifyWebhook(body, signature);
+        return isValid;
+    }
 }

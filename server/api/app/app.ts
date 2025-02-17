@@ -54,6 +54,7 @@ import { StreamController } from "../controllers/stream.controller";
 import { UploadController } from "../controllers/upload.controller";
 import { UserController } from "../controllers/user.controller";
 import { VideoController } from "../controllers/video.controller";
+import { WebhookController } from "../controllers/webhook.controller";
 
 import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
@@ -66,6 +67,7 @@ import { StreamRoutes } from "../routes/stream.routes";
 import { UploadRoutes } from "../routes/upload.routes";
 import { UserRoutes } from "../routes/user.routes";
 import { VideoRoutes } from "../routes/video.routes";
+import { WebhookRoutes } from "../routes/webhook.routes";
 
 export class App {
     constructor(private readonly app: Hono) {
@@ -209,6 +211,10 @@ export class App {
             videoService,
             getstreamService,
         );
+        const webhookController = new WebhookController(
+            factory,
+            getstreamService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -229,6 +235,7 @@ export class App {
             notificationController,
         );
         const videoRoutes = new VideoRoutes(factory, videoController);
+        const webhookRoutes = new WebhookRoutes(factory, webhookController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -242,6 +249,7 @@ export class App {
             .route("/", settingRoutes.setupRoutes())
             .route("/", categoryRoutes.setupRoutes())
             .route("/", notificationRoutes.setupRoutes())
-            .route("/", videoRoutes.setupRoutes());
+            .route("/", videoRoutes.setupRoutes())
+            .route("/", webhookRoutes.setupRoutes());
     }
 }
