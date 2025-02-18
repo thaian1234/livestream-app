@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
@@ -22,6 +23,7 @@ export function UploadVideoThumbnailForm({
     videoId,
 }: UploadVideoThumbnailFormProps) {
     const [file, setFile] = useState<FileWithPreview | null>(null);
+    const queryClient = useQueryClient();
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
 
@@ -43,29 +45,38 @@ export function UploadVideoThumbnailForm({
 
     const handleUpload = () => {
         if (file) {
-            uploadImage({
-                json: {
-                    fileName: file.name,
-                    fileSize: file.size,
-                    fileType: file.type,
+            uploadImage(
+                {
+                    json: {
+                        fileName: file.name,
+                        fileSize: file.size,
+                        fileType: file.type,
+                    },
+                    param: {
+                        type: "video-thumbnail",
+                    },
+                    query: {
+                        videoId: videoId,
+                    },
                 },
-                param: {
-                    type: "video-thumbnail",
+                {
+                    onSuccess: () => {
+                        queryClient.invalidateQueries({
+                            queryKey: ["videos", videoId],
+                        });
+                    },
                 },
-                query: {
-                    videoId: videoId,
-                },
-            });
+            );
         }
     };
 
     return (
         <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
-                {file ? (
+                {!!file ? (
                     <div className="relative aspect-video h-full w-full">
                         <Image
-                            src={file.preview}
+                            src={file?.preview}
                             alt={file.name}
                             fill
                             className="object-cover"

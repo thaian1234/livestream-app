@@ -37,6 +37,7 @@ export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
                     width="100%"
                     height="100%"
                     playing={false}
+                    light={video?.thumbnailUrl ?? ""}
                 />
             </div>
             <div className="flex flex-col space-y-3 px-4 pb-6">

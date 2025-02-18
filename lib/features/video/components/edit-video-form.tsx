@@ -26,6 +26,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
@@ -179,7 +180,10 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         <section className="col-span-3">
                             <VideoPreviewSection video={defaultVideo} />
                         </section>
-                        <section>
+                        <section className="col-span-3 space-y-2">
+                            <Label className="text-sm font-medium">
+                                Upload Video Thumbnail
+                            </Label>
                             <UploadVideoThumbnailForm
                                 videoId={videoId}
                                 initialImageUrl={defaultVideo.thumbnailUrl}
