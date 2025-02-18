@@ -27,9 +27,8 @@ export const storageTable = pgTable("storages", {
     fileName: text("file_name"),
     fileUrl: text("file_url"),
     fileType: text("file_type"),
-    startTime: text("start_time"),
-    endTime: text("end_time"),
-    duration: numeric("duration"),
+    startTime: timestamp("start_time"),
+    endTime: timestamp("end_time"),
     status: storageStatusEnum("status").default("processing").notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),

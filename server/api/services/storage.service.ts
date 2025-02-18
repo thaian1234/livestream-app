@@ -1,10 +1,8 @@
 import { Utils } from "../lib/helpers/utils";
 
 import { IStorageRepository } from "../repositories/storage.repository";
-import { IVideoRepository } from "../repositories/video.repository";
 
 import { StorageDTO } from "../dtos/storage.dto";
-import { VideoDTO } from "../dtos/video.dto";
 
 export interface IStorageService
     extends Utils.AutoMappedClass<StorageService> {}
@@ -14,16 +12,16 @@ export class StorageService implements IStorageService {
     public async createAsset(data: StorageDTO.Insert) {
         return this.storageRepository.create(data);
     }
-    public async updateStorage(id: string, data: StorageDTO.Update) {
+    public async updateAsset(id: string, data: StorageDTO.Update) {
         return this.storageRepository.update(id, data);
     }
-    public async getStorageById(id: string) {
+    public async getAssetById(id: string) {
         return this.storageRepository.findById(id);
     }
-    public async getAllStorages() {
+    public async getAssets() {
         return this.storageRepository.findAll();
     }
-    public async deleteStorage(id: string) {
+    public async deleteAsset(id: string) {
         return this.storageRepository.delete(id);
     }
 }

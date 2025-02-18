@@ -88,13 +88,12 @@ CREATE TABLE "settings" (
 --> statement-breakpoint
 CREATE TABLE "storages" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"stream_id" uuid,
+	"stream_id" uuid NOT NULL,
 	"file_name" text,
 	"file_url" text,
 	"file_type" text,
-	"start_time" text,
-	"end_time" text,
-	"duration" numeric,
+	"start_time" timestamp,
+	"end_time" timestamp,
 	"status" "storage_status" DEFAULT 'processing' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL

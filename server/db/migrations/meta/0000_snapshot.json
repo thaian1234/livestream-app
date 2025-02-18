@@ -1,5 +1,5 @@
 {
-  "id": "3e51c14d-65e3-4349-8309-e00ab5ca0211",
+  "id": "82934829-d423-4bc9-b188-a40be9f5ee2a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -807,7 +807,7 @@
           "name": "stream_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "file_name": {
           "name": "file_name",
@@ -829,19 +829,13 @@
         },
         "start_time": {
           "name": "start_time",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
         "end_time": {
           "name": "end_time",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "duration": {
-          "name": "duration",
-          "type": "numeric",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },

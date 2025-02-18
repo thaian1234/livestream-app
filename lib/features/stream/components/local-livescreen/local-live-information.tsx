@@ -12,7 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/user-avatar";
 
 import { streamApi } from "../../apis";
-import { RecordButton } from "../controls/record-button";
 import { ToggleLiveButton } from "../controls/toggle-live-button";
 
 export function LocalLiveInformation() {
@@ -58,7 +57,6 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         username={user.username}
                     />
-                    <RecordButton />
                     <RecordCallButton />
                 </div>
             )}

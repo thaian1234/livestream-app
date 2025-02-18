@@ -1,8 +1,12 @@
-import { CallRecordingStartedEvent } from "@stream-io/node-sdk";
+import {
+    CallRecordingReadyEvent,
+    CallRecordingStartedEvent,
+} from "@stream-io/node-sdk";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 
 import { IStorageService } from "../services/storage.service";
@@ -29,19 +33,14 @@ export class WebhookController {
                 const webhookId = c.req.header("X-WEBHOOK-ID");
                 const apiKey = c.req.header("X-API-KEY");
 
-                if (!signature) {
-                    throw new MyError.ValidationError("Missing signature");
-                }
-                if (!webhookId) {
-                    throw new MyError.ValidationError("Missing webhookId");
-                }
-                if (!apiKey) {
-                    throw new MyError.ValidationError("Missing apiKey");
+                if (!signature || !webhookId || !apiKey) {
+                    throw new MyError.ValidationError(
+                        "Missing required headers (signature, webhookId, apiKey)",
+                    );
                 }
 
                 const rawBody = await c.req.raw.text();
                 const body = JSON.parse(rawBody);
-
                 console.log("Webhook payload received: ", body);
 
                 const isValid = this.getstreamService.verifyWebhook(
@@ -52,21 +51,28 @@ export class WebhookController {
                     console.log("Invalid signature: ", body);
                     throw new MyError.UnauthorizedError("Invalid signature");
                 }
-
+                let promise: Promise<unknown> | null = null;
                 switch (body.type) {
                     case "call.recording_ready":
-                        // await this.handleRecordingReady(body);
-                        break;
-                    case "call.recording_started":
-                        const storage = await this.handleRecordingStarted(body);
-                        console.log("Storage: ", storage);
-                        break;
-                    case "call.recording_stopped":
-                        // await this.handleRecordingStopped(body);
+                        promise = this.handleRecordingReady(body);
                         break;
                     default:
-                        // Log unknown event types instead of failing
                         console.log("Unhandled event type: ", body.type, body);
+                }
+
+                if (promise) {
+                    c.var.executionCtx.waitUntil(
+                        promise
+                            .then((data) =>
+                                console.log("promise resolve: ", data),
+                            )
+                            .catch((err) => {
+                                console.error(
+                                    "Error processing webhook: ",
+                                    err,
+                                );
+                            }),
+                    );
                 }
 
                 return ApiResponse.WriteJSON({
@@ -87,13 +93,19 @@ export class WebhookController {
             }
         });
     }
-    private async handleRecordingStarted(body: CallRecordingStartedEvent) {
+
+    private async handleRecordingReady(body: CallRecordingReadyEvent) {
         const streamId = body.call_cid.split(":")[1];
         if (!streamId) {
             throw new MyError.ValidationError("Invalid streamId");
         }
         return this.storageService.createAsset({
             streamId: streamId,
+            fileName: body.call_recording.filename,
+            startTime: new Date(body.call_recording.start_time),
+            endTime: new Date(body.call_recording.end_time),
+            fileUrl: body.call_recording.url,
+            status: "ready",
         });
     }
 }
