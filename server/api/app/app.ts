@@ -178,6 +178,7 @@ export class App {
             r2BucketService,
             userService,
             streamService,
+            videoService,
         );
         const blockController = new BlockController(
             factory,

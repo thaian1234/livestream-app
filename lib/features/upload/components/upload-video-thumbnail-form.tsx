@@ -2,7 +2,7 @@
 
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -12,8 +12,15 @@ import DragDropArea from "./drag-drop-area";
 interface FileWithPreview extends File {
     preview: string;
 }
+interface UploadVideoThumbnailFormProps {
+    initialImageUrl: string | null;
+    videoId: string;
+}
 
-export function UploadImageForm() {
+export function UploadVideoThumbnailForm({
+    initialImageUrl,
+    videoId,
+}: UploadVideoThumbnailFormProps) {
     const [file, setFile] = useState<FileWithPreview | null>(null);
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
@@ -43,17 +50,17 @@ export function UploadImageForm() {
                     fileType: file.type,
                 },
                 param: {
-                    type: "user-avatar",
+                    type: "video-thumbnail",
                 },
                 query: {
-                    videoId: undefined,
+                    videoId: videoId,
                 },
             });
         }
     };
 
     return (
-        <div className="flex w-full flex-col justify-between rounded-lg bg-background p-6 shadow-md">
+        <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
                     <div className="relative aspect-video h-full w-full">
@@ -61,16 +68,29 @@ export function UploadImageForm() {
                             src={file.preview}
                             alt={file.name}
                             fill
-                            className="h-full w-full rounded-md object-cover"
+                            className="object-cover"
                         />
                     </div>
                 ) : (
                     <div className="flex aspect-video h-full flex-col items-center justify-center">
-                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                        <p className="mt-2 text-sm text-gray-400">
-                            Drag and drop your image here, or click to select a
-                            file
-                        </p>
+                        {!!initialImageUrl ? (
+                            <div className="relative aspect-video h-full w-full">
+                                <Image
+                                    src={initialImageUrl}
+                                    alt=" Image"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
+                        ) : (
+                            <>
+                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                                <p className="mt-2 text-sm text-gray-400">
+                                    Drag and drop your image here, or click to
+                                    select a file
+                                </p>
+                            </>
+                        )}
                     </div>
                 )}
             </DragDropArea>
@@ -102,6 +122,7 @@ export function UploadImageForm() {
                 disabled={isPending || !file}
                 className="mt-8 w-full"
                 variant={"gradient"}
+                type="button"
             >
                 Upload Image
             </Button>

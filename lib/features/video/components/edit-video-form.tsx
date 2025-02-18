@@ -36,6 +36,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
+import { UploadVideoThumbnailForm } from "../../upload/components/upload-video-thumbnail-form";
 import { videoApi } from "../apis";
 import { DeleteVideoButton } from "./delete-video-btn";
 import { VideoPreviewSection } from "./video-preview-section";
@@ -177,6 +178,12 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         {/* Preview Section */}
                         <section className="col-span-3">
                             <VideoPreviewSection video={defaultVideo} />
+                        </section>
+                        <section>
+                            <UploadVideoThumbnailForm
+                                videoId={videoId}
+                                initialImageUrl={defaultVideo.thumbnailUrl}
+                            />
                         </section>
                     </CardContent>
                 </Card>

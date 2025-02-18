@@ -11,6 +11,7 @@ export default function VideoEditPage() {
     }>();
 
     const { data, isPending, error } = videoApi.query.useGetVideo(id);
+
     if (!!error) {
         redirect("/");
     }
@@ -19,5 +20,9 @@ export default function VideoEditPage() {
         return null;
     }
 
-    return <EditVideoForm videoId={id} defaultVideo={data.data} />;
+    return (
+        <>
+            <EditVideoForm videoId={id} defaultVideo={data.data} />
+        </>
+    );
 }
