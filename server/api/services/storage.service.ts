@@ -24,4 +24,7 @@ export class StorageService implements IStorageService {
     public async deleteAsset(id: string) {
         return this.storageRepository.delete(id);
     }
+    public async getAssetsByStreamId(streamId: string) {
+        return this.storageRepository.findByStreamId(streamId);
+    }
 }

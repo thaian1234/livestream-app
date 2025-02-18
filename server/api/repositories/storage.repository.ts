@@ -33,6 +33,15 @@ export class StorageRepository implements IStorageRepository {
             console.error(error);
         }
     }
+    async findByStreamId(streamId: string) {
+        try {
+            return this.db.query.storageTable.findMany({
+                where: eq(tableSchemas.storageTable.streamId, streamId),
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
     async create(data: StorageDTO.Insert) {
         try {
             const [storage] = await this.db

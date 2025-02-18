@@ -11,6 +11,8 @@ export class StorageDTO {
     private static baseSchema = createSelectSchema(tableSchemas.storageTable, {
         createdAt: z.date().transform((date) => date.toISOString()),
         updatedAt: z.date().transform((date) => date.toISOString()),
+        startTime: z.date().transform((date) => date.toISOString()),
+        endTime: z.date().transform((date) => date.toISOString()),
     });
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(tableSchemas.storageTable);

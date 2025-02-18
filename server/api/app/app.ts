@@ -52,6 +52,7 @@ import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
 import { SearchController } from "../controllers/search.controller";
 import { SettingController } from "../controllers/setting.controller";
+import { StorageController } from "../controllers/storage.controller";
 import { StreamController } from "../controllers/stream.controller";
 import { UploadController } from "../controllers/upload.controller";
 import { UserController } from "../controllers/user.controller";
@@ -65,6 +66,7 @@ import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
 import { SearchRoutes } from "../routes/search.routes";
 import { SettingRoutes } from "../routes/setting.routes";
+import { StorageRoutes } from "../routes/storage.routes";
 import { StreamRoutes } from "../routes/stream.routes";
 import { UploadRoutes } from "../routes/upload.routes";
 import { UserRoutes } from "../routes/user.routes";
@@ -220,6 +222,10 @@ export class App {
             getstreamService,
             storageService,
         );
+        const storageController = new StorageController(
+            factory,
+            storageService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -241,6 +247,7 @@ export class App {
         );
         const videoRoutes = new VideoRoutes(factory, videoController);
         const webhookRoutes = new WebhookRoutes(factory, webhookController);
+        const storageRoutes = new StorageRoutes(factory, storageController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -255,6 +262,7 @@ export class App {
             .route("/", categoryRoutes.setupRoutes())
             .route("/", notificationRoutes.setupRoutes())
             .route("/", videoRoutes.setupRoutes())
-            .route("/", webhookRoutes.setupRoutes());
+            .route("/", webhookRoutes.setupRoutes())
+            .route("/", storageRoutes.setupRoutes());
     }
 }
