@@ -1,10 +1,11 @@
 "use client";
 
-import { CallRecording } from "@stream-io/node-sdk";
 import { Upload } from "lucide-react";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { toast } from "sonner";
+
+import { StorageDTO } from "@/server/api/dtos/storage.dto";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,12 +17,12 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { videoApi } from "../apis";
-import { RecordingsPicker } from "./recordings-picker";
+import { RecordingsPicker } from "../features/storage/components/recording-picker";
+import { videoApi } from "../features/video/apis";
 
 export function CreateVideoDialog() {
     const [selectedRecording, setSelectedRecording] =
-        useState<CallRecording | null>(null);
+        useState<StorageDTO.Select | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const { mutate, isPending } = videoApi.mutation.useCreateVideo();
 
@@ -31,11 +32,12 @@ export function CreateVideoDialog() {
                 {
                     json: {
                         title: "Untitled",
-                        videoUrl: selectedRecording.url,
+                        videoUrl: selectedRecording.fileUrl || "",
                         duration:
-                            selectedRecording.end_time.getTime() -
-                            selectedRecording.start_time.getTime(),
+                            new Date(selectedRecording.endTime).getTime() -
+                            new Date(selectedRecording.startTime).getTime(),
                         status: "ready",
+                        storageId: selectedRecording.id,
                     },
                 },
                 {
@@ -54,7 +56,7 @@ export function CreateVideoDialog() {
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="default">
-                    <Upload className="mr-2 h-4 w-4" />
+                    <Upload className="mr-2 size-4" />
                     Upload
                 </Button>
             </DialogTrigger>
@@ -73,7 +75,7 @@ export function CreateVideoDialog() {
                         {!!selectedRecording && (
                             <div className="relative aspect-video overflow-hidden rounded-md">
                                 <ReactPlayer
-                                    url={selectedRecording.url}
+                                    url={selectedRecording.fileUrl || ""}
                                     width="100%"
                                     height="100%"
                                     playing={true}

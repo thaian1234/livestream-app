@@ -36,7 +36,9 @@ export class StorageController implements IStorageController {
             }
             return ApiResponse.WriteJSON({
                 c,
-                data: respSchema.parse(storages),
+                data: {
+                    recordings: respSchema.parse(storages),
+                },
                 status: HttpStatus.OK,
             });
         });

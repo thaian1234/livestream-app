@@ -24,7 +24,7 @@ export const storageTable = pgTable("storages", {
             onDelete: "cascade",
         })
         .notNull(),
-    fileName: text("file_name"),
+    fileName: text("file_name").default("Video Processing").notNull(),
     fileUrl: text("file_url"),
     fileType: text("file_type"),
     startTime: timestamp("start_time"),

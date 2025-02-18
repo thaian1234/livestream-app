@@ -1,4 +1,4 @@
-import { CreateVideoDialog } from "@/lib/features/video/components/create-video-dialog";
+import { CreateVideoDialog } from "@/lib/components/create-video-dialog";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

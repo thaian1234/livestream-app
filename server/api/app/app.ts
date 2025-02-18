@@ -8,7 +8,6 @@ import { AppConfig } from "../configs/app.config";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
-import { Utils } from "../lib/helpers/utils";
 import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";

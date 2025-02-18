@@ -2,13 +2,15 @@ import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
 
+const baseApi = client.api.videos;
+const baseKey = ["videos"];
+
 const keys = {
-    videos: ["videos"],
-    video: (id: string) => [...keys.videos, id],
-    recordings: ["recordings"],
+    videos: baseKey,
+    video: (id: string) => [...baseKey, id],
+    recordings: [...baseKey, "recordings"],
 };
 
-const baseApi = client.api.videos;
 export const videoApi = {
     query: {
         useGetVideos() {
