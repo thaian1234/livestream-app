@@ -1,4 +1,4 @@
-import { ArrowRightToLine, MessageSquareMore, User, Users } from "lucide-react";
+import { ArrowRightToLine, Globe, User, Users } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
 
-export const CustomChannelHeader = () => {
+interface CustomChannelHeaderProps {
+    isHost: boolean;
+}
+export function CustomChannelHeader({ isHost }: CustomChannelHeaderProps) {
     const {
         onToggleChatComponent,
         onChangeChatStatus,
@@ -32,7 +35,7 @@ export const CustomChannelHeader = () => {
             <p className="text-lg font-semibold">
                 {isOpenPrivateChat ? "PRIVATE CHAT" : chatStatus}
             </p>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
                 <TooltipModel content="Community" side="bottom">
                     <button
                         onClick={() => {
@@ -40,12 +43,11 @@ export const CustomChannelHeader = () => {
                             setViewerId(undefined);
                         }}
                     >
-                        <User
-                            className={cn(
-                                "",
-                                isOpenPrivateChat ? "text-teal-2" : "",
-                            )}
-                        />
+                        {isHost ? (
+                            <PrivateChatButtonForHost />
+                        ) : (
+                            <PrivateChatButtonForViewer />
+                        )}
                     </button>
                 </TooltipModel>
 
@@ -64,14 +66,38 @@ export const CustomChannelHeader = () => {
                             );
                         }}
                     >
-                        {chatStatus === ChatStatus.Chat ? (
-                            <MessageSquareMore />
-                        ) : (
-                            <Users />
-                        )}
+                        {chatStatus === ChatStatus.Chat ? <Globe /> : <Users />}
                     </button>
                 </TooltipModel>
             </div>
         </div>
     );
-};
+}
+
+function PrivateChatButtonForViewer() {
+    const { isOpenPrivateChat } = useLiveInfor();
+
+    return (
+        <div className="relative">
+            <User className={cn("", isOpenPrivateChat ? "text-teal-2" : "")} />
+            {/* thêm điều kiện có bao nhiêu tin nhắn chưa đọc */}
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium">
+                2
+            </span>
+        </div>
+    );
+}
+
+function PrivateChatButtonForHost() {
+    const { isOpenPrivateChat } = useLiveInfor();
+
+    return (
+        <div className="relative">
+            <User className={cn("", isOpenPrivateChat ? "text-teal-2" : "")} />
+            {/* thêm điều kiện có bao nhiêu người nhắn chưa đọc */}
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium">
+                2
+            </span>
+        </div>
+    );
+}
