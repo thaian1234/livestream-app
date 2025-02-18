@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Channel, Event } from "stream-chat";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 
-export default function useStreamerPrivateChats(streamerId?: string) {
+export default function useStreamerPrivateChats(
+    streamerId?: string,
+    viewerId?: string,
+) {
     const [chats, setChats] = useState<Channel<DefaultStreamChatGenerics>[]>(
         [],
     );
@@ -11,11 +14,16 @@ export default function useStreamerPrivateChats(streamerId?: string) {
     useEffect(() => {
         const fetchChats = async () => {
             if (!chatClient.userID || !streamerId) return;
-
+            let membersFilter;
+            if (viewerId) {
+                membersFilter = { $eq: [streamerId, viewerId] };
+            } else {
+                membersFilter = { $in: [streamerId] };
+            }
             const channels = await chatClient.queryChannels(
                 {
                     type: "private-stream-chat",
-                    members: { $in: [streamerId] },
+                    members: membersFilter,
                 },
                 [{ has_unread: -1 }, { last_message_at: -1 }],
             );
@@ -33,7 +41,7 @@ export default function useStreamerPrivateChats(streamerId?: string) {
 
         chatClient.on(handleEvent);
 
-        return () => chatClient.off(handleEvent); 
-    }, [streamerId, chatClient]);
+        return () => chatClient.off(handleEvent);
+    }, [streamerId, chatClient, viewerId]);
     return chats;
 }

@@ -96,6 +96,7 @@ export default function StreamPage() {
                                     isHost={false}
                                     setting={setting}
                                     isFollowing={isFollowing}
+                                    streamerId={stream.userId}
                                 />
                             )}
                         </ChatProvider>
@@ -133,6 +134,7 @@ export default function StreamPage() {
                                 isHost={false}
                                 setting={setting}
                                 isFollowing={isFollowing}
+                                streamerId={stream.userId}
                             />
                         </ChatProvider>
                     </div>
