@@ -19,21 +19,25 @@ import { ChatMessage } from "./chat-message";
 import { Community } from "./community";
 import { CustomChannelHeader } from "./custom-channel-header";
 import { CustomMessageInput } from "./custom-message-input";
+import { PrivateChat } from "./private-chat";
+import { BoxChatViewer } from "./private-chat/box-chat-viewer";
 
 interface ChatProps {
     setting?: SettingDTO.Select;
     isHost?: boolean;
     isFollowing?: boolean;
+    streamerId?: string;
 }
 
 export function Chat({
     setting,
     isHost = false,
     isFollowing = false,
+    streamerId,
 }: ChatProps) {
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const { chatStatus } = useLiveInfor();
+    const { chatStatus, isOpenPrivateChat } = useLiveInfor();
 
     //chat scrolls to the bottom
     useEffect(() => {
@@ -49,8 +53,14 @@ export function Chat({
 
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
-            <CustomChannelHeader />
-            {chatStatus === ChatStatus.Chat ? (
+            <CustomChannelHeader isHost={isHost} streamerId={streamerId}/>
+            {isOpenPrivateChat ? (
+                isHost ? (
+                    <PrivateChat streamerId={streamerId} />
+                ) : (
+                    <BoxChatViewer />
+                )
+            ) : chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
                         ref={scrollAreaRef}
@@ -65,7 +75,7 @@ export function Chat({
                                 Message={ChatMessage}
                             />
                         ) : (
-                            <div className="flex h-[300px] flex-col items-center justify-center rounded-lg bg-muted/30">
+                            <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
                                 <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
                                 <p className="max-w-[250px] text-center text-lg text-muted-foreground">
                                     No messages yet. Let start chating!

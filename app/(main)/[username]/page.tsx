@@ -12,7 +12,7 @@ import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useUser } from "@/lib/hooks/use-user";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
-import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
@@ -27,7 +27,7 @@ export default function StreamPage() {
     const currentUser = useUser();
     const { data, isPending, isError } =
         streamApi.query.useGetStreamInformation(params.username);
-    const { isOpenChatComponent } = useLiveInfor();
+    const { isOpenChatComponent, isOpenPrivateChat } = useLiveInfor();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (isPending) {
@@ -83,12 +83,20 @@ export default function StreamPage() {
                                 "col-span-3 col-start-10 row-span-5 row-start-1",
                         )}
                     >
-                        <ChatProvider streamId={stream.id}>
+                        <ChatProvider
+                            streamId={stream.id}
+                            streamerId={
+                                isOpenPrivateChat
+                                    ? stream.userId
+                                    : undefined
+                            }
+                        >
                             {isOpenChatComponent && (
                                 <Chat
                                     isHost={false}
                                     setting={setting}
                                     isFollowing={isFollowing}
+                                    streamerId={stream.userId}
                                 />
                             )}
                         </ChatProvider>
@@ -114,11 +122,19 @@ export default function StreamPage() {
                         />
                     </div>
                     <div className="col-span-5 col-start-8">
-                        <ChatProvider streamId={stream.id}>
+                        <ChatProvider
+                            streamId={stream.id}
+                            streamerId={
+                                isOpenPrivateChat
+                                    ? stream.userId
+                                    : undefined
+                            }
+                        >
                             <Chat
                                 isHost={false}
                                 setting={setting}
                                 isFollowing={isFollowing}
+                                streamerId={stream.userId}
                             />
                         </ChatProvider>
                     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { CallStats } from "@stream-io/video-react-sdk";
+import { useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { settingApi } from "@/lib/features/setting/apis";
@@ -12,6 +13,7 @@ import { useAuth } from "@/lib/providers/auth-provider";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
 import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
@@ -22,6 +24,7 @@ export default function StreamPage() {
     const { data: setting, isPending: isPendingSetting } =
         settingApi.query.useGetSetting();
     const { isOpenChatComponent } = useLiveInfor();
+    const { viewerId } = useViewerId();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 
     if (auth.isPending || isPendingSetting) {
@@ -67,10 +70,14 @@ export default function StreamPage() {
                                     />
                                 </div>
                                 <div className="col-span-2">
-                                    <ChatProvider streamId={auth.stream.id}>
+                                    <ChatProvider
+                                        streamId={auth.stream.id}
+                                        viewerId={viewerId}
+                                    >
                                         <Chat
                                             setting={setting.data.setting}
                                             isHost={true}
+                                            streamerId={auth.user.id}
                                         />
                                     </ChatProvider>
                                 </div>
@@ -81,11 +88,12 @@ export default function StreamPage() {
             </StreamVideoProvider>
             {desktopScreen && (
                 <div className="col-span-3 col-start-10">
-                    <ChatProvider streamId={auth.stream.id}>
+                    <ChatProvider streamId={auth.stream.id} viewerId={viewerId}>
                         {isOpenChatComponent && (
                             <Chat
                                 setting={setting.data.setting}
                                 isHost={true}
+                                streamerId={auth.user.id}
                             />
                         )}
                     </ChatProvider>
