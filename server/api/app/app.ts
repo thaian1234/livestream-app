@@ -76,6 +76,7 @@ export class App {
     constructor(private readonly app: Hono) {
         this.setupMiddleware();
         this.setupErrorHandling();
+        this.setupRoutes();
     }
 
     private setupMiddleware(): void {
@@ -96,7 +97,8 @@ export class App {
         );
     }
 
-    public setupRoutes() {
+    private setupRoutes() {
+        console.log("I should not be here twice");
         const factory = createFactory();
 
         // Repositories
