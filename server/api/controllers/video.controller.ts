@@ -1,12 +1,6 @@
-import { createCohere } from "@ai-sdk/cohere";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { zValidator } from "@hono/zod-validator";
-import {
-    convertToCoreMessages,
-    createDataStream,
-    generateText,
-    streamText,
-} from "ai";
-import { stream } from "hono/streaming";
+import { streamText } from "ai";
 import { z } from "zod";
 
 import { envServer } from "@/lib/env/env.server";
@@ -29,14 +23,14 @@ import { VideoDTO } from "../dtos/video.dto";
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
 export class VideoController implements IVideoController {
-    private readonly cohere;
+    private readonly google;
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
         private readonly getStreamService: IGetStreamService,
     ) {
-        this.cohere = createCohere({
-            apiKey: envServer.COHERE_API_KEY,
+        this.google = createGoogleGenerativeAI({
+            apiKey: envServer.GOOGLE_GENERATIVE_AI_API_KEY,
         });
     }
     public setupHandlers() {
@@ -168,9 +162,31 @@ export class VideoController implements IVideoController {
     }
     private generateVideoTitle() {
         return this.factory.createHandlers(async (c) => {
+            const { imageUrl } = await c.req.json();
+
             const result = streamText({
-                model: this.cohere("command-r"),
-                prompt: "Write a vegetarian lasagna recipe for 4 people.",
+                model: this.google("gemini-2.0-pro-exp-02-05"),
+                messages: [
+                    {
+                        role: "system",
+                        content:
+                            "You are a video title generator. The answer should be in one single line, and should be short and catchy. Limit 50 characters.",
+                    },
+                    {
+                        role: "user",
+                        content: `Generate a title for a video with the following image`,
+                        experimental_attachments: [
+                            {
+                                url: imageUrl,
+                                contentType: "image/png",
+                            },
+                        ],
+                    },
+                ],
+                onError(err) {
+                    console.error(err);
+                },
+                temperature: 1,
             });
             return result.toDataStreamResponse();
         });

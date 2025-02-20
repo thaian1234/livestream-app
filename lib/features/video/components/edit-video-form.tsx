@@ -1,5 +1,6 @@
 "use client";
 
+import { useCompletion } from "@ai-sdk/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SaveIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -60,8 +61,23 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     });
     const { mutate: handleUpdateVideo, isPending } =
         videoApi.mutation.useUpdateVideo();
+    const {
+        complete,
+        completion,
+        isLoading: isGenerating,
+    } = useCompletion({
+        api: "/api/videos/generate-title",
+        onFinish(prompt, completion) {
+            form.setValue("title", completion, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+            form.setValue("description", completion);
+        },
+    });
 
     const onSubmit = form.handleSubmit((data) => {
+        console.log("Data: ", data);
         handleUpdateVideo({
             json: data,
             param: {
@@ -105,16 +121,44 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     <FormItem>
                                         <FormLabel>Title</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                placeholder="Enter your video title"
-                                                disabled={isPending}
-                                                {...field}
-                                            />
+                                            {!isGenerating ? (
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter your video title"
+                                                    disabled={
+                                                        isPending ||
+                                                        isGenerating
+                                                    }
+                                                />
+                                            ) : (
+                                                <Input
+                                                    value={completion}
+                                                    disabled={
+                                                        isPending ||
+                                                        isGenerating
+                                                    }
+                                                />
+                                            )}
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() =>
+                                    complete("abc", {
+                                        body: {
+                                            imageUrl: defaultVideo.thumbnailUrl,
+                                            videoUrl: defaultVideo.videoUrl,
+                                        },
+                                    })
+                                }
+                                size="sm"
+                            >
+                                Generate AI Title
+                            </Button>
                             <FormField
                                 control={form.control}
                                 name="description"
@@ -122,14 +166,26 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                            <Textarea
-                                                {...field}
-                                                placeholder="Enter your video description"
-                                                value={field.value || ""}
-                                                className="h-56 resize-none"
-                                                maxLength={1000}
-                                                disabled={isPending}
-                                            />
+                                            {!isGenerating ? (
+                                                <Textarea
+                                                    {...field}
+                                                    placeholder="Enter your video description"
+                                                    value={field.value || ""}
+                                                    className="h-56 resize-none"
+                                                    maxLength={1000}
+                                                    disabled={isPending}
+                                                />
+                                            ) : (
+                                                <Textarea
+                                                    value={completion}
+                                                    className="h-56 resize-none"
+                                                    maxLength={1000}
+                                                    disabled={
+                                                        isPending ||
+                                                        isGenerating
+                                                    }
+                                                />
+                                            )}
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

@@ -18,6 +18,7 @@
         "db:reset": "bun ./server/db/scripts/reset.ts"
     },
     "dependencies": {
+        "@ai-sdk/anthropic": "^1.1.9",
         "@ai-sdk/cohere": "^1.1.11",
         "@ai-sdk/google": "^1.1.16",
         "@ai-sdk/openai": "^1.1.13",
