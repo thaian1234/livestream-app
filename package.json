@@ -18,6 +18,9 @@
         "db:reset": "bun ./server/db/scripts/reset.ts"
     },
     "dependencies": {
+        "@ai-sdk/cohere": "^1.1.11",
+        "@ai-sdk/google": "^1.1.16",
+        "@ai-sdk/openai": "^1.1.13",
         "@aws-sdk/client-s3": "^3.717.0",
         "@aws-sdk/s3-request-presigner": "^3.717.0",
         "@emoji-mart/data": "^1.2.1",
@@ -55,6 +58,7 @@
         "@tanstack/react-table": "^8.20.6",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/pg": "^8.11.11",
+        "ai": "^4.1.44",
         "arctic": "^1.9.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",

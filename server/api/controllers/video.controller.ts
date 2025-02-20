@@ -1,5 +1,15 @@
+import { createCohere } from "@ai-sdk/cohere";
 import { zValidator } from "@hono/zod-validator";
+import {
+    convertToCoreMessages,
+    createDataStream,
+    generateText,
+    streamText,
+} from "ai";
+import { stream } from "hono/streaming";
 import { z } from "zod";
+
+import { envServer } from "@/lib/env/env.server";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -19,17 +29,22 @@ import { VideoDTO } from "../dtos/video.dto";
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
 export class VideoController implements IVideoController {
+    private readonly cohere;
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
         private readonly getStreamService: IGetStreamService,
-    ) {}
+    ) {
+        this.cohere = createCohere({
+            apiKey: envServer.COHERE_API_KEY,
+        });
+    }
     public setupHandlers() {
         return this.factory
             .createApp()
             .use(AuthMiddleware.isAuthenticated)
             .get("/", ...this.getAllVideos())
-            .get("/recordings", ...this.getRecordings())
+            .post("/generate-title", ...this.generateVideoTitle())
             .get("/:id", ...this.getVideoById())
             .post("/", ...this.createVideo())
             .patch("/:id", ...this.updateVideo())
@@ -151,22 +166,13 @@ export class VideoController implements IVideoController {
             },
         );
     }
-    private getRecordings() {
+    private generateVideoTitle() {
         return this.factory.createHandlers(async (c) => {
-            const user = c.get("getUser");
-            const resp = await this.getStreamService.getRecordings(
-                user.stream.id,
-            );
-
-            if (resp.metadata.responseCode !== HttpStatus.OK) {
-                throw new MyError.BadRequestError("Failed to get recordings");
-            }
-
-            return ApiResponse.WriteJSON({
-                c,
-                data: resp,
-                status: HttpStatus.OK,
+            const result = streamText({
+                model: this.cohere("command-r"),
+                prompt: "Write a vegetarian lasagna recipe for 4 people.",
             });
+            return result.toDataStreamResponse();
         });
     }
 }
