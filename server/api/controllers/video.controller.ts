@@ -1,9 +1,5 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { zValidator } from "@hono/zod-validator";
-import { CoreMessage, Message } from "ai";
 import { z } from "zod";
-
-import { envServer } from "@/lib/env/env.server";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -23,16 +19,11 @@ import { VideoDTO } from "../dtos/video.dto";
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
 export class VideoController implements IVideoController {
-    private readonly google;
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
         private readonly aiServiceBuilder: AIServiceBuilder,
-    ) {
-        this.google = createGoogleGenerativeAI({
-            apiKey: envServer.GOOGLE_GENERATIVE_AI_API_KEY,
-        });
-    }
+    ) {}
     public setupHandlers() {
         return this.factory
             .createApp()
