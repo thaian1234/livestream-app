@@ -36,6 +36,7 @@ import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { VideoService } from "../services/video.service";
 
+import { AIService, AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
@@ -146,6 +147,7 @@ export class App {
         const categoryService = new CategoryService(categoryRepository);
         const videoService = new VideoService(videoRepository);
         const storageService = new StorageService(storageRepository);
+        const aiServiceBuilder = new AIServiceBuilder();
 
         // Controllers
         const userController = new UserController(
@@ -217,7 +219,7 @@ export class App {
         const videoController = new VideoController(
             factory,
             videoService,
-            getstreamService,
+            aiServiceBuilder,
         );
         const webhookController = new WebhookController(
             factory,

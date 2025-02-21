@@ -57,14 +57,18 @@ const VISIBILITY_OPTIONS = [
 export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     const form = useForm<VideoDTO.Update>({
         resolver: zodResolver(VideoDTO.updateSchema),
-        defaultValues: defaultVideo,
+        defaultValues: {
+            title: defaultVideo.title,
+            description: defaultVideo.description,
+            visibility: defaultVideo.visibility,
+        },
     });
     const { mutate: handleUpdateVideo, isPending } =
         videoApi.mutation.useUpdateVideo();
     const {
-        complete,
-        completion,
-        isLoading: isGenerating,
+        complete: completeTitle,
+        completion: completionTitle,
+        isLoading: isGeneratingTitle,
     } = useCompletion({
         api: "/api/videos/generate-title",
         onFinish(prompt, completion) {
@@ -72,10 +76,22 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                 shouldDirty: true,
                 shouldValidate: true,
             });
-            form.setValue("description", completion);
         },
     });
-
+    const {
+        complete: completeDescription,
+        completion: completionDescription,
+        isLoading: isGeneratingDescription,
+    } = useCompletion({
+        api: "/api/videos/generate-description",
+        onFinish(prompt, completion) {
+            form.setValue("description", completion, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+        },
+    });
+    const isLoading = isPending || isGeneratingTitle || isGeneratingDescription;
     const onSubmit = form.handleSubmit((data) => {
         console.log("Data: ", data);
         handleUpdateVideo({
@@ -85,6 +101,21 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
             },
         });
     });
+    const handleGenerate = (type: "title" | "description") => {
+        const body = {
+            imageUrl: defaultVideo.thumbnailUrl,
+        };
+
+        if (type === "title") {
+            completeTitle("Title", {
+                body,
+            });
+        } else {
+            completeDescription("Description", {
+                body,
+            });
+        }
+    };
 
     return (
         <Form {...form}>
@@ -121,22 +152,16 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     <FormItem>
                                         <FormLabel>Title</FormLabel>
                                         <FormControl>
-                                            {!isGenerating ? (
+                                            {!isGeneratingTitle ? (
                                                 <Input
                                                     {...field}
                                                     placeholder="Enter your video title"
-                                                    disabled={
-                                                        isPending ||
-                                                        isGenerating
-                                                    }
+                                                    disabled={isLoading}
                                                 />
                                             ) : (
                                                 <Input
-                                                    value={completion}
-                                                    disabled={
-                                                        isPending ||
-                                                        isGenerating
-                                                    }
+                                                    value={completionTitle}
+                                                    disabled={isLoading}
                                                 />
                                             )}
                                         </FormControl>
@@ -147,14 +172,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() =>
-                                    complete("abc", {
-                                        body: {
-                                            imageUrl: defaultVideo.thumbnailUrl,
-                                            videoUrl: defaultVideo.videoUrl,
-                                        },
-                                    })
-                                }
+                                onClick={() => handleGenerate("title")}
                                 size="sm"
                             >
                                 Generate AI Title
@@ -166,7 +184,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                            {!isGenerating ? (
+                                            {!isGeneratingDescription ? (
                                                 <Textarea
                                                     {...field}
                                                     placeholder="Enter your video description"
@@ -177,16 +195,25 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                                 />
                                             ) : (
                                                 <Textarea
-                                                    value={completion}
+                                                    value={
+                                                        completionDescription
+                                                    }
                                                     className="h-56 resize-none"
                                                     maxLength={1000}
-                                                    disabled={
-                                                        isPending ||
-                                                        isGenerating
-                                                    }
+                                                    disabled={isLoading}
                                                 />
                                             )}
                                         </FormControl>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() =>
+                                                handleGenerate("description")
+                                            }
+                                            size="sm"
+                                        >
+                                            Generate AI Description
+                                        </Button>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -236,6 +263,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                         <section className="col-span-3">
                             <VideoPreviewSection video={defaultVideo} />
                         </section>
+                        {/* Upload Thumbnail Section */}
                         <section className="col-span-3 space-y-2">
                             <Label className="text-sm font-medium">
                                 Upload Video Thumbnail

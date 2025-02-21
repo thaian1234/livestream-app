@@ -1,6 +1,6 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { zValidator } from "@hono/zod-validator";
-import { streamText } from "ai";
+import { CoreMessage, Message } from "ai";
 import { z } from "zod";
 
 import { envServer } from "@/lib/env/env.server";
@@ -16,7 +16,7 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 
 import { IVideoService } from "../services/video.service";
 
-import { IGetStreamService } from "../external-services/getstream.service";
+import { AIServiceBuilder } from "../external-services/ai.service";
 
 import { VideoDTO } from "../dtos/video.dto";
 
@@ -27,7 +27,7 @@ export class VideoController implements IVideoController {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
-        private readonly getStreamService: IGetStreamService,
+        private readonly aiServiceBuilder: AIServiceBuilder,
     ) {
         this.google = createGoogleGenerativeAI({
             apiKey: envServer.GOOGLE_GENERATIVE_AI_API_KEY,
@@ -38,9 +38,10 @@ export class VideoController implements IVideoController {
             .createApp()
             .use(AuthMiddleware.isAuthenticated)
             .get("/", ...this.getAllVideos())
-            .post("/generate-title", ...this.generateVideoTitle())
-            .get("/:id", ...this.getVideoById())
             .post("/", ...this.createVideo())
+            .post("/generate-title", ...this.generateTitle())
+            .post("/generate-description", ...this.generateDescription())
+            .get("/:id", ...this.getVideoById())
             .patch("/:id", ...this.updateVideo())
             .delete("/:id", ...this.deleteVideoById());
     }
@@ -141,7 +142,6 @@ export class VideoController implements IVideoController {
             id: z.string().uuid(),
         });
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const params = c.req.valid("param");
@@ -160,19 +160,34 @@ export class VideoController implements IVideoController {
             },
         );
     }
-    private generateVideoTitle() {
-        return this.factory.createHandlers(async (c) => {
-            const { imageUrl } = await c.req.json();
 
-            const result = streamText({
-                model: this.google("gemini-2.0-pro-exp-02-05"),
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "You are a video title generator. The answer should be in one single line, and should be short and catchy. Limit 50 characters.",
-                    },
-                    {
+    private generateTitle() {
+        const reqSchema = z.object({
+            imageUrl: z.string().optional().nullable(),
+        });
+        return this.factory.createHandlers(
+            zValidator("json", reqSchema, Validator.handleParseError),
+            async (c) => {
+                const { imageUrl } = c.req.valid("json");
+                const builder = this.aiServiceBuilder
+                    .setBasePrompt(
+                        `You are an expert video title creator. Generate a title that is:
+						- Attention-grabbing and emotionally compelling
+						- Uses power words and action verbs
+						- Optimized for search and clicks
+						- Maximum 50 characters
+						- Single line response only
+						- No hashtags or special characters
+						- Naturally conversational tone
+						`,
+                    )
+                    .addMessage({
+                        role: "user",
+                        content: `Generate a title for a video`,
+                    });
+
+                if (!!imageUrl) {
+                    builder.addMessage({
                         role: "user",
                         content: `Generate a title for a video with the following image`,
                         experimental_attachments: [
@@ -181,14 +196,55 @@ export class VideoController implements IVideoController {
                                 contentType: "image/png",
                             },
                         ],
-                    },
-                ],
-                onError(err) {
-                    console.error(err);
-                },
-                temperature: 1,
-            });
-            return result.toDataStreamResponse();
+                    });
+                }
+                const aiService = builder.build();
+                const response = aiService.getStreamText();
+                return response.toDataStreamResponse();
+            },
+        );
+    }
+    private generateDescription() {
+        const reqSchema = z.object({
+            imageUrl: z.string().optional().nullable(),
         });
+        return this.factory.createHandlers(
+            zValidator("json", reqSchema, Validator.handleParseError),
+            async (c) => {
+                const { imageUrl } = c.req.valid("json");
+                const builder = this.aiServiceBuilder
+                    .setBasePrompt(
+                        `You are an expert video description creator. Generate a description that is:
+						- Attention-grabbing and emotionally compelling
+						- Uses power words and action verbs
+						- Optimized for search and clicks
+						- Maximum 100 words
+						- Single line response only
+						- No hashtags or special characters
+						- Naturally conversational tone
+						`,
+                    )
+                    .addMessage({
+                        role: "user",
+                        content: `Generate a description for a video`,
+                    });
+
+                if (!!imageUrl) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a description for a video with the following image`,
+                        experimental_attachments: [
+                            {
+                                url: imageUrl,
+                                contentType: "image/png",
+                            },
+                        ],
+                    });
+                }
+                const aiService = builder.build();
+                const response = aiService.getStreamText();
+                return response.toDataStreamResponse();
+            },
+        );
     }
 }
