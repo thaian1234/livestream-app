@@ -8,7 +8,6 @@ const baseKey = ["videos"];
 const keys = {
     videos: baseKey,
     video: (id: string) => [...baseKey, id],
-    recordings: [...baseKey, "recordings"],
 };
 
 export const videoApi = {
@@ -24,10 +23,6 @@ export const videoApi = {
                     id,
                 },
             });
-        },
-        useGetRecordings() {
-            const $get = baseApi.recordings.$get;
-            return Fetcher.useHonoQuery($get, keys.recordings, {});
         },
     },
     mutation: {

@@ -3,9 +3,12 @@
 import { useCompletion } from "@ai-sdk/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SaveIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { FaUsers } from "react-icons/fa";
+import { MdSettingsBackupRestore } from "react-icons/md";
+import { RiAiGenerate2 } from "react-icons/ri";
 import { SiPrivateinternetaccess } from "react-icons/si";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
@@ -63,6 +66,10 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
             visibility: defaultVideo.visibility,
         },
     });
+    const [canRollback, setCanRollback] = useState({
+        title: false,
+        description: false,
+    });
     const { mutate: handleUpdateVideo, isPending } =
         videoApi.mutation.useUpdateVideo();
     const {
@@ -93,7 +100,6 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     });
     const isLoading = isPending || isGeneratingTitle || isGeneratingDescription;
     const onSubmit = form.handleSubmit((data) => {
-        console.log("Data: ", data);
         handleUpdateVideo({
             json: data,
             param: {
@@ -110,16 +116,39 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
             completeTitle("Title", {
                 body,
             });
+            setCanRollback({
+                ...canRollback,
+                title: true,
+            });
         } else {
             completeDescription("Description", {
                 body,
+            });
+            setCanRollback({
+                ...canRollback,
+                description: true,
+            });
+        }
+    };
+
+    const handleRollback = (type: "title" | "description") => {
+        if (!canRollback) return;
+        if (type === "title") {
+            form.setValue("title", defaultVideo.title, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+        } else {
+            form.setValue("description", defaultVideo.description, {
+                shouldDirty: true,
+                shouldValidate: true,
             });
         }
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={onSubmit} className="col-span-5 space-y-8 text-2xl">
+            <form onSubmit={onSubmit} className="col-span-5 text-2xl">
                 <Card className="mx-auto">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div className="space-y-2">
@@ -132,7 +161,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                             <Button
                                 type="submit"
                                 loading={isPending}
-                                disabled={!form.formState.isDirty}
+                                disabled={isLoading}
                                 className="flex items-center gap-2"
                             >
                                 {!isPending && <SaveIcon />}
@@ -150,7 +179,36 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Title</FormLabel>
+                                        <FormLabel className="flex items-center gap-2">
+                                            <h2>Title</h2>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() =>
+                                                    handleGenerate("title")
+                                                }
+                                                loading={isGeneratingTitle}
+                                                size="icon"
+                                            >
+                                                {!isGeneratingTitle && (
+                                                    <RiAiGenerate2 className="size-6" />
+                                                )}
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() =>
+                                                    handleRollback("title")
+                                                }
+                                                disabled={
+                                                    isLoading ||
+                                                    !canRollback.title
+                                                }
+                                                size="icon"
+                                            >
+                                                <MdSettingsBackupRestore className="size-6" />
+                                            </Button>
+                                        </FormLabel>
                                         <FormControl>
                                             {!isGeneratingTitle ? (
                                                 <Input
@@ -169,20 +227,47 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     </FormItem>
                                 )}
                             />
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => handleGenerate("title")}
-                                size="sm"
-                            >
-                                Generate AI Title
-                            </Button>
                             <FormField
                                 control={form.control}
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description</FormLabel>
+                                        <FormLabel className="flex items-center gap-1">
+                                            <h2>Description</h2>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() =>
+                                                    handleGenerate(
+                                                        "description",
+                                                    )
+                                                }
+                                                loading={
+                                                    isGeneratingDescription
+                                                }
+                                                size="icon"
+                                            >
+                                                {!isGeneratingDescription && (
+                                                    <RiAiGenerate2 className="size-6" />
+                                                )}
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() =>
+                                                    handleRollback(
+                                                        "description",
+                                                    )
+                                                }
+                                                disabled={
+                                                    isLoading ||
+                                                    !canRollback.description
+                                                }
+                                                size="icon"
+                                            >
+                                                <MdSettingsBackupRestore className="size-6" />
+                                            </Button>
+                                        </FormLabel>
                                         <FormControl>
                                             {!isGeneratingDescription ? (
                                                 <Textarea
@@ -204,16 +289,6 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                                 />
                                             )}
                                         </FormControl>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() =>
-                                                handleGenerate("description")
-                                            }
-                                            size="sm"
-                                        >
-                                            Generate AI Description
-                                        </Button>
                                         <FormMessage />
                                     </FormItem>
                                 )}

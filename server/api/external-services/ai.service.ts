@@ -1,5 +1,5 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { CoreMessage, Message, streamText } from "ai";
+import { CoreMessage, Message, smoothStream, streamText } from "ai";
 
 import { envServer } from "@/lib/env/env.server";
 
@@ -58,7 +58,7 @@ export class AIService implements IAIService {
 
     public getStreamText() {
         return streamText({
-            model: this.ai("gemini-2.0-pro-exp-02-05"),
+            model: this.ai("gemini-1.5-pro-latest"),
             messages: [this.basePrompt, ...this.messages] as
                 | CoreMessage[]
                 | Omit<Message, "id">[],
@@ -66,6 +66,10 @@ export class AIService implements IAIService {
                 console.error(err);
             },
             temperature: 1,
+            experimental_transform: smoothStream({
+                chunking: "word",
+                delayInMs: 30,
+            }),
         });
     }
 }

@@ -40,7 +40,7 @@ export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
                     light={video?.thumbnailUrl ?? ""}
                 />
             </div>
-            <div className="flex flex-col space-y-3 px-4 pb-6">
+            <div className="flex flex-col space-y-3 px-4 pb-4">
                 <div>
                     <h3 className="text-base text-white/50">Video link</h3>
                     <div className="flex items-center space-x-2">
