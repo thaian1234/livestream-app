@@ -17,7 +17,7 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
             <div>
                 <VideoThumbnail
                     thumbnailUrl={row.original.thumbnailUrl}
-                    avatarUrl={row.original.avatarUrl}
+                    avatarUrl={row.original.thumbnailUrl}
                 />
             </div>
             <div className="relative">
@@ -25,7 +25,7 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                     // href={row.original.videoUrl}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                 >
-                    {row.original.name}
+                    {row.original.title}
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 flex items-end gap-2">
                     <TooltipModel content="Details" side="bottom">

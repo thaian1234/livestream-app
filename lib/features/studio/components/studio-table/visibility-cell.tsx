@@ -1,6 +1,8 @@
 import { Row } from "@tanstack/react-table";
 import { Earth, Link2, LockKeyhole } from "lucide-react";
 
+import { videoApi } from "@/lib/features/video/apis";
+
 import {
     Select,
     SelectContent,
@@ -12,15 +14,33 @@ import {
 import { IVideo } from "./studio-columns";
 
 export function VisibilityCell({ row }: { row: Row<IVideo> }) {
+    console.log("visibility: ", row.original.visibility);
+    const { mutate: updateVisibility } = videoApi.mutation.useUpdateVideo();
     //call api to change visibility value in get all Video api
     return (
-        <Select defaultValue={row.original.visibility}>
+        <Select
+            defaultValue={row.original.visibility}
+            onValueChange={(value) => {
+                updateVisibility({
+                    param: {
+                        id: row.original.id,
+                    },
+                    json: {
+                        visibility: value.toLowerCase() as
+                            | "public"
+                            | "private"
+                            | "followers_only"
+                            | "unlisted",
+                    },
+                });
+            }}
+        >
             <SelectTrigger className="w-[135px]">
                 <SelectValue>
                     <span className="flex flex-row items-center gap-2">
-                        {row.original.visibility === "Private" ? (
+                        {row.original.visibility === "private" ? (
                             <LockKeyhole size={20} />
-                        ) : row.original.visibility === "Unlisted" ? (
+                        ) : row.original.visibility === "unlisted" ? (
                             <Link2 size={20} />
                         ) : (
                             <Earth size={20} />

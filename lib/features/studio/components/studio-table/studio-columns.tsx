@@ -11,19 +11,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { VideoCell } from "./video-cell";
 import { VisibilityCell } from "./visibility-cell";
+import { formatDateFromString } from "@/lib/helpers/formatData";
 
 export interface IVideo {
-    id: number;
-    name: string;
-    avatarUrl: string;
+    id: string;
+    title: string;
     videoUrl: string;
-    thumbnailUrl: string;
-    visibility: "Private" | "Unlisted" | "Public";
-    date: string;
-    views: number;
-    comments: number;
-    likes: number;
-    dislikes: number;
+    thumbnailUrl: string | null;
+    visibility: "public" | "private" | "followers_only" | "unlisted";
+    createdAt: string;
+    viewCount: number;
+    // comments: number;
+    likeCount: number;
+    // dislikes: number;
 }
 
 export const StudioColumns: ColumnDef<IVideo>[] = [
@@ -53,7 +53,7 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "name",
+        accessorKey: "title",
         header: "Video",
         cell: ({ row }) => <VideoCell row={row} />,
     },
@@ -64,7 +64,7 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
     },
     {
         //chưa sort được với định dạng dd/mm/yyyy
-        accessorKey: "date",
+        accessorKey: "createdAt",
         header: ({ column }) => {
             return (
                 <Button
@@ -78,15 +78,18 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
                 </Button>
             );
         },
+        cell: ({ row }) => {
+        return formatDateFromString(row.original.createdAt);
+    }
     },
     {
-        accessorKey: "views",
+        accessorKey: "viewCount",
         header: "Views",
         cell: ({ row }) => (
             <div className="text-right font-medium">
                 <div className="flex items-center gap-1">
                     <EyeIcon className="h-4 w-4" />
-                    {row.original.views.toLocaleString()}
+                    {row.original.viewCount.toLocaleString()}
                 </div>
             </div>
         ),
@@ -99,11 +102,11 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                         <ThumbsUpIcon className="h-4 w-4" />
-                        {row.original.likes.toLocaleString()}
+                        {row.original.likeCount.toLocaleString()}
                     </div>
                     <div className="flex items-center gap-1 text-muted-foreground">
                         <ThumbsDownIcon className="h-4 w-4" />
-                        {row.original.dislikes.toLocaleString()}
+                        {0}
                     </div>
                 </div>
             </div>
