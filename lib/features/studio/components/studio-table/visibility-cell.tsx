@@ -12,40 +12,49 @@ import {
 } from "@/components/ui/select";
 
 import { IVideo } from "./studio-columns";
+import { useState } from "react";
 
 export function VisibilityCell({ row }: { row: Row<IVideo> }) {
-    console.log("visibility: ", row.original.visibility);
     const { mutate: updateVisibility } = videoApi.mutation.useUpdateVideo();
+    const [visibility, setVisibility] = useState(row.original.visibility);
     //call api to change visibility value in get all Video api
     return (
         <Select
             defaultValue={row.original.visibility}
             onValueChange={(value) => {
-                updateVisibility({
-                    param: {
-                        id: row.original.id,
+                updateVisibility(
+                    {
+                        param: {
+                            id: row.original.id,
+                        },
+                        json: {
+                            visibility: value.toLowerCase() as
+                                | "public"
+                                | "private"
+                                | "followers_only"
+                                | "unlisted",
+                        },
                     },
-                    json: {
-                        visibility: value.toLowerCase() as
-                            | "public"
-                            | "private"
-                            | "followers_only"
-                            | "unlisted",
+                    {
+                        onSuccess(data) {
+                            setVisibility(data.data.visibility);
+                            console.log(visibility);
+                        },
                     },
-                });
+                );
             }}
         >
             <SelectTrigger className="w-[135px]">
                 <SelectValue>
                     <span className="flex flex-row items-center gap-2">
-                        {row.original.visibility === "private" ? (
+                        {visibility === "private" ? (
                             <LockKeyhole size={20} />
-                        ) : row.original.visibility === "unlisted" ? (
+                        ) : visibility === "unlisted" ? (
                             <Link2 size={20} />
                         ) : (
                             <Earth size={20} />
                         )}
-                        {row.original.visibility}
+                        {visibility}
                     </span>
                 </SelectValue>
             </SelectTrigger>
