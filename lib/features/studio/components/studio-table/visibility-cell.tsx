@@ -1,5 +1,6 @@
 import { Row } from "@tanstack/react-table";
-import { Earth, Link2, LockKeyhole } from "lucide-react";
+import { Earth, Link2, LockKeyhole, UserRoundPen } from "lucide-react";
+import { useState } from "react";
 
 import { videoApi } from "@/lib/features/video/apis";
 
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/select";
 
 import { IVideo } from "./studio-columns";
-import { useState } from "react";
 
 export function VisibilityCell({ row }: { row: Row<IVideo> }) {
     const { mutate: updateVisibility } = videoApi.mutation.useUpdateVideo();
@@ -44,34 +44,48 @@ export function VisibilityCell({ row }: { row: Row<IVideo> }) {
                 );
             }}
         >
-            <SelectTrigger className="w-[135px]">
+            <SelectTrigger className="w-[170px]">
                 <SelectValue>
                     <span className="flex flex-row items-center gap-2">
                         {visibility === "private" ? (
                             <LockKeyhole size={20} />
                         ) : visibility === "unlisted" ? (
                             <Link2 size={20} />
-                        ) : (
+                        ) : visibility === "public" ? (
                             <Earth size={20} />
+                        ) : (
+                            <UserRoundPen size={20} />
                         )}
-                        {visibility}
+                        {visibility
+                            .split("_")
+                            .map(
+                                (word) =>
+                                    word.charAt(0).toUpperCase() +
+                                    word.slice(1),
+                            )
+                            .join(" ")}
                     </span>
                 </SelectValue>
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="Private">
+                <SelectItem value="private">
                     <span className="flex flex-row items-center gap-2">
                         <LockKeyhole size={20} /> Private
                     </span>
                 </SelectItem>
-                <SelectItem value="Unlisted">
+                <SelectItem value="unlisted">
                     <span className="flex flex-row items-center gap-2">
                         <Link2 size={20} /> Unlisted
                     </span>
                 </SelectItem>
-                <SelectItem value="Public">
+                <SelectItem value="public">
                     <span className="flex flex-row items-center gap-2">
                         <Earth size={20} /> Public
+                    </span>
+                </SelectItem>
+                <SelectItem value="followers_only">
+                    <span className="flex flex-row items-center gap-2">
+                        <UserRoundPen size={20} /> Followers Only
                     </span>
                 </SelectItem>
             </SelectContent>

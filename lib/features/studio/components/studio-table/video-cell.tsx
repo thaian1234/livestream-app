@@ -6,9 +6,12 @@ import {
     TvMinimalPlay,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 import { VideoThumbnail } from "@/components/thumbnail";
 import { TooltipModel } from "@/components/tooltip-model";
 
+import { OptionsDropdown } from "./options-dropdown";
 import { IVideo } from "./studio-columns";
 
 export function VideoCell({ row }: { row: Row<IVideo> }) {
@@ -27,19 +30,32 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                 >
                     {row.original.title}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 flex items-end gap-2">
-                    <TooltipModel content="Details" side="bottom">
-                        <Pencil />
-                    </TooltipModel>
-                    <TooltipModel content="Comments" side="bottom">
-                        <MessageSquareText />
-                    </TooltipModel>
-                    <TooltipModel content="View" side="bottom">
-                        <TvMinimalPlay />
-                    </TooltipModel>
-                    <TooltipModel content="Options" side="bottom">
-                        <EllipsisVertical />
-                    </TooltipModel>
+                <div className="absolute bottom-0 left-0 right-0 flex items-end">
+                    <Button variant="ghost" className="px-2">
+                        <TooltipModel content="Details" side="bottom">
+                            <Pencil />
+                        </TooltipModel>
+                    </Button>
+
+                    <Button variant="ghost" className="px-2">
+                        <TooltipModel content="Comments" side="bottom">
+                            <MessageSquareText />
+                        </TooltipModel>
+                    </Button>
+
+                    <Button variant="ghost" className="px-2">
+                        <TooltipModel content="View" side="bottom">
+                            <TvMinimalPlay />
+                        </TooltipModel>
+                    </Button>
+
+                    <OptionsDropdown>
+                        <Button variant="ghost" className="px-2">
+                            <TooltipModel content="Options" side="bottom">
+                                <EllipsisVertical />
+                            </TooltipModel>
+                        </Button>
+                    </OptionsDropdown>
                 </div>
             </div>
         </div>

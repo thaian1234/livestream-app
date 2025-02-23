@@ -64,7 +64,6 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
         cell: ({ row }) => <VisibilityCell row={row} />,
     },
     {
-        //chưa sort được với định dạng dd/mm/yyyy
         accessorKey: "createdAt",
         header: ({ column }) => {
             return (
@@ -96,7 +95,7 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
         ),
     },
     {
-        accessorKey: "likes",
+        accessorKey: "likeCount",
         header: "Likes (vs. dislikes)",
         cell: ({ row }) => (
             <div className="text-right font-medium">
