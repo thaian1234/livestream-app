@@ -17,6 +17,9 @@ export class VideoService implements IVideoService {
     public async getVideoById(id: string) {
         return this.videoRepository.findById(id);
     }
+    public async getVideosByUserId(userId: string, offset: number, size: number) {
+        return this.videoRepository.findByUserId(userId, offset, size);
+    }
     public async getAllVideos() {
         return this.videoRepository.findAll();
     }

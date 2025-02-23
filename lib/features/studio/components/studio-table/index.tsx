@@ -4,85 +4,22 @@ import { redirect } from "next/navigation";
 import { useState } from "react";
 
 import { videoApi } from "@/lib/features/video/apis";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { DataTablePagination } from "@/components/data-table-pagination";
 
 import { IVideo, StudioColumns } from "./studio-columns";
 
-// const dummyDataVideos: IVideo[] = [
-//     {
-//         id: "1",
-//         title: "Introduction to React",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "http://localhost:3000/",
-//         visibility: "public",
-//         createdAt: "15/05/2024",
-//         viewCount: 150000000,
-//         likeCount: 1200,
-//         dislikeCount: 50,
-//     },
-//     {
-//         id: "2",
-//         title: "Advanced CSS Techniques Advan     CSS Techniques Advanced CSS Techniques Advanced CSS Techniques Advanced CSS Techniques",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "https://example.com/video2",
-//         visibility: "unlisted",
-//         createdAt: "02/06/2023",
-//         viewCount: 8500,
-//         likeCount: 950,
-//         dislikeCount: 30,
-//     },
-//     {
-//         id: "",
-//         title: "JavaScript ES6 Features",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "https://example.com/video3",
-//         visibility: "followers_only",
-//         createdAt: "20/06/2023",
-//         viewCount: 12000,
-//         likeCount: 1100,
-//         dislikeCount: 40,
-//     },
-//     {
-//         id: "",
-//         title: "JavaScript ES6 Features",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "https://example.com/video3",
-//         visibility: "private",
-//         createdAt: "20/06/2023",
-//         viewCount: 12000,
-//         likeCount: 1100,
-//         dislikeCount: 40,
-//     },
-//     {
-//         id: "",
-//         title: "JavaScript ES6 Features",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "https://example.com/video3",
-//         visibility: "private",
-//         createdAt: "20/06/2023",
-//         viewCount: 12000,
-//         likeCount: 1100,
-//         dislikeCount: 40,
-//     },
-//     {
-//         id: "",
-//         title: "JavaScript ES6 Features",
-//         thumbnailUrl: "/placeholder.svg?height=120&width=200",
-//         videoUrl: "https://example.com/video3",
-//         visibility: "private",
-//         createdAt: "20/06/2023",
-//         viewCount: 12000,
-//         likeCount: 1100,
-//         dislikeCount: 40,
-//     },
-// ];
 export function StudioTable() {
     //phân trang
+    const { user } = useUser();
     const [pageSize, setPageSize] = useState(10);
     const [pageNumber, setPageNumber] = useState(1);
     //call api get all video
-    const { data, isPending, isError } = videoApi.query.useGetVideos();
+    const { data, isPending, isError } = videoApi.query.useGetVideoByUserId(
+        user.id,
+        { page: pageNumber.toString(), size: pageSize.toString() },
+    );
     if (isError) {
         redirect("/");
     }
@@ -90,7 +27,7 @@ export function StudioTable() {
     if (!data || isPending) {
         return null;
     }
-    const videos = data.data;
+    const videos = data.data.videos;
     return (
         <div className="lg:max-w-[570px] xl:max-w-[830px] 2xl:max-w-full">
             {videos && (
@@ -98,8 +35,8 @@ export function StudioTable() {
                     columns={StudioColumns}
                     data={videos}
                     totalPages={
-                        Math.ceil(videos.length / pageSize) > 0
-                            ? Math.ceil(videos.length / pageSize)
+                        Math.ceil(data.data.totalRecords / pageSize) > 0
+                            ? Math.ceil(data.data.totalRecords / pageSize)
                             : 1
                     }
                     pageSize={pageSize}

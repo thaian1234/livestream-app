@@ -15,6 +15,7 @@ import { IVideoService } from "../services/video.service";
 
 import { IGetStreamService } from "../external-services/getstream.service";
 
+import { QueryDTO } from "../dtos/query.dto";
 import { VideoDTO } from "../dtos/video.dto";
 import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
 
@@ -35,6 +36,7 @@ export class VideoController implements IVideoController {
             .get("/recordings", ...this.getRecordings())
             .get("/categories", ...this.getCategoriesHandler())
             .get("/:id", ...this.getVideoById())
+            .get("/user/:userId", ...this.getVideosByUserId())
             .post("/", ...this.createVideo())
             .patch("/:id", ...this.updateVideo())
             .delete("/:id", ...this.deleteVideoById())
@@ -94,6 +96,39 @@ export class VideoController implements IVideoController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: respSchema.parse(video),
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getVideosByUserId() {
+        const respSchema = VideoDTO.selectSchema;
+        const params = z.object({
+            userId: z.string().uuid(),
+        });
+        const queries = QueryDTO.createPaginationSchema(1, 5);
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            zValidator("param", params, Validator.handleParseError),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const params = c.req.valid("param");
+                const videos = await this.videoService.getVideosByUserId(
+                    params.userId,
+                    (page - 1) * size,
+                    size,
+                );
+                if (!videos) {
+                    throw new MyError.BadRequestError("Video not found");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        videos: respSchema.array().parse(videos.videos),
+                        totalRecords: videos.totalRecords,
+                        currentOffset: page - 1,
+                        limit: size,
+                    },
                     status: HttpStatus.OK,
                 });
             },

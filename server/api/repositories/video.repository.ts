@@ -25,6 +25,22 @@ export class VideoRepository implements IVideoRepository {
             console.error(error);
         }
     }
+    async findByUserId(userId: string, offset: number, size: number) {
+        try {
+            const videos = await this.db.query.videoTable.findMany({
+                where: eq(tableSchemas.videoTable.userId, userId),
+                offset: offset,
+                limit: size,
+            });
+            const totalRecords = await this.db.$count(
+                tableSchemas.videoTable,
+                eq(tableSchemas.videoTable.userId, userId),
+            );
+            return { videos, totalRecords };
+        } catch (error) {
+            console.error(error);
+        }
+    }
     async findAll() {
         try {
             const videos = await this.db.query.videoTable.findMany();

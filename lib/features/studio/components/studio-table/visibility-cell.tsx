@@ -1,6 +1,7 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 import { Earth, Link2, LockKeyhole, UserRoundPen } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { videoApi } from "@/lib/features/video/apis";
 
@@ -17,7 +18,14 @@ import { IVideo } from "./studio-columns";
 export function VisibilityCell({ row }: { row: Row<IVideo> }) {
     const { mutate: updateVisibility } = videoApi.mutation.useUpdateVideo();
     const [visibility, setVisibility] = useState(row.original.visibility);
-    //call api to change visibility value in get all Video api
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        console.log("change in effect");
+        setVisibility(row.original.visibility);
+    }, [row]);
+
+    console.log(visibility);
     return (
         <Select
             defaultValue={row.original.visibility}
@@ -36,9 +44,14 @@ export function VisibilityCell({ row }: { row: Row<IVideo> }) {
                         },
                     },
                     {
-                        onSuccess(data) {
-                            setVisibility(data.data.visibility);
-                            console.log(visibility);
+                        onSuccess() {
+                            queryClient.invalidateQueries({
+                                queryKey: [
+                                    "videos",
+                                    "user",
+                                    row.original.userId,
+                                ],
+                            });
                         },
                     },
                 );

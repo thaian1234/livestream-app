@@ -1,6 +1,7 @@
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
 import { client } from "@/lib/shared/client";
+import { PaginationType } from "@/lib/types";
 
 const baseApi = client.api.videos;
 const baseKey = ["videos"];
@@ -11,6 +12,8 @@ const keys = {
     recordings: [...baseKey, "recordings"],
     video_categories: (videoId?: string) =>
         ["video_categories", videoId] as string[],
+    videosByUserId: (userId: string, pagination: PaginationType) =>
+        [...baseKey, "user", userId, pagination] as string[],
 };
 
 export const videoApi = {
@@ -26,6 +29,22 @@ export const videoApi = {
                     id,
                 },
             });
+        },
+        useGetVideoByUserId(userId: string, pagination: PaginationType) {
+            const $get = baseApi.user[":userId"].$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.videosByUserId(userId, pagination),
+                {
+                    param: {
+                        userId,
+                    },
+                    query: {
+                        page: pagination.page,
+                        size: pagination.size,
+                    },
+                },
+            );
         },
         useGetRecordings() {
             const $get = baseApi.recordings.$get;
@@ -113,9 +132,7 @@ export const videoApi = {
                         queryClient.invalidateQueries({
                             queryKey: keys.video_categories(json.videoId),
                         });
-                        toast.success(
-                            "Successfully added categories to video",
-                        );
+                        toast.success("Successfully added categories to video");
                     },
                 },
             );

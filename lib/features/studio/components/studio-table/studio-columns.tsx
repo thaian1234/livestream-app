@@ -16,6 +16,7 @@ import { VisibilityCell } from "./visibility-cell";
 
 export interface IVideo {
     id: string;
+    userId: string;
     title: string;
     videoUrl: string;
     thumbnailUrl: string | null;
