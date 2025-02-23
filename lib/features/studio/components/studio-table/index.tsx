@@ -3,7 +3,6 @@
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
-import { useVideoClient } from "@/lib/features/stream/hooks/use-stream-video";
 import { videoApi } from "@/lib/features/video/apis";
 
 import { DataTablePagination } from "@/components/data-table-pagination";

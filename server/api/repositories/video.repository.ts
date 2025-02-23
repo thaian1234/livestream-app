@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -67,5 +67,33 @@ export class VideoRepository implements IVideoRepository {
         } catch (error) {
             console.error(error);
         }
+    }
+    public async getVideoCategories(videoId: string) {
+        try {
+            const categories =
+                await this.db.query.videosToCategoriesTable.findMany({
+                    where: eq(
+                        tableSchemas.videosToCategoriesTable.videoId,
+                        videoId,
+                    ),
+                    with: {
+                        category: true,
+                    },
+                });
+            return categories;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    async checkOwnVideo(userId: string, videoId: string) {
+        try {
+            const isOwn = !!(await this.db.query.videoTable.findFirst({
+                where: and(
+                    eq(tableSchemas.videoTable.id, videoId),
+                    eq(tableSchemas.videoTable.userId, userId),
+                ),
+            }));
+            return isOwn;
+        } catch (error) {}
     }
 }

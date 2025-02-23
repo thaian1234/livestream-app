@@ -6,12 +6,13 @@ import {
     ThumbsUpIcon,
 } from "lucide-react";
 
+import { formatDateFromString } from "@/lib/helpers/formatData";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { VideoCell } from "./video-cell";
 import { VisibilityCell } from "./visibility-cell";
-import { formatDateFromString } from "@/lib/helpers/formatData";
 
 export interface IVideo {
     id: string;
@@ -23,7 +24,7 @@ export interface IVideo {
     viewCount: number;
     // comments: number;
     likeCount: number;
-    // dislikes: number;
+    dislikeCount: number;
 }
 
 export const StudioColumns: ColumnDef<IVideo>[] = [
@@ -79,8 +80,8 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
             );
         },
         cell: ({ row }) => {
-        return formatDateFromString(row.original.createdAt);
-    }
+            return formatDateFromString(row.original.createdAt);
+        },
     },
     {
         accessorKey: "viewCount",
@@ -106,7 +107,7 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
                     </div>
                     <div className="flex items-center gap-1 text-muted-foreground">
                         <ThumbsDownIcon className="h-4 w-4" />
-                        {0}
+                        {row.original.dislikeCount.toLocaleString()}
                     </div>
                 </div>
             </div>

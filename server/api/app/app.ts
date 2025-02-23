@@ -218,6 +218,7 @@ export class App {
             factory,
             videoService,
             getstreamService,
+            categoryService
         );
         const webhookController = new WebhookController(
             factory,

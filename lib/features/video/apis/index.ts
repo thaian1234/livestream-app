@@ -9,6 +9,8 @@ const keys = {
     videos: baseKey,
     video: (id: string) => [...baseKey, id],
     recordings: [...baseKey, "recordings"],
+    video_categories: (videoId?: string) =>
+        ["video_categories", videoId] as string[],
 };
 
 export const videoApi = {
@@ -28,6 +30,19 @@ export const videoApi = {
         useGetRecordings() {
             const $get = baseApi.recordings.$get;
             return Fetcher.useHonoQuery($get, keys.recordings, {});
+        },
+        useGetVideoCategories(videoId?: string) {
+            const $get = client.api.videos.categories.$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.video_categories(videoId),
+                {
+                    query: {
+                        id: videoId,
+                    },
+                },
+                {},
+            );
         },
     },
     mutation: {
@@ -81,6 +96,26 @@ export const videoApi = {
                     },
                     onError(err) {
                         toast.error(err.message);
+                    },
+                },
+            );
+            return mutation;
+        },
+        useAddCategoriesToVideo() {
+            const $post = client.api.videos["add-categories"].$post;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onError(err) {
+                        console.error(err);
+                    },
+                    onSuccess({}, { json }) {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.video_categories(json.videoId),
+                        });
+                        toast.success(
+                            "Successfully added categories to video",
+                        );
                     },
                 },
             );

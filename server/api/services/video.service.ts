@@ -23,4 +23,10 @@ export class VideoService implements IVideoService {
     public async deleteVideo(id: string) {
         return this.videoRepository.delete(id);
     }
+    public async getVideoCategories(videoId: string) {
+        return this.videoRepository.getVideoCategories(videoId);
+    }
+    public async checkOwnVideo(userId: string, videoId: string) {
+        return await this.videoRepository.checkOwnVideo(userId, videoId);
+    }
 }
