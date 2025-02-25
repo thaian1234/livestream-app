@@ -108,8 +108,8 @@ export function UploadVideoThumbnailForm({
                         <FormControl>
                             <div className="group relative h-[100px] w-[253px] border border-dashed border-neutral-400 p-0.5">
                                 <Image
-                                    src={initialImageUrl ?? "/placeholder.svg"}
-                                    className="object-cover"
+                                    src={initialImageUrl ?? "/circle-play.svg"}
+                                    className="object-contain"
                                     fill
                                     alt="Thumbnail"
                                 />
@@ -147,10 +147,6 @@ export function UploadVideoThumbnailForm({
                                         <DropdownMenuItem>
                                             <SparkleIcon className="mr-1 size-4" />
                                             AI-Generated
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <RotateCcwIcon className="mr-1 size-4" />
-                                            Restore
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
