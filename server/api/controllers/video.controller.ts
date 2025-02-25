@@ -35,8 +35,8 @@ export class VideoController implements IVideoController {
             .get("/", ...this.getAllVideos())
             .get("/recordings", ...this.getRecordings())
             .get("/categories", ...this.getCategoriesHandler())
+            .get("/me", ...this.getOwnedVideos())
             .get("/:id", ...this.getVideoById())
-            .get("/user/:userId", ...this.getVideosByUserId())
             .post("/", ...this.createVideo())
             .patch("/:id", ...this.updateVideo())
             .delete("/:id", ...this.deleteVideoById())
@@ -101,20 +101,16 @@ export class VideoController implements IVideoController {
             },
         );
     }
-    private getVideosByUserId() {
+    private getOwnedVideos() {
         const respSchema = VideoDTO.selectSchema;
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createPaginationSchema(1, 5);
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
-            zValidator("param", params, Validator.handleParseError),
             async (c) => {
+                const user = c.get("getUser");
                 const { page, size } = c.req.valid("query");
-                const params = c.req.valid("param");
                 const videos = await this.videoService.getVideosByUserId(
-                    params.userId,
+                    user.id,
                     (page - 1) * size,
                     size,
                 );

@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -31,6 +31,10 @@ export class VideoRepository implements IVideoRepository {
                 where: eq(tableSchemas.videoTable.userId, userId),
                 offset: offset,
                 limit: size,
+                orderBy: [
+                    desc(tableSchemas.videoTable.createdAt),
+                    asc(tableSchemas.videoTable.title),
+                ],
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.videoTable,

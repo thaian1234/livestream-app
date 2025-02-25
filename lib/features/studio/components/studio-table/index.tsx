@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { useState } from "react";
 
 import { videoApi } from "@/lib/features/video/apis";
-import { useUser } from "@/lib/hooks/use-user";
 
 import { DataTablePagination } from "@/components/data-table-pagination";
 
@@ -12,14 +11,13 @@ import { IVideo, StudioColumns } from "./studio-columns";
 
 export function StudioTable() {
     //phân trang
-    const { user } = useUser();
     const [pageSize, setPageSize] = useState(10);
     const [pageNumber, setPageNumber] = useState(1);
     //call api get all video
-    const { data, isPending, isError } = videoApi.query.useGetVideoByUserId(
-        user.id,
-        { page: pageNumber.toString(), size: pageSize.toString() },
-    );
+    const { data, isPending, isError } = videoApi.query.useGetOwnedVideos({
+        page: pageNumber.toString(),
+        size: pageSize.toString(),
+    });
     if (isError) {
         redirect("/");
     }

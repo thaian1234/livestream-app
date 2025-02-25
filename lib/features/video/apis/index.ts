@@ -12,8 +12,8 @@ const keys = {
     recordings: [...baseKey, "recordings"],
     video_categories: (videoId?: string) =>
         ["video_categories", videoId] as string[],
-    videosByUserId: (userId: string, pagination: PaginationType) =>
-        [...baseKey, "user", userId, pagination] as string[],
+    ownedVideos: (pagination: PaginationType) =>
+        [...baseKey, pagination] as string[],
 };
 
 export const videoApi = {
@@ -30,15 +30,12 @@ export const videoApi = {
                 },
             });
         },
-        useGetVideoByUserId(userId: string, pagination: PaginationType) {
-            const $get = baseApi.user[":userId"].$get;
+        useGetOwnedVideos(pagination: PaginationType) {
+            const $get = baseApi.me.$get;
             return Fetcher.useHonoQuery(
                 $get,
-                keys.videosByUserId(userId, pagination),
+                keys.ownedVideos(pagination),
                 {
-                    param: {
-                        userId,
-                    },
                     query: {
                         page: pagination.page,
                         size: pagination.size,
