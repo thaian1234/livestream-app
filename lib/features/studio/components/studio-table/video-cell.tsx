@@ -40,7 +40,7 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                         </TooltipModel>
                     </Button>
 
-                    <OptionsDropdown>
+                    <OptionsDropdown videoId={row.original.id}>
                         <Button variant="ghost" className="px-2">
                             <TooltipModel content="Options" side="bottom">
                                 <EllipsisVertical />

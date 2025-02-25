@@ -16,6 +16,8 @@ import {
     Users,
 } from "lucide-react";
 
+import { videoApi } from "@/lib/features/video/apis";
+
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -34,8 +36,18 @@ import {
 
 interface OptionsDropdownProps {
     children: React.ReactNode;
+    videoId: string;
 }
-export function OptionsDropdown({ children }: OptionsDropdownProps) {
+export function OptionsDropdown({ children, videoId }: OptionsDropdownProps) {
+    const { mutate: deleteVideo, isPending } =
+        videoApi.mutation.useDeleteVideo();
+    const handleDeleteVideo = () => {
+        deleteVideo({
+            param: {
+                id: videoId,
+            },
+        });
+    };
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -45,7 +57,10 @@ export function OptionsDropdown({ children }: OptionsDropdownProps) {
                     <span>Download</span>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                    onClick={handleDeleteVideo}
+                    disabled={isPending}
+                >
                     <Trash2 size={20} />
                     <span>Delete</span>
                 </DropdownMenuItem>

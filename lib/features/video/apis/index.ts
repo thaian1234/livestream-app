@@ -32,16 +32,12 @@ export const videoApi = {
         },
         useGetOwnedVideos(pagination: PaginationType) {
             const $get = baseApi.me.$get;
-            return Fetcher.useHonoQuery(
-                $get,
-                keys.ownedVideos(pagination),
-                {
-                    query: {
-                        page: pagination.page,
-                        size: pagination.size,
-                    },
+            return Fetcher.useHonoQuery($get, keys.ownedVideos(pagination), {
+                query: {
+                    page: pagination.page,
+                    size: pagination.size,
                 },
-            );
+            });
         },
         useGetRecordings() {
             const $get = baseApi.recordings.$get;
@@ -101,12 +97,15 @@ export const videoApi = {
         },
         useDeleteVideo() {
             const $delete = baseApi[":id"].$delete;
-            const { mutation, toast, router, user } = Fetcher.useHonoMutation(
+            const { mutation, toast, router, user, queryClient } = Fetcher.useHonoMutation(
                 $delete,
                 {
                     onSuccess({ msg }) {
                         if (user) {
                             router.replace(ROUTES.STUDIO_PAGE(user.username));
+                            queryClient.invalidateQueries({
+                                queryKey: keys.videos,
+                            });
                             toast.success("Video deleted");
                         }
                     },
