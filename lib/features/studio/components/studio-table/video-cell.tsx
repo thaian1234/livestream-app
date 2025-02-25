@@ -18,10 +18,7 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
     return (
         <div className="grid max-w-[400px] grid-cols-[150px_1fr] space-x-2">
             <div>
-                <VideoThumbnail
-                    thumbnailUrl={row.original.thumbnailUrl}
-                    avatarUrl={row.original.thumbnailUrl}
-                />
+                <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
             </div>
             <div className="relative">
                 <div
@@ -34,12 +31,6 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                     <Button variant="ghost" className="px-2">
                         <TooltipModel content="Details" side="bottom">
                             <Pencil />
-                        </TooltipModel>
-                    </Button>
-
-                    <Button variant="ghost" className="px-2">
-                        <TooltipModel content="Comments" side="bottom">
-                            <MessageSquareText />
                         </TooltipModel>
                     </Button>
 

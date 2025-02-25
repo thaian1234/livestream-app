@@ -30,31 +30,6 @@ export interface IVideo {
 
 export const StudioColumns: ColumnDef<IVideo>[] = [
     {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) =>
-                    table.toggleAllPageRowsSelected(!!value)
-                }
-                aria-label="Select all"
-            />
-        ),
-
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
         accessorKey: "title",
         header: "Video",
         cell: ({ row }) => <VideoCell row={row} />,
@@ -70,6 +45,7 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
             return (
                 <Button
                     variant="ghost"
+                    className="text-sm"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === "asc")
                     }
@@ -81,6 +57,11 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
         },
         cell: ({ row }) => {
             return formatDateFromString(row.original.createdAt);
+        },
+        sortingFn: (rowA, rowB, columnId) => {
+            const dateA = new Date(rowA.getValue(columnId));
+            const dateB = new Date(rowB.getValue(columnId));
+            return dateA.getTime() - dateB.getTime();
         },
     },
     {
