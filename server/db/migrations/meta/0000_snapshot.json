@@ -1,5 +1,5 @@
 {
-  "id": "82934829-d423-4bc9-b188-a40be9f5ee2a",
+  "id": "feedf42b-5082-46e0-a319-2ac558063cf3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -813,7 +813,8 @@
           "name": "file_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'Video Processing'"
         },
         "file_url": {
           "name": "file_url",
@@ -1158,6 +1159,104 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.video_categories": {
+      "name": "video_categories",
+      "schema": "",
+      "columns": {
+        "video_id": {
+          "name": "video_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "video_category_video_idx": {
+          "name": "video_category_video_idx",
+          "columns": [
+            {
+              "expression": "video_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "video_category_category_idx": {
+          "name": "video_category_category_idx",
+          "columns": [
+            {
+              "expression": "category_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "video_categories_video_id_videos_id_fk": {
+          "name": "video_categories_video_id_videos_id_fk",
+          "tableFrom": "video_categories",
+          "tableTo": "videos",
+          "columnsFrom": [
+            "video_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "video_categories_category_id_categories_id_fk": {
+          "name": "video_categories_category_id_categories_id_fk",
+          "tableFrom": "video_categories",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "video_categories_video_id_category_id_pk": {
+          "name": "video_categories_video_id_category_id_pk",
+          "columns": [
+            "video_id",
+            "category_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.videos": {
       "name": "videos",
       "schema": "",
@@ -1226,6 +1325,13 @@
         },
         "like_count": {
           "name": "like_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "dislike_count": {
+          "name": "dislike_count",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
