@@ -26,6 +26,10 @@ import {
 import { streamRelations, streamTable } from "./stream.table";
 import { userRelations, userTable } from "./user.table";
 import {
+    videosToCategoriesRelations,
+    videosToCategoriesTable,
+} from "./video-category.table";
+import {
     videoRelations,
     videoStatusEnum,
     videoTable,
@@ -47,6 +51,7 @@ const tableSchemas = {
     forgetPasswordTable,
     videoTable,
     storageTable,
+    videosToCategoriesTable,
 } as const;
 
 export const tableRelations = {
@@ -68,6 +73,7 @@ export const tableRelations = {
     videoVisibilityEnum,
     storageStatusEnum,
     storageRelations,
+    videosToCategoriesRelations,
 } as const;
 
 export default tableSchemas;

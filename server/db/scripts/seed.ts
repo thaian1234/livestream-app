@@ -1,5 +1,3 @@
-import Database from "..";
-import tableSchemas from "../schemas";
 import { z } from "zod";
 
 import { BlockDTO } from "@/server/api/dtos/block.dto";
@@ -7,8 +5,12 @@ import { CategoryDTO } from "@/server/api/dtos/category.dto";
 import { FollowDTO } from "@/server/api/dtos/follow.dto";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
+import { VideoDTO } from "@/server/api/dtos/video.dto";
 import { LuciaService } from "@/server/api/external-services/lucia.service";
 import { Utils } from "@/server/api/lib/helpers/utils";
+
+import Database from "..";
+import tableSchemas from "../schemas";
 
 const db = Database.getInstance().db;
 const lucia = LuciaService.getInstance();
@@ -200,6 +202,23 @@ const seeds = async () => {
                 .values(streamToCategories)
                 .onConflictDoNothing();
         }
+        // Seeding video
+        const videosToInsert: VideoDTO.Insert[] = [];
+        for (const s of streams) {
+            for (let i = 1; i <= 3; i++) {
+                videosToInsert.push({
+                    streamId: s.id,
+                    title: `Video title ${i} - ${new Date().toISOString()}`,
+                    userId: s.userId,
+                    videoUrl: "",
+                });
+            }
+        }
+        const videos = await db
+            .insert(tableSchemas.videoTable)
+            .values(videosToInsert)
+            .returning()
+            .onConflictDoNothing();
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");

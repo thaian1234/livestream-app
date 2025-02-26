@@ -19,6 +19,7 @@ import { SQLiteTable } from "drizzle-orm/sqlite-core";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
 
 const buildConflictUpdateColumns = <
     T extends PgTable | SQLiteTable,
@@ -212,6 +213,64 @@ export class CategoryRepository implements ICategoryRepository {
             return rows.length > 0;
         } catch (error) {
             console.error("Error deleting categories from stream:", error);
+            return false;
+        }
+    }
+    async addCategoriesToVideo(data: VideoToCategoriesDTO.Insert[]) {
+        try {
+            return this.db.transaction(async (tx) => {
+                const categoryIds = data.map((item) => item.categoryId);
+                const videoId = data[0].videoId;
+
+                await tx
+                    .delete(tableSchemas.videosToCategoriesTable)
+                    .where(
+                        and(
+                            eq(
+                                tableSchemas.videosToCategoriesTable.videoId,
+                                videoId,
+                            ),
+                            notInArray(
+                                tableSchemas.videosToCategoriesTable
+                                    .categoryId,
+                                categoryIds,
+                            ),
+                        ),
+                    );
+                await this.db
+                    .insert(tableSchemas.videosToCategoriesTable)
+                    .values(data)
+                    .onConflictDoUpdate({
+                        target: [
+                            tableSchemas.videosToCategoriesTable.videoId,
+                            tableSchemas.videosToCategoriesTable.categoryId,
+                        ],
+                        set: buildConflictUpdateColumns(
+                            tableSchemas.videosToCategoriesTable,
+                            ["videoId", "categoryId", "createdAt"],
+                        ),
+                    });
+                return true;
+            });
+        } catch (error) {
+            console.error("Error adding categories to video:", error);
+            return false;
+        }
+    }
+    async deleteAllCategoriesFromVideo(videoId: string) {
+        try {
+            const rows = await this.db
+                .delete(tableSchemas.videosToCategoriesTable)
+                .where(
+                    eq(
+                        tableSchemas.videosToCategoriesTable.videoId,
+                        videoId,
+                    ),
+                )
+                .returning();
+            return rows.length > 0;
+        } catch (error) {
+            console.error("Error deleting categories from video:", error);
             return false;
         }
     }

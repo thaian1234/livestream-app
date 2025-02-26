@@ -1,6 +1,7 @@
+import { sql } from "drizzle-orm";
+
 import Database from "..";
 import tableSchemas from "../schemas";
-import { sql } from "drizzle-orm";
 
 const db = Database.getInstance().db;
 
@@ -17,6 +18,7 @@ const resetSeeds = async () => {
     await db.delete(tableSchemas.userTable);
     await db.delete(tableSchemas.streamsToCategoriesTable);
     await db.delete(tableSchemas.categoryTable);
+    await db.delete(tableSchemas.videoTable);
 };
 
 resetSeeds()
