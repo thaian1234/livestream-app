@@ -39,10 +39,6 @@ export const videoApi = {
                 },
             });
         },
-        useGetRecordings() {
-            const $get = baseApi.recordings.$get;
-            return Fetcher.useHonoQuery($get, keys.recordings, {});
-        },
         useGetVideoCategories(videoId?: string) {
             const $get = client.api.videos.categories.$get;
             return Fetcher.useHonoQuery(
