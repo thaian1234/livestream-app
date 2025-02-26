@@ -45,6 +45,7 @@ import { UploadVideoThumbnailForm } from "../../upload/components/upload-video-t
 import { videoApi } from "../apis";
 import { DeleteVideoButton } from "./delete-video-btn";
 import { VideoPreviewSection } from "./video-preview-section";
+import { VideoCategoriesForm } from "./video-categories-form";
 
 interface EditVideoFormProps {
     videoId: string;
@@ -333,6 +334,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
                                     </FormItem>
                                 )}
                             />
+                            <VideoCategoriesForm videoId={videoId} />
                         </section>
                         {/* Preview Section */}
                         <section className="col-span-3">

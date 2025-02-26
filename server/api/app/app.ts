@@ -220,6 +220,7 @@ export class App {
             factory,
             videoService,
             aiServiceBuilder,
+            categoryService,
         );
         const webhookController = new WebhookController(
             factory,

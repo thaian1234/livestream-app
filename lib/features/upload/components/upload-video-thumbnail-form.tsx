@@ -1,14 +1,32 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Upload, X } from "lucide-react";
+import {
+    ImagePlusIcon,
+    MoreVerticalIcon,
+    RotateCcwIcon,
+    SparkleIcon,
+    Upload,
+    X,
+} from "lucide-react";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+} from "@/components/ui/form";
 
 import { uploadApi } from "../apis";
-import DragDropArea from "./drag-drop-area";
 
 interface FileWithPreview extends File {
     preview: string;
@@ -22,28 +40,21 @@ export function UploadVideoThumbnailForm({
     initialImageUrl,
     videoId,
 }: UploadVideoThumbnailFormProps) {
-    const [file, setFile] = useState<FileWithPreview | null>(null);
     const queryClient = useQueryClient();
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: uploadImage, isPending } =
-        uploadApi.mutation.useUpload(file);
+        uploadApi.mutation.useUpload(null);
 
-    const handleFile = useCallback((selectedFile: File) => {
+    const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
                 preview: URL.createObjectURL(selectedFile),
             });
-            setFile(fileWithPreview);
-        }
-    }, []);
-
-    const removeFile = () => {
-        if (file) {
-            URL.revokeObjectURL(file.preview);
-            setFile(null);
+            handleUpload(fileWithPreview);
         }
     };
 
-    const handleUpload = () => {
+    const handleUpload = (file: FileWithPreview) => {
         if (file) {
             uploadImage(
                 {
@@ -70,73 +81,80 @@ export function UploadVideoThumbnailForm({
         }
     };
 
-    return (
-        <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
-            <DragDropArea onFileSelect={handleFile}>
-                {!!file ? (
-                    <div className="relative aspect-video h-full w-full">
-                        <Image
-                            src={file?.preview}
-                            alt={file.name}
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-                ) : (
-                    <div className="flex aspect-video h-full flex-col items-center justify-center">
-                        {!!initialImageUrl ? (
-                            <div className="relative aspect-video h-full w-full">
-                                <Image
-                                    src={initialImageUrl}
-                                    alt=" Image"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        ) : (
-                            <>
-                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                <p className="mt-2 text-sm text-gray-400">
-                                    Drag and drop your image here, or click to
-                                    select a file
-                                </p>
-                            </>
-                        )}
-                    </div>
-                )}
-            </DragDropArea>
+    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFile(e.target.files[0]);
+        }
+    };
 
-            {file && (
-                <div className="mt-6">
-                    <div className="flex items-center space-x-4">
-                        <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium">
-                                {file.name}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={removeFile}
-                            aria-label={`Remove ${file.name}`}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
-                    </div>
-                </div>
-            )}
-            <Button
-                onClick={handleUpload}
-                disabled={isPending || !file}
-                className="mt-8 w-full"
-                variant={"gradient"}
-                type="button"
-            >
-                Upload Image
-            </Button>
-        </div>
+    return (
+        <>
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                    console.log("File input changed");
+                    onFileInputChange(e);
+                }}
+            />
+            <FormField
+                name="thumbnailUrl"
+                control={undefined}
+                render={() => (
+                    <FormItem>
+                        {/* <FormLabel>Thumbnail</FormLabel> */}
+                        <FormControl>
+                            <div className="group relative h-[100px] w-[253px] border border-dashed border-neutral-400 p-0.5">
+                                <Image
+                                    src={initialImageUrl ?? "/circle-play.svg"}
+                                    className="object-contain"
+                                    fill
+                                    alt="Thumbnail"
+                                />
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            size="icon"
+                                            className="bg-black/50 hover:bg-black/50 absolute right-1 top-1 size-7 rounded-full opacity-100 duration-300 group-hover:opacity-100 md:opacity-0"
+                                        >
+                                            <MoreVerticalIcon className="text-white" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="start"
+                                        side="right"
+                                    >
+                                        <DropdownMenuItem
+                                            onClick={() => {
+                                                if (fileInputRef.current) {
+                                                    console.log(
+                                                        "Opening file selector...",
+                                                    );
+                                                    fileInputRef.current.click();
+                                                } else {
+                                                    console.error(
+                                                        "fileInputRef is null",
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <ImagePlusIcon className="mr-1 size-4" />
+                                            Change
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <SparkleIcon className="mr-1 size-4" />
+                                            AI-Generated
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </FormControl>
+                    </FormItem>
+                )}
+            ></FormField>
+        </>
     );
 }

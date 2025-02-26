@@ -13,6 +13,7 @@ import {
 import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
+import { videosToCategoriesTable } from "./video-category.table";
 
 export const videoVisibilityEnum = pgEnum("video_privacy", [
     "public",
@@ -47,6 +48,7 @@ export const videoTable = pgTable(
         duration: integer("duration"),
         viewCount: integer("view_count").default(0).notNull(),
         likeCount: integer("like_count").default(0).notNull(),
+        dislikeCount: integer("dislike_count").default(0).notNull(),
         visibility: videoVisibilityEnum().default("private").notNull(),
         status: videoStatusEnum("processing").default("processing").notNull(),
 
@@ -59,7 +61,7 @@ export const videoTable = pgTable(
     (table) => [index("user_stream_idx").on(table.userId, table.streamId)],
 );
 
-export const videoRelations = relations(videoTable, ({ one }) => ({
+export const videoRelations = relations(videoTable, ({ one, many }) => ({
     stream: one(streamTable, {
         fields: [videoTable.streamId],
         references: [streamTable.id],
@@ -72,4 +74,5 @@ export const videoRelations = relations(videoTable, ({ one }) => ({
         fields: [videoTable.storageId],
         references: [storageTable.id],
     }),
+    videosToCategories: many(videosToCategoriesTable),
 }));
