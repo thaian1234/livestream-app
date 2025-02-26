@@ -10,7 +10,7 @@ import {
     X,
 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,46 +40,49 @@ export function UploadVideoThumbnailForm({
     initialImageUrl,
     videoId,
 }: UploadVideoThumbnailFormProps) {
+    const [file, setFile] = useState<FileWithPreview | null>(null);
     const queryClient = useQueryClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: uploadImage, isPending } =
-        uploadApi.mutation.useUpload(null);
-
+        uploadApi.mutation.useUpload(file);
+    console.log(initialImageUrl);
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
                 preview: URL.createObjectURL(selectedFile),
             });
-            handleUpload(fileWithPreview);
+            setFile(fileWithPreview);
         }
     };
-
-    const handleUpload = (file: FileWithPreview) => {
-        if (file) {
-            uploadImage(
-                {
-                    json: {
-                        fileName: file.name,
-                        fileSize: file.size,
-                        fileType: file.type,
+    useEffect(() => {
+        const handleUpload = () => {
+            if (file) {
+                uploadImage(
+                    {
+                        json: {
+                            fileName: file.name,
+                            fileSize: file.size,
+                            fileType: file.type,
+                        },
+                        param: {
+                            type: "video-thumbnail",
+                        },
+                        query: {
+                            videoId: videoId,
+                        },
                     },
-                    param: {
-                        type: "video-thumbnail",
+                    {
+                        onSuccess: () => {
+                            queryClient.invalidateQueries({
+                                queryKey: ["videos", videoId],
+                            });
+                        },
                     },
-                    query: {
-                        videoId: videoId,
-                    },
-                },
-                {
-                    onSuccess: () => {
-                        queryClient.invalidateQueries({
-                            queryKey: ["videos", videoId],
-                        });
-                    },
-                },
-            );
-        }
-    };
+                );
+            }
+        };
+        handleUpload();
+    }, [file]);
 
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -108,7 +111,7 @@ export function UploadVideoThumbnailForm({
                         <FormControl>
                             <div className="group relative h-[100px] w-[253px] border border-dashed border-neutral-400 p-0.5">
                                 <Image
-                                    src={initialImageUrl ?? "/circle-play.svg"}
+                                    src={initialImageUrl || "/circle-play.svg"}
                                     className="object-contain"
                                     fill
                                     alt="Thumbnail"
