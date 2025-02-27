@@ -106,6 +106,7 @@ export function UploadVideoThumbnailForm({
                     src={initialImageUrl || "/circle-play.svg"}
                     className="object-contain"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     alt="Thumbnail"
                 />
                 <DropdownMenu>

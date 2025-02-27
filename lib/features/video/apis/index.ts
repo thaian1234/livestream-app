@@ -39,10 +39,6 @@ export const videoApi = {
                 },
             });
         },
-        useGetRecordings() {
-            const $get = baseApi.recordings.$get;
-            return Fetcher.useHonoQuery($get, keys.recordings, {});
-        },
         useGetVideoCategories(videoId?: string) {
             const $get = client.api.videos.categories.$get;
             return Fetcher.useHonoQuery(
@@ -97,9 +93,8 @@ export const videoApi = {
         },
         useDeleteVideo() {
             const $delete = baseApi[":id"].$delete;
-            const { mutation, toast, router, user, queryClient } = Fetcher.useHonoMutation(
-                $delete,
-                {
+            const { mutation, toast, router, user, queryClient } =
+                Fetcher.useHonoMutation($delete, {
                     onSuccess({ msg }) {
                         if (user) {
                             router.replace(ROUTES.STUDIO_PAGE(user.username));
@@ -112,8 +107,7 @@ export const videoApi = {
                     onError(err) {
                         toast.error(err.message);
                     },
-                },
-            );
+                });
             return mutation;
         },
         useAddCategoriesToVideo() {

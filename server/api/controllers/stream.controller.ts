@@ -1,8 +1,6 @@
-import { QueryDTO } from "../dtos/query.dto";
-import { StreamDTO } from "../dtos/stream.dto";
-import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
-import { IGetStreamService } from "../external-services/getstream.service";
-import { INotificationService } from "../external-services/notification.service";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -11,13 +9,22 @@ import PaginationHelper from "../lib/helpers/pagination";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { IFollowRepository } from "../repositories/follow.repository";
+
 import { ICategoryService } from "../services/category.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+
+import { AIServiceBuilder } from "../external-services/ai.service";
+import { IGetStreamService } from "../external-services/getstream.service";
+import { INotificationService } from "../external-services/notification.service";
+
+import { QueryDTO } from "../dtos/query.dto";
+import { StreamDTO } from "../dtos/stream.dto";
+import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 
 export interface IStreamController
     extends Utils.AutoMappedClass<StreamController> {}
@@ -31,18 +38,21 @@ export class StreamController implements IStreamController {
         private readonly categoryService: ICategoryService,
         private readonly followRepository: IFollowRepository,
         private readonly notificationService: INotificationService,
+        private readonly aiBuilder: AIServiceBuilder,
     ) {}
     setupHandlers() {
         return this.factory
             .createApp()
-            .get("/stream-token", ...this.getStreamTokenHandler())
-            .patch("/", ...this.updateStreamHandler())
             .get("/", ...this.getAllStreamHandler())
+            .patch("/", ...this.updateStreamHandler())
+
+            .get("/stream-token", ...this.getStreamTokenHandler())
             .get("/recommend", ...this.getRecommendStreams())
             .get("/following", ...this.getFollowingStreams())
             .get("/chat-token", ...this.getStreamChatTokenHandler())
             .get("/categories", ...this.getCategoriesHandler())
             .post("/add-categories", ...this.addCategoriesToStream())
+            .post("/generate-title", ...this.generateTitleHandler())
             .delete("/remove-category", ...this.deleteCategoriesFromStream());
     }
     private getStreamTokenHandler() {
@@ -402,6 +412,67 @@ export class StreamController implements IStreamController {
                     data: streamCategories,
                     status: HttpStatus.OK,
                 });
+            },
+        );
+    }
+
+    private generateTitleHandler() {
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const stream = c.get("getUser").stream;
+                const streamCateogories =
+                    await this.streamService.getStreamCategories(stream.id);
+
+                const builder = this.aiBuilder
+                    .setBasePrompt(
+                        `You are an expert Livestreaming title creator. Generate a title that is:
+						- Attention-grabbing and emotionally compelling
+						- Uses power words and action verbs 
+						- Optimized for search and clicks
+						- Maximum 50 characters
+						- Single line response only
+						- No hashtags or special characters
+						- Naturally conversational tone
+						- Includes numbers when relevant (e.g. "Top 5", "24 Hour")
+						- Creates urgency or FOMO when appropriate
+						- Uses proven headline formulas (How to, Ultimate Guide, etc.)
+						- Incorporates trending keywords naturally
+						- Balances clickability with authenticity
+						- Considers target audience expectations
+						- Uses alliteration when it fits naturally
+						- Focuses on benefits/value to viewers
+						`,
+                    )
+                    .addMessage({
+                        role: "user",
+                        content: `Generate a title for a Livestreaming`,
+                    });
+
+                if (!!streamCateogories) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a title for a Livestream with the following stream categories are: ${streamCateogories
+                            .map((category) => category.category.name)
+                            .join(", ")}`,
+                    });
+                }
+
+                if (stream.thumbnailUrl.length > 0) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a title for a Livestreaming with the following image`,
+                        experimental_attachments: [
+                            {
+                                url: stream.thumbnailUrl,
+                                contentType: "image/png",
+                            },
+                        ],
+                    });
+                }
+
+                const response = this.aiBuilder.build().getStreamText();
+                return response.toDataStreamResponse();
             },
         );
     }
