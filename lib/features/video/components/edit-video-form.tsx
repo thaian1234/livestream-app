@@ -111,6 +111,7 @@ export function EditVideoForm({ videoId, defaultVideo }: EditVideoFormProps) {
     const handleGenerate = (type: "title" | "description") => {
         const body = {
             imageUrl: defaultVideo.thumbnailUrl,
+            videoId: videoId,
         };
 
         if (type === "title") {

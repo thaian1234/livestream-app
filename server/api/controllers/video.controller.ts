@@ -197,11 +197,14 @@ export class VideoController implements IVideoController {
     private generateTitle() {
         const reqSchema = z.object({
             imageUrl: z.string().optional().nullable(),
+            videoId: z.string().uuid(),
         });
         return this.factory.createHandlers(
             zValidator("json", reqSchema, Validator.handleParseError),
             async (c) => {
-                const { imageUrl } = c.req.valid("json");
+                const { imageUrl, videoId } = c.req.valid("json");
+                const categories =
+                    await this.videoService.getVideoCategories(videoId);
                 const builder = this.aiServiceBuilder
                     .setBasePrompt(
                         `You are an expert video title creator. Generate a title that is:
@@ -219,7 +222,7 @@ export class VideoController implements IVideoController {
                         content: `Generate a title for a video`,
                     });
 
-                if (!!imageUrl) {
+                if (!!imageUrl && imageUrl.length > 0) {
                     builder.addMessage({
                         role: "user",
                         content: `Generate a title for a video with the following image`,
@@ -231,6 +234,14 @@ export class VideoController implements IVideoController {
                         ],
                     });
                 }
+                if (!!categories) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a title for a video with the following categories are: ${categories
+                            .map((category) => category.category.name)
+                            .join(", ")}`,
+                    });
+                }
                 const aiService = builder.build();
                 const response = aiService.getStreamText();
                 return response.toDataStreamResponse();
@@ -240,11 +251,15 @@ export class VideoController implements IVideoController {
     private generateDescription() {
         const reqSchema = z.object({
             imageUrl: z.string().optional().nullable(),
+            videoId: z.string().uuid(),
         });
         return this.factory.createHandlers(
             zValidator("json", reqSchema, Validator.handleParseError),
             async (c) => {
-                const { imageUrl } = c.req.valid("json");
+                const { imageUrl, videoId } = c.req.valid("json");
+                const categories =
+                    await this.videoService.getVideoCategories(videoId);
+
                 const builder = this.aiServiceBuilder
                     .setBasePrompt(
                         `You are an expert video description creator. Generate a description that is:
@@ -262,7 +277,7 @@ export class VideoController implements IVideoController {
                         content: `Generate a description for a video`,
                     });
 
-                if (!!imageUrl) {
+                if (!!imageUrl && imageUrl.length > 0) {
                     builder.addMessage({
                         role: "user",
                         content: `Generate a description for a video with the following image`,
@@ -272,6 +287,14 @@ export class VideoController implements IVideoController {
                                 contentType: "image/png",
                             },
                         ],
+                    });
+                }
+                if (!!categories) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a description for a video with the following categories are: ${categories
+                            .map((category) => category.category.name)
+                            .join(", ")}`,
                     });
                 }
                 const aiService = builder.build();
@@ -341,16 +364,14 @@ export class VideoController implements IVideoController {
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const id = c.req.valid("query").id;
-                const videoId = id;
-
-                if (!videoId) {
+                const { id } = c.req.valid("query");
+                if (!id) {
                     throw new MyError.BadRequestError(
                         "Please provide a valid video id",
                     );
                 }
                 const videoCategories =
-                    await this.videoService.getVideoCategories(videoId);
+                    await this.videoService.getVideoCategories(id);
                 return ApiResponse.WriteJSON({
                     c,
                     data: videoCategories,
