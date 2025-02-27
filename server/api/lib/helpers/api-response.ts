@@ -1,14 +1,24 @@
 import { Context } from "hono";
-import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
+import {
+    ClientErrorStatusCode,
+    ContentfulStatusCode,
+    ServerErrorStatusCode,
+    SuccessStatusCode,
+} from "hono/utils/http-status";
+
+export type HonoErrorStatusCode = ContentfulStatusCode &
+    (ClientErrorStatusCode | ServerErrorStatusCode);
+
+export type HonoSuccessStatusCode = ContentfulStatusCode & SuccessStatusCode;
 
 type ApiResponseType<T> = {
-    status: SuccessStatusCode;
+    status: HonoSuccessStatusCode;
     data: T;
     c: Context;
     msg?: string;
 };
 type ApiErrorResponseType = {
-    status: Exclude<StatusCode, SuccessStatusCode>;
+    status: HonoErrorStatusCode;
     c: Context;
     msg?: string;
 };

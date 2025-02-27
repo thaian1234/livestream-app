@@ -12,6 +12,8 @@ import { SuccessStatusCode } from "hono/utils/http-status";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { HttpStatus } from "@/server/api/lib/constant/http.type";
+
 import { useAuth } from "../providers/auth-provider";
 
 export namespace Fetcher {
@@ -23,6 +25,9 @@ export namespace Fetcher {
     type RequestType<T extends ClientType> = InferRequestType<T>;
 
     const handleResponse = async (res: Response) => {
+        if (res.status === HttpStatus.UnprocessableEntity) {
+            throw new Error("Unprocessable Entity");
+        }
         if (!res.ok) {
             throw new Error((await res.json()).msg);
         }

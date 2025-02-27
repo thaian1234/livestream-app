@@ -1,10 +1,9 @@
-import { StatusCode, SuccessStatusCode } from "hono/utils/http-status";
-
 import { HttpStatus } from "../constant/http.type";
+import { HonoErrorStatusCode } from "./api-response";
 
 export class AppError extends Error {
     constructor(
-        public statusCode: Exclude<StatusCode, SuccessStatusCode>,
+        public statusCode: HonoErrorStatusCode,
         message: string,
     ) {
         super(message);
@@ -15,7 +14,7 @@ export class AppError extends Error {
 class ErrorFactory {
     static createError(
         defaultMessage: string,
-        statusCode: Exclude<StatusCode, SuccessStatusCode>,
+        statusCode: HonoErrorStatusCode,
     ) {
         return class extends AppError {
             constructor(message: string = defaultMessage) {
