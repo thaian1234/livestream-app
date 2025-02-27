@@ -70,6 +70,10 @@ export class AIService implements IAIService {
                 chunking: "word",
                 delayInMs: 30,
             }),
+            headers: {
+                "Transfer-Encoding": "chunked",
+                Connection: "keep-alive",
+            },
         });
     }
 }

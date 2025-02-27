@@ -1,4 +1,3 @@
-import { streamApi } from "../../apis";
 import { SaveAllIcon } from "lucide-react";
 import { useRef } from "react";
 
@@ -9,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import MultipleSelector, {
     MultipleSelectorRef,
 } from "@/components/ui/multi-selector";
+
+import { streamApi } from "../../apis";
 
 interface StreamCategoriesFormProps {
     streamId: string;
@@ -83,7 +84,7 @@ export function StreamCategoriesForm({ streamId }: StreamCategoriesFormProps) {
                     variant={"ghost"}
                     size={"icon"}
                     className="hover:bg-transparent"
-                    disabled={streamMutation.isPending}
+                    loading={streamMutation.isPending}
                 >
                     <SaveAllIcon />
                 </Button>

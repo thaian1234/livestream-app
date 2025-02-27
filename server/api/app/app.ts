@@ -202,6 +202,7 @@ export class App {
             categoryService,
             followRepository,
             notificationService,
+            aiServiceBuilder,
         );
         const settingController = new SettingController(
             factory,
