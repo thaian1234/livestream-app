@@ -91,9 +91,9 @@ export function VideoCategoriesForm({ videoId }: VideoCategoriesFormProps) {
                     variant={"ghost"}
                     size={"icon"}
                     className="hover:bg-transparent"
-                    disabled={videoMutation.isPending}
+                    loading={videoMutation.isPending}
                 >
-                    <SaveAllIcon />
+                    {!videoMutation.isPending && <SaveAllIcon />}
                 </Button>
             </div>
         </div>
