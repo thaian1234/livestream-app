@@ -6,3 +6,5 @@ export type PaginationType = {
 export type FilterType = {
     filterBy?: string | string[] | undefined;
 };
+
+export type ImageUrlType = string | null | undefined;

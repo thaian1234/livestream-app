@@ -1,6 +1,3 @@
-import { QueryDTO } from "../dtos/query.dto";
-import { StreamDTO } from "../dtos/stream.dto";
-import { Utils } from "../lib/helpers/utils";
 import {
     and,
     asc,
@@ -18,6 +15,11 @@ import {
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { QueryDTO } from "../dtos/query.dto";
+import { StreamDTO } from "../dtos/stream.dto";
 
 export interface IStreamRepository
     extends Utils.AutoMappedClass<StreamRepository> {}
@@ -248,10 +250,6 @@ export class StreamRepository implements IStreamRepository {
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
                     ),
-                    inArray(
-                        tableSchemas.streamTable.id,
-                        this.getStreamSettingSubQuery(),
-                    ),
                 ),
                 offset: offset,
                 limit: limit,
@@ -268,10 +266,6 @@ export class StreamRepository implements IStreamRepository {
                     notInArray(
                         tableSchemas.streamTable.userId,
                         this.getBlockerSubQuery(userId),
-                    ),
-                    inArray(
-                        tableSchemas.streamTable.id,
-                        this.getStreamSettingSubQuery(),
                     ),
                 ),
             );
@@ -290,21 +284,11 @@ export class StreamRepository implements IStreamRepository {
                         limit: this.categorySize,
                     },
                 },
-                where: inArray(
-                    tableSchemas.streamTable.id,
-                    this.getStreamSettingSubQuery(),
-                ),
                 offset: offset,
                 limit: limit,
                 orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
             });
-            const totalRecords = await this.db.$count(
-                tableSchemas.streamTable,
-                inArray(
-                    tableSchemas.streamTable.id,
-                    this.getStreamSettingSubQuery(),
-                ),
-            );
+            const totalRecords = await this.db.$count(tableSchemas.streamTable);
 
             return { streams, totalRecords };
         } catch (error) {}

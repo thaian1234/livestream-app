@@ -1,6 +1,7 @@
 import { CategoryDTO } from "../dtos/category.dto";
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
+import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
 import { Utils } from "../lib/helpers/utils";
 import { ICategoryRepository } from "../repositories/category.repository";
 
@@ -46,6 +47,17 @@ export class CategoryService implements ICategoryService {
         const result =
             await this.categoryRepository.deleteAllCategoriesFromStream(
                 streamId,
+            );
+        return result;
+    }
+
+    public async addCategoriesToVideo(data: VideoToCategoriesDTO.Insert[]) {
+        return this.categoryRepository.addCategoriesToVideo(data);
+    }
+    public async deleteAllCategoriesFromVideo(videoId: string) {
+        const result =
+            await this.categoryRepository.deleteAllCategoriesFromVideo(
+                videoId,
             );
         return result;
     }

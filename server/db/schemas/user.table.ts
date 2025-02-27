@@ -7,7 +7,9 @@ import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
 import { forgetPasswordTable } from "./forget-password.table";
 import { sessionTable } from "./session.table";
+import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
+import { videoTable } from "./video.table";
 
 export const userTable = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -15,7 +17,7 @@ export const userTable = pgTable("users", {
     email: text("email").notNull().unique(),
     emailVerified: boolean("email_verified").notNull().default(false),
     hashedPassword: text("hashed_password"),
-    imageUrl: text("image_url"),
+    imageUrl: text("image_url").default("").notNull(),
     bio: text("bio"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
@@ -34,4 +36,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     stream: one(streamTable),
     session: one(sessionTable),
     forgetPassword: many(forgetPasswordTable),
+    videos: many(videoTable),
 }));

@@ -1,6 +1,6 @@
-import { FollowDTO } from "../dtos/follow.dto";
-import { QueryDTO } from "../dtos/query.dto";
-import { INotificationService } from "../external-services/notification.service";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { BlockUtils } from "../lib/helpers/block-util";
@@ -8,10 +8,15 @@ import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { IFollowService } from "../services/follow.service";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+
+import { INotificationService } from "../external-services/notification.service";
+
+import { FollowDTO } from "../dtos/follow.dto";
+import { QueryDTO } from "../dtos/query.dto";
 
 export interface IFollowController
     extends Utils.PickMethods<FollowController, "setupHandlers"> {}
@@ -146,7 +151,7 @@ export class FollowController implements IFollowController {
                     message = "Unfollow user successfully";
                 } else {
                     this.notificationService.createFollowNotification({
-                        actorAvatar: currentUser.imageUrl,
+                        actorAvatar: currentUser?.imageUrl || null,
                         actorName: currentUser.username,
                         actorId: currentUser.id,
                         targetId: followingId,

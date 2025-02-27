@@ -1,14 +1,18 @@
-import { StreamUpdateDialog } from "../../../../components/stream-update-dialog";
-import { streamApi } from "../../apis";
-import { ToggleLiveButton } from "../controls/toggle-live-button";
-import { useCallStateHooks } from "@stream-io/video-react-sdk";
+import {
+    RecordCallButton,
+    useCallStateHooks,
+} from "@stream-io/video-react-sdk";
 import { Forward, Heart, UsersRound } from "lucide-react";
 
 import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { UserAvatar } from "@/components/user-avatar";
+
+import { streamApi } from "../../apis";
+import { ToggleLiveButton } from "../controls/toggle-live-button";
 
 export function LocalLiveInformation() {
     const { isPending, user, stream, isSignedIn } = useAuth();
@@ -53,6 +57,7 @@ export function LocalLiveInformation() {
                         isLive={isLive}
                         username={user.username}
                     />
+                    <RecordCallButton />
                 </div>
             )}
         </section>

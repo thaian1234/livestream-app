@@ -1,11 +1,13 @@
-import { StreamDTO } from "../dtos/stream.dto";
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
 import { StreamClient, UserRequest } from "@stream-io/node-sdk";
 import { StreamChat } from "stream-chat";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { StreamDTO } from "../dtos/stream.dto";
+import { UserDTO } from "../dtos/user.dto";
 
 export interface IGetStreamService
     extends Utils.AutoMappedClass<GetStreamService> {}
@@ -95,9 +97,13 @@ export class GetStreamService implements IGetStreamService {
     }
 
     public async createChatChannel(userId: string, streamId: string) {
-        const channel = this.streamChatClient.channel("livestream", streamId, {
-            created_by_id: userId,
-        });
+        const channel = this.streamChatClient.channel(
+            this.callType.livestream,
+            streamId,
+            {
+                created_by_id: userId,
+            },
+        );
         await channel.create();
     }
 
@@ -110,5 +116,18 @@ export class GetStreamService implements IGetStreamService {
             issuedAt,
         );
         return token;
+    }
+
+    public async getRecordings(id: string) {
+        const recording = await this.streamClient.video.listRecordings({
+            id: id,
+            type: this.callType.livestream,
+        });
+        return recording;
+    }
+
+    public verifyWebhook(body: string | Buffer, signature: string) {
+        const isValid = this.streamClient.verifyWebhook(body, signature);
+        return isValid;
     }
 }

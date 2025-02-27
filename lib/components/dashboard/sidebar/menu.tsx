@@ -90,6 +90,7 @@ export function Menu({ isOpen }: MenuProps) {
                                                             >
                                                                 <Icon
                                                                     size={18}
+                                                                    fill="currentColor"
                                                                 />
                                                             </span>
                                                             <p

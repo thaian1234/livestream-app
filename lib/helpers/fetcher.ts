@@ -12,6 +12,8 @@ import { SuccessStatusCode } from "hono/utils/http-status";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { useAuth } from "../providers/auth-provider";
+
 export namespace Fetcher {
     type ClientType = (...args: any[]) => any;
     type ResponseType<T extends ClientType> = InferResponseType<
@@ -68,6 +70,7 @@ export namespace Fetcher {
     ) {
         const queryClient = useQueryClient();
         const router = useRouter();
+        const { user } = useAuth();
 
         const mutation = useMutation<ResponseType<T>, Error, RequestType<T>>({
             mutationFn: async (data) => handleResponse(await client(data)),
@@ -79,6 +82,7 @@ export namespace Fetcher {
             queryClient,
             router,
             toast,
+            user,
         };
     }
 }

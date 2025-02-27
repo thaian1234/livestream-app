@@ -10,7 +10,6 @@ import { useCategoryTree } from "@/lib/features/category/hooks/use-category-tree
 import { searchApi } from "@/lib/features/search/apis";
 import { LivesPreview } from "@/lib/features/search/components/live-preview";
 
-import { CategoryFilter } from "@/components/category-filter";
 import {
     Pagination,
     PaginationContent,
@@ -22,6 +21,8 @@ import {
 } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { CategoryFilter } from "@/components/category-filter";
 
 function PaginationComponent({
     totalPages,

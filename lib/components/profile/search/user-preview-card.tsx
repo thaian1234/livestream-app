@@ -4,16 +4,18 @@ import { useMediaQuery, useScreen } from "usehooks-ts";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { ImageUrlType } from "@/lib/types";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+
 import { UserAvatar } from "@/components/user-avatar";
 
 interface UserPreviewCardProps {
     id: string;
     username: string;
     followers: number;
-    imageUrl: string | null;
+    imageUrl?: ImageUrlType;
     isLive: boolean;
     isFollow: boolean;
 }

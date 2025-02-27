@@ -15,4 +15,9 @@ export const ROUTES = {
     SET_USERNAME_PAGE: "/set-username",
     KEY_PAGE: (username: string) => `/dashboard/${username}/key`,
     COMMUNITY_PAGE: (username: string) => `/dashboard/${username}/community`,
+    STUDIO_PAGE: (username: string) => `/dashboard/${username}/studio`,
+    VIDEO_EDIT_PAGE: (username: string, videoId: string) =>
+        `/dashboard/${username}/video/${videoId}`,
+    STORAGE_PAGE: (username: string) => `/dashboard/${username}/storage`,
+    VIDEO_PAGE: (videoId: string) => `/video/${videoId}`,
 };

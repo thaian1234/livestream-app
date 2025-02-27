@@ -1,12 +1,14 @@
 import React from "react";
 
+import { ImageUrlType } from "@/lib/types";
+
 import { CategoryDTO } from "@/server/api/dtos/category.dto";
 
 import { LivePreviewCard } from "./live-preview-card";
 
 interface StreamInfo {
     id: string;
-    avatar?: string | null | undefined;
+    avatar?: ImageUrlType;
     name: string;
     username: string;
     thumbnailUrl: string | null;

@@ -1,12 +1,12 @@
 "use client";
 
-import { uploadApi } from "../apis";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
+import { uploadApi } from "../apis";
 import DragDropArea from "./drag-drop-area";
 
 interface FileWithPreview extends File {
@@ -16,7 +16,7 @@ interface FileWithPreview extends File {
 export function UploadImageForm() {
     const [file, setFile] = useState<FileWithPreview | null>(null);
     const { mutate: uploadImage, isPending } =
-        uploadApi.mutation.useUploadAvatar(file);
+        uploadApi.mutation.useUpload(file);
 
     const handleFile = useCallback((selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
@@ -41,6 +41,12 @@ export function UploadImageForm() {
                     fileName: file.name,
                     fileSize: file.size,
                     fileType: file.type,
+                },
+                param: {
+                    type: "user-avatar",
+                },
+                query: {
+                    videoId: undefined,
                 },
             });
         }

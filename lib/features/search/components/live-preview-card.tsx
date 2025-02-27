@@ -4,8 +4,9 @@ import { ROUTES } from "@/lib/configs/routes.config";
 
 import { CategoryDTO } from "@/server/api/dtos/category.dto";
 
-import { VideoThumbnail } from "@/components/thumbnail";
 import { Badge } from "@/components/ui/badge";
+
+import { VideoThumbnail } from "@/components/thumbnail";
 
 interface LivePreviewCardProps {
     id: string;
@@ -36,7 +37,7 @@ export function LivePreviewCard({
             onClick={handleNavigateLive}
         >
             <div className="w-72">
-                <VideoThumbnail avatarUrl={avatar} thumbnailUrl={thumbnail} />
+                <VideoThumbnail thumbnailUrl={thumbnail} />
             </div>
             <div className="flex flex-col space-y-1">
                 <p className="text-xl">{title}</p>

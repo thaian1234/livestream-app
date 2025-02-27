@@ -1,23 +1,37 @@
 {
-  "$schema": "https://json.schemastore.org/prettierrc",
-  "arrowParens": "always",
-  "bracketSpacing": true,
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
-  ],
-  "importOrder": [
-    "<THIRD_PARTY_MODULES>",
-    "^@/lib(.*)$",
-    "^@/server/db(.*)$",
-    "^@/server(.*)$",
-    "^@/actions(.*)$",
-    "^@/services(.*)$",
-    "^@/components(.*)$",
-    "^@/app(.*)$",
-    "^./(.*)$"
-  ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "tabWidth": 4
+    "$schema": "https://json.schemastore.org/prettierrc",
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "plugins": [
+        "@trivago/prettier-plugin-sort-imports",
+        "prettier-plugin-tailwindcss"
+    ],
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^@/types(.*)$",
+        "^@/config(.*)$",
+        "^@/lib/(.*)$",
+        "^@/server/db(.*)$",
+        "^@/server/api/repositories(.*)$",
+        "^@/server/api/services(.*)$",
+        "^@/server/api/controllers(.*)$",
+        "^@/server/api/routes(.*)$",
+        "^../configs/(.*)$",
+        "^../lib/(.*)$",
+        "^../middleware/(.*)$",
+        "^../repositories/(.*)$",
+        "^../services/(.*)$",
+        "^../external-services/(.*)$",
+        "^../controllers/(.*)$",
+        "^../routes/(.*)$",
+        "^@/server(.*)$",
+        "^@/hooks(.*)$",
+        "^@/components/ui(.*)$",
+        "^@/components(.*)$",
+        "^@/app(.*)$",
+        "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "tabWidth": 4
 }

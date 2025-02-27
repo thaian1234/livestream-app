@@ -1,4 +1,8 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import {
+    createInsertSchema,
+    createSelectSchema,
+    createUpdateSchema,
+} from "drizzle-zod";
 import { z } from "zod";
 
 import tableSchemas from "@/server/db/schemas";
@@ -50,7 +54,7 @@ const passwordSchema = z
 export class UserDTO {
     private static baseSchema = createSelectSchema(tableSchemas.userTable, {
         email: z.string().email(),
-        imageUrl: z.string().url(),
+        imageUrl: z.string().optional().nullable(),
         username: usernameSchema,
     }).omit({
         createdAt: true,
@@ -63,10 +67,7 @@ export class UserDTO {
         username: usernameSchema,
         email: z.string().email(),
     });
-    public static updateSchema = this.baseSchema.partial().omit({
-        id: true,
-        email: true,
-    });
+    public static updateSchema = createUpdateSchema(tableSchemas.userTable);
     public static deleteSchema = this.baseSchema.pick({
         id: true,
     });

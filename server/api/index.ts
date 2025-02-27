@@ -1,9 +1,11 @@
+import { Hono } from "hono";
+
 import { App } from "./app/app";
 
-const appInstance = new App();
-const app = appInstance.getApp();
-const routes = appInstance.setupRoutes();
+const honoApp = new Hono();
+const routes = new App(honoApp);
 
-type AppType = typeof routes;
+type AppType = ReturnType<App["setupRoutes"]>;
+
 export { type AppType };
-export default app;
+export default honoApp;

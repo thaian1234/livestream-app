@@ -1,5 +1,6 @@
 "use client";
 
+import "@/style/home.css";
 import { Menu } from "lucide-react";
 
 import { followApi } from "@/lib/features/follow/apis";
@@ -8,13 +9,13 @@ import { Recommend } from "@/lib/features/follow/components/recommended";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { TooltipModel } from "@/components/tooltip-model";
+
 import { CollapseSidebar } from "./collapse-sidebar";
 import { ItemLayout } from "./item-layout";
-import "@/style/home.css";
 
 export function Sidebar() {
     const { isOpenSidebar, onCollapseSidebar, onExpandSidebar, isHideSidebar } =

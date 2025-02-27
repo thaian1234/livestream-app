@@ -1,11 +1,13 @@
 import React from "react";
 
+import { ImageUrlType } from "@/lib/types";
+
 import { UserPreviewCard } from "./user-preview-card";
 
 interface UserInfo {
     id: string;
     username: string;
-    imageUrl: string | null;
+    imageUrl?: ImageUrlType;
     followerCount: number;
     bio: string | null;
     isLive: boolean;

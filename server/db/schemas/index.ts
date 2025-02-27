@@ -15,11 +15,26 @@ import { notificationTable, typeEnum } from "./notification.table";
 import { sessionRelations, sessionTable } from "./session.table";
 import { settingRelations, settingTable } from "./setting.table";
 import {
+    storageRelations,
+    storageStatusEnum,
+    storageTable,
+} from "./storage.table";
+import {
     streamsToCategoriesRelations,
     streamsToCategoriesTable,
 } from "./stream-category.table";
 import { streamRelations, streamTable } from "./stream.table";
 import { userRelations, userTable } from "./user.table";
+import {
+    videosToCategoriesRelations,
+    videosToCategoriesTable,
+} from "./video-category.table";
+import {
+    videoRelations,
+    videoStatusEnum,
+    videoTable,
+    videoVisibilityEnum,
+} from "./video.table";
 
 const tableSchemas = {
     userTable,
@@ -33,7 +48,10 @@ const tableSchemas = {
     accountTable,
     categoryTable,
     streamsToCategoriesTable,
-    forgetPasswordTable
+    forgetPasswordTable,
+    videoTable,
+    storageTable,
+    videosToCategoriesTable,
 } as const;
 
 export const tableRelations = {
@@ -49,7 +67,13 @@ export const tableRelations = {
     providerNameEnum,
     streamsToCategoriesRelations,
     categoryRelations,
-    forgetPasswordTable
+    forgetPasswordTable,
+    videoRelations,
+    videoStatusEnum,
+    videoVisibilityEnum,
+    storageStatusEnum,
+    storageRelations,
+    videosToCategoriesRelations,
 } as const;
 
 export default tableSchemas;

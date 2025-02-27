@@ -8,9 +8,10 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 
-import { VideoThumbnail } from "@/components/thumbnail";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
+
+import { VideoThumbnail } from "@/components/thumbnail";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface DashboardCardProps extends StreamDTO.StreamWithUser {}
@@ -39,10 +40,7 @@ export function LivePreviewCard({
         >
             <div className="h-full w-full font-sans">
                 {/* thumnail */}
-                <VideoThumbnail
-                    avatarUrl={user.imageUrl}
-                    thumbnailUrl={thumbnailUrl}
-                />
+                <VideoThumbnail thumbnailUrl={thumbnailUrl} />
                 <div className="flex items-center space-x-4 px-2">
                     <UserAvatar
                         imageUrl={user.imageUrl}

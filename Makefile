@@ -35,5 +35,8 @@ db-reset-migrate:
 	@echo "Running migrations..."
 	@bun run db:migrate
 
-.PHONY: docker-up docker-down docker-status docker-clean db-reset db-reset-migrate
+app-public:
+	@ngrok http --url=supreme-haddock-routinely.ngrok-free.app 3000
+
+.PHONY: docker-up docker-down docker-status docker-clean db-reset db-reset-migrate app-public
 
