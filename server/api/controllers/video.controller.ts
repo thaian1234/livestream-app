@@ -10,11 +10,14 @@ import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
 
+import { ICategoryService } from "../services/category.service";
 import { IVideoService } from "../services/video.service";
 
 import { IGetStreamService } from "../external-services/getstream.service";
 
+import { QueryDTO } from "../dtos/query.dto";
 import { VideoDTO } from "../dtos/video.dto";
+import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
 
 export interface IVideoController
     extends Utils.PickMethods<VideoController, "setupHandlers"> {}
@@ -23,6 +26,7 @@ export class VideoController implements IVideoController {
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
         private readonly getStreamService: IGetStreamService,
+        private readonly categoryService: ICategoryService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -30,10 +34,13 @@ export class VideoController implements IVideoController {
             .use(AuthMiddleware.isAuthenticated)
             .get("/", ...this.getAllVideos())
             .get("/recordings", ...this.getRecordings())
+            .get("/categories", ...this.getCategoriesHandler())
+            .get("/me", ...this.getOwnedVideos())
             .get("/:id", ...this.getVideoById())
             .post("/", ...this.createVideo())
             .patch("/:id", ...this.updateVideo())
-            .delete("/:id", ...this.deleteVideoById());
+            .delete("/:id", ...this.deleteVideoById())
+            .post("/add-categories", ...this.addCategoriesToVideo());
     }
     private getAllVideos() {
         const respSchema = VideoDTO.selectSchema.array();
@@ -89,6 +96,35 @@ export class VideoController implements IVideoController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: respSchema.parse(video),
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getOwnedVideos() {
+        const respSchema = VideoDTO.selectSchema;
+        const queries = QueryDTO.createPaginationSchema(1, 5);
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const user = c.get("getUser");
+                const { page, size } = c.req.valid("query");
+                const videos = await this.videoService.getVideosByUserId(
+                    user.id,
+                    (page - 1) * size,
+                    size,
+                );
+                if (!videos) {
+                    throw new MyError.BadRequestError("Video not found");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        videos: respSchema.array().parse(videos.videos),
+                        totalRecords: videos.totalRecords,
+                        currentOffset: page - 1,
+                        limit: size,
+                    },
                     status: HttpStatus.OK,
                 });
             },
@@ -168,5 +204,84 @@ export class VideoController implements IVideoController {
                 status: HttpStatus.OK,
             });
         });
+    }
+    private addCategoriesToVideo() {
+        return this.factory.createHandlers(
+            zValidator(
+                "json",
+                VideoToCategoriesDTO.addCategoriesToVideoSchema,
+                Validator.handleParseError,
+            ),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const jsonData = c.req.valid("json");
+                const currentUser = c.get("getUser");
+                const isOwner = await this.videoService.checkOwnVideo(
+                    currentUser.id,
+                    jsonData.videoId,
+                );
+                //Check video for user
+
+                if (!isOwner) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to add categories to this video",
+                    );
+                }
+                if (!jsonData.categoryIds.length) {
+                    await this.categoryService.deleteAllCategoriesFromVideo(
+                        jsonData.videoId,
+                    );
+                    return ApiResponse.WriteJSON({
+                        c,
+                        data: undefined,
+                        status: HttpStatus.Created,
+                        msg: "Bulk add category to video success",
+                    });
+                }
+                const isSuccess =
+                    await this.categoryService.addCategoriesToVideo(
+                        jsonData.categoryIds.map((categoryId: string) => ({
+                            categoryId: categoryId,
+                            videoId: jsonData.videoId,
+                        })),
+                    );
+                if (!isSuccess) {
+                    throw new MyError.BadRequestError(
+                        "Failed to bulk add category to video",
+                    );
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: undefined,
+                    status: HttpStatus.Created,
+                    msg: "Bulk add category to video success",
+                });
+            },
+        );
+    }
+    private getCategoriesHandler() {
+        const queries = z.object({
+            id: z.string().optional(),
+        });
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const id = c.req.valid("query").id;
+                const videoId = id;
+
+                if (!videoId) {
+                    throw new MyError.BadRequestError(
+                        "Please provide a valid video id",
+                    );
+                }
+                const videoCategories =
+                    await this.videoService.getVideoCategories(videoId);
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: videoCategories,
+                    status: HttpStatus.OK,
+                });
+            },
+        );
     }
 }

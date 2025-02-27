@@ -60,3 +60,12 @@ export const timeAgo = (date?: Date) => {
     const years = Math.floor(days / 365);
     return `${years}y ago`;
 };
+
+export const formatDateFromString = (dateString: string) => {
+    const formattedDate = new Date(dateString).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+    return formattedDate;
+}

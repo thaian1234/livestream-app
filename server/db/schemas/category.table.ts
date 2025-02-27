@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { streamsToCategoriesTable } from "./stream-category.table";
+import { videosToCategoriesTable } from "./video-category.table";
 
 export const categoryTable = pgTable(
     "categories",
@@ -39,4 +40,5 @@ export const categoryRelations = relations(categoryTable, ({ many, one }) => ({
         relationName: "parent_child",
     }),
     streamsToCategories: many(streamsToCategoriesTable),
+    videosToCategories: many(videosToCategoriesTable),
 }));
