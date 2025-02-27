@@ -8,7 +8,7 @@ import { useUser } from "@/lib/hooks/use-user";
 
 import { DataTablePagination } from "@/components/data-table-pagination";
 
-import { IVideo, StudioColumns } from "./studio-columns";
+import { StudioColumns } from "./studio-columns";
 
 export function StudioTable() {
     //phân trang

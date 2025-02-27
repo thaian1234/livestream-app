@@ -3,8 +3,9 @@ import { PauseIcon, PlayIcon } from "lucide-react";
 
 import { useControlVideoStore } from "@/lib/stores/use-control-video-store";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 interface PlayButtonProps {}
 
@@ -19,7 +20,11 @@ export function PlayButton({}: PlayButtonProps) {
                 className="bg-black rounded-full text-white transition-all hover:bg-white/20"
                 disabled={!videoElement}
             >
-                {isPaused ? <PlayIcon /> : <PauseIcon />}
+                {isPaused ? (
+                    <PlayIcon fill="white" />
+                ) : (
+                    <PauseIcon fill="white" />
+                )}
             </Button>
         </TooltipModel>
     );

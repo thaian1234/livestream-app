@@ -41,12 +41,9 @@ export function PreviewVideoList() {
                     onClick={navigateVideoPage}
                 >
                     <div className="relative w-48 flex-shrink-0">
-                        <VideoThumbnail
-                            thumbnailUrl={video.thumbnail}
-                            avatarUrl={video.thumbnail}
-                        />
+                        <VideoThumbnail thumbnailUrl={video.thumbnail} />
 
-                        <div className="bg-black/80 absolute bottom-1 right-1 rounded px-1 text-xs">
+                        <div className="absolute bottom-1 right-1 rounded px-1 text-xs">
                             {video.duration}
                         </div>
                     </div>

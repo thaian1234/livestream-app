@@ -30,7 +30,7 @@ export default function VideoPage() {
     const [showFullDescription, setShowFullDescription] = useState(false);
 
     return (
-        <div className="mx-10 pt-4">
+        <div className="mx-10">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                     <VideoPlayer />
