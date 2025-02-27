@@ -66,8 +66,6 @@ export class UploadController implements IUploadController {
                         "Cannot upload image right now",
                     );
                 }
-                console.log("sign url", signedUrl);
-                console.log("image", imageUrl);
 
                 let updatedEntity = null;
                 switch (type) {

@@ -40,8 +40,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadVideoThumbnailForm } from "../../upload/components/upload-video-thumbnail-form";
 import { videoApi } from "../apis";
 import { DeleteVideoButton } from "./delete-video-btn";
-import { VideoPreviewSection } from "./video-preview-section";
 import { VideoCategoriesForm } from "./video-categories-form";
+import { VideoPreviewSection } from "./video-preview-section";
 
 interface EditVideoFormProps {
     videoId: string;
