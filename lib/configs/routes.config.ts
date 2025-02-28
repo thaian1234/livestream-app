@@ -19,4 +19,5 @@ export const ROUTES = {
     VIDEO_EDIT_PAGE: (username: string, videoId: string) =>
         `/dashboard/${username}/video/${videoId}`,
     STORAGE_PAGE: (username: string) => `/dashboard/${username}/storage`,
+    VIDEO_PAGE: (videoId: string) => `/video/${videoId}`,
 };

@@ -5,6 +5,8 @@ import { useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 
+import { VideoDTO } from "@/server/api/dtos/video.dto";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -12,43 +14,80 @@ import { TooltipModel } from "@/components/tooltip-model";
 import { UserAvatar } from "@/components/user-avatar";
 
 import { ISelectVideo } from ".";
+import { videoApi } from "../../apis";
 import { OptionsDropdown } from "./options-dropdown";
 
-export function VideoInfor({
-    dummyDataVideo,
-}: {
-    dummyDataVideo: ISelectVideo;
-}) {
-    const [showFullDescription, setShowFullDescription] = useState(false);
+interface VideoInforProps extends VideoDTO.VideoWithUser {
+    followers: number;
+    isFollowing: boolean;
+    isBlocked: boolean;
+}
 
+export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
+    const [showFullDescription, setShowFullDescription] = useState(false);
+    const {
+        mutate: handleUpdate,
+        isPending,
+        error,
+    } = videoApi.mutation.useUpdateVideo();
+    const handleLikeButton = () => {
+        handleUpdate({
+            param: {
+                id: videoData.id,
+            },
+            json: {
+                likeCount: videoData.likeCount + 1,
+            },
+        });
+    };
+    const handleDislikeButton = () => {
+        handleUpdate({
+            param: {
+                id: videoData.id,
+            },
+            json: {
+                dislikeCount: videoData.dislikeCount + 1,
+            },
+        });
+    };
     return (
         <div className="mt-4">
             <h1 className="line-clamp-2 text-xl font-semibold">
-                {dummyDataVideo.title}
+                {videoData.title}
             </h1>
             <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <UserAvatar size={"lg"} />
                     <div className="mr-4">
-                        <p>{dummyDataVideo.userName}</p>
+                        <p>{videoData.user.username}</p>
                         <p className="flex space-x-6 text-sm text-white/70">
-                            <span>Followers: {dummyDataVideo.followers}</span>
+                            <span>Followers: {videoData.followers}</span>
                         </p>
                     </div>
                     <FollowButton
-                        followingId={dummyDataVideo.userId}
-                        isFollowed={dummyDataVideo.isFollowing}
+                        followingId={videoData.userId}
+                        isFollowed={videoData.isFollowing}
                     />
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button variant="secondary" className="gap-2">
+                    <Button
+                        variant="secondary"
+                        className="gap-2"
+                        onClick={handleLikeButton}
+                        loading={isPending}
+                    >
                         <ThumbsUp className="h-4 w-4" />
-                        {dummyDataVideo.likeCount}
+                        {videoData.likeCount}
                     </Button>
-                    <Button variant="secondary" className="gap-2">
+                    <Button
+                        variant="secondary"
+                        className="gap-2"
+                        onClick={handleDislikeButton}
+                        loading={isPending}
+                    >
                         <ThumbsDown className="h-4 w-4" />
-                        {dummyDataVideo.dislikeCount}
+                        {videoData.dislikeCount}
                     </Button>
                     <Button variant="secondary" className="gap-2">
                         <Share2 className="h-4 w-4" />
@@ -66,15 +105,15 @@ export function VideoInfor({
             {/* Description */}
             <div className="mt-4 rounded-xl bg-secondary/80 p-4">
                 <div className="flex gap-4 text-sm text-gray-400">
-                    <span>{dummyDataVideo.viewCount} views</span>
-                    <span>{dummyDataVideo.createdAt}</span>
+                    <span>{videoData.viewCount} views</span>
+                    <span>{videoData.createdAt}</span>
                     <span className="flex gap-2">
-                        {dummyDataVideo.categories.map((category) => (
+                        {videoData.categories.map((category) => (
                             <Badge
-                                key={category}
+                                key={category.id}
                                 className="bg-gray-500 hover:bg-gray-600"
                             >
-                                {category}
+                                {category.name}
                             </Badge>
                         ))}
                     </span>
@@ -82,7 +121,7 @@ export function VideoInfor({
                 <div
                     className={`mt-2 text-sm ${showFullDescription ? "" : "line-clamp-2"}`}
                 >
-                    {dummyDataVideo.description}
+                    {videoData.description}
                 </div>
                 <Button
                     variant="link"

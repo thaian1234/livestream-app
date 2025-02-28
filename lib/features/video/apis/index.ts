@@ -14,6 +14,7 @@ const keys = {
         ["video_categories", videoId] as string[],
     videosByUserId: (userId: string, pagination: PaginationType) =>
         [...baseKey, "user", userId, pagination] as string[],
+    videosRelate: (videoId: string) => ["video_relate", videoId] as string[],
 };
 
 export const videoApi = {
@@ -57,6 +58,19 @@ export const videoApi = {
                 keys.video_categories(videoId),
                 {
                     query: {
+                        id: videoId,
+                    },
+                },
+                {},
+            );
+        },
+        useGetRelateVideo(videoId: string) {
+            const $get = baseApi[":id"].relate.$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.video_categories(videoId),
+                {
+                    param: {
                         id: videoId,
                     },
                 },

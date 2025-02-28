@@ -10,7 +10,8 @@ import {
     Volume2,
     VolumeOff,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { redirect, useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { Slider } from "@/components/ui/slider";
 import { VideoThumbnail } from "@/components/thumbnail";
 import { TooltipModel } from "@/components/tooltip-model";
 
+import { videoApi } from "../../apis";
 import { VideoInfor } from "./video-infor";
 
 export interface ISelectVideo {
@@ -37,29 +39,41 @@ export interface ISelectVideo {
     duration: string;
     categories: string[];
 }
-const dummyDataVideo: ISelectVideo = {
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnailUrl:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fathuan611%2F%25E1%25BA%25A3nh-169%2F&psig=AOvVaw3n1uhLO7LOMaGooIgZLHx9&ust=1740549122864000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiBzfKQ3osDFQAAAAAdAAAAABAE",
-    viewCount: 142000,
-    likeCount: 120,
-    dislikeCount: 1,
-    userId: "1",
-    userName: "John",
-    isFollowing: false,
-    followers: 100,
-    title: "slow days, soft sounds — (music playlist for moments of peace) slow days, soft soundsslow days, soft soundsslow days, soft soundsslow days, soft sounds",
-    description:
-        "everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life)  ",
-    createdAt: "4 months ago",
-    duration: "31:19",
-    categories: ["Entertainment", "Music"],
+//userName, isFollowing, followers, categoriests
+// const dummyDataVideo: ISelectVideo = {
+//     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+//     thumbnailUrl:
+//         "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fathuan611%2F%25E1%25BA%25A3nh-169%2F&psig=AOvVaw3n1uhLO7LOMaGooIgZLHx9&ust=1740549122864000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiBzfKQ3osDFQAAAAAdAAAAABAE",
+//     viewCount: 142000,
+//     likeCount: 120,
+//     dislikeCount: 1,
+//     userId: "1",
+//     userName: "John",
+//     isFollowing: false,
+//     followers: 100,
+//     title: "slow days, soft sounds — (music playlist for moments of peace) slow days, soft soundsslow days, soft soundsslow days, soft soundsslow days, soft sounds",
+//     description:
+//         "everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life) everything you need is already inside you — (a playlist for a quiet life)  ",
+//     createdAt: "4 months ago",
+//     duration: "31:19",
+//     categories: ["Entertainment", "Music"],
+// };
+type ParamsType = {
+    videoId: string;
 };
 export function VideoPlayer() {
+    const { videoId } = useParams<ParamsType>();
+    const { data, isPending, error } = videoApi.query.useGetVideo(videoId);
+    const {
+        mutate: updateViewCount,
+        isPending: pendingViewCount,
+        error: pendingError,
+    } = videoApi.mutation.useUpdateVideo();
     const playerRef = useRef<ReactPlayer>(null);
     const playerWrapperRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [isLightMode, setIsLightMode] = useState(true);
+    const [hasCounted, setHasCounted] = useState(false);
     const togglePlay = () => {
         if (isLightMode) {
             setIsLightMode(false); // Khi nhấn Play, tắt light mode
@@ -86,6 +100,27 @@ export function VideoPlayer() {
             setFullscreen(false);
         }
     };
+    useEffect(() => {
+        if (!hasCounted && data && videoId) {
+            updateViewCount({
+                param: {
+                    id: videoId,
+                },
+                json: {
+                    viewCount: data.data.viewCount + 1,
+                },
+            });
+            setHasCounted(true);
+        }
+    }, [data, hasCounted, updateViewCount, videoId]);
+    if (!!error) {
+        redirect("/");
+    }
+
+    if (!data || isPending) {
+        return null;
+    }
+    const video = data.data;
     return (
         <>
             {/* Video Player */}
@@ -95,7 +130,7 @@ export function VideoPlayer() {
             >
                 <ReactPlayer
                     ref={playerRef}
-                    url={dummyDataVideo.videoUrl}
+                    url={video.videoUrl}
                     controls={false} // Hiển thị các nút điều khiển
                     playing={playing}
                     muted={muted}
@@ -108,9 +143,7 @@ export function VideoPlayer() {
                     playbackRate={playbackRate}
                     light={
                         isLightMode && (
-                            <VideoThumbnail
-                                thumbnailUrl={dummyDataVideo.thumbnailUrl}
-                            />
+                            <VideoThumbnail thumbnailUrl={video.thumbnailUrl} />
                         )
                     }
                 />
@@ -209,7 +242,7 @@ export function VideoPlayer() {
                 </article>
             </div>
             {/* Video Info */}
-            <VideoInfor dummyDataVideo={dummyDataVideo} />
+            <VideoInfor videoData={video} />
         </>
     );
 }
