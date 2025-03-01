@@ -1,11 +1,12 @@
 "use client";
 
 import { useParticipantViewContext } from "@stream-io/video-react-sdk";
-import { AppWindow } from "lucide-react";
+import { PictureInPicture2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 const PiPButton = () => {
     const { videoElement } = useParticipantViewContext();
@@ -63,7 +64,7 @@ const PiPButton = () => {
                 onClick={togglePictureInPicture}
                 className="bg-black rounded-full text-white transition-all hover:bg-white/30"
             >
-                <AppWindow />
+                <PictureInPicture2 />
             </Button>
         </TooltipModel>
     );
