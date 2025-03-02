@@ -10,6 +10,7 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 
+import { commentTable } from "./comment.table";
 import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
@@ -75,4 +76,5 @@ export const videoRelations = relations(videoTable, ({ one, many }) => ({
     }),
     videosToCategories: many(videosToCategoriesTable),
     videoLikes: many(videoLikeTable),
+    comments: many(commentTable),
 }));

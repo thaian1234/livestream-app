@@ -15,6 +15,7 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 import { AccountRepository } from "../repositories/account.repository";
 import { BlockRepository } from "../repositories/block.repository";
 import { CategoryRepository } from "../repositories/category.repository";
+import { CommentRepository } from "../repositories/comment.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
@@ -28,6 +29,7 @@ import { VideoRepository } from "../repositories/video.repository";
 import { AuthService } from "../services/auth.service";
 import { BlockService } from "../services/block.service";
 import { CategoryService } from "../services/category.service";
+import { CommentService } from "../services/comment.service";
 import { EmailVerificationService } from "../services/email-verification.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
@@ -48,6 +50,7 @@ import { R2BucketService } from "../external-services/r2-bucket.service";
 import { AuthController } from "../controllers/auth.controller";
 import { BlockController } from "../controllers/block.controller";
 import { CategoryController } from "../controllers/category.controller";
+import { CommentController } from "../controllers/comment.controller";
 import { FollowController } from "../controllers/follow.controller";
 import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
@@ -64,6 +67,7 @@ import { WebhookController } from "../controllers/webhook.controller";
 import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
 import { CategoryRoutes } from "../routes/category.routes";
+import { CommentRoutes } from "../routes/comment.routes";
 import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
 import { SearchRoutes } from "../routes/search.routes";
@@ -118,6 +122,7 @@ export class App {
         const videoRepository = new VideoRepository();
         const storageRepository = new StorageRepository();
         const videolikeRepository = new VideoLikeRepository();
+        const commentRepository = new CommentRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -152,6 +157,7 @@ export class App {
         const videoService = new VideoService(videoRepository);
         const storageService = new StorageService(storageRepository);
         const videolikeService = new VideoLikeService(videolikeRepository);
+        const commentService = new CommentService(commentRepository);
 
         // Controllers
         const userController = new UserController(
@@ -241,6 +247,10 @@ export class App {
             videolikeService,
             videoService,
         );
+        const commentController = new CommentController(
+            factory,
+            commentService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -267,6 +277,7 @@ export class App {
             factory,
             videoLikeController,
         );
+        const commentRoutes = new CommentRoutes(factory, commentController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -283,6 +294,7 @@ export class App {
             .route("/", videoRoutes.setupRoutes())
             .route("/", webhookRoutes.setupRoutes())
             .route("/", storageRoutes.setupRoutes())
-            .route("/", videolikeRoutes.setupRoutes());
+            .route("/", videolikeRoutes.setupRoutes())
+            .route("/", commentRoutes.setupRoutes());
     }
 }

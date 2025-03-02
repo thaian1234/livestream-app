@@ -5,6 +5,7 @@ import {
 } from "./account.table";
 import { blockRelations, blockTable } from "./block.table";
 import { categoryRelations, categoryTable } from "./category.table";
+import { commentRelations, commentTable } from "./comment.table";
 import {
     emailVerificationRelations,
     emailVerificationTable,
@@ -53,7 +54,8 @@ const tableSchemas = {
     videoTable,
     storageTable,
     videosToCategoriesTable,
-    videoLikeTable
+    videoLikeTable,
+    commentTable,
 } as const;
 
 export const tableRelations = {
@@ -76,7 +78,8 @@ export const tableRelations = {
     storageStatusEnum,
     storageRelations,
     videosToCategoriesRelations,
-    videoLikeRelations
+    videoLikeRelations,
+    commentRelations,
 } as const;
 
 export default tableSchemas;
