@@ -22,6 +22,7 @@ import { SettingRepository } from "../repositories/setting.repository";
 import { StorageRepository } from "../repositories/storage.repository";
 import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
+import { VideoLikeRepository } from "../repositories/video-like.repository";
 import { VideoRepository } from "../repositories/video.repository";
 
 import { AuthService } from "../services/auth.service";
@@ -34,6 +35,7 @@ import { SettingService } from "../services/setting.service";
 import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
+import { VideoLikeService } from "../services/video-like.service";
 import { VideoService } from "../services/video.service";
 
 import { GetStreamService } from "../external-services/getstream.service";
@@ -55,6 +57,7 @@ import { StorageController } from "../controllers/storage.controller";
 import { StreamController } from "../controllers/stream.controller";
 import { UploadController } from "../controllers/upload.controller";
 import { UserController } from "../controllers/user.controller";
+import { VideoLikeController } from "../controllers/video-like.controller";
 import { VideoController } from "../controllers/video.controller";
 import { WebhookController } from "../controllers/webhook.controller";
 
@@ -69,6 +72,7 @@ import { StorageRoutes } from "../routes/storage.routes";
 import { StreamRoutes } from "../routes/stream.routes";
 import { UploadRoutes } from "../routes/upload.routes";
 import { UserRoutes } from "../routes/user.routes";
+import { VideoLikeRoutes } from "../routes/video-like.routes";
 import { VideoRoutes } from "../routes/video.routes";
 import { WebhookRoutes } from "../routes/webhook.routes";
 
@@ -113,6 +117,7 @@ export class App {
         const forgetPasswordRepository = new ForgetPasswordRepository();
         const videoRepository = new VideoRepository();
         const storageRepository = new StorageRepository();
+        const videolikeRepository = new VideoLikeRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -146,6 +151,7 @@ export class App {
         const categoryService = new CategoryService(categoryRepository);
         const videoService = new VideoService(videoRepository);
         const storageService = new StorageService(storageRepository);
+        const videolikeService = new VideoLikeService(videolikeRepository);
 
         // Controllers
         const userController = new UserController(
@@ -230,6 +236,11 @@ export class App {
             factory,
             storageService,
         );
+        const videoLikeController = new VideoLikeController(
+            factory,
+            videolikeService,
+            videoService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -252,6 +263,10 @@ export class App {
         const videoRoutes = new VideoRoutes(factory, videoController);
         const webhookRoutes = new WebhookRoutes(factory, webhookController);
         const storageRoutes = new StorageRoutes(factory, storageController);
+        const videolikeRoutes = new VideoLikeRoutes(
+            factory,
+            videoLikeController,
+        );
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -267,6 +282,7 @@ export class App {
             .route("/", notificationRoutes.setupRoutes())
             .route("/", videoRoutes.setupRoutes())
             .route("/", webhookRoutes.setupRoutes())
-            .route("/", storageRoutes.setupRoutes());
+            .route("/", storageRoutes.setupRoutes())
+            .route("/", videolikeRoutes.setupRoutes());
     }
 }
