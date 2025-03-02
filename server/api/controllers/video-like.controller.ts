@@ -5,6 +5,7 @@ import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
+import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
 
@@ -28,26 +29,18 @@ export class VideoLikeController implements IVideoLikeController {
             .post("/", ...this.createVideoLike());
     }
     private createVideoLike() {
-        const reqSchema = VideoLikeDTO.toggleSchema;
+        const reqSchema = VideoLikeDTO.toggleSchema.omit({
+            userId: true,
+        });
 
         return this.factory.createHandlers(
-            zValidator("json", reqSchema),
+            zValidator("json", reqSchema, Validator.handleParseError),
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const currentUser = c.get("getUser");
-                const isOwner = await this.videoService.checkOwnVideo(
-                    currentUser.id,
-                    jsonData.videoId,
-                );
-
-                if (!isOwner) {
-                    throw new MyError.UnauthorizedError(
-                        "You are not allowed to add categories to this video",
-                    );
-                }
 
                 const msg = await this.videolikeService.toggleLike(
-                    jsonData.userId,
+                    currentUser.id,
                     jsonData.videoId,
                     jsonData.isLike,
                 );

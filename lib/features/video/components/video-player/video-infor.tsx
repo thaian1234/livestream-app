@@ -37,7 +37,6 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
     const handleLikeButton = () => {
         handleUpdate({
             json: {
-                userId: videoData.userId,
                 videoId: videoData.id,
                 isLike: true,
             },
@@ -46,7 +45,6 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
     const handleDislikeButton = () => {
         handleUpdate({
             json: {
-                userId: videoData.userId,
                 videoId: videoData.id,
                 isLike: false,
             },
