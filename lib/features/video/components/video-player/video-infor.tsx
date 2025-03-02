@@ -4,6 +4,8 @@ import { MoreHorizontal, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { videolikeApi } from "@/lib/features/video-like/apis";
+import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
 
@@ -21,6 +23,8 @@ interface VideoInforProps extends VideoDTO.VideoWithUser {
     followers: number;
     isFollowing: boolean;
     isBlocked: boolean;
+    isLiked: boolean;
+    isDisliked: boolean;
 }
 
 export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
@@ -29,24 +33,22 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
         mutate: handleUpdate,
         isPending,
         error,
-    } = videoApi.mutation.useUpdateVideo();
+    } = videolikeApi.mutation.useToggleVideoLike();
     const handleLikeButton = () => {
         handleUpdate({
-            param: {
-                id: videoData.id,
-            },
             json: {
-                likeCount: videoData.likeCount + 1,
+                userId: videoData.userId,
+                videoId: videoData.id,
+                isLike: true,
             },
         });
     };
     const handleDislikeButton = () => {
         handleUpdate({
-            param: {
-                id: videoData.id,
-            },
             json: {
-                dislikeCount: videoData.dislikeCount + 1,
+                userId: videoData.userId,
+                videoId: videoData.id,
+                isLike: false,
             },
         });
     };
@@ -61,7 +63,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                     <div className="mr-4">
                         <p>{videoData.user.username}</p>
                         <p className="flex space-x-6 text-sm text-white/70">
-                            <span>Followers: {videoData.followers}</span>
+                            <span>Followers: {formatNumber(videoData.followers)}</span>
                         </p>
                     </div>
                     <FollowButton
@@ -75,19 +77,25 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                         variant="secondary"
                         className="gap-2"
                         onClick={handleLikeButton}
-                        loading={isPending}
+                        disabled={isPending}
                     >
-                        <ThumbsUp className="h-4 w-4" />
-                        {videoData.likeCount}
+                        <ThumbsUp
+                            fill={videoData.isLiked ? "white" : ""}
+                            className="h-4 w-4"
+                        />
+                        {formatNumber(videoData.likeCount)}
                     </Button>
                     <Button
                         variant="secondary"
                         className="gap-2"
                         onClick={handleDislikeButton}
-                        loading={isPending}
+                        disabled={isPending}
                     >
-                        <ThumbsDown className="h-4 w-4" />
-                        {videoData.dislikeCount}
+                        <ThumbsDown
+                            fill={videoData.isDisliked ? "white" : ""}
+                            className="h-4 w-4"
+                        />
+                        {formatNumber(videoData.dislikeCount)}
                     </Button>
                     <Button variant="secondary" className="gap-2">
                         <Share2 className="h-4 w-4" />
@@ -105,8 +113,8 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             {/* Description */}
             <div className="mt-4 rounded-xl bg-secondary/80 p-4">
                 <div className="flex gap-4 text-sm text-gray-400">
-                    <span>{videoData.viewCount} views</span>
-                    <span>{videoData.createdAt}</span>
+                    <span>{formatNumber(videoData.viewCount)} Views</span>
+                    <span>{timeAgo(new Date(videoData.createdAt))}</span>
                     <span className="flex gap-2">
                         {videoData.categories.map((category) => (
                             <Badge

@@ -70,7 +70,8 @@ export const formatDateFromString = (dateString: string) => {
     return formattedDate;
 };
 
-export const formatNumber = (num: number) => {
+export const formatNumber = (num?: number | null) => {
+    if (!num) return "0";
     if (num < 1_000) return `${num}`;
     if (num < 1_000_000) return `${(num / 1_000).toFixed(1)}k`;
     if (num < 1_000_000_000) return `${(num / 1_000_000).toFixed(1)}M`;

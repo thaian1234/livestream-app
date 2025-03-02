@@ -3,7 +3,7 @@
 import { redirect, useParams, useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
-import { timeAgo } from "@/lib/helpers/formatData";
+import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
 
 import { VideoThumbnail } from "@/components/thumbnail";
 
@@ -73,7 +73,7 @@ export function PreviewVideoList() {
                             {video.title}
                         </h3>
                         <p className="mt-1 text-sm text-gray-400">
-                            {video.viewCount} Views
+                            {formatNumber(video.viewCount)} Views
                         </p>
                         <p className="text-sm text-gray-400">
                             {timeAgo(new Date(video.createdAt))}

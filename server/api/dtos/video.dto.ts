@@ -3,9 +3,10 @@ import {
     createSelectSchema,
     createUpdateSchema,
 } from "drizzle-zod";
-import { z } from "zod";
+import { number, string, z } from "zod";
 
 import tableSchemas, { tableRelations } from "@/server/db/schemas";
+
 import { CategoryDTO } from "./category.dto";
 
 const userSchema = createSelectSchema(tableSchemas.userTable, {
@@ -25,7 +26,10 @@ export class VideoDTO {
         createdAt: z.date().transform((date) => date.toISOString()),
         updatedAt: z.date().transform((date) => date.toISOString()),
     });
-    public static selectSchema = this.baseSchema.omit({});
+    public static selectSchema = this.baseSchema.extend({
+        likeCount: z.coerce.number().nullish(),
+        dislikeCount: z.coerce.number().nullish(),
+    });
     public static insertSchema = createInsertSchema(tableSchemas.videoTable);
     public static updateSchema = createUpdateSchema(
         tableSchemas.videoTable,
@@ -39,7 +43,7 @@ export class VideoDTO {
     public static videoWithUser = this.selectSchema.extend({
         user: userSchema,
         categories: CategoryDTO.basicSelectSchema.array(),
-    })
+    });
 }
 
 export namespace VideoDTO {

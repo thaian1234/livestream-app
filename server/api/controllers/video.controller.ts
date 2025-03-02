@@ -117,11 +117,13 @@ export class VideoController implements IVideoController {
                 const followers = await this.followService.findFollowerByUserId(
                     video.userId,
                 );
-                console.log(formattedData);
+
                 const responseData = {
                     ...respSchema.parse(formattedData),
                     followers: followers?.length || 0,
                     isFollowing: false,
+                    isLiked: false,
+                    isDisliked: false,
                     isBlocked: false,
                 };
                 if (isCurrentUserDifferent) {
@@ -129,6 +131,14 @@ export class VideoController implements IVideoController {
                         (follower) => follower.id === currentUser.id,
                     );
                 }
+                responseData.isLiked =
+                    video.videoLikes.find(
+                        (videoLike) => videoLike.userId === currentUser?.id,
+                    )?.type === 1;
+                responseData.isDisliked =
+                    video.videoLikes.find(
+                        (videoLike) => videoLike.userId === currentUser?.id,
+                    )?.type === -1;
                 return ApiResponse.WriteJSON({
                     c,
                     data: responseData,

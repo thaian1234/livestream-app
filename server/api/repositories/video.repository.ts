@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, ne, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -16,6 +16,18 @@ export class VideoRepository implements IVideoRepository {
     constructor() {
         this.db = Database.getInstance().db;
     }
+    private getLikeAndDislikeCount() {
+        return {
+            likeCount:
+                sql`(SELECT COUNT(*) FROM "videoLikes" vl WHERE vl."videoId" = "videoTable"."id" AND vl."type" = 1)`.as(
+                    "likeCount",
+                ),
+            dislikeCount:
+                sql`(SELECT COUNT(*) FROM "videoLikes" vl WHERE vl."videoId" = "videoTable"."id" AND vl."type" = -1)`.as(
+                    "dislikeCount",
+                ),
+        };
+    }
     async findById(id: string) {
         try {
             const video = await this.db.query.videoTable.findFirst({
@@ -28,7 +40,9 @@ export class VideoRepository implements IVideoRepository {
                         },
                         limit: this.categorySize,
                     },
+                    videoLikes: true,
                 },
+                extras: this.getLikeAndDislikeCount(),
             });
             return video;
         } catch (error) {
@@ -39,6 +53,7 @@ export class VideoRepository implements IVideoRepository {
         try {
             const videos = await this.db.query.videoTable.findMany({
                 where: eq(tableSchemas.videoTable.userId, userId),
+                extras: this.getLikeAndDislikeCount(),
                 offset: offset,
                 limit: size,
             });
@@ -53,7 +68,9 @@ export class VideoRepository implements IVideoRepository {
     }
     async findAll() {
         try {
-            const videos = await this.db.query.videoTable.findMany();
+            const videos = await this.db.query.videoTable.findMany({
+                extras: this.getLikeAndDislikeCount(),
+            });
             return videos;
         } catch (error) {
             console.error(error);
@@ -135,9 +152,14 @@ export class VideoRepository implements IVideoRepository {
                 );
 
             if (categories.length === 0) {
-                return this.db.select().from(tableSchemas.videoTable).where(
-                    ne(tableSchemas.videoTable.id, videoId), // Exclude current video
-                ).orderBy(sql`RANDOM()`).limit(5)
+                return this.db
+                    .select()
+                    .from(tableSchemas.videoTable)
+                    .where(
+                        ne(tableSchemas.videoTable.id, videoId), // Exclude current video
+                    )
+                    .orderBy(sql`RANDOM()`)
+                    .limit(5);
             }
 
             // Find other videos in these categories
