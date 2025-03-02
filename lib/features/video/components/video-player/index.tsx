@@ -148,7 +148,7 @@ export function VideoPlayer() {
                             }}
                             max={100}
                             step={0.1}
-                            className="absolute inset-x-0 bottom-16 flex h-0.5 w-full items-center justify-between"
+                            className="absolute inset-x-0 bottom-16 flex h-0.5 w-full cursor-pointer items-center justify-between"
                         />
                         <article className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-between bg-gradient-to-t from-black-0/90 to-transparent p-4">
                             <div className="flex">

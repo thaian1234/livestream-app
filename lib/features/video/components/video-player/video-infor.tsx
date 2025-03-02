@@ -1,9 +1,11 @@
 "use client";
 
 import { MoreHorizontal, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
 
@@ -24,7 +26,9 @@ interface VideoInforProps extends VideoDTO.VideoWithUser {
 }
 
 export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
+    const currentUser = useUser();
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const router = useRouter();
     const {
         mutate: handleUpdate,
         isPending,
@@ -50,6 +54,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             },
         });
     };
+
     return (
         <div className="mt-4">
             <h1 className="line-clamp-2 text-xl font-semibold">
@@ -64,10 +69,21 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                             <span>Followers: {videoData.followers}</span>
                         </p>
                     </div>
-                    <FollowButton
-                        followingId={videoData.userId}
-                        isFollowed={videoData.isFollowing}
-                    />
+                    {currentUser.user.id === videoData.userId ? (
+                        <FollowButton
+                            followingId={videoData.userId}
+                            isFollowed={videoData.isFollowing}
+                        />
+                    ) : (
+                        <Button
+                            variant="secondary"
+                            onClick={() => {
+                                router.push(`video/${videoData.id}/edit`);
+                            }}
+                        >
+                            Edit Video
+                        </Button>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-2">
