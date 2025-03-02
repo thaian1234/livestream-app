@@ -10,6 +10,7 @@ import { sessionTable } from "./session.table";
 import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { videoTable } from "./video.table";
+import { videoLikeTable } from "./video-like.table";
 
 export const userTable = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -37,4 +38,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     session: one(sessionTable),
     forgetPassword: many(forgetPasswordTable),
     videos: many(videoTable),
+    videolikes: many(videoLikeTable),
 }));

@@ -29,6 +29,7 @@ import {
     videosToCategoriesRelations,
     videosToCategoriesTable,
 } from "./video-category.table";
+import { videoLikeRelations, videoLikeTable } from "./video-like.table";
 import {
     videoRelations,
     videoStatusEnum,
@@ -52,6 +53,7 @@ const tableSchemas = {
     videoTable,
     storageTable,
     videosToCategoriesTable,
+    videoLikeTable
 } as const;
 
 export const tableRelations = {
@@ -74,6 +76,7 @@ export const tableRelations = {
     storageStatusEnum,
     storageRelations,
     videosToCategoriesRelations,
+    videoLikeRelations
 } as const;
 
 export default tableSchemas;

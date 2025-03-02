@@ -14,6 +14,7 @@ import { storageTable } from "./storage.table";
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
 import { videosToCategoriesTable } from "./video-category.table";
+import { videoLikeTable } from "./video-like.table";
 
 export const videoVisibilityEnum = pgEnum("video_privacy", [
     "public",
@@ -47,8 +48,6 @@ export const videoTable = pgTable(
         thumbnailUrl: text("thumbnail_url"),
         duration: integer("duration"),
         viewCount: integer("view_count").default(0).notNull(),
-        likeCount: integer("like_count").default(0).notNull(),
-        dislikeCount: integer("dislike_count").default(0).notNull(),
         visibility: videoVisibilityEnum().default("private").notNull(),
         status: videoStatusEnum("processing").default("processing").notNull(),
 
@@ -75,4 +74,5 @@ export const videoRelations = relations(videoTable, ({ one, many }) => ({
         references: [storageTable.id],
     }),
     videosToCategories: many(videosToCategoriesTable),
+    videoLikes: many(videoLikeTable),
 }));
