@@ -8,7 +8,7 @@ import { AppConfig } from "../configs/app.config";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
-import { CreateFactoryType, Env } from "../lib/types/factory.type";
+import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -37,7 +37,7 @@ import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { VideoService } from "../services/video.service";
 
-import { AIService, AIServiceBuilder } from "../external-services/ai.service";
+import { AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
