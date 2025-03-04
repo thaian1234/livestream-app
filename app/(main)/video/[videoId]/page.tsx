@@ -1,5 +1,6 @@
 import { PreviewVideoList } from "@/lib/features/video/components/preview-video-list";
 import { VideoPlayer } from "@/lib/features/video/components/video-player";
+import { CommentSection } from "@/lib/features/video/components/video-player/comment-section";
 import { DummyVideoPlayer } from "@/lib/features/video/components/video-player/dummy-video-player";
 import { VideoInfor } from "@/lib/features/video/components/video-player/video-infor";
 
@@ -12,6 +13,9 @@ export default function VideoPage() {
                     {/* <DummyVideoPlayer /> */}
                 </div>
                 <PreviewVideoList />
+                <div className="lg:col-span-2">
+                    <CommentSection />
+                </div>
             </div>
         </div>
     );

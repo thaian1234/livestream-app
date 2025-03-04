@@ -4,6 +4,8 @@ import { CircleGauge, PauseIcon, PlayIcon, TvMinimal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
+import { formatTime } from "@/lib/helpers/formatData";
+
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -66,6 +68,7 @@ export function DummyVideoPlayer() {
     const [muted, setMuted] = useState(false);
     const [played, setPlayed] = useState(0);
     const [playbackRate, setPlaybackRate] = useState(1);
+    const [duration, setDuration] = useState(0);
 
     const [showControls, setShowControls] = useState(false);
     const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -108,6 +111,8 @@ export function DummyVideoPlayer() {
                     onProgress={({ played }) => setPlayed(played)}
                     onEnded={() => setPlaying(false)}
                     playbackRate={playbackRate}
+                    stopOnUnmount={false}
+                    onDuration={(d) => setDuration(d)}
                     light={
                         isLightMode && (
                             <VideoThumbnail
@@ -160,6 +165,10 @@ export function DummyVideoPlayer() {
                                 />
                             </div>
                             <div className="flex items-center">
+                                <div>
+                                    {formatTime(played * duration)} /
+                                    {formatTime(duration)}
+                                </div>
                                 {/* Playback Speed */}
                                 <SpeedControl
                                     playbackRate={playbackRate}

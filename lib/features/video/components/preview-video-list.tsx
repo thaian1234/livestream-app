@@ -8,6 +8,7 @@ import { timeAgo } from "@/lib/helpers/formatData";
 import { VideoThumbnail } from "@/components/thumbnail";
 
 import { videoApi } from "../apis";
+import { PreviewVideoListSkeleton } from "./preview-video-list-skeleton";
 
 const recommendedVideos = [
     {
@@ -51,7 +52,7 @@ export function PreviewVideoList() {
     }
 
     if (!data || isPending) {
-        return null;
+        return <PreviewVideoListSkeleton />;
     }
     return (
         <div className="space-y-4">

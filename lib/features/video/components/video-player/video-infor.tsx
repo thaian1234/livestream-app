@@ -2,7 +2,7 @@
 
 import { MoreHorizontal, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { useUser } from "@/lib/hooks/use-user";
@@ -54,6 +54,18 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             },
         });
     };
+
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const textRef = useRef<HTMLParagraphElement>(null);
+    useEffect(() => {
+        if (textRef.current) {
+            const lineHeight = parseFloat(
+                getComputedStyle(textRef.current).lineHeight,
+            );
+            const maxHeight = lineHeight * 42; // Tối đa 2 dòng
+            setIsOverflowing(textRef.current.scrollHeight > maxHeight);
+        }
+    }, [videoData.description]);
 
     return (
         <div className="mt-4">
@@ -135,17 +147,22 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                     </span>
                 </div>
                 <div
+                    ref={textRef}
                     className={`mt-2 text-sm ${showFullDescription ? "" : "line-clamp-2"}`}
                 >
                     {videoData.description}
                 </div>
-                <Button
-                    variant="link"
-                    className="mt-1 px-0 text-sm text-teal-2"
-                    onClick={() => setShowFullDescription(!showFullDescription)}
-                >
-                    {showFullDescription ? "Show less" : "Show more"}
-                </Button>
+                {isOverflowing && (
+                    <Button
+                        variant="link"
+                        className="mt-1 px-0 text-sm text-teal-2"
+                        onClick={() =>
+                            setShowFullDescription(!showFullDescription)
+                        }
+                    >
+                        {showFullDescription ? "Show less" : "Show more"}
+                    </Button>
+                )}
             </div>
         </div>
     );
