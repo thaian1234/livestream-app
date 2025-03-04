@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
-import { useUser } from "@/lib/hooks/use-user";
 import { videolikeApi } from "@/lib/features/video-like/apis";
 import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
 
@@ -20,6 +20,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { ISelectVideo } from ".";
 import { videoApi } from "../../apis";
 import { OptionsDropdown } from "./options-dropdown";
+import VideoShareButton from "./video-share-button";
 
 interface VideoInforProps extends VideoDTO.VideoWithUser {
     followers: number;
@@ -78,7 +79,9 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                     <div className="mr-4">
                         <p>{videoData.user.username}</p>
                         <p className="flex space-x-6 text-sm text-white/70">
-                            <span>Followers: {formatNumber(videoData.followers)}</span>
+                            <span>
+                                Followers: {formatNumber(videoData.followers)}
+                            </span>
                         </p>
                     </div>
                     {currentUser.user.id !== videoData.userId ? (
@@ -123,10 +126,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                         />
                         {formatNumber(videoData.dislikeCount)}
                     </Button>
-                    <Button variant="secondary" className="gap-2">
-                        <Share2 className="h-4 w-4" />
-                        Share
-                    </Button>
+                    <VideoShareButton variant="secondary" className="gap-2"/>
                     <OptionsDropdown>
                         <Button variant="ghost" className="px-2">
                             <TooltipModel content="Options" side="bottom">
