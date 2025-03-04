@@ -81,7 +81,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                             <span>Followers: {formatNumber(videoData.followers)}</span>
                         </p>
                     </div>
-                    {currentUser.user.id === videoData.userId ? (
+                    {currentUser.user.id !== videoData.userId ? (
                         <FollowButton
                             followingId={videoData.userId}
                             isFollowed={videoData.isFollowing}

@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 
 import { IComment } from "./comment-section";
+import { CommentDTO } from "@/server/api/dtos/comment.dto";
+import { formatTime, timeAgo } from "@/lib/helpers/formatData";
 
-export function Comment({ data }: { data: IComment }) {
+export function Comment({ data }: { data: CommentDTO.CommentWithUser }) {
     const [isShowMore, setIsShowMore] = useState(false);
     const [isOverflowing, setIsOverflowing] = useState(false);
     const textRef = useRef<HTMLParagraphElement>(null);
@@ -26,12 +28,12 @@ export function Comment({ data }: { data: IComment }) {
     }, [data.content]);
     return (
         <div className="flex gap-4">
-            <UserAvatar imageUrl={data.avatar} />
+            <UserAvatar imageUrl={data.user.imageUrl} />
             <div className="flex-1">
                 <div className="mb-1 flex items-center gap-2">
-                    <span className="font-medium">{data.user}</span>
+                    <span className="font-medium">{data.user.username}</span>
                     <span className="text-sm text-gray-400">
-                        {data.timeAgo}
+                        {timeAgo(new Date(data.createdAt))}
                     </span>
                 </div>
                 <p

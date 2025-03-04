@@ -44,36 +44,33 @@ export class CommentRepository implements ICommentRepository {
             console.error(error);
         }
     }
-    async findByVideoId(videoId: string, offset: number, size: number) {
+    async findAll(videoId?: string, offset: number = 0, size: number = 10) {
+        const conditions = [];
+        if (videoId) {
+            conditions.push(eq(tableSchemas.commentTable.videoId, videoId));
+        }
         try {
             const comments = await this.db.query.commentTable.findMany({
-                where: eq(tableSchemas.commentTable.videoId, videoId),
+                where: and(...conditions),
                 offset: offset,
                 limit: size,
+                orderBy: desc(tableSchemas.commentTable.createdAt),
                 with: {
-                    user: true
-                }
+                    user: true,
+                },
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.commentTable,
-                eq(tableSchemas.commentTable.videoId, videoId),
+                and(...conditions),
             );
             return { comments, totalRecords };
         } catch (error) {
             console.error(error);
         }
     }
-    async findAll() {
-        try {
-            const comments = await this.db.query.commentTable.findMany({});
-            return comments;
-        } catch (error) {
-            console.error(error);
-        }
-    }
     async create(data: CommentDTO.Insert) {
         try {
-            const comment = await this.db
+            const [comment] = await this.db
                 .insert(tableSchemas.commentTable)
                 .values(data)
                 .returning();

@@ -20,11 +20,8 @@ export class CommentService implements ICommentService {
     public async getCommentsByUserId(userId: string, offset: number, size: number) {
         return this.commentRepository.findByUserId(userId, offset, size);
     }
-    public async getCommentsByVideoId(videoId: string, offset: number, size: number) {
-        return this.commentRepository.findByVideoId(videoId, offset, size);
-    }
-    public async getAllComments() {
-        return this.commentRepository.findAll();
+    public async getAllComments(videoId?: string, offset: number = 0, size: number = 10) {
+        return this.commentRepository.findAll(videoId, offset, size);
     }
     public async deleteComment(id: string) {
         return this.commentRepository.delete(id);

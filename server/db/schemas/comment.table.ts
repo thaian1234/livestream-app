@@ -22,7 +22,7 @@ export const commentTable = pgTable("comments", {
         .notNull()
         .references(() => videoTable.id, { onDelete: "cascade" }),
     content: text("content"),
-    status: integer("type").notNull(),
+    status: integer("type").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
         .notNull()

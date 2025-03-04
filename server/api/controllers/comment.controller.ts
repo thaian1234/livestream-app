@@ -39,15 +39,32 @@ export class CommentController implements ICommentController {
             .delete("/:id", ...this.deleteCommentById());
     }
     private getAllComments() {
-        const respSchema = CommentDTO.selectSchema.array();
-        return this.factory.createHandlers(async (c) => {
-            const comments = await this.commentService.getAllComments();
-            return ApiResponse.WriteJSON({
-                c,
-                data: respSchema.parse(comments),
-                status: HttpStatus.OK,
-            });
+        const queries = z.object({
+            videoId: z.string().optional(),
+            ...QueryDTO.createPaginationSchema(1, 5).shape,
         });
+        const respSchema = CommentDTO.commentWithUser;
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { videoId, page, size } = c.req.valid("query");
+                const comments = await this.commentService.getAllComments(
+                    videoId,
+                    (page - 1) * size,
+                    size,
+                );
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        comments: respSchema.array().parse(comments?.comments),
+                        totalRecords: comments?.totalRecords,
+                        currentOffset: page - 1,
+                        limit: size,
+                    },
+                    status: HttpStatus.OK,
+                });
+            },
+        );
     }
     private createComment() {
         const reqSchema = CommentDTO.insertSchema.omit({
