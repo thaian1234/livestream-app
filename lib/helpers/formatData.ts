@@ -70,6 +70,12 @@ export const formatDateFromString = (dateString: string) => {
     return formattedDate;
 };
 
+export const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+};
+
 export const formatNumber = (num?: number | null) => {
     if (!num) return "0";
     if (num < 1_000) return `${num}`;

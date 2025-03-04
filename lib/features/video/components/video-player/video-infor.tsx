@@ -1,9 +1,11 @@
 "use client";
 
 import { MoreHorizontal, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
+import { useUser } from "@/lib/hooks/use-user";
 import { videolikeApi } from "@/lib/features/video-like/apis";
 import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
 
@@ -28,7 +30,9 @@ interface VideoInforProps extends VideoDTO.VideoWithUser {
 }
 
 export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
+    const currentUser = useUser();
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const router = useRouter();
     const {
         mutate: handleUpdate,
         isPending,
@@ -50,6 +54,19 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             },
         });
     };
+
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const textRef = useRef<HTMLParagraphElement>(null);
+    useEffect(() => {
+        if (textRef.current) {
+            const lineHeight = parseFloat(
+                getComputedStyle(textRef.current).lineHeight,
+            );
+            const maxHeight = lineHeight * 42; // Tối đa 2 dòng
+            setIsOverflowing(textRef.current.scrollHeight > maxHeight);
+        }
+    }, [videoData.description]);
+
     return (
         <div className="mt-4">
             <h1 className="line-clamp-2 text-xl font-semibold">
@@ -64,10 +81,21 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                             <span>Followers: {formatNumber(videoData.followers)}</span>
                         </p>
                     </div>
-                    <FollowButton
-                        followingId={videoData.userId}
-                        isFollowed={videoData.isFollowing}
-                    />
+                    {currentUser.user.id === videoData.userId ? (
+                        <FollowButton
+                            followingId={videoData.userId}
+                            isFollowed={videoData.isFollowing}
+                        />
+                    ) : (
+                        <Button
+                            variant="secondary"
+                            onClick={() => {
+                                router.push(`video/${videoData.id}/edit`);
+                            }}
+                        >
+                            Edit Video
+                        </Button>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -125,17 +153,22 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                     </span>
                 </div>
                 <div
+                    ref={textRef}
                     className={`mt-2 text-sm ${showFullDescription ? "" : "line-clamp-2"}`}
                 >
                     {videoData.description}
                 </div>
-                <Button
-                    variant="link"
-                    className="mt-1 px-0 text-sm text-teal-2"
-                    onClick={() => setShowFullDescription(!showFullDescription)}
-                >
-                    {showFullDescription ? "Show less" : "Show more"}
-                </Button>
+                {isOverflowing && (
+                    <Button
+                        variant="link"
+                        className="mt-1 px-0 text-sm text-teal-2"
+                        onClick={() =>
+                            setShowFullDescription(!showFullDescription)
+                        }
+                    >
+                        {showFullDescription ? "Show less" : "Show more"}
+                    </Button>
+                )}
             </div>
         </div>
     );

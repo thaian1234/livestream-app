@@ -5,6 +5,8 @@ import {
     Pencil,
     TvMinimalPlay,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
@@ -15,18 +17,20 @@ import { OptionsDropdown } from "./options-dropdown";
 import { IVideo } from "./studio-columns";
 
 export function VideoCell({ row }: { row: Row<IVideo> }) {
+    const router = useRouter();
+
     return (
         <div className="grid max-w-[400px] grid-cols-[150px_1fr] space-x-2">
             <div>
                 <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
             </div>
             <div className="relative">
-                <div
-                    // href={row.original.videoUrl}
+                <Link
+                    href={`/video/${row.original.id}`}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                 >
                     {row.original.title}
-                </div>
+                </Link>
                 <div className="absolute bottom-0 left-0 right-0 flex items-end">
                     <Button variant="ghost" className="px-2">
                         <TooltipModel content="Details" side="bottom">
@@ -34,7 +38,13 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                         </TooltipModel>
                     </Button>
 
-                    <Button variant="ghost" className="px-2">
+                    <Button
+                        variant="ghost"
+                        className="px-2"
+                        onClick={() => {
+                            router.push(`/video/${row.original.id}`);
+                        }}
+                    >
                         <TooltipModel content="View" side="bottom">
                             <TvMinimalPlay />
                         </TooltipModel>

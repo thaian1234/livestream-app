@@ -5,6 +5,8 @@ import { redirect, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
+import { formatTime } from "@/lib/helpers/formatData";
+
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -16,6 +18,7 @@ import { PipButton } from "./controls/pip-button";
 import { SpeedControl } from "./controls/speed-control";
 import { VolumnControl } from "./controls/volumn-control";
 import { VideoInfor } from "./video-infor";
+import { VideoPlayerSkeleton } from "./video-player-skeleton";
 
 export interface ISelectVideo {
     title: string;
@@ -37,6 +40,7 @@ export interface ISelectVideo {
 type ParamsType = {
     videoId: string;
 };
+
 export function VideoPlayer() {
     const [hasCounted, setHasCounted] = useState(false);
     const { videoId } = useParams<ParamsType>();
@@ -58,6 +62,7 @@ export function VideoPlayer() {
     const [played, setPlayed] = useState(0);
     const [playbackRate, setPlaybackRate] = useState(1);
     const [showControls, setShowControls] = useState(false);
+    const [duration, setDuration] = useState(0);
 
     const togglePlay = () => {
         if (isLightMode) {
@@ -94,7 +99,7 @@ export function VideoPlayer() {
     }
 
     if (!data || isPending) {
-        return null;
+        return <VideoPlayerSkeleton />;
     }
     const video = data.data;
     return (
@@ -126,6 +131,8 @@ export function VideoPlayer() {
                     onProgress={({ played }) => setPlayed(played)}
                     onEnded={() => setPlaying(false)}
                     playbackRate={playbackRate}
+                    stopOnUnmount={false}
+                    onDuration={(d) => setDuration(d)}
                     light={
                         isLightMode && (
                             <VideoThumbnail thumbnailUrl={video.thumbnailUrl} />
@@ -148,7 +155,7 @@ export function VideoPlayer() {
                             }}
                             max={100}
                             step={0.1}
-                            className="absolute inset-x-0 bottom-16 flex h-0.5 w-full items-center justify-between"
+                            className="absolute inset-x-0 bottom-16 flex h-0.5 w-full cursor-pointer items-center justify-between"
                         />
                         <article className="absolute inset-x-0 bottom-0 flex h-16 items-center justify-between bg-gradient-to-t from-black-0/90 to-transparent p-4">
                             <div className="flex">
@@ -175,6 +182,10 @@ export function VideoPlayer() {
                                 />
                             </div>
                             <div className="flex items-center">
+                                <div>
+                                    {formatTime(played * duration)} /
+                                    {formatTime(duration)}
+                                </div>
                                 {/* Playback Speed */}
                                 <SpeedControl
                                     playbackRate={playbackRate}
