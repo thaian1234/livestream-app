@@ -1,9 +1,7 @@
-import { SaveAllIcon } from "lucide-react";
 import { useRef } from "react";
 
 import { categoryApi } from "@/lib/features/category/apis";
 
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import MultipleSelector, {
     MultipleSelectorRef,
@@ -63,7 +61,7 @@ export function VideoCategoriesForm({ videoId }: VideoCategoriesFormProps) {
     };
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2" onBlur={handleSave}>
             <Label>Select Categories</Label>
             <div className="flex space-x-4">
                 <MultipleSelector
@@ -85,16 +83,8 @@ export function VideoCategoriesForm({ videoId }: VideoCategoriesFormProps) {
                         </div>
                     }
                     onSearch={handleSearch}
+                    hideClearAllButton={true}
                 />
-                <Button
-                    onClick={handleSave}
-                    variant={"ghost"}
-                    size={"icon"}
-                    className="hover:bg-transparent"
-                    disabled={videoMutation.isPending}
-                >
-                    <SaveAllIcon />
-                </Button>
             </div>
         </div>
     );

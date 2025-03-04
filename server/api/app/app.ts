@@ -40,6 +40,7 @@ import { UserService } from "../services/user.service";
 import { VideoLikeService } from "../services/video-like.service";
 import { VideoService } from "../services/video.service";
 
+import { AIService, AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
@@ -158,6 +159,7 @@ export class App {
         const storageService = new StorageService(storageRepository);
         const videolikeService = new VideoLikeService(videolikeRepository);
         const commentService = new CommentService(commentRepository);
+        const aiServiceBuilder = new AIServiceBuilder();
 
         // Controllers
         const userController = new UserController(
@@ -212,6 +214,7 @@ export class App {
             categoryService,
             followRepository,
             notificationService,
+            aiServiceBuilder,
         );
         const settingController = new SettingController(
             factory,
@@ -229,7 +232,7 @@ export class App {
         const videoController = new VideoController(
             factory,
             videoService,
-            getstreamService,
+            aiServiceBuilder,
             categoryService,
             followService,
         );

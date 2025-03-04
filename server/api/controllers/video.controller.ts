@@ -15,7 +15,7 @@ import { ICategoryService } from "../services/category.service";
 import { IFollowService } from "../services/follow.service";
 import { IVideoService } from "../services/video.service";
 
-import { IGetStreamService } from "../external-services/getstream.service";
+import { AIServiceBuilder } from "../external-services/ai.service";
 
 import { FollowDTO } from "../dtos/follow.dto";
 import { QueryDTO } from "../dtos/query.dto";
@@ -28,24 +28,31 @@ export class VideoController implements IVideoController {
     constructor(
         private readonly factory: CreateFactoryType,
         private readonly videoService: IVideoService,
-        private readonly getStreamService: IGetStreamService,
+        private readonly aiServiceBuilder: AIServiceBuilder,
         private readonly categoryService: ICategoryService,
         private readonly followService: IFollowService,
     ) {}
     public setupHandlers() {
-        return this.factory
-            .createApp()
-            .use(AuthMiddleware.isAuthenticated)
-            .get("/", ...this.getAllVideos())
-            .get("/recordings", ...this.getRecordings())
-            .get("/categories", ...this.getCategoriesHandler())
-            .get("/:id", ...this.getVideoById())
-            .get("/:id/relate", ...this.getRelateVideo())
-            .get("/user/:userId", ...this.getVideosByUserId())
-            .post("/", ...this.createVideo())
-            .patch("/:id", ...this.updateVideo())
-            .delete("/:id", ...this.deleteVideoById())
-            .post("/add-categories", ...this.addCategoriesToVideo());
+        return (
+            this.factory
+                .createApp()
+                .use(AuthMiddleware.isAuthenticated)
+                .get("/", ...this.getAllVideos())
+                .post("/", ...this.createVideo())
+                // me
+                .get("/me", ...this.getOwnedVideos())
+                // cateogries
+                .get("/categories", ...this.getCategoriesHandler())
+                .post("/add-categories", ...this.addCategoriesToVideo())
+                // AI
+                .post("/generate-title", ...this.generateTitle())
+                .post("/generate-description", ...this.generateDescription())
+                // video id
+                .get("/:id", ...this.getVideoById())
+                .get("/:id/relate", ...this.getRelateVideo())
+                .patch("/:id", ...this.updateVideo())
+                .delete("/:id", ...this.deleteVideoById())
+        );
     }
     private getAllVideos() {
         const respSchema = VideoDTO.selectSchema.array();
@@ -171,20 +178,16 @@ export class VideoController implements IVideoController {
             },
         );
     }
-    private getVideosByUserId() {
+    private getOwnedVideos() {
         const respSchema = VideoDTO.selectSchema;
-        const params = z.object({
-            userId: z.string().uuid(),
-        });
         const queries = QueryDTO.createPaginationSchema(1, 5);
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
-            zValidator("param", params, Validator.handleParseError),
             async (c) => {
+                const user = c.get("getUser");
                 const { page, size } = c.req.valid("query");
-                const params = c.req.valid("param");
                 const videos = await this.videoService.getVideosByUserId(
-                    params.userId,
+                    user.id,
                     (page - 1) * size,
                     size,
                 );
@@ -242,7 +245,6 @@ export class VideoController implements IVideoController {
             id: z.string().uuid(),
         });
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const params = c.req.valid("param");
@@ -261,23 +263,115 @@ export class VideoController implements IVideoController {
             },
         );
     }
-    private getRecordings() {
-        return this.factory.createHandlers(async (c) => {
-            const user = c.get("getUser");
-            const resp = await this.getStreamService.getRecordings(
-                user.stream.id,
-            );
 
-            if (resp.metadata.responseCode !== HttpStatus.OK) {
-                throw new MyError.BadRequestError("Failed to get recordings");
-            }
-
-            return ApiResponse.WriteJSON({
-                c,
-                data: resp,
-                status: HttpStatus.OK,
-            });
+    private generateTitle() {
+        const reqSchema = z.object({
+            imageUrl: z.string().optional().nullable(),
+            videoId: z.string().uuid(),
         });
+        return this.factory.createHandlers(
+            zValidator("json", reqSchema, Validator.handleParseError),
+            async (c) => {
+                const { imageUrl, videoId } = c.req.valid("json");
+                const categories =
+                    await this.videoService.getVideoCategories(videoId);
+                const builder = this.aiServiceBuilder
+                    .setBasePrompt(
+                        `You are an expert video title creator. Generate a title that is:
+						- Attention-grabbing and emotionally compelling
+						- Uses power words and action verbs
+						- Optimized for search and clicks
+						- Maximum 50 characters
+						- Single line response only
+						- No hashtags or special characters
+						- Naturally conversational tone
+						`,
+                    )
+                    .addMessage({
+                        role: "user",
+                        content: `Generate a title for a video`,
+                    });
+
+                if (!!imageUrl && imageUrl.length > 0) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a title for a video with the following image`,
+                        experimental_attachments: [
+                            {
+                                url: imageUrl,
+                                contentType: "image/png",
+                            },
+                        ],
+                    });
+                }
+                if (!!categories) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a title for a video with the following categories are: ${categories
+                            .map((category) => category.category.name)
+                            .join(", ")}`,
+                    });
+                }
+                const aiService = builder.build();
+                const response = aiService.getStreamText();
+                return response.toDataStreamResponse();
+            },
+        );
+    }
+    private generateDescription() {
+        const reqSchema = z.object({
+            imageUrl: z.string().optional().nullable(),
+            videoId: z.string().uuid(),
+        });
+        return this.factory.createHandlers(
+            zValidator("json", reqSchema, Validator.handleParseError),
+            async (c) => {
+                const { imageUrl, videoId } = c.req.valid("json");
+                const categories =
+                    await this.videoService.getVideoCategories(videoId);
+
+                const builder = this.aiServiceBuilder
+                    .setBasePrompt(
+                        `You are an expert video description creator. Generate a description that is:
+						- Attention-grabbing and emotionally compelling
+						- Uses power words and action verbs
+						- Optimized for search and clicks
+						- Maximum 100 words
+						- Single line response only
+						- No hashtags or special characters
+						- Naturally conversational tone
+						`,
+                    )
+                    .addMessage({
+                        role: "user",
+                        content: `Generate a description for a video`,
+                    });
+
+                if (!!imageUrl && imageUrl.length > 0) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a description for a video with the following image`,
+                        experimental_attachments: [
+                            {
+                                url: imageUrl,
+                                contentType: "image/png",
+                            },
+                        ],
+                    });
+                }
+                if (!!categories) {
+                    builder.addMessage({
+                        role: "user",
+                        content: `Generate a description for a video with the following categories are: ${categories
+                            .map((category) => category.category.name)
+                            .join(", ")}`,
+                    });
+                }
+                const aiService = builder.build();
+                const response = aiService.getStreamText();
+                return response.toDataStreamResponse();
+            },
+        );
     }
     private addCategoriesToVideo() {
         return this.factory.createHandlers(
@@ -340,16 +434,14 @@ export class VideoController implements IVideoController {
         return this.factory.createHandlers(
             zValidator("query", queries, Validator.handleParseError),
             async (c) => {
-                const id = c.req.valid("query").id;
-                const videoId = id;
-
-                if (!videoId) {
+                const { id } = c.req.valid("query");
+                if (!id) {
                     throw new MyError.BadRequestError(
                         "Please provide a valid video id",
                     );
                 }
                 const videoCategories =
-                    await this.videoService.getVideoCategories(videoId);
+                    await this.videoService.getVideoCategories(id);
                 return ApiResponse.WriteJSON({
                     c,
                     data: videoCategories,

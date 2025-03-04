@@ -1,4 +1,4 @@
-import { and, count, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, count, desc, asc, eq, inArray, ne, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -56,6 +56,10 @@ export class VideoRepository implements IVideoRepository {
                 extras: this.getLikeAndDislikeCount(),
                 offset: offset,
                 limit: size,
+                orderBy: [
+                    desc(tableSchemas.videoTable.createdAt),
+                    asc(tableSchemas.videoTable.title),
+                ],
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.videoTable,

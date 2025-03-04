@@ -1,11 +1,11 @@
-import { BlockDTO } from "../dtos/block.dto";
-import { Utils } from "../lib/helpers/utils";
-import { blockRoutes } from "../routes/block.routes";
-import { and, desc, eq, ilike, inArray, like, ne, or } from "drizzle-orm";
+import { and, eq, ilike, ne, or } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
-import { blockRelations } from "@/server/db/schemas/block.table";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { BlockDTO } from "../dtos/block.dto";
 
 export interface IBlockRepository
     extends Utils.AutoMappedClass<BlockRepository> {}

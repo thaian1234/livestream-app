@@ -21,11 +21,9 @@ export function VisibilityCell({ row }: { row: Row<IVideo> }) {
     const queryClient = useQueryClient();
 
     useEffect(() => {
-        console.log("change in effect");
         setVisibility(row.original.visibility);
     }, [row]);
 
-    console.log(visibility);
     return (
         <Select
             defaultValue={row.original.visibility}
@@ -48,8 +46,6 @@ export function VisibilityCell({ row }: { row: Row<IVideo> }) {
                             queryClient.invalidateQueries({
                                 queryKey: [
                                     "videos",
-                                    "user",
-                                    row.original.userId,
                                 ],
                             });
                         },

@@ -1,13 +1,6 @@
-import { createFactory } from "hono/factory";
-
 import { CreateFactoryType } from "../lib/types/factory.type";
 
-import { NotificationService } from "../external-services/notification.service";
-
-import {
-    INotificationController,
-    NotificationController,
-} from "../controllers/notification.controller";
+import { INotificationController } from "../controllers/notification.controller";
 
 export class NotificationRoutes {
     constructor(
@@ -23,15 +16,3 @@ export class NotificationRoutes {
             );
     }
 }
-function createNotificationRoutes(): NotificationRoutes {
-    const factory = createFactory();
-    // Services
-    const notificationService = new NotificationService();
-    const notificationController = new NotificationController(
-        factory,
-        notificationService,
-    );
-    return new NotificationRoutes(factory, notificationController);
-}
-
-export const notificationRoutes = createNotificationRoutes().setupRoutes();

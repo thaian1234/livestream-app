@@ -12,8 +12,8 @@ const keys = {
     recordings: [...baseKey, "recordings"],
     video_categories: (videoId?: string) =>
         ["video_categories", videoId] as string[],
-    videosByUserId: (userId: string, pagination: PaginationType) =>
-        [...baseKey, "user", userId, pagination] as string[],
+    ownedVideos: (pagination: PaginationType) =>
+        [...baseKey, pagination] as string[],
     videosRelate: (videoId: string) => ["video_relate", videoId] as string[],
 };
 
@@ -31,25 +31,14 @@ export const videoApi = {
                 },
             });
         },
-        useGetVideoByUserId(userId: string, pagination: PaginationType) {
-            const $get = baseApi.user[":userId"].$get;
-            return Fetcher.useHonoQuery(
-                $get,
-                keys.videosByUserId(userId, pagination),
-                {
-                    param: {
-                        userId,
-                    },
-                    query: {
-                        page: pagination.page,
-                        size: pagination.size,
-                    },
+        useGetOwnedVideos(pagination: PaginationType) {
+            const $get = baseApi.me.$get;
+            return Fetcher.useHonoQuery($get, keys.ownedVideos(pagination), {
+                query: {
+                    page: pagination.page,
+                    size: pagination.size,
                 },
-            );
-        },
-        useGetRecordings() {
-            const $get = baseApi.recordings.$get;
-            return Fetcher.useHonoQuery($get, keys.recordings, {});
+            });
         },
         useGetVideoCategories(videoId?: string) {
             const $get = client.api.videos.categories.$get;
@@ -118,20 +107,21 @@ export const videoApi = {
         },
         useDeleteVideo() {
             const $delete = baseApi[":id"].$delete;
-            const { mutation, toast, router, user } = Fetcher.useHonoMutation(
-                $delete,
-                {
+            const { mutation, toast, router, user, queryClient } =
+                Fetcher.useHonoMutation($delete, {
                     onSuccess({ msg }) {
                         if (user) {
                             router.replace(ROUTES.STUDIO_PAGE(user.username));
+                            queryClient.invalidateQueries({
+                                queryKey: keys.videos,
+                            });
                             toast.success("Video deleted");
                         }
                     },
                     onError(err) {
                         toast.error(err.message);
                     },
-                },
-            );
+                });
             return mutation;
         },
         useAddCategoriesToVideo() {

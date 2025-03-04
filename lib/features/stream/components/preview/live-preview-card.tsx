@@ -40,10 +40,7 @@ export function LivePreviewCard({
         >
             <div className="h-full w-full font-sans">
                 {/* thumnail */}
-                <VideoThumbnail
-                    // avatarUrl={user.imageUrl}
-                    thumbnailUrl={thumbnailUrl}
-                />
+                <VideoThumbnail thumbnailUrl={thumbnailUrl} />
                 <div className="flex items-center space-x-4 px-2">
                     <UserAvatar
                         imageUrl={user.imageUrl}

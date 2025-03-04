@@ -4,6 +4,7 @@ import { MoreHorizontal, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { videolikeApi } from "@/lib/features/video-like/apis";
 import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
@@ -93,7 +94,12 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                         <Button
                             variant="secondary"
                             onClick={() => {
-                                router.push(`video/${videoData.id}/edit`);
+                                router.replace(
+                                    ROUTES.VIDEO_EDIT_PAGE(
+                                        currentUser.user.username,
+                                        videoData.id,
+                                    ),
+                                );
                             }}
                         >
                             Edit Video
@@ -126,7 +132,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                         />
                         {formatNumber(videoData.dislikeCount)}
                     </Button>
-                    <VideoShareButton variant="secondary" className="gap-2"/>
+                    <VideoShareButton variant="secondary" className="gap-2" />
                     <OptionsDropdown>
                         <Button variant="ghost" className="px-2">
                             <TooltipModel content="Options" side="bottom">
