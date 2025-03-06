@@ -19,14 +19,12 @@ export const eventFormSchema = z.object({
 export type EventFormData = z.infer<typeof eventFormSchema>;
 
 interface EventState {
-    currentEvent?: EventFormData;
     isOpen: boolean;
     setOpen: (open: boolean) => void;
     createEvent: (data: EventFormData) => void;
-    setCurrentEvent: (event: EventFormData) => void;
 }
 
-export const useEventStore = create<EventState>((set) => ({
+export const useEventStore = create<EventState>((set, get) => ({
     isOpen: false,
     currentEvent: undefined,
     setOpen: (open) => set({ isOpen: open }),
@@ -44,6 +42,7 @@ export const useEventStore = create<EventState>((set) => ({
 
         console.log("Event created:", event);
         // Here you would typically save the event to your backend or state
+
+        set({ isOpen: false });
     },
-    setCurrentEvent: (event) => set({ currentEvent: event }),
 }));

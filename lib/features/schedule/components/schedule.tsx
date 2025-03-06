@@ -8,34 +8,24 @@ import {
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
-import {
-    ScheduleXCalendar,
-    useCalendarApp,
-    useNextCalendarApp,
-} from "@schedule-x/react";
+import { ScheduleXCalendar, useNextCalendarApp } from "@schedule-x/react";
 import "@schedule-x/theme-shadcn/dist/index.css";
-import { format } from "date-fns";
 import { useState } from "react";
 
 import { EventFormData, useEventStore } from "@/lib/stores/use-event-store";
 
-interface ScheduleProps {
-    onSelectedEvent: (event: EventFormData) => void;
-    selectedEvent: EventFormData | undefined;
-    onOpenModal: (open: boolean) => void;
-    onAddEvent: (dateTime: string) => EventFormData;
-}
+import { AddEventDialog } from "./add-event-dialog";
 
-export function Schedule({
-    onSelectedEvent,
-    onOpenModal,
-    onAddEvent,
-}: ScheduleProps) {
+export function Schedule() {
+    const [currentEvent, setCurrentEvent] = useState<
+        EventFormData | undefined
+    >();
+    const setOpen = useEventStore((state) => state.setOpen);
+
     const eventsService = useState(() => createEventsServicePlugin())[0];
     const eventModal = useState(() => createEventModalPlugin())[0];
     const dragAndDrop = useState(() => createDragAndDropPlugin())[0];
-
-    const calendar = useCalendarApp({
+    const calendar = useNextCalendarApp({
         views: [
             createViewDay(),
             createViewWeek(),
@@ -53,23 +43,33 @@ export function Schedule({
         defaultView: "week",
         callbacks: {
             onClickDateTime(dateTime) {
-                const newEvent = onAddEvent(dateTime);
-                eventsService.add({
-                    id: "1",
-                    title: newEvent.title,
-                    description: newEvent.description,
-                    start: format(newEvent.startDate, "yyyy-MM-dd HH:mm"),
-                    end: format(newEvent.endDate, "yyyy-MM-dd HH:mm"),
+                setOpen(true);
+                setCurrentEvent({
+                    title: "New Event",
+                    description: "This is a new event",
+                    startDate: new Date(dateTime),
+                    endDate: new Date(dateTime),
                 });
             },
         },
     });
 
+    const handleCreateEvent = (newEvent: CalendarEventExternal) => {
+        eventsService.add(newEvent);
+        setCurrentEvent(undefined);
+    };
+
     return (
         <ScheduleXCalendar
             calendarApp={calendar}
             customComponents={{
-                headerContentRightAppend: () => <div className="px-11"></div>,
+                headerContentRightAppend: () => (
+                    <AddEventDialog
+                        key={currentEvent?.startDate.toISOString()}
+                        initialValues={currentEvent}
+                        onCreateEvent={handleCreateEvent}
+                    />
+                ),
             }}
         />
     );

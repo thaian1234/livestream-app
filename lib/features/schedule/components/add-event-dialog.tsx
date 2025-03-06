@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarEventExternal } from "@schedule-x/calendar";
+import { format } from "date-fns";
 import { vi } from "react-day-picker/locale";
 import { useForm } from "react-hook-form";
 
@@ -34,18 +36,30 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface AddEventDialogProps {
     initialValues?: EventFormData;
+    onCreateEvent: (values: CalendarEventExternal) => void;
 }
 
-export function AddEventDialog({ initialValues }: AddEventDialogProps) {
+export function AddEventDialog({
+    initialValues,
+    onCreateEvent,
+}: AddEventDialogProps) {
     const form = useForm<EventFormData>({
         resolver: zodResolver(eventFormSchema),
         defaultValues: initialValues,
     });
-    const { isOpen, setOpen, createEvent } = useEventStore();
+    const { isOpen, setOpen, createEvent } = useEventStore((state) => state);
 
     function onSubmit(values: EventFormData) {
         console.log(values);
         createEvent(values);
+        onCreateEvent({
+            id: "1",
+            title: values.title,
+            description: values.description,
+            start: format(values.startDate, "yyyy-MM-dd HH:mm"),
+            end: format(values.endDate, "yyyy-MM-dd HH:mm"),
+        });
+
         // form.reset();
         // setOpen(false);
     }
