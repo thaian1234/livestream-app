@@ -9,6 +9,7 @@ import {
     emailVerificationRelations,
     emailVerificationTable,
 } from "./email-verification.table";
+import { eventRelations, eventTable } from "./event.table";
 import { followRelations, followTable } from "./follow.table";
 import { forgetPasswordTable } from "./forget-password.table";
 import { notificationTable, typeEnum } from "./notification.table";
@@ -52,6 +53,7 @@ const tableSchemas = {
     videoTable,
     storageTable,
     videosToCategoriesTable,
+    eventTable,
 } as const;
 
 export const tableRelations = {
@@ -74,6 +76,7 @@ export const tableRelations = {
     storageStatusEnum,
     storageRelations,
     videosToCategoriesRelations,
+    eventRelations,
 } as const;
 
 export default tableSchemas;

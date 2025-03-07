@@ -17,6 +17,7 @@ import { AccountRepository } from "../repositories/account.repository";
 import { BlockRepository } from "../repositories/block.repository";
 import { CategoryRepository } from "../repositories/category.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
+import { EventRepository } from "../repositories/event.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
 import { SettingRepository } from "../repositories/setting.repository";
@@ -29,6 +30,7 @@ import { AuthService } from "../services/auth.service";
 import { BlockService } from "../services/block.service";
 import { CategoryService } from "../services/category.service";
 import { EmailVerificationService } from "../services/email-verification.service";
+import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
 import { SettingService } from "../services/setting.service";
@@ -48,6 +50,7 @@ import { R2BucketService } from "../external-services/r2-bucket.service";
 import { AuthController } from "../controllers/auth.controller";
 import { BlockController } from "../controllers/block.controller";
 import { CategoryController } from "../controllers/category.controller";
+import { EventController } from "../controllers/event.controller";
 import { FollowController } from "../controllers/follow.controller";
 import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
@@ -63,6 +66,7 @@ import { WebhookController } from "../controllers/webhook.controller";
 import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
 import { CategoryRoutes } from "../routes/category.routes";
+import { EventRoutes } from "../routes/event.routes";
 import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
 import { SearchRoutes } from "../routes/search.routes";
@@ -114,6 +118,7 @@ export class App {
         const forgetPasswordRepository = new ForgetPasswordRepository();
         const videoRepository = new VideoRepository();
         const storageRepository = new StorageRepository();
+        const eventRepository = new EventRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -148,6 +153,7 @@ export class App {
         const videoService = new VideoService(videoRepository);
         const storageService = new StorageService(storageRepository);
         const aiServiceBuilder = new AIServiceBuilder();
+        const eventService = new EventService(eventRepository);
 
         // Controllers
         const userController = new UserController(
@@ -232,6 +238,7 @@ export class App {
             factory,
             storageService,
         );
+        const eventController = new EventController(factory, eventService);
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -254,6 +261,7 @@ export class App {
         const videoRoutes = new VideoRoutes(factory, videoController);
         const webhookRoutes = new WebhookRoutes(factory, webhookController);
         const storageRoutes = new StorageRoutes(factory, storageController);
+        const eventRoutes = new EventRoutes(factory, eventController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -269,6 +277,7 @@ export class App {
             .route("/", notificationRoutes.setupRoutes())
             .route("/", videoRoutes.setupRoutes())
             .route("/", webhookRoutes.setupRoutes())
-            .route("/", storageRoutes.setupRoutes());
+            .route("/", storageRoutes.setupRoutes())
+            .route("/", eventRoutes.setupRoutes());
     }
 }
