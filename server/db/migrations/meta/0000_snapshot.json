@@ -1,5 +1,5 @@
 {
-  "id": "d3f91e1a-a423-461e-bbf0-b24005e67fce",
+  "id": "048f9964-3d23-47d4-9915-b6cc93c11997",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -370,13 +370,15 @@
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "location": {
           "name": "location",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "user_id": {
           "name": "user_id",

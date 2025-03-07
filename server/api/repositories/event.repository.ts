@@ -47,7 +47,11 @@ export class EventRepository implements IEventRepository {
         try {
             const [event] = await this.db
                 .insert(tableSchemas.eventTable)
-                .values(data)
+                .values({
+                    ...data,
+                    start: new Date(data.start),
+                    end: new Date(data.end),
+                })
                 .returning();
             return event;
         } catch (error) {

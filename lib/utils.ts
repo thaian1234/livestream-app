@@ -10,3 +10,12 @@ export function delay(milliseconds: number): Promise<void> {
         setTimeout(resolve, milliseconds);
     });
 }
+
+export function parseVietnameseDateTime(dateString: string) {
+    const vietnamDate = new Date(
+        new Date(dateString).toLocaleString("vi-VN", {
+            timeZone: "Asia/Ho_Chi_Minh",
+        }),
+    );
+    return vietnamDate;
+}

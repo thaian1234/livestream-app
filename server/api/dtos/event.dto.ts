@@ -10,7 +10,10 @@ import tableSchemas from "@/server/db/schemas";
 export class EventDTO {
     private static baseSchema = createSelectSchema(tableSchemas.eventTable);
     public static selectSchema = this.baseSchema;
-    public static insertSchema = createInsertSchema(tableSchemas.eventTable);
+    public static insertSchema = createInsertSchema(tableSchemas.eventTable, {
+        start: z.union([z.string(), z.date()]),
+        end: z.union([z.string(), z.date()]),
+    });
     public static deleteSchema = this.baseSchema.pick({
         id: true,
         userId: true,

@@ -25,17 +25,18 @@ export class EventController implements IEventController {
             .createApp()
             .get("/", ...this.getAllEvents())
             .post("/", ...this.createEvent())
-            .put("/:id", ...this.updateEvent())
+            .patch("/:id", ...this.updateEvent())
             .delete("/:id", ...this.deleteEvent());
     }
 
     private createEvent() {
+        const reqSchema = EventDTO.insertSchema.omit({
+            userId: true,
+            streamId: true,
+        });
+
         return this.factory.createHandlers(
-            zValidator(
-                "json",
-                EventDTO.insertSchema,
-                Validator.handleParseError,
-            ),
+            zValidator("json", reqSchema, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const jsonData = c.req.valid("json");
@@ -44,39 +45,38 @@ export class EventController implements IEventController {
                     ...jsonData,
                     userId: currentUser.id,
                     streamId: currentUser.stream.id,
+                    start: new Date(jsonData.start),
+                    end: new Date(jsonData.end),
                 });
+
+                console.log(event);
 
                 return ApiResponse.WriteJSON({
                     c,
                     data: event,
+                    msg: "Event created successfully",
                     status: HttpStatus.Created,
                 });
             },
         );
     }
     private getAllEvents() {
-        return this.factory.createHandlers(async (c) => {
-            const currentUser = c.get("user");
+        const respSchema = EventDTO.selectSchema.array();
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const events = await this.eventService.getEventsByToday(
+                    currentUser.id,
+                );
 
-            if (!currentUser) {
-                // TODO: handle if user is not authenticated
                 return ApiResponse.WriteJSON({
                     c,
-                    data: undefined,
+                    data: respSchema.parse(events),
                     status: HttpStatus.OK,
                 });
-            }
-
-            const events = await this.eventService.getEventsByToday(
-                currentUser.id,
-            );
-
-            return ApiResponse.WriteJSON({
-                c,
-                data: EventDTO.selectSchema.parse(events),
-                status: HttpStatus.OK,
-            });
-        });
+            },
+        );
     }
 
     private getEventById() {

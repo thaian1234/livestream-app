@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarEventExternal } from "@schedule-x/calendar";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { vi } from "react-day-picker/locale";
 import { useForm } from "react-hook-form";
 
@@ -34,6 +34,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+import { eventApi } from "../apis";
+
 interface AddEventDialogProps {
     initialValues?: EventFormData;
     onCreateEvent: (values: CalendarEventExternal) => void;
@@ -45,24 +47,24 @@ export function AddEventDialog({
 }: AddEventDialogProps) {
     const form = useForm<EventFormData>({
         resolver: zodResolver(eventFormSchema),
-        defaultValues: initialValues,
+        defaultValues: { ...initialValues, description: "" },
     });
-    const { isOpen, setOpen, createEvent } = useEventStore((state) => state);
+    const eventMutation = eventApi.mutation.useCreateEvent();
+    const { isOpen, setOpen } = useEventStore((state) => state);
 
-    function onSubmit(values: EventFormData) {
-        console.log(values);
-        createEvent(values);
-        onCreateEvent({
-            id: "1",
-            title: values.title,
-            description: values.description,
-            start: format(values.startDate, "yyyy-MM-dd HH:mm"),
-            end: format(values.endDate, "yyyy-MM-dd HH:mm"),
+    const onSubmit = form.handleSubmit(async (values) => {
+        const newEvent = await eventMutation.mutateAsync({
+            json: values,
         });
-
-        // form.reset();
-        // setOpen(false);
-    }
+        if (!!newEvent.data) {
+            onCreateEvent({
+                ...newEvent.data,
+                start: format(values.start, "yyyy-MM-dd HH:mm"),
+                end: format(values.end, "yyyy-MM-dd HH:mm"),
+            });
+            setOpen(false);
+        }
+    });
 
     return (
         <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -83,10 +85,7 @@ export function AddEventDialog({
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8"
-                    >
+                    <form onSubmit={onSubmit} className="space-y-8">
                         <FormField
                             control={form.control}
                             name="title"
@@ -122,7 +121,7 @@ export function AddEventDialog({
                         />
                         <FormField
                             control={form.control}
-                            name="startDate"
+                            name="start"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                     <FormLabel>Start Date</FormLabel>
@@ -141,7 +140,7 @@ export function AddEventDialog({
                         />
                         <FormField
                             control={form.control}
-                            name="endDate"
+                            name="end"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                     <FormLabel>End Date</FormLabel>

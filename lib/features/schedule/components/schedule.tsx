@@ -13,10 +13,15 @@ import "@schedule-x/theme-shadcn/dist/index.css";
 import { useState } from "react";
 
 import { EventFormData, useEventStore } from "@/lib/stores/use-event-store";
+import { parseVietnameseDateTime } from "@/lib/utils";
 
 import { AddEventDialog } from "./add-event-dialog";
 
-export function Schedule() {
+interface ScheduleProps {
+    events: CalendarEventExternal[];
+}
+
+export function Schedule({ events }: ScheduleProps) {
     const [currentEvent, setCurrentEvent] = useState<
         EventFormData | undefined
     >();
@@ -32,7 +37,7 @@ export function Schedule() {
             createViewMonthGrid(),
             createViewMonthAgenda(),
         ],
-        events: [],
+        events: events,
         plugins: [eventsService, eventModal, dragAndDrop],
         theme: "shadcn",
         isResponsive: true,
@@ -43,13 +48,14 @@ export function Schedule() {
         defaultView: "week",
         callbacks: {
             onClickDateTime(dateTime) {
-                setOpen(true);
+                console.log("dateTime: ", dateTime);
                 setCurrentEvent({
                     title: "New Event",
                     description: "This is a new event",
-                    startDate: new Date(dateTime),
-                    endDate: new Date(dateTime),
+                    start: parseVietnameseDateTime(dateTime),
+                    end: parseVietnameseDateTime(dateTime),
                 });
+                setOpen(true);
             },
         },
     });
@@ -65,7 +71,10 @@ export function Schedule() {
             customComponents={{
                 headerContentRightAppend: () => (
                     <AddEventDialog
-                        key={currentEvent?.startDate.toISOString()}
+                        key={
+                            currentEvent?.start.toISOString() ||
+                            new Date().toISOString()
+                        }
                         initialValues={currentEvent}
                         onCreateEvent={handleCreateEvent}
                     />
