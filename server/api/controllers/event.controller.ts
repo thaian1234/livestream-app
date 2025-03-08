@@ -105,7 +105,6 @@ export class EventController implements IEventController {
             userId: true,
             streamId: true,
         });
-        const respSchema = EventDTO.selectSchema;
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             zValidator("json", reqSchema, Validator.handleParseError),
@@ -121,7 +120,7 @@ export class EventController implements IEventController {
                 });
                 return ApiResponse.WriteJSON({
                     c,
-                    data: respSchema.parse(event),
+                    data: event,
                     status: HttpStatus.OK,
                 });
             },

@@ -18,7 +18,10 @@ export class EventDTO {
         id: true,
         userId: true,
     });
-    public static updateSchema = createUpdateSchema(tableSchemas.eventTable);
+    public static updateSchema = createUpdateSchema(tableSchemas.eventTable, {
+        start: z.union([z.string(), z.date()]),
+        end: z.union([z.string(), z.date()]),
+    });
 }
 
 export namespace EventDTO {

@@ -30,13 +30,10 @@ export class EventRepository implements IEventRepository {
         try {
             const today = new Date();
             const events = await this.db.query.eventTable.findMany({
-                where: and(
-                    gte(tableSchemas.eventTable.start, startOfDay(today)),
-                    lte(tableSchemas.eventTable.start, endOfDay(today)),
-                    eq(tableSchemas.eventTable.userId, userId),
-                ),
+                where: and(eq(tableSchemas.eventTable.userId, userId)),
                 orderBy: [asc(tableSchemas.eventTable.start)],
             });
+            console.log(events);
             return events;
         } catch (error) {
             console.error(error);

@@ -32,7 +32,7 @@ export const eventApi = {
             const $patch = baseApi[":id"].$patch;
             const { mutation, toast } = Fetcher.useHonoMutation($patch, {
                 onSuccess({ msg }) {
-                    toast.success(msg);
+                    // toast.success(msg);
                 },
                 onError(err) {
                     toast.error(err.message);

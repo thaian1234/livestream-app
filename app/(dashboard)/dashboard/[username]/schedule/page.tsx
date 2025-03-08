@@ -15,11 +15,12 @@ export default function SchedulePage() {
         return <Spinner size="large" />;
     }
     const events: CalendarEventExternal[] = data.data.map((event) => ({
-        ...event,
+        id: event.id,
         description: event?.description || "",
         location: event?.location || "",
         start: format(event.start, "yyyy-MM-dd HH:mm"),
         end: format(event.end, "yyyy-MM-dd HH:mm"),
+        title: event.title,
     }));
 
     return (

@@ -59,8 +59,8 @@ export function AddEventDialog({
         if (!!newEvent.data) {
             onCreateEvent({
                 ...newEvent.data,
-                start: format(values.start, "yyyy-MM-dd HH:mm"),
-                end: format(values.end, "yyyy-MM-dd HH:mm"),
+                start: format(newEvent.data.start, "yyyy-MM-dd HH:mm"),
+                end: format(newEvent.data.end, "yyyy-MM-dd HH:mm"),
             });
             setOpen(false);
         }
