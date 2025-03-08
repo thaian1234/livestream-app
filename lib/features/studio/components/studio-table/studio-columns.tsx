@@ -24,8 +24,8 @@ export interface IVideo {
     createdAt: string;
     viewCount: number;
     // comments: number;
-    likeCount: number;
-    dislikeCount: number;
+    likeCount?: number | null;
+    dislikeCount?: number | null;
 }
 
 export const StudioColumns: ColumnDef<IVideo>[] = [
@@ -84,11 +84,11 @@ export const StudioColumns: ColumnDef<IVideo>[] = [
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                         <ThumbsUpIcon className="h-4 w-4" />
-                        {row.original.likeCount.toLocaleString()}
+                        {row.original.likeCount?.toLocaleString()}
                     </div>
                     <div className="flex items-center gap-1 text-muted-foreground">
                         <ThumbsDownIcon className="h-4 w-4" />
-                        {row.original.dislikeCount.toLocaleString()}
+                        {row.original.dislikeCount?.toLocaleString()}
                     </div>
                 </div>
             </div>

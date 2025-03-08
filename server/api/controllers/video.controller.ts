@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { BlockUtils } from "../lib/helpers/block-util";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
@@ -11,10 +12,12 @@ import { Validator } from "../lib/validations/validator";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 
 import { ICategoryService } from "../services/category.service";
+import { IFollowService } from "../services/follow.service";
 import { IVideoService } from "../services/video.service";
 
 import { AIServiceBuilder } from "../external-services/ai.service";
 
+import { FollowDTO } from "../dtos/follow.dto";
 import { QueryDTO } from "../dtos/query.dto";
 import { VideoDTO } from "../dtos/video.dto";
 import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
@@ -27,6 +30,7 @@ export class VideoController implements IVideoController {
         private readonly videoService: IVideoService,
         private readonly aiServiceBuilder: AIServiceBuilder,
         private readonly categoryService: ICategoryService,
+        private readonly followService: IFollowService,
     ) {}
     public setupHandlers() {
         return (
@@ -45,6 +49,7 @@ export class VideoController implements IVideoController {
                 .post("/generate-description", ...this.generateDescription())
                 // video id
                 .get("/:id", ...this.getVideoById())
+                .get("/:id/relate", ...this.getRelateVideo())
                 .patch("/:id", ...this.updateVideo())
                 .delete("/:id", ...this.deleteVideoById())
         );
@@ -87,6 +92,69 @@ export class VideoController implements IVideoController {
         );
     }
     private getVideoById() {
+        const respSchema = VideoDTO.videoWithUser;
+        const params = z.object({
+            id: z.string().uuid(),
+        });
+
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            async (c) => {
+                const currentUser = c.get("user");
+                const params = c.req.valid("param");
+                const video = await this.videoService.getVideoById(params.id);
+                if (!video) {
+                    throw new MyError.BadRequestError("Video not found");
+                }
+                const categories = video.videosToCategories.map(
+                    (videoToCategory) => videoToCategory.category,
+                );
+                const formattedData = {
+                    ...video,
+                    categories,
+                };
+                const isCurrentUserDifferent =
+                    currentUser && currentUser.id !== video.userId;
+                isCurrentUserDifferent &&
+                    (await BlockUtils.checkUserBlock(
+                        currentUser.id,
+                        video.userId,
+                    ));
+
+                const followers = await this.followService.findFollowerByUserId(
+                    video.userId,
+                );
+
+                const responseData = {
+                    ...respSchema.parse(formattedData),
+                    followers: followers?.length || 0,
+                    isFollowing: false,
+                    isLiked: false,
+                    isDisliked: false,
+                    isBlocked: false,
+                };
+                if (isCurrentUserDifferent) {
+                    responseData.isFollowing = !!followers?.find(
+                        (follower) => follower.id === currentUser.id,
+                    );
+                }
+                responseData.isLiked =
+                    video.videoLikes.find(
+                        (videoLike) => videoLike.userId === currentUser?.id,
+                    )?.type === 1;
+                responseData.isDisliked =
+                    video.videoLikes.find(
+                        (videoLike) => videoLike.userId === currentUser?.id,
+                    )?.type === -1;
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: responseData,
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getRelateVideo() {
         const respSchema = VideoDTO.selectSchema;
         const params = z.object({
             id: z.string().uuid(),
@@ -96,13 +164,15 @@ export class VideoController implements IVideoController {
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
                 const params = c.req.valid("param");
-                const video = await this.videoService.getVideoById(params.id);
-                if (!video) {
+                const videos = await this.videoService.getRelateVideo(
+                    params.id,
+                );
+                if (!videos) {
                     throw new MyError.BadRequestError("Video not found");
                 }
                 return ApiResponse.WriteJSON({
                     c,
-                    data: respSchema.parse(video),
+                    data: respSchema.array().parse(videos),
                     status: HttpStatus.OK,
                 });
             },
