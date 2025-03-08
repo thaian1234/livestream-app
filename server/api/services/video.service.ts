@@ -36,4 +36,7 @@ export class VideoService implements IVideoService {
     public async checkOwnVideo(userId: string, videoId: string) {
         return await this.videoRepository.checkOwnVideo(userId, videoId);
     }
+    public async getRelateVideo(videoId: string) {
+        return await this.videoRepository.getRelateVideo(videoId);
+    }
 }

@@ -5,6 +5,7 @@ import {
     Pencil,
     TvMinimalPlay,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
@@ -33,13 +34,13 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                 <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
             </div>
             <div className="relative">
-                <div
-                    // href={row.original.videoUrl}
+                <Link
+                    href={`/video/${row.original.id}`}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                     onClick={handleEditClick}
                 >
                     {row.original.title}
-                </div>
+                </Link>
                 <div className="absolute bottom-0 left-0 right-0 flex items-end">
                     <Button
                         variant="ghost"

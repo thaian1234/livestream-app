@@ -46,7 +46,7 @@ export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
                     <div className="flex items-center space-x-2">
                         <LinkIcon className="h-4 w-4 flex-shrink-0" />
                         <Link
-                            href={video.videoUrl}
+                            href={videoLink}
                             className="truncate text-sm font-medium text-blue-500 underline"
                         >
                             {videoLink}

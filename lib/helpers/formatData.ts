@@ -68,4 +68,18 @@ export const formatDateFromString = (dateString: string) => {
         year: "numeric",
     });
     return formattedDate;
-}
+};
+
+export const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+};
+
+export const formatNumber = (num?: number | null) => {
+    if (!num) return "0";
+    if (num < 1_000) return `${num}`;
+    if (num < 1_000_000) return `${(num / 1_000).toFixed(1)}k`;
+    if (num < 1_000_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+    return `${(num / 1_000_000_000).toFixed(1)}B`;
+};

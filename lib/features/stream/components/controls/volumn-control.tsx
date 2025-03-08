@@ -1,13 +1,14 @@
 import { useParticipantViewContext } from "@stream-io/video-react-sdk";
-import { Volume1, Volume2, VolumeOff } from "lucide-react";
+import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useControlVideoStore } from "@/lib/stores/use-control-video-store";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 export const VolumeControl = () => {
     const { videoElement } = useParticipantViewContext();
@@ -50,9 +51,12 @@ export const VolumeControl = () => {
                     className="bg-black rounded-full bg-opacity-50 p-2 text-white transition-all hover:bg-opacity-75"
                     disabled={!videoElement}
                 >
-                    {isMuted && <VolumeOff />}
-                    {volume < 50 && volume > 0 && !isMuted && <Volume1 />}
-                    {volume >= 50 && !isMuted && <Volume2 />}
+                    {isMuted && <VolumeOff fill="white" />}
+                    {volume === 0 && !isMuted && <Volume fill="white" />}
+                    {volume < 50 && volume > 0 && !isMuted && (
+                        <Volume1 fill="white" />
+                    )}
+                    {volume >= 50 && !isMuted && <Volume2 fill="white" />}
                 </Button>
             </TooltipModel>
             {isVolumeHovered && !!videoElement && (
