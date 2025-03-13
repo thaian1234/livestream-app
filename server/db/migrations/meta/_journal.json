@@ -8,6 +8,13 @@
       "when": 1740540524001,
       "tag": "0000_gifted_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1741869924998,
+      "tag": "0001_outgoing_nighthawk",
+      "breakpoints": true
     }
   ]
 }
