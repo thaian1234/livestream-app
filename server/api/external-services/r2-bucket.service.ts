@@ -4,6 +4,7 @@ import { generateIdFromEntropySize } from "lucia";
 
 import { envServer } from "@/lib/env/env.server";
 
+import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 
 import { R2BucketDTO } from "../dtos/r2-bucket.dto";
@@ -44,5 +45,29 @@ export class R2BucketService implements IR2BucketService {
         });
         const imageUrl = `${envServer.CLOUD_FLARE_BUCKET_URL}/${key}`;
         return { signedUrl, imageUrl };
+    }
+    public async uploadImage(
+        file: R2BucketDTO.UploadFile,
+        buffer: Buffer<ArrayBuffer>,
+    ) {
+        const { imageUrl, signedUrl } = await this.generateSignedUrl(file);
+        if (!signedUrl || !imageUrl) {
+            throw new MyError.ServiceUnavailableError(
+                "Cannot upload image right now",
+            );
+        }
+        const uploadResponse = await fetch(signedUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": file.fileType,
+                "Content-Length": file.fileSize.toString(),
+            },
+            body: buffer,
+        });
+        if (!uploadResponse.ok)
+            throw new MyError.ServiceUnavailableError(
+                "Cannot upload image right now",
+            );
+        return imageUrl;
     }
 }

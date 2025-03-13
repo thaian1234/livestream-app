@@ -5,6 +5,8 @@ import { envServer } from "@/lib/env/env.server";
 
 import { Utils } from "../lib/helpers/utils";
 
+import { VideoDTO } from "../dtos/video.dto";
+
 export interface IAIService extends Utils.AutoMappedClass<AIService> {}
 
 export class AIServiceBuilder {
@@ -71,5 +73,21 @@ export class AIService implements IAIService {
                 delayInMs: 30,
             }),
         });
+    }
+
+    async getThumbnail(prompt: string) {
+        const API_URL = `https://api.cloudflare.com/client/v4/accounts/${envServer.CLOUDFLARE_WORKER_AI_ACCOUNT_ID}/ai/run/${envServer.CLOUDFLARE_WORKER_AI_TEXT_IMAGE_MODEL}`;
+        const response = await fetch(API_URL, {
+            headers: {
+                Authorization: `Bearer ${envServer.CLOUDFLARE_WORKER_AI_API_TOKEN}`,
+            },
+            method: "POST",
+            body: JSON.stringify({ prompt }),
+        });
+        const rawData = await response.json();
+        const data = VideoDTO.cloudflareAIResponseSchema.parse(rawData);
+        if (!data.success || !data.result || !("image" in data.result)) return;
+        const imageBuffer = Buffer.from(data.result.image, "base64");
+        return imageBuffer;
     }
 }

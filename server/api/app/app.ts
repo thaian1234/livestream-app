@@ -235,6 +235,7 @@ export class App {
             aiServiceBuilder,
             categoryService,
             followService,
+            r2BucketService,
         );
         const webhookController = new WebhookController(
             factory,

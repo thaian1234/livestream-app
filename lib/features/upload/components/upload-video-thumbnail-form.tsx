@@ -26,7 +26,9 @@ import {
     FormLabel,
 } from "@/components/ui/form";
 
+import { videoApi } from "../../video/apis";
 import { uploadApi } from "../apis";
+import { ThumbnailGenerateDialog } from "./thumbnail-generate-dialog";
 
 interface FileWithPreview extends File {
     preview: string;
@@ -42,10 +44,12 @@ export function UploadVideoThumbnailForm({
 }: UploadVideoThumbnailFormProps) {
     const [file, setFile] = useState<FileWithPreview | null>(null);
     const queryClient = useQueryClient();
+    const [open, setOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
-
+    const { mutate: generateThumbnail, isPending: generateThumbnailPending } =
+        videoApi.mutation.useGenerateThumbnail();
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
@@ -53,6 +57,24 @@ export function UploadVideoThumbnailForm({
             });
             setFile(fileWithPreview);
         }
+    };
+
+    const handleGenerate = (message: string) => {
+        generateThumbnail(
+            {
+                json: {
+                    message: message,
+                },
+                query: {
+                    videoId: videoId,
+                },
+            },
+            {
+                onSuccess(data, variables, context) {
+                    setOpen(false);
+                },
+            },
+        );
     };
 
     useEffect(() => {
@@ -101,12 +123,12 @@ export function UploadVideoThumbnailForm({
                 onChange={onFileInputChange}
                 disabled={isPending}
             />
-            <div className="group relative aspect-video border border-dashed border-neutral-400">
+            <div className="group relative aspect-video h-[153px] w-[200px] border border-dashed border-neutral-400">
                 <Image
                     src={initialImageUrl || "/circle-play.svg"}
                     className="object-contain"
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 480px) 100vw, (max-width: 768px) 75vw, (max-width: 1024px) 50vw, 33vw"
                     alt="Thumbnail"
                 />
                 <DropdownMenu>
@@ -133,13 +155,19 @@ export function UploadVideoThumbnailForm({
                             <ImagePlusIcon className="mr-1 size-4" />
                             Change
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpen(true)}>
                             <SparkleIcon className="mr-1 size-4" />
                             AI-Generated
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+            <ThumbnailGenerateDialog
+                open={open}
+                setOpen={setOpen}
+                handleSubmit={handleGenerate}
+                onLoad={generateThumbnailPending}
+            />
         </>
     );
 }

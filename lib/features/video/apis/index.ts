@@ -142,5 +142,27 @@ export const videoApi = {
             );
             return mutation;
         },
+        useGenerateThumbnail() {
+            const $post = client.api.videos["generate-thumbnail"].$post;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onError(err) {
+                        console.error(err);
+                        toast.error("Please try different word again");
+                    },
+                    onSuccess({ data }, {query}) {
+                        console.log("data", data);
+                        queryClient.invalidateQueries({
+                            queryKey: keys.video(query.videoId),
+                        });
+                        toast.success(
+                            "Successfully generate thumbnail for video",
+                        );
+                    },
+                },
+            );
+            return mutation;
+        },
     },
 };

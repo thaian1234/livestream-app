@@ -44,6 +44,25 @@ export class VideoDTO {
         user: userSchema,
         categories: CategoryDTO.basicSelectSchema.array(),
     });
+    public cloudFlareAIErrorSchema = z.object({
+        message: z.string(),
+        code: z.number(),
+    });
+    public static cloudflareAIResponseSchema = z.object({
+        result: z
+            .object({
+                image: z.string(),
+            })
+            .or(z.object({})),
+        success: z.boolean(),
+        errors: z.array(
+            z.object({
+                message: z.string(),
+                code: z.number(),
+            }),
+        ),
+        messages: z.array(z.string()),
+    });
 }
 
 export namespace VideoDTO {
@@ -52,4 +71,7 @@ export namespace VideoDTO {
     export type Update = z.infer<typeof VideoDTO.updateSchema>;
     export type Delete = z.infer<typeof VideoDTO.deleteSchema>;
     export type VideoWithUser = z.infer<typeof VideoDTO.videoWithUser>;
+    export type CloudflareAIResponse = z.infer<
+        typeof VideoDTO.cloudflareAIResponseSchema
+    >;
 }
