@@ -3,11 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { middlewareRoutes } from "./lib/configs/middleware.config";
 import { ROUTES } from "./lib/configs/routes.config";
-import { clientCookie } from "./lib/shared/client";
+import { baseClient } from "./lib/shared/client";
+import { AuthRouteType } from "./server/api/routes/auth.routes";
 
 async function verifySession() {
-    const $get = clientCookie(cookies().toString()).api.auth["verify-session"]
-        .$get;
+    const $get = baseClient<AuthRouteType>(cookies().toString()).auth[
+        "verify-session"
+    ].$get;
     const resp = await $get();
     if (!resp.ok) {
         return {
@@ -15,6 +17,7 @@ async function verifySession() {
             isValidSession: false,
         };
     }
+    ``;
     const data = await resp.json();
     return {
         user: data.data.user,
@@ -28,7 +31,7 @@ export async function middleware(request: NextRequest) {
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
     const isDefaultPage = middlewareRoutes.DEFAULT_PAGE.startsWith(pathname);
     const isDashboardPage = pathname.startsWith("/dashboard/");
-    const isResetPassword = pathname.startsWith("/reset-password")
+    const isResetPassword = pathname.startsWith("/reset-password");
     if (isDefaultPage) {
         return NextResponse.next();
     }

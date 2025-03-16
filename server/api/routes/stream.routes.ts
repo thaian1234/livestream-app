@@ -13,3 +13,7 @@ export class StreamRoutes {
             .route("/streams", this.streamController.setupHandlers());
     }
 }
+
+export type StreamRouteType = ReturnType<
+    typeof StreamRoutes.prototype.setupRoutes
+>;

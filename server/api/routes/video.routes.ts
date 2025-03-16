@@ -13,3 +13,7 @@ export class VideoRoutes {
             .route("/videos", this.videoController.setupHandlers());
     }
 }
+
+export type VideoRouteType = ReturnType<
+    typeof VideoRoutes.prototype.setupRoutes
+>;

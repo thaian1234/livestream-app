@@ -13,3 +13,5 @@ export class UserRoutes {
             .route("/users", this.userController.setupHandlers());
     }
 }
+
+export type UserRouteType = ReturnType<typeof UserRoutes.prototype.setupRoutes>;

@@ -2,7 +2,13 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { AuthRouteType } from "@/server/api/routes/auth.routes";
+import { UserRouteType } from "@/server/api/routes/user.routes";
+
+const baseApi = baseClient<AuthRouteType>().auth;
+const userClient = baseClient<UserRouteType>().users;
 
 const keys = {
     userId: ["userId"],
@@ -17,7 +23,7 @@ export const authApi = {
             return userId;
         },
         useVerifySession() {
-            const $get = client.api.auth["verify-session"].$get;
+            const $get = baseApi["verify-session"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.session,
@@ -29,7 +35,7 @@ export const authApi = {
             );
         },
         useSuspenseVerifySession() {
-            const $get = client.api.auth["verify-session"].$get;
+            const $get = baseApi["verify-session"].$get;
             return Fetcher.useHonoSuspenseQuery(
                 $get,
                 keys.session,
@@ -43,7 +49,7 @@ export const authApi = {
     },
     mutation: {
         useSignIn() {
-            const $post = client.api.auth["sign-in"].$post;
+            const $post = baseApi["sign-in"].$post;
             const { mutation, router, toast, queryClient } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
@@ -58,7 +64,7 @@ export const authApi = {
             return mutation;
         },
         useSignUp() {
-            const $post = client.api.auth["sign-up"].$post;
+            const $post = baseApi["sign-up"].$post;
             const { mutation, router, queryClient, toast } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ data, msg }) {
@@ -73,7 +79,7 @@ export const authApi = {
             return mutation;
         },
         useSendEmailVerifyCode() {
-            const $post = client.api.auth["verify-email"].$post;
+            const $post = baseApi["verify-email"].$post;
             const { mutation, toast, router, queryClient } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
@@ -88,7 +94,7 @@ export const authApi = {
             return mutation;
         },
         useSignInGoogle() {
-            const $get = client.api.auth.oauth.google.$get;
+            const $get = baseApi.oauth.google.$get;
             const { mutation, toast } = Fetcher.useHonoMutation($get, {
                 onSuccess({ data }) {
                     console.log("Debug ", data.redirectTo);
@@ -101,7 +107,7 @@ export const authApi = {
             return mutation;
         },
         useSignOut() {
-            const $post = client.api.auth["sign-out"].$post;
+            const $post = baseApi["sign-out"].$post;
             const { mutation, toast, queryClient, router } =
                 Fetcher.useHonoMutation($post, {
                     onSuccess({ msg }) {
@@ -116,7 +122,7 @@ export const authApi = {
             return mutation;
         },
         useSignInGithub() {
-            const $get = client.api.auth.oauth.github.$get;
+            const $get = baseApi.oauth.github.$get;
             const { mutation, toast } = Fetcher.useHonoMutation($get, {
                 onSuccess({ data }) {
                     window.location.href = data.redirectTo;
@@ -128,7 +134,7 @@ export const authApi = {
             return mutation;
         },
         useSetUsername() {
-            const $patch = client.api.users.$patch;
+            const $patch = userClient.$patch;
             const { mutation, toast, queryClient, router } =
                 Fetcher.useHonoMutation($patch, {
                     onSuccess() {
@@ -145,7 +151,7 @@ export const authApi = {
             return mutation;
         },
         useSendForgetPasswordLink() {
-            const $post = client.api.auth["reset-password"].$post;
+            const $post = baseApi["reset-password"].$post;
             const { mutation, toast } = Fetcher.useHonoMutation($post, {
                 onSuccess(data) {
                     toast.success(data.msg);
@@ -157,7 +163,7 @@ export const authApi = {
             return mutation;
         },
         useResetPassword() {
-            const $post = client.api.auth["reset-password"][":token"].$post;
+            const $post = baseApi["reset-password"][":token"].$post;
             const { mutation, toast, router } = Fetcher.useHonoMutation($post, {
                 onSuccess(data) {
                     toast.success(data.msg);

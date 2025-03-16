@@ -1,8 +1,9 @@
-import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 
-const baseApi = client.api.videolikes;
+import { VideoLikeRouteType } from "@/server/api/routes/video-like.routes";
+
+const baseApi = baseClient<VideoLikeRouteType>().videolikes;
 const videoBaseKey = ["videos"];
 
 const keys = {

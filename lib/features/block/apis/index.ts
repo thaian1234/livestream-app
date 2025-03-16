@@ -1,14 +1,17 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { BlockRouteType } from "@/server/api/routes/block.routes";
 
 const keys = {
     block: (page: string, size: string) => ["block", page, size],
 };
+const baseApi = baseClient<BlockRouteType>().blocks;
 
 export const blockApi = {
     query: {
         useBlock(page = "1", size = "4") {
-            const $get = client.api.blocks.blocked.$get;
+            const $get = baseApi.blocked.$get;
             return Fetcher.useHonoQuery($get, keys.block(page, size), {
                 query: {
                     page,
@@ -19,7 +22,7 @@ export const blockApi = {
     },
     mutation: {
         useBlockToggle() {
-            const $post = client.api.blocks[":blockedId"].$post;
+            const $post = baseApi[":blockedId"].$post;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
                 $post,
                 {
