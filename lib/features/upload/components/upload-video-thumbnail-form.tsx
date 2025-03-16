@@ -49,7 +49,7 @@ export function UploadVideoThumbnailForm({
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
     const { mutate: generateThumbnail, isPending: generateThumbnailPending } =
-        videoApi.mutation.useGenerateThumbnail();
+        uploadApi.mutation.useGenerateThumbnail();
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
@@ -64,8 +64,6 @@ export function UploadVideoThumbnailForm({
             {
                 json: {
                     message: message,
-                },
-                query: {
                     videoId: videoId,
                 },
             },

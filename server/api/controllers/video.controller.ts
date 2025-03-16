@@ -49,7 +49,6 @@ export class VideoController implements IVideoController {
                 // AI
                 .post("/generate-title", ...this.generateTitle())
                 .post("/generate-description", ...this.generateDescription())
-                .post("/generate-thumbnail", ...this.generateThumbnail())
                 // video id
                 .get("/:id", ...this.getVideoById())
                 .get("/:id/relate", ...this.getRelateVideo())
@@ -448,74 +447,6 @@ export class VideoController implements IVideoController {
                 return ApiResponse.WriteJSON({
                     c,
                     data: videoCategories,
-                    status: HttpStatus.OK,
-                });
-            },
-        );
-    }
-    private generateThumbnail() {
-        const reqSchema = z.object({
-            message: z.string(),
-        });
-        const queries = z.object({
-            videoId: z.string().optional(),
-        });
-        return this.factory.createHandlers(
-            zValidator("json", reqSchema, Validator.handleParseError),
-            zValidator("query", queries, Validator.handleParseError),
-            async (c) => {
-                const { message } = c.req.valid("json");
-                const builder = this.aiServiceBuilder.setBasePrompt("");
-                const currentUser = c.get("getUser");
-                const videoId = c.req.valid("query").videoId;
-
-                if (!videoId) {
-                    throw new MyError.BadRequestError(
-                        "Video ID is required in query parameters",
-                    );
-                }
-                const aiService = builder.build();
-                const response = await aiService.getThumbnail(message);
-                if (!response)
-                    throw new MyError.BadRequestError("Something went wrong");
-                const fileName = `AI_${Date.now()}.jpg`;
-                const fileType = "image/jpeg";
-                const fileSize = response.length;
-
-                const [imageUrl, existingVideo] = await Promise.all([
-                    this.r2BucketService.uploadImage(
-                        {
-                            fileName,
-                            fileSize,
-                            fileType,
-                        },
-                        response,
-                    ),
-                    this.videoService.getVideoById(videoId),
-                ]);
-
-                if (!existingVideo) {
-                    throw new MyError.NotFoundError("Video not found");
-                }
-                if (existingVideo.userId !== currentUser.id) {
-                    throw new MyError.UnauthorizedError(
-                        "You are not authorized to update this video",
-                    );
-                }
-                const updatedEntity = await this.videoService.updateVideo(
-                    videoId,
-                    {
-                        thumbnailUrl: imageUrl,
-                    },
-                );
-                if (!updatedEntity) {
-                    throw new MyError.ServiceUnavailableError(
-                        "Cannot update thumbnail right now",
-                    );
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    data: "Generate thumbnail success",
                     status: HttpStatus.OK,
                 });
             },

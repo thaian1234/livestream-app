@@ -27,7 +27,7 @@ export function ThumbnailGenerateDialog({
     handleSubmit,
     open,
     setOpen,
-    onLoad
+    onLoad,
 }: ThumbnailGenerateDialogProps) {
     const [inputText, setInputText] = useState("");
 
