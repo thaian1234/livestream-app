@@ -1,7 +1,9 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 
-const baseApi = client.api.storages;
+import { StorageRouteType } from "@/server/api/routes/storage.routes";
+
+const baseApi = baseClient<StorageRouteType>().storages;
 const baseKey = ["storages"];
 
 const keys = {

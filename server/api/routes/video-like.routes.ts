@@ -1,5 +1,6 @@
-import { IVideoLikeController } from "../controllers/video-like.controller";
 import { CreateFactoryType } from "../lib/types/factory.type";
+
+import { IVideoLikeController } from "../controllers/video-like.controller";
 
 export class VideoLikeRoutes {
     constructor(
@@ -12,3 +13,7 @@ export class VideoLikeRoutes {
             .route("/videolikes", this.videolikeController.setupHandlers());
     }
 }
+
+export type VideoLikeRouteType = ReturnType<
+    typeof VideoLikeRoutes.prototype.setupRoutes
+>;

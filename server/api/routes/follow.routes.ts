@@ -13,3 +13,7 @@ export class FollowRoutes {
             .route("/follows", this.followController.setupHandlers());
     }
 }
+
+export type FollowRouteType = ReturnType<
+    typeof FollowRoutes.prototype.setupRoutes
+>;

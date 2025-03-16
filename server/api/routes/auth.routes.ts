@@ -17,3 +17,5 @@ export class AuthRoutes {
             .route("/", this.oauthController.setupHandlers());
     }
 }
+
+export type AuthRouteType = ReturnType<typeof AuthRoutes.prototype.setupRoutes>;

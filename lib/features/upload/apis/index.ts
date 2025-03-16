@@ -1,9 +1,11 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { UploadRouteType } from "@/server/api/routes/upload.routes";
 
 import { uploadToR2Bucket } from "../utils/upload-r2";
 
-const baseApi = client.api.upload;
+const baseApi = baseClient<UploadRouteType>().upload;
 
 const keys = {
     session: ["session"],
