@@ -1,21 +1,13 @@
+import { Hono } from "hono";
 import { hc } from "hono/client";
 
 import { envClient } from "@/lib/env/env.client";
 
-import { type AppType } from "@/server/api";
-
-export const client = hc<AppType>(envClient.NEXT_PUBLIC_APP_URL, {
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
-
-export const clientCookie = (cookies: string) => {
-    const client = hc<AppType>(envClient.NEXT_PUBLIC_APP_URL, {
+export function baseClient<T extends Hono<any, any, any>>(cookies?: string) {
+    return hc<T>(`${envClient.NEXT_PUBLIC_APP_URL}/api`, {
         headers: {
-            Cookie: cookies,
+            Cookie: cookies ?? "",
             "Content-Type": "application/json",
         },
     });
-    return client;
-};
+}

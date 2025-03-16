@@ -1,7 +1,9 @@
 import { keepPreviousData } from "@tanstack/react-query";
 
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { SearchRouteType } from "@/server/api/routes/search.routes";
 
 import { QueryDTO } from "@/server/api/dtos/query.dto";
 
@@ -10,10 +12,12 @@ const keys = {
         ["search", query] as string[],
 };
 
+const baseApi = baseClient<SearchRouteType>().search;
+
 export const searchApi = {
     query: {
         useSearch(query: QueryDTO.AdvancedWithCategory) {
-            const $get = client.api.search.$get;
+            const $get = baseApi.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.search(query),

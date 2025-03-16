@@ -10,6 +10,10 @@ export class CategoryRoutes {
     setupRoutes() {
         return this.factory
             .createApp()
-            .route("/categorys", this.categoryController.setupHandlers());
+            .route("/categories", this.categoryController.setupHandlers());
     }
 }
+
+export type CategoryRouteType = ReturnType<
+    typeof CategoryRoutes.prototype.setupRoutes
+>;
