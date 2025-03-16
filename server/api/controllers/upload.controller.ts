@@ -33,7 +33,6 @@ export class UploadController implements IUploadController {
         return this.factory
             .createApp()
             .use(AuthMiddleware.isAuthenticated)
-            .post("/generate-thumbnail", ...this.generateThumbnail())
             .post("/:type", ...this.unifiedUploadHandler());
     }
     private unifiedUploadHandler() {
@@ -123,61 +122,6 @@ export class UploadController implements IUploadController {
                     status: HttpStatus.Created,
                     data: { imageUrl, signedUrl },
                     msg: "Get signed URL successfully",
-                });
-            },
-        );
-    }
-    private generateThumbnail() {
-        const reqSchema = z.object({
-            message: z.string(),
-            videoId: z.string().uuid(),
-        });
-        return this.factory.createHandlers(
-            zValidator("json", reqSchema, Validator.handleParseError),
-            async (c) => {
-                const { message, videoId } = c.req.valid("json");
-                const currentUser = c.get("getUser");
-                const response = await this.videoService.getThumbnail(message);
-                if (!response)
-                    throw new MyError.BadRequestError("Something went wrong");
-                const fileName = `AI_${Date.now()}.jpg`;
-                const fileType = "image/jpeg";
-                const fileSize = response.length;
-                const [imageUrl, existingVideo] = await Promise.all([
-                    this.r2BucketService.uploadImage(
-                        {
-                            fileName,
-                            fileSize,
-                            fileType,
-                        },
-                        response,
-                    ),
-                    this.videoService.getVideoById(videoId),
-                ]);
-                if (!existingVideo) {
-                    throw new MyError.NotFoundError("Video not found");
-                }
-                if (existingVideo.userId !== currentUser.id) {
-                    throw new MyError.UnauthorizedError(
-                        "You are not authorized to update this video",
-                    );
-                }
-                const updatedEntity = await this.videoService.updateVideo(
-                    videoId,
-                    {
-                        thumbnailUrl: imageUrl,
-                    },
-                );
-                if (!updatedEntity) {
-                    throw new MyError.ServiceUnavailableError(
-                        "Cannot update thumbnail right now",
-                    );
-                }
-                return ApiResponse.WriteJSON({
-                    c,
-                    data: undefined,
-                    status: HttpStatus.OK,
-                    msg: "Generate thumbnail success",
                 });
             },
         );

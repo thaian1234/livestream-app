@@ -9,7 +9,6 @@ const baseApi = baseClient<UploadRouteType>().upload;
 
 const keys = {
     session: ["session"],
-    video: (id: string) => ["videos", id],
 };
 
 export const uploadApi = {
@@ -36,27 +35,6 @@ export const uploadApi = {
                     toast.error(err.message);
                 },
             });
-            return mutation;
-        },
-        useGenerateThumbnail() {
-            const $post = baseApi["generate-thumbnail"].$post;
-            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
-                $post,
-                {
-                    onError(err) {
-                        console.error(err);
-                        toast.error("Please try different word again");
-                    },
-                    onSuccess({},{json}) {
-                        queryClient.invalidateQueries({
-                            queryKey: keys.video(json.videoId),
-                        });
-                        toast.success(
-                            "Successfully generate thumbnail for video",
-                        );
-                    },
-                },
-            );
             return mutation;
         },
     },

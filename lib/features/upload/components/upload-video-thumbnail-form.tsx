@@ -19,12 +19,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-} from "@/components/ui/form";
 
 import { videoApi } from "../../video/apis";
 import { uploadApi } from "../apis";
@@ -49,7 +43,7 @@ export function UploadVideoThumbnailForm({
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
     const { mutate: generateThumbnail, isPending: generateThumbnailPending } =
-        uploadApi.mutation.useGenerateThumbnail();
+        videoApi.mutation.useGenerateThumbnail();
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
