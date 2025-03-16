@@ -5,8 +5,6 @@ import { envServer } from "@/lib/env/env.server";
 
 import { Utils } from "../lib/helpers/utils";
 
-import { VideoDTO } from "../dtos/video.dto";
-
 export interface IAIService extends Utils.AutoMappedClass<AIService> {}
 
 export class AIServiceBuilder {

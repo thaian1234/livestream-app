@@ -32,7 +32,6 @@ export class VideoController implements IVideoController {
         private readonly aiServiceBuilder: AIServiceBuilder,
         private readonly categoryService: ICategoryService,
         private readonly followService: IFollowService,
-        private readonly r2BucketService: IR2BucketService,
     ) {}
     public setupHandlers() {
         return (
