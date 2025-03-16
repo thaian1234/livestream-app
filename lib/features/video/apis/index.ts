@@ -141,6 +141,6 @@ export const videoApi = {
                 },
             );
             return mutation;
-        }
+        },
     },
 };

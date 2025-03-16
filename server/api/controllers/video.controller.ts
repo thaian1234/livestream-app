@@ -16,7 +16,6 @@ import { IFollowService } from "../services/follow.service";
 import { IVideoService } from "../services/video.service";
 
 import { AIServiceBuilder } from "../external-services/ai.service";
-import { IR2BucketService } from "../external-services/r2-bucket.service";
 
 import { FollowDTO } from "../dtos/follow.dto";
 import { QueryDTO } from "../dtos/query.dto";
