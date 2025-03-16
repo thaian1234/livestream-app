@@ -13,3 +13,7 @@ export class EventRoutes {
             .route("/events", this.eventController.setupHandlers());
     }
 }
+
+export type EventRouteType = ReturnType<
+    typeof EventRoutes.prototype.setupRoutes
+>;

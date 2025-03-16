@@ -1,7 +1,9 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 
-const baseApi = client.api.events;
+import { EventRouteType } from "@/server/api/routes/event.routes";
+
+const baseApi = baseClient<EventRouteType>().events;
 const baseKey = ["events"];
 
 const keys = {
