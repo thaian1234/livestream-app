@@ -1,12 +1,14 @@
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { UserRouteType } from "@/server/api/routes/user.routes";
 
 const keys = {
     session: ["session"],
 };
 
-const baseApi = client.api.users;
+const baseApi = baseClient<UserRouteType>().users;
 
 export const userApi = {
     query: {},

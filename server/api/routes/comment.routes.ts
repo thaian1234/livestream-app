@@ -13,3 +13,7 @@ export class CommentRoutes {
             .route("/comments", this.commentController.setupHandlers());
     }
 }
+
+export type CommentRouteType = ReturnType<
+    typeof CommentRoutes.prototype.setupRoutes
+>;

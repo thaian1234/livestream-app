@@ -16,3 +16,7 @@ export class NotificationRoutes {
             );
     }
 }
+
+export type NotificationRouteType = ReturnType<
+    typeof NotificationRoutes.prototype.setupRoutes
+>;

@@ -13,3 +13,7 @@ export class SearchRoutes {
             .route("/search", this.searchController.setupHandlers());
     }
 }
+
+export type SearchRouteType = ReturnType<
+    typeof SearchRoutes.prototype.setupRoutes
+>;

@@ -14,3 +14,7 @@ export class UploadRoutes {
             .route("/", this.uploadController.setupHandlers());
     }
 }
+
+export type UploadRouteType = ReturnType<
+    typeof UploadRoutes.prototype.setupRoutes
+>;
