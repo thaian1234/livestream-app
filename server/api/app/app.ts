@@ -8,6 +8,7 @@ import { AppConfig } from "../configs/app.config";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { Env } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
@@ -17,6 +18,7 @@ import { BlockRepository } from "../repositories/block.repository";
 import { CategoryRepository } from "../repositories/category.repository";
 import { CommentRepository } from "../repositories/comment.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
+import { EventRepository } from "../repositories/event.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
 import { SettingRepository } from "../repositories/setting.repository";
@@ -31,6 +33,7 @@ import { BlockService } from "../services/block.service";
 import { CategoryService } from "../services/category.service";
 import { CommentService } from "../services/comment.service";
 import { EmailVerificationService } from "../services/email-verification.service";
+import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
 import { SettingService } from "../services/setting.service";
@@ -40,7 +43,7 @@ import { UserService } from "../services/user.service";
 import { VideoLikeService } from "../services/video-like.service";
 import { VideoService } from "../services/video.service";
 
-import { AIService, AIServiceBuilder } from "../external-services/ai.service";
+import { AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
@@ -52,6 +55,7 @@ import { AuthController } from "../controllers/auth.controller";
 import { BlockController } from "../controllers/block.controller";
 import { CategoryController } from "../controllers/category.controller";
 import { CommentController } from "../controllers/comment.controller";
+import { EventController } from "../controllers/event.controller";
 import { FollowController } from "../controllers/follow.controller";
 import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
@@ -69,6 +73,7 @@ import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
 import { CategoryRoutes } from "../routes/category.routes";
 import { CommentRoutes } from "../routes/comment.routes";
+import { EventRoutes } from "../routes/event.routes";
 import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
 import { SearchRoutes } from "../routes/search.routes";
@@ -107,8 +112,7 @@ export class App {
     }
 
     private setupRoutes() {
-        console.log("I should not be here twice");
-        const factory = createFactory();
+        const factory = createFactory<Env>();
 
         // Repositories
         const userRepository = new UserRepository();
@@ -124,6 +128,7 @@ export class App {
         const storageRepository = new StorageRepository();
         const videolikeRepository = new VideoLikeRepository();
         const commentRepository = new CommentRepository();
+        const eventRepository = new EventRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -160,6 +165,7 @@ export class App {
         const videolikeService = new VideoLikeService(videolikeRepository);
         const commentService = new CommentService(commentRepository);
         const aiServiceBuilder = new AIServiceBuilder();
+        const eventService = new EventService(eventRepository);
 
         // Controllers
         const userController = new UserController(
@@ -254,6 +260,7 @@ export class App {
             factory,
             commentService,
         );
+        const eventController = new EventController(factory, eventService);
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -281,6 +288,7 @@ export class App {
             videoLikeController,
         );
         const commentRoutes = new CommentRoutes(factory, commentController);
+        const eventRoutes = new EventRoutes(factory, eventController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -297,6 +305,7 @@ export class App {
             .route("/", videoRoutes.setupRoutes())
             .route("/", webhookRoutes.setupRoutes())
             .route("/", storageRoutes.setupRoutes())
+            .route("/", eventRoutes.setupRoutes())
             .route("/", videolikeRoutes.setupRoutes())
             .route("/", commentRoutes.setupRoutes());
     }
