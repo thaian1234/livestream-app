@@ -463,7 +463,7 @@ export class VideoController implements IVideoController {
             async (c) => {
                 const { message, videoId } = c.req.valid("json");
                 const currentUser = c.get("getUser");
-                const response = await this.videoService.getThumbnail(message);
+                const response = await this.videoService.generateThumbnail(message);
                 if (!response)
                     throw new MyError.BadRequestError("Something went wrong");
                 const fileName = `AI_${Date.now()}.jpg`;
