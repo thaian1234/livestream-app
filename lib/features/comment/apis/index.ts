@@ -1,9 +1,11 @@
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 import { PaginationType } from "@/lib/types";
 
-const baseApi = client.api.comments;
+import { CommentRouteType } from "@/server/api/routes/comment.routes";
+
+const baseApi = baseClient<CommentRouteType>().comments;
 const baseKey = ["comments"];
 
 const keys = {
@@ -35,7 +37,7 @@ export const commentApi = {
                     id,
                 },
             });
-        }
+        },
     },
     mutation: {
         useCreateComment() {

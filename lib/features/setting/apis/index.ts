@@ -1,20 +1,23 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { SettingRouteType } from "@/server/api/routes/setting.routes";
 
 const keys = {
     settings: ["settings"],
 };
+const baseApi = baseClient<SettingRouteType>().settings;
 
 export const settingApi = {
     query: {
         useGetSetting() {
-            const $get = client.api.settings.$get;
+            const $get = baseApi.$get;
             return Fetcher.useHonoSuspenseQuery($get, keys.settings, {}, {});
         },
     },
     mutation: {
         useUpdateKeySetting() {
-            const $patch = client.api.settings["generate-key"].$patch;
+            const $patch = baseApi["generate-key"].$patch;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
                 $patch,
                 {
@@ -32,7 +35,7 @@ export const settingApi = {
             return mutation;
         },
         useUpdateSetting() {
-            const $patch = client.api.settings.$patch;
+            const $patch = baseApi.$patch;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
                 $patch,
                 {

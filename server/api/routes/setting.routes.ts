@@ -13,3 +13,7 @@ export class SettingRoutes {
             .route("/settings", this.settingController.setupHandlers());
     }
 }
+
+export type SettingRouteType = ReturnType<
+    typeof SettingRoutes.prototype.setupRoutes
+>;

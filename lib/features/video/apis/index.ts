@@ -1,9 +1,11 @@
 import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 import { PaginationType } from "@/lib/types";
 
-const baseApi = client.api.videos;
+import { VideoRouteType } from "@/server/api/routes/video.routes";
+
+const baseApi = baseClient<VideoRouteType>().videos;
 const baseKey = ["videos"];
 
 const keys = {
@@ -41,7 +43,7 @@ export const videoApi = {
             });
         },
         useGetVideoCategories(videoId?: string) {
-            const $get = client.api.videos.categories.$get;
+            const $get = baseApi.categories.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.video_categories(videoId),
@@ -125,7 +127,7 @@ export const videoApi = {
             return mutation;
         },
         useAddCategoriesToVideo() {
-            const $post = client.api.videos["add-categories"].$post;
+            const $post = baseApi["add-categories"].$post;
             const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
                 $post,
                 {

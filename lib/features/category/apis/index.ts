@@ -1,6 +1,8 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 import { FilterType, PaginationType } from "@/lib/types";
+
+import { CategoryRouteType } from "@/server/api/routes/category.routes";
 
 const keys = {
     basic: (queryParams: PaginationType & FilterType) =>
@@ -8,17 +10,18 @@ const keys = {
     detail: (pagination: PaginationType) =>
         ["category-detail", pagination] as string[],
 };
+const baseApi = baseClient<CategoryRouteType>().categories;
 
 export const categoryApi = {
     query: {
         useGetBasic(queryParams: PaginationType & FilterType) {
-            const $get = client.api.categorys.$get;
+            const $get = baseApi.$get;
             return Fetcher.useHonoQuery($get, keys.basic(queryParams), {
                 query: queryParams,
             });
         },
         useGetDetail(pagination: PaginationType) {
-            const $get = client.api.categorys.detail.$get;
+            const $get = baseApi.detail.$get;
             return Fetcher.useHonoQuery($get, keys.detail(pagination), {
                 query: pagination,
             });

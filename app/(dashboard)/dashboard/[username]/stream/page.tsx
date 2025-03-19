@@ -16,8 +16,9 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
-import { LoadingStreamPage } from "@/components/loading-stream-page";
 import { Spinner } from "@/components/ui/spinner";
+
+import { LoadingStreamPage } from "@/components/loading-stream-page";
 
 export default function StreamPage() {
     const auth = useAuth();

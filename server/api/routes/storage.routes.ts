@@ -13,3 +13,7 @@ export class StorageRoutes {
             .route("/storages", this.storageController.setupHandlers());
     }
 }
+
+export type StorageRouteType = ReturnType<
+    typeof StorageRoutes.prototype.setupRoutes
+>;

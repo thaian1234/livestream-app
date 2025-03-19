@@ -1,5 +1,9 @@
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
+
+import { FollowRouteType } from "@/server/api/routes/follow.routes";
+
+const baseApi = baseClient<FollowRouteType>().follows;
 
 const keys = {
     follow: (page: string, size: string) => ["follow", page, size],
@@ -9,7 +13,7 @@ const keys = {
 export const followApi = {
     query: {
         useFollow(page = "1", size = "4") {
-            const $get = client.api.follows.follow.$get;
+            const $get = baseApi.follow.$get;
             return Fetcher.useHonoQuery($get, keys.follow(page, size), {
                 query: {
                     page,
@@ -20,7 +24,7 @@ export const followApi = {
     },
     mutation: {
         useFollowToggle() {
-            const $post = client.api.follows[":followingId"].$post;
+            const $post = baseApi[":followingId"].$post;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
                 $post,
                 {

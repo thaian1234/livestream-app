@@ -13,3 +13,7 @@ export class WebhookRoutes {
             .route("/webhook", this.webhookController.setupHandlers());
     }
 }
+
+export type WebhookRouteType = ReturnType<
+    typeof WebhookRoutes.prototype.setupRoutes
+>;

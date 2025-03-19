@@ -13,3 +13,7 @@ export class BlockRoutes {
             .route("/blocks", this.blockController.setupHandlers());
     }
 }
+
+export type BlockRouteType = ReturnType<
+    typeof BlockRoutes.prototype.setupRoutes
+>;

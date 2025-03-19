@@ -1,9 +1,11 @@
 import { keepPreviousData } from "@tanstack/react-query";
 
-import { ROUTES } from "@/lib/configs/routes.config";
 import { Fetcher } from "@/lib/helpers/fetcher";
-import { client } from "@/lib/shared/client";
+import { baseClient } from "@/lib/shared/client";
 import { PaginationType } from "@/lib/types";
+
+import { StreamRouteType } from "@/server/api/routes/stream.routes";
+import { UserRouteType } from "@/server/api/routes/user.routes";
 
 type DefaultQueries = {
     recommendPage?: string | string[] | undefined;
@@ -11,7 +13,8 @@ type DefaultQueries = {
     followPage?: string | string[] | undefined;
     followSize?: string | string[] | undefined;
 };
-
+const baseApi = baseClient<StreamRouteType>().streams;
+const userClient = baseClient<UserRouteType>().users;
 const keys = {
     stream_token: ["stream_token"],
     stream_information: (username: string) => ["stream_information", username],
@@ -28,7 +31,7 @@ const keys = {
 export const streamApi = {
     query: {
         useGetStreamToken() {
-            const $get = client.api.streams["stream-token"].$get;
+            const $get = baseApi["stream-token"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream_token,
@@ -39,7 +42,7 @@ export const streamApi = {
             );
         },
         useGetStreamInformation(username: string) {
-            const $get = client.api.users[":username"].$get;
+            const $get = userClient[":username"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream_information(username),
@@ -54,7 +57,7 @@ export const streamApi = {
             );
         },
         useGetDefaultStreams(queries: DefaultQueries) {
-            const $get = client.api.streams.$get;
+            const $get = baseApi.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.streams(queries),
@@ -67,7 +70,7 @@ export const streamApi = {
             );
         },
         useGetChatToken() {
-            const $get = client.api.streams["chat-token"].$get;
+            const $get = baseApi["chat-token"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.chat_token,
@@ -78,7 +81,7 @@ export const streamApi = {
             );
         },
         useGetRecommendStreams(pagination: PaginationType) {
-            const $get = client.api.streams.recommend.$get;
+            const $get = baseApi.recommend.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.recommend_streams(pagination),
@@ -92,7 +95,7 @@ export const streamApi = {
             );
         },
         useGetFollowingStreams(pagination: PaginationType) {
-            const $get = client.api.streams.following.$get;
+            const $get = baseApi.following.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.following_streams(pagination),
@@ -106,7 +109,7 @@ export const streamApi = {
             );
         },
         useGetStreamCategories(streamId?: string) {
-            const $get = client.api.streams.categories.$get;
+            const $get = baseApi.categories.$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream_categories(streamId),
@@ -121,7 +124,7 @@ export const streamApi = {
     },
     mutation: {
         useUpdateStream(username: string) {
-            const $patch = client.api.streams.$patch;
+            const $patch = baseApi.$patch;
             const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
                 $patch,
                 {
@@ -138,7 +141,7 @@ export const streamApi = {
             return mutation;
         },
         useAddCategoriesToStream() {
-            const $post = client.api.streams["add-categories"].$post;
+            const $post = baseApi["add-categories"].$post;
             const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
                 $post,
                 {
