@@ -9,10 +9,13 @@ import { Schedule } from "@/lib/features/schedule/components/schedule";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function SchedulePage() {
-    const { data, isPending } = eventApi.query.useGetAllEvents();
+    const { data, isPending, isError } = eventApi.query.useGetAllEvents();
 
     if (isPending || !data) {
         return <Spinner size="large" />;
+    }
+    if (isError) {
+        return <div>Error</div>;
     }
     const events: CalendarEventExternal[] = data.data.map((event) => ({
         id: event.id,
@@ -25,7 +28,7 @@ export default function SchedulePage() {
 
     return (
         <article className="p-10">
-            <Schedule events={events} />
+            <Schedule events={events} isOwner={true} />
         </article>
     );
 }

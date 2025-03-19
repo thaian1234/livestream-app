@@ -1,5 +1,4 @@
-import { endOfDay, startOfDay } from "date-fns";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -59,7 +58,11 @@ export class EventRepository implements IEventRepository {
         try {
             const event = await this.db
                 .update(tableSchemas.eventTable)
-                .set(data)
+                .set({
+                    ...data,
+                    start: new Date(data.start),
+                    end: new Date(data.end),
+                })
                 .where(eq(tableSchemas.eventTable.id, id))
                 .returning();
             return event[0];

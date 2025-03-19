@@ -42,5 +42,14 @@ export const eventApi = {
             });
             return mutation;
         },
+        useDeleteEvent() {
+            const $delete = baseApi[":id"].$delete;
+            const { mutation, toast } = Fetcher.useHonoMutation($delete, {
+                onSuccess({ msg }) {
+                    toast.success(msg);
+                },
+            });
+            return mutation;
+        },
     },
 };

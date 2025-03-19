@@ -1,5 +1,7 @@
 import {
+    CalendarEvent,
     CalendarEventExternal,
+    PluginBase,
     createViewDay,
     createViewMonthAgenda,
     createViewMonthGrid,
@@ -17,21 +19,28 @@ import { parseVietnameseDateTime } from "@/lib/utils";
 
 import { eventApi } from "../apis";
 import { AddEventDialog } from "./add-event-dialog";
+import DetailEventModal from "./detail-event-modal";
 
 interface ScheduleProps {
     events: CalendarEventExternal[];
+    isOwner: boolean;
 }
 
-export function Schedule({ events }: ScheduleProps) {
+export function Schedule({ events, isOwner = false }: ScheduleProps) {
     const [currentEvent, setCurrentEvent] = useState<
         EventFormData | undefined
     >();
     const setOpen = useEventStore((state) => state.setOpen);
-    const eventMutation = eventApi.mutation.useUpdateEvent();
+    const updateEventMutation = eventApi.mutation.useUpdateEvent();
+    const deleteEventMutation = eventApi.mutation.useDeleteEvent();
 
     const eventsService = useState(() => createEventsServicePlugin())[0];
     const eventModal = useState(() => createEventModalPlugin())[0];
     const dragAndDrop = useState(() => createDragAndDropPlugin())[0];
+    const plugins: PluginBase<string>[] = [eventsService, eventModal];
+    if (isOwner) {
+        plugins.push(dragAndDrop);
+    }
     const calendar = useNextCalendarApp({
         views: [
             createViewDay(),
@@ -39,17 +48,8 @@ export function Schedule({ events }: ScheduleProps) {
             createViewMonthGrid(),
             createViewMonthAgenda(),
         ],
-        events: [
-            {
-                id: "e09770d9-8cda-4ee6-8f65-e85c41343b1f",
-                description: "oke",
-                location: "",
-                start: "2025-03-08 15:46",
-                end: "2025-03-08 23:46",
-                title: "New Event",
-            },
-        ],
-        plugins: [eventsService, eventModal, dragAndDrop],
+        events: events,
+        plugins: plugins,
         theme: "shadcn",
         isResponsive: true,
         locale: "vi-VN",
@@ -59,7 +59,7 @@ export function Schedule({ events }: ScheduleProps) {
         defaultView: "week",
         callbacks: {
             onClickDateTime(dateTime) {
-                console.log("dateTime: ", dateTime);
+                if (!isOwner) return;
                 setCurrentEvent({
                     title: "New Event",
                     description: "This is a new event",
@@ -69,7 +69,8 @@ export function Schedule({ events }: ScheduleProps) {
                 setOpen(true);
             },
             onEventUpdate(event) {
-                eventMutation.mutate({
+                if (!isOwner) return;
+                updateEventMutation.mutate({
                     param: {
                         id: event.id.toString(),
                     },
@@ -83,22 +84,43 @@ export function Schedule({ events }: ScheduleProps) {
     });
 
     const handleCreateEvent = (newEvent: CalendarEventExternal) => {
+        if (!isOwner) return;
         eventsService.add(newEvent);
         setCurrentEvent(undefined);
+    };
+
+    const handleDeleteEvent = (id: string) => {
+        if (!isOwner) return;
+        eventsService.remove(id);
+        deleteEventMutation.mutate({
+            param: {
+                id: id,
+            },
+        });
     };
 
     return (
         <ScheduleXCalendar
             calendarApp={calendar}
             customComponents={{
-                headerContentRightAppend: () => (
-                    <AddEventDialog
-                        key={
-                            currentEvent?.start.toISOString() ||
-                            new Date().toISOString()
-                        }
-                        initialValues={currentEvent}
-                        onCreateEvent={handleCreateEvent}
+                headerContentRightAppend: () =>
+                    isOwner ? (
+                        <AddEventDialog
+                            key={
+                                currentEvent?.start.toISOString() ||
+                                new Date().toISOString()
+                            }
+                            initialValues={currentEvent}
+                            onCreateEvent={handleCreateEvent}
+                        />
+                    ) : (
+                        <></>
+                    ),
+                eventModal: ({ calendarEvent }) => (
+                    <DetailEventModal
+                        event={calendarEvent as CalendarEvent}
+                        isOwner={isOwner}
+                        onDeleteEvent={handleDeleteEvent}
                     />
                 ),
             }}

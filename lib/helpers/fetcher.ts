@@ -8,11 +8,11 @@ import {
     useSuspenseQuery,
 } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
-import { SuccessStatusCode } from "hono/utils/http-status";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { HttpStatus } from "@/server/api/lib/constant/http.type";
+import { HonoSuccessStatusCode } from "@/server/api/lib/helpers/api-response";
 
 import { useAuth } from "../providers/auth-provider";
 
@@ -20,7 +20,7 @@ export namespace Fetcher {
     type ClientType = (...args: any[]) => any;
     type ResponseType<T extends ClientType> = InferResponseType<
         T,
-        SuccessStatusCode
+        HonoSuccessStatusCode
     >;
     type RequestType<T extends ClientType> = InferRequestType<T>;
 
