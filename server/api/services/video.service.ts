@@ -57,7 +57,7 @@ export class VideoService implements IVideoService {
             // Optional additional provider-specific request parameters
             providerOptions: {
                 togetherai: {
-                    steps: 12,
+                    steps: 20,
                 },
             },
         });
