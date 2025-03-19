@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
+import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
@@ -49,7 +50,8 @@ export class EventController implements IEventController {
                     end: new Date(jsonData.end),
                 });
 
-                console.log(event);
+                if (!event)
+                    throw new MyError.BadRequestError("Event creation failed");
 
                 return ApiResponse.WriteJSON({
                     c,
@@ -61,15 +63,29 @@ export class EventController implements IEventController {
         );
     }
     private getAllEvents() {
+        const querySchema = z.object({
+            username: z.string().optional(),
+        });
         const respSchema = EventDTO.selectSchema.array();
         return this.factory.createHandlers(
-            AuthMiddleware.isAuthenticated,
+            zValidator("query", querySchema, Validator.handleParseError),
             async (c) => {
-                const currentUser = c.get("getUser");
-                const events = await this.eventService.getEventsByToday(
-                    currentUser.id,
-                );
-
+                const query = c.req.valid("query");
+                const currentUser = c.get("user");
+                let events;
+                if (query?.username) {
+                    events = await this.eventService.getEventsByUsername(
+                        query.username,
+                    );
+                } else {
+                    if (currentUser?.id) {
+                        events = await this.eventService.getEventsByUserId(
+                            currentUser.id,
+                        );
+                    } else {
+                        events = [];
+                    }
+                }
                 return ApiResponse.WriteJSON({
                     c,
                     data: respSchema.parse(events),

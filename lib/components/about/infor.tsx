@@ -44,9 +44,9 @@ export function Infor() {
     const isFollowing = data.data.isFollowing;
 
     return (
-        <div className="relative mx-[110px]">
+        <div className="relative mx-auto aspect-video min-h-[780px]">
             <StreamVideoProvider>
-                <div className="flex aspect-[2/1] w-full justify-center border border-slate-700">
+                <div className="flex w-full justify-center border border-slate-700">
                     <CustomCall streamId={stream.id}>
                         <LivestreamPlayer />
                     </CustomCall>

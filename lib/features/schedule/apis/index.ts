@@ -12,9 +12,13 @@ const keys = {
 
 export const eventApi = {
     query: {
-        useGetAllEvents() {
+        useGetAllEvents(username?: string) {
             const $get = baseApi.$get;
-            return Fetcher.useHonoQuery($get, keys.events, {});
+            return Fetcher.useHonoQuery($get, keys.events, {
+                query: {
+                    username,
+                },
+            });
         },
     },
     mutation: {
