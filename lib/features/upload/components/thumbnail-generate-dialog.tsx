@@ -41,7 +41,7 @@ export function ThumbnailGenerateDialog({
                     </DialogDescription>
                 </DialogHeader>
                 <Textarea
-                    maxLength={160}
+                    maxLength={90}
                     minLength={1}
                     id="text-input"
                     value={inputText}
