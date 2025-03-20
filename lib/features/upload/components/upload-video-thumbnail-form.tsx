@@ -36,14 +36,15 @@ export function UploadVideoThumbnailForm({
     initialImageUrl,
     videoId,
 }: UploadVideoThumbnailFormProps) {
-    const [file, setFile] = useState<FileWithPreview | null>(null);
     const queryClient = useQueryClient();
-    const [open, setOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [file, setFile] = useState<FileWithPreview | null>(null);
+    const [open, setOpen] = useState(false);
+
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
-    const { mutate: generateThumbnail, isPending: generateThumbnailPending } =
-        videoApi.mutation.useGenerateThumbnail();
+
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
             const fileWithPreview = Object.assign(selectedFile, {
@@ -51,22 +52,6 @@ export function UploadVideoThumbnailForm({
             });
             setFile(fileWithPreview);
         }
-    };
-
-    const handleGenerate = (message: string) => {
-        generateThumbnail(
-            {
-                json: {
-                    message: message,
-                    videoId: videoId,
-                },
-            },
-            {
-                onSuccess(data, variables, context) {
-                    setOpen(false);
-                },
-            },
-        );
     };
 
     useEffect(() => {
@@ -155,10 +140,9 @@ export function UploadVideoThumbnailForm({
                 </DropdownMenu>
             </div>
             <ThumbnailGenerateDialog
+                videoId={videoId}
                 open={open}
                 setOpen={setOpen}
-                handleSubmit={handleGenerate}
-                onLoad={generateThumbnailPending}
             />
         </>
     );

@@ -14,7 +14,7 @@ export interface IR2BucketService
 
 export class R2BucketService implements IR2BucketService {
     private s3Client;
-    private maxSize = 5 * 1024 ** 2; // 5MB
+    private maxSize = 20 * 1024 ** 2; // 20MB
     constructor() {
         this.s3Client = new S3Client({
             region: "auto",
