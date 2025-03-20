@@ -65,7 +65,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 ref={ref}
                 {...props}
             >
-                {loading && <Loader2 className="size-6 animate-spin" />}
+                {loading && <Loader2 className="mr-2 size-6 animate-spin" />}
                 <Slottable>{children}</Slottable>
             </Comp>
         );

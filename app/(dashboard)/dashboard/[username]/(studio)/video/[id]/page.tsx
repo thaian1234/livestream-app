@@ -19,7 +19,7 @@ export default function VideoEditPage() {
     if (!data || isPending) {
         return null;
     }
-    console.log("data: ", data.data);
+
     return (
         <>
             <EditVideoForm videoId={id} defaultVideo={data.data} />

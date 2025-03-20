@@ -24,6 +24,8 @@ export const envServer = createEnv({
         GITHUB_API_URL: z.string().url(),
         GETSTREAM_PRIVATE_API_KEY: z.string().default("test_ci"),
         GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1),
+        TOGETHER_AI_API_KEY: z.string().min(1),
+        TOGETHER_AI_IMAGE_MODEL: z.string().min(1),
     },
     shared: {
         NODE_ENV: z
@@ -53,6 +55,8 @@ export const envServer = createEnv({
         SMTP_PORT: process.env.SMTP_PORT,
         SMTP_USER: process.env.SMTP_USER,
         GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+        TOGETHER_AI_API_KEY: process.env.TOGETHER_AI_API_KEY,
+        TOGETHER_AI_IMAGE_MODEL: process.env.TOGETHER_AI_IMAGE_MODEL,
     },
     skipValidation:
         !!process.env.CI || process.env.npm_lifecycle_event === "lint",
