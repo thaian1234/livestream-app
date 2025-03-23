@@ -1,4 +1,4 @@
-import { and, count, desc, asc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, ne, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
@@ -197,5 +197,40 @@ export class VideoRepository implements IVideoRepository {
 
             return relatedVideos;
         } catch (error) {}
+    }
+    async findWithUsername(username: string, offset: number, size: number) {
+        try {
+            const videos = await this.db.query.videoTable.findMany({
+                where: inArray(
+                    tableSchemas.videoTable.userId,
+                    this.db
+                        .select({ userId: tableSchemas.userTable.id })
+                        .from(tableSchemas.userTable)
+                        .where(eq(tableSchemas.userTable.username, username)),
+                ),
+                extras: this.getLikeAndDislikeCount(),
+                offset: offset,
+                limit: size,
+                orderBy: [
+                    desc(tableSchemas.videoTable.createdAt),
+                    asc(tableSchemas.videoTable.title),
+                ],
+            });
+            const totalRecords = await this.db.$count(
+                tableSchemas.videoTable,
+                inArray(
+                    tableSchemas.videoTable.userId,
+                    this.db
+                        .select({ userId: tableSchemas.userTable.id })
+                        .from(tableSchemas.userTable)
+                        .where(
+                            eq(tableSchemas.userTable.username, username),
+                        ),
+                ),
+            );
+            return { videos, totalRecords };
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

@@ -15,10 +15,10 @@ import {
 
 import { VideoThumbnail } from "@/components/thumbnail";
 
-import { IVideoPreview } from "./category-video-preview";
+import { VideoDTO } from "@/server/api/dtos/video.dto";
 
 interface PreviewVideoCarouselProps {
-    videoData: IVideoPreview[];
+    videoData: VideoDTO.Select[];
 }
 export function PreviewVideoCarousel({ videoData }: PreviewVideoCarouselProps) {
     const router = useRouter();

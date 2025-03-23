@@ -39,4 +39,11 @@ export class VideoService implements IVideoService {
     public async getRelateVideo(videoId: string) {
         return await this.videoRepository.getRelateVideo(videoId);
     }
+    public async getVideosWithUsername(
+        username: string,
+        offset: number,
+        size: number,
+    ) {
+        return this.videoRepository.findWithUsername(username, offset, size);
+    }
 }
