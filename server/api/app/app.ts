@@ -165,7 +165,7 @@ export class App {
         const videolikeService = new VideoLikeService(videolikeRepository);
         const commentService = new CommentService(commentRepository);
         const aiServiceBuilder = new AIServiceBuilder();
-        const eventService = new EventService(eventRepository);
+        const eventService = new EventService(eventRepository, userService);
 
         // Controllers
         const userController = new UserController(

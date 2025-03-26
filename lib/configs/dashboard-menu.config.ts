@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { BsDatabaseFillDown } from "react-icons/bs";
 import { IconType } from "react-icons/lib";
+import { RiCalendarScheduleFill } from "react-icons/ri";
 import { SiYoutubestudio } from "react-icons/si";
 
 import { ROUTES } from "./routes.config";
@@ -58,6 +59,13 @@ export function getDashboardMenuList(
                     label: "Community",
                     active: pathname === ROUTES.COMMUNITY_PAGE(username),
                     icon: Users,
+                    submenus: [],
+                },
+                {
+                    href: ROUTES.DASHBOARD_SCHEDULE_PAGE(username),
+                    label: "Schedule",
+                    active: pathname === ROUTES.ABOUT_PAGE(username),
+                    icon: RiCalendarScheduleFill,
                     submenus: [],
                 },
             ],

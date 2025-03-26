@@ -15,8 +15,8 @@ export class VideoService implements IVideoService {
     private readonly togetherai;
     constructor(private videoRepository: IVideoRepository) {
         this.togetherai = createTogetherAI({
-            apiKey: envServer.TOGETHER_AI_API_KEY
-        })
+            apiKey: envServer.TOGETHER_AI_API_KEY,
+        });
     }
     public async createVideo(data: VideoDTO.Insert) {
         return this.videoRepository.create(data);
@@ -48,6 +48,13 @@ export class VideoService implements IVideoService {
     }
     public async getRelateVideo(videoId: string) {
         return await this.videoRepository.getRelateVideo(videoId);
+    }
+    public async getVideosWithUsername(
+        username: string,
+        offset: number,
+        size: number,
+    ) {
+        return this.videoRepository.findWithUsername(username, offset, size);
     }
     public async generateThumbnail(prompt: string) {
         const { images } = await experimental_generateImage({

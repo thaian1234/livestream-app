@@ -1,5 +1,7 @@
+import Link from "next/link";
+
+import { ROUTES } from "@/lib/configs/routes.config";
 import { FollowButton } from "@/lib/features/follow/components/follow-button";
-import { useUser } from "@/lib/hooks/use-user";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
@@ -31,9 +33,11 @@ export function LiveInformation({
 
     return (
         <div className="mt-2 flex justify-between px-2">
-            <div className="w-full space-y-1 truncate text-white">
+            <Link
+                href={ROUTES.ABOUT_PAGE(user.username)}
+                className="w-full space-y-1 truncate text-white"
+            >
                 <div className="text-xl">{stream.name}</div>
-
                 <div className="flex w-full items-center space-x-2">
                     <UserAvatar
                         imageUrl={user.imageUrl}
@@ -61,7 +65,7 @@ export function LiveInformation({
                         )}
                     </div>
                 </div>
-            </div>
+            </Link>
             {!isOwnedStream && (
                 <div className="flex space-x-4">
                     <FollowButton

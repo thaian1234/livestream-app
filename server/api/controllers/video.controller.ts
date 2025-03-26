@@ -41,6 +41,7 @@ export class VideoController implements IVideoController {
                 .use(AuthMiddleware.isAuthenticated)
                 .get("/", ...this.getAllVideos())
                 .post("/", ...this.createVideo())
+                .get("/username/:username", ...this.getVideosWithUsername())
                 // me
                 .get("/me", ...this.getOwnedVideos())
                 // cateogries
@@ -453,6 +454,43 @@ export class VideoController implements IVideoController {
             },
         );
     }
+    private getVideosWithUsername() {
+        const respSchema = VideoDTO.selectSchema;
+        const params = z.object({
+            username: z.string(),
+        });
+        const queries = z
+            .object({
+                categoryId: z.string().uuid().optional(),
+            })
+            .merge(QueryDTO.createPaginationSchema(1, 5));
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { page, size } = c.req.valid("query");
+                const { username } = c.req.valid("param");
+                const videos = await this.videoService.getVideosWithUsername(
+                    username,
+                    (page - 1) * size,
+                    size,
+                );
+                if (!videos) {
+                    throw new MyError.BadRequestError("Videos not found");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        videos: respSchema.array().parse(videos.videos),
+                        totalRecords: videos.totalRecords,
+                        currentOffset: page - 1,
+                        limit: size,
+                    },
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
     private generateThumbnail() {
         const reqSchema = z.object({
             message: z.string(),
@@ -463,7 +501,8 @@ export class VideoController implements IVideoController {
             async (c) => {
                 const { message, videoId } = c.req.valid("json");
                 const currentUser = c.get("getUser");
-                const response = await this.videoService.generateThumbnail(message);
+                const response =
+                    await this.videoService.generateThumbnail(message);
                 if (!response)
                     throw new MyError.BadRequestError("Something went wrong");
                 const fileName = `AI_${Date.now()}.jpg`;
