@@ -20,4 +20,7 @@ export const ROUTES = {
         `/dashboard/${username}/video/${videoId}`,
     STORAGE_PAGE: (username: string) => `/dashboard/${username}/storage`,
     VIDEO_PAGE: (videoId: string) => `/video/${videoId}`,
+    ABOUT_PAGE: (username: string) => `/about/${username}`,
+    DASHBOARD_SCHEDULE_PAGE: (username: string) =>
+        `/dashboard/${username}/schedule`,
 };
