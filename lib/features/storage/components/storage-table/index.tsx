@@ -14,7 +14,7 @@ export function StorageTable() {
     const totalPages = Math.ceil(dummyStorageData.length / pageSize);
 
     return (
-        <>
+        <div className="lg:max-w-[600px] xl:max-w-full">
             {dummyStorageData ? (
                 <DataTablePagination
                     columns={StorageColumns}
@@ -26,6 +26,6 @@ export function StorageTable() {
                     totalPages={totalPages}
                 />
             ) : null}
-        </>
+        </div>
     );
 }

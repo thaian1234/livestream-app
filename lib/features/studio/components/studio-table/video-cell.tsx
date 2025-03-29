@@ -33,7 +33,7 @@ export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
             <div onClick={handleVideoClick}>
                 <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
             </div>
-            <div className="relative">
+            <div className="flex flex-col justify-between">
                 <Link
                     href={`/video/${row.original.id}`}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
@@ -41,7 +41,7 @@ export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
                 >
                     {row.original.title}
                 </Link>
-                <div className="absolute bottom-0 left-0 right-0 flex items-end">
+                <div className="flex">
                     <TooltipModel content="Details" side="bottom">
                         <Button
                             variant="ghost"
