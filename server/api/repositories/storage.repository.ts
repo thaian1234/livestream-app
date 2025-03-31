@@ -1,10 +1,11 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
 
 import { Utils } from "../lib/helpers/utils";
 
+import { QueryDTO } from "../dtos/query.dto";
 import { StorageDTO } from "../dtos/storage.dto";
 
 export interface IStorageRepository
@@ -33,10 +34,13 @@ export class StorageRepository implements IStorageRepository {
             console.error(error);
         }
     }
-    async findByStreamId(streamId: string) {
+    async findByStreamId(streamId: string, pagination: QueryDTO.Pagination) {
         try {
             return this.db.query.storageTable.findMany({
                 where: eq(tableSchemas.storageTable.streamId, streamId),
+                limit: pagination.size,
+                offset: pagination.size * (pagination.page - 1),
+                orderBy: [desc(tableSchemas.storageTable.createdAt)],
             });
         } catch (error) {
             console.error(error);

@@ -2,18 +2,15 @@ import { Clock, HardDrive, Video } from "lucide-react";
 
 import { formatFileSize } from "@/lib/helpers/formatFileSize";
 
-import { IStorage } from "../../types/storage";
 import { StatsCard } from "./stats-card";
 
-interface StorageStatsProps {
-    data: IStorage[];
-}
+interface StorageStatsProps {}
 
-export function StorageStats({ data }: StorageStatsProps) {
+export function StorageStats() {
     // Tính toán các thống kê
-    const totalVideos = data.length;
-    const totalDuration = data.reduce((acc, video) => acc + video.duration, 0);
-    const totalSize = data.reduce((acc, video) => acc + video.fileSize, 0);
+    const totalVideos = 3;
+    const totalDuration = 0;
+    const totalSize = 0;
     const averageDuration = Math.round(totalDuration / totalVideos);
 
     // Format thời gian

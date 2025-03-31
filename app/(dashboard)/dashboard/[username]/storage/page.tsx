@@ -1,8 +1,12 @@
+"use client";
+
+import { storageApi } from "@/lib/features/storage/apis";
 import { StorageStats } from "@/lib/features/storage/components/stats/storage-stats";
 import { StorageTable } from "@/lib/features/storage/components/storage-table";
 import { dummyStorageData } from "@/lib/features/storage/types/storage";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function StudioPage() {
     return (
@@ -11,7 +15,7 @@ export default function StudioPage() {
                 <CardTitle>Storage content</CardTitle>
             </CardHeader>
             <CardContent>
-                <StorageStats data={dummyStorageData} />
+                <StorageStats />
                 <StorageTable />
             </CardContent>
         </Card>

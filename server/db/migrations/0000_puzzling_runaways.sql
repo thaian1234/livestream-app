@@ -31,6 +31,16 @@ CREATE TABLE "categories" (
 	CONSTRAINT "categories_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
+CREATE TABLE "comments" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"userId" uuid NOT NULL,
+	"videoId" uuid NOT NULL,
+	"content" text,
+	"type" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "email_verification_codes" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"code" varchar(8) NOT NULL,
@@ -150,6 +160,13 @@ CREATE TABLE "video_categories" (
 	CONSTRAINT "video_categories_video_id_category_id_pk" PRIMARY KEY("video_id","category_id")
 );
 --> statement-breakpoint
+CREATE TABLE "videoLikes" (
+	"userId" uuid NOT NULL,
+	"videoId" uuid NOT NULL,
+	"type" integer NOT NULL,
+	CONSTRAINT "videoLikes_userId_videoId_pk" PRIMARY KEY("userId","videoId")
+);
+--> statement-breakpoint
 CREATE TABLE "videos" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"stream_id" uuid NOT NULL,
@@ -161,8 +178,6 @@ CREATE TABLE "videos" (
 	"thumbnail_url" text,
 	"duration" integer,
 	"view_count" integer DEFAULT 0 NOT NULL,
-	"like_count" integer DEFAULT 0 NOT NULL,
-	"dislike_count" integer DEFAULT 0 NOT NULL,
 	"visibility" "video_privacy" DEFAULT 'private' NOT NULL,
 	"processing" "video_status" DEFAULT 'processing' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -173,6 +188,8 @@ ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY
 ALTER TABLE "blocks" ADD CONSTRAINT "blocks_blocker_id_users_id_fk" FOREIGN KEY ("blocker_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "blocks" ADD CONSTRAINT "blocks_blocked_id_users_id_fk" FOREIGN KEY ("blocked_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "category_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "comments_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "comments_videoId_videos_id_fk" FOREIGN KEY ("videoId") REFERENCES "public"."videos"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "email_verification_codes" ADD CONSTRAINT "email_verification_codes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -189,6 +206,8 @@ ALTER TABLE "stream_categories" ADD CONSTRAINT "stream_categories_category_id_ca
 ALTER TABLE "streams" ADD CONSTRAINT "streams_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "video_categories" ADD CONSTRAINT "video_categories_video_id_videos_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."videos"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "video_categories" ADD CONSTRAINT "video_categories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "videoLikes" ADD CONSTRAINT "videoLikes_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "videoLikes" ADD CONSTRAINT "videoLikes_videoId_videos_id_fk" FOREIGN KEY ("videoId") REFERENCES "public"."videos"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "videos" ADD CONSTRAINT "videos_stream_id_streams_id_fk" FOREIGN KEY ("stream_id") REFERENCES "public"."streams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "videos" ADD CONSTRAINT "videos_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "videos" ADD CONSTRAINT "videos_storage_id_storages_id_fk" FOREIGN KEY ("storage_id") REFERENCES "public"."storages"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -205,4 +224,6 @@ CREATE INDEX "stream_category_category_idx" ON "stream_categories" USING btree (
 CREATE INDEX "user_stream_unq" ON "streams" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "video_category_video_idx" ON "video_categories" USING btree ("video_id");--> statement-breakpoint
 CREATE INDEX "video_category_category_idx" ON "video_categories" USING btree ("category_id");--> statement-breakpoint
+CREATE INDEX "videoLike_user_idx" ON "videoLikes" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "videoLike_video_idx" ON "videoLikes" USING btree ("videoId");--> statement-breakpoint
 CREATE INDEX "user_stream_idx" ON "videos" USING btree ("user_id","stream_id");

@@ -13,6 +13,7 @@ export class StorageDTO {
         updatedAt: z.date().transform((date) => date.toISOString()),
         startTime: z.date().transform((date) => date.toISOString()),
         endTime: z.date().transform((date) => date.toISOString()),
+        fileSize: z.number().transform((value) => Number(value)),
     });
     public static selectSchema = this.baseSchema;
     public static insertSchema = createInsertSchema(tableSchemas.storageTable);

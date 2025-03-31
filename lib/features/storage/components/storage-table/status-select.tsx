@@ -3,6 +3,8 @@
 import { Row } from "@tanstack/react-table";
 import { useState } from "react";
 
+import { StorageDTO } from "@/server/api/dtos/storage.dto";
+
 import {
     Select,
     SelectContent,
@@ -11,10 +13,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { IStorage } from "../../types/storage";
-
 interface StatusDropdownProps {
-    row: Row<IStorage>;
+    row: Row<StorageDTO.Select>;
 }
 
 const statuses = [
@@ -27,8 +27,7 @@ export function StatusSelect({ row }: StatusDropdownProps) {
     const [value, setValue] = useState(row.original.status);
 
     const handleStatusChange = (newStatus: string) => {
-        setValue(newStatus as IStorage["status"]);
-        // TODO: Implement status update logic here
+        setValue(newStatus as StorageDTO.Select["status"]);
         console.log("Status changed to:", newStatus);
     };
 

@@ -4,13 +4,23 @@ import { ArrowUpDown, Clock, HardDrive } from "lucide-react";
 import { formatDateFromString } from "@/lib/helpers/formatData";
 import { formatFileSize } from "@/lib/helpers/formatFileSize";
 
+import { StorageDTO } from "@/server/api/dtos/storage.dto";
+
 import { Button } from "@/components/ui/button";
 
-import { IStorage } from "../../types/storage";
 import { StatusSelect } from "./status-select";
 import { VideoCell } from "./video-cell";
 
-export const StorageColumns: ColumnDef<IStorage>[] = [
+function formatDuration(startTime: string, endTime: string) {
+    const start = new Date(startTime).getTime();
+    const end = new Date(endTime).getTime();
+    const duration = Math.floor((end - start) / 1000); // in seconds
+    return `${Math.floor(duration / 60)}:${(duration % 60)
+        .toString()
+        .padStart(2, "0")}`;
+}
+
+export const StorageColumns: ColumnDef<StorageDTO.Select>[] = [
     {
         accessorKey: "title",
         header: "Video",
@@ -22,18 +32,7 @@ export const StorageColumns: ColumnDef<IStorage>[] = [
         cell: ({ row }) => (
             <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                {Math.floor(row.original.duration / 60)}:
-                {(row.original.duration % 60).toString().padStart(2, "0")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "fileSize",
-        header: "Size",
-        cell: ({ row }) => (
-            <div className="flex items-center gap-1">
-                <HardDrive className="h-4 w-4" />
-                {formatFileSize(row.original.fileSize)}
+                {formatDuration(row.original.startTime, row.original.endTime)}
             </div>
         ),
     },
@@ -53,7 +52,7 @@ export const StorageColumns: ColumnDef<IStorage>[] = [
                 </Button>
             );
         },
-        cell: ({ row }) => formatDateFromString(row.original.recordedAt),
+        cell: ({ row }) => formatDateFromString(row.original.startTime),
         sortingFn: (rowA, rowB, columnId) => {
             const dateA = new Date(rowA.getValue(columnId));
             const dateB = new Date(rowB.getValue(columnId));

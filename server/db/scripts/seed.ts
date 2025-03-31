@@ -1,8 +1,10 @@
+import { addDays, addHours } from "date-fns";
 import { z } from "zod";
 
 import { BlockDTO } from "@/server/api/dtos/block.dto";
 import { CategoryDTO } from "@/server/api/dtos/category.dto";
 import { FollowDTO } from "@/server/api/dtos/follow.dto";
+import { StorageDTO } from "@/server/api/dtos/storage.dto";
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
 import { VideoDTO } from "@/server/api/dtos/video.dto";
@@ -202,6 +204,28 @@ const seeds = async () => {
                 .values(streamToCategories)
                 .onConflictDoNothing();
         }
+        // Seeding storages
+        const storagesToInsert: StorageDTO.Insert[] = [];
+        for (const stream of streams) {
+            for (let i = 0; i < 3; i++) {
+                storagesToInsert.push({
+                    streamId: stream.id,
+                    fileUrl: `https://example.com/${stream.id}`,
+                    fileType: "video",
+                    startTime: new Date(),
+                    endTime: addHours(new Date(), i + 1), // 1 hour later
+                    fileName: `video_${i}.mp4`,
+                    status: "processing",
+                });
+            }
+        }
+
+        const storages = await db
+            .insert(tableSchemas.storageTable)
+            .values(storagesToInsert)
+            .returning()
+            .onConflictDoNothing();
+
         // Seeding video
         const videosToInsert: VideoDTO.Insert[] = [];
         for (const s of streams) {

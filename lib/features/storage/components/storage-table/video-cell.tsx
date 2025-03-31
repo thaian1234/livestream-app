@@ -13,20 +13,19 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { useUser } from "@/lib/hooks/use-user";
 
+import { StorageDTO } from "@/server/api/dtos/storage.dto";
+
 import { Button } from "@/components/ui/button";
 
 import { VideoThumbnail } from "@/components/thumbnail";
 import { TooltipModel } from "@/components/tooltip-model";
 
-import { IStorage } from "../../types/storage";
-
 interface StorageCellProps {
-    row: Row<IStorage>;
+    row: Row<StorageDTO.Select>;
 }
 
 export function VideoCell({ row }: StorageCellProps) {
     const router = useRouter();
-    const { user } = useUser();
 
     const handleEditClick = () => {
         // router.replace(
@@ -35,36 +34,26 @@ export function VideoCell({ row }: StorageCellProps) {
     };
 
     const handleFileClick = () => {
-        router.replace(ROUTES.STORAGE_PAGE(row.original.storageId));
-    };
-
-    const handleDownload = () => {
-        // Implement download functionality
-        window.open(row.original.fileUrl, "_blank");
-    };
-
-    const handleUpload = () => {
-        // Implement upload functionality
-        //router.replace(ROUTES.STORAGE_UPLOAD_PAGE(row.original.storageId));
+        router.replace(ROUTES.STORAGE_PAGE(row.original.id));
     };
 
     const handleDelete = () => {
         // Implement delete functionality
-        console.log("Delete storage:", row.original.storageId);
+        console.log("Delete storage:", row.original.id);
     };
 
     return (
         <div className="grid max-w-[400px] grid-cols-[150px_1fr] space-x-2">
-            <div onClick={handleFileClick}>
+            {/* <div onClick={handleFileClick}>
                 <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
-            </div>
+            </div> */}
             <div className="flex flex-col justify-between">
                 <Link
-                    href={`/storage/${row.original.storageId}`}
+                    href={`/storage/${row.original.id}`}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                     onClick={handleEditClick}
                 >
-                    {row.original.title}
+                    {row.original.fileName}
                 </Link>
                 <div className="flex">
                     <TooltipModel content="Edit" side="bottom">
@@ -74,25 +63,6 @@ export function VideoCell({ row }: StorageCellProps) {
                             onClick={handleEditClick}
                         >
                             <Pencil className="h-4 w-4" />
-                        </Button>
-                    </TooltipModel>
-                    <TooltipModel content="Download" side="bottom">
-                        <Button
-                            variant="ghost"
-                            className="px-2"
-                            onClick={handleDownload}
-                        >
-                            <Download className="h-4 w-4" />
-                        </Button>
-                    </TooltipModel>
-
-                    <TooltipModel content="Upload" side="bottom">
-                        <Button
-                            variant="ghost"
-                            className="px-2"
-                            onClick={handleUpload}
-                        >
-                            <Upload className="h-4 w-4" />
                         </Button>
                     </TooltipModel>
 
