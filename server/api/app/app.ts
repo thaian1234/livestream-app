@@ -201,6 +201,7 @@ export class App {
             userService,
             streamService,
             videoService,
+            storageService,
         );
         const blockController = new BlockController(
             factory,

@@ -7,12 +7,14 @@ import { dummyStorageData } from "@/lib/features/storage/types/storage";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { UploadVideoFormDialog } from "@/lib/features/upload/components/upload-video-form-dialog";
 
 export default function StudioPage() {
     return (
         <Card className="mx-auto max-w-screen-2xl">
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Storage content</CardTitle>
+                <UploadVideoFormDialog />
             </CardHeader>
             <CardContent>
                 <StorageStats />

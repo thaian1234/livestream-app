@@ -29,7 +29,7 @@ export class R2BucketService implements IR2BucketService {
         if (file.fileSize > this.maxSize) {
             return {
                 signedUrl: null,
-                imageUrl: null,
+                fileUrl: null,
             };
         }
         const id = generateIdFromEntropySize(10);
@@ -43,14 +43,14 @@ export class R2BucketService implements IR2BucketService {
         const signedUrl = await getSignedUrl(this.s3Client, cmd, {
             expiresIn: 3600,
         });
-        const imageUrl = `${envServer.CLOUD_FLARE_BUCKET_URL}/${key}`;
-        return { signedUrl, imageUrl };
+        const fileUrl = `${envServer.CLOUD_FLARE_BUCKET_URL}/${key}`;
+        return { signedUrl, fileUrl };
     }
     public async uploadImage(
         file: R2BucketDTO.UploadFile,
         buffer: Buffer<ArrayBuffer>,
     ) {
-        const { imageUrl, signedUrl } = await this.generateSignedUrl(file);
+        const { fileUrl: imageUrl, signedUrl } = await this.generateSignedUrl(file);
         if (!signedUrl || !imageUrl) {
             throw new MyError.ServiceUnavailableError(
                 "Cannot upload image right now",
