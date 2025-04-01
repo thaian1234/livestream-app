@@ -4,15 +4,13 @@ import { PaginationType } from "@/lib/types";
 
 import { StorageRouteType } from "@/server/api/routes/storage.routes";
 
-import { QueryDTO } from "@/server/api/dtos/query.dto";
-
 const baseApi = baseClient<StorageRouteType>().storages;
 const baseKey = ["storages"];
 
 const keys = {
     storages: baseKey,
-    video: (id: string) => [...baseKey, id],
-    recordings: [...baseKey, "recordings"],
+    video: (id: string) => [...baseKey, id] as string[],
+    recordings: [...baseKey, "recordings"] as string[],
 };
 
 export const storageApi = {
@@ -24,5 +22,24 @@ export const storageApi = {
             });
         },
     },
-    mutation: {},
+    mutation: {
+        useDeleteRecording() {
+            const $delete = baseApi.recordings[":id"].$delete;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $delete,
+                {
+                    onSuccess({ msg }) {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.recordings,
+                        });
+                        toast.success(msg);
+                    },
+                    onError({ message }) {
+                        toast.error(message);
+                    },
+                },
+            );
+            return mutation;
+        },
+    },
 };
