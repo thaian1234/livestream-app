@@ -1,45 +1,32 @@
 import { Row } from "@tanstack/react-table";
-import {
-    Download,
-    EllipsisVertical,
-    FileIcon,
-    Pencil,
-    Trash2,
-    Upload,
-} from "lucide-react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-import { ROUTES } from "@/lib/configs/routes.config";
-import { useUser } from "@/lib/hooks/use-user";
 
 import { StorageDTO } from "@/server/api/dtos/storage.dto";
 
 import { Button } from "@/components/ui/button";
 
-import { VideoThumbnail } from "@/components/thumbnail";
 import { TooltipModel } from "@/components/tooltip-model";
+
+import { storageApi } from "../../apis";
 
 interface StorageCellProps {
     row: Row<StorageDTO.Select>;
 }
 
 export function VideoCell({ row }: StorageCellProps) {
-    const router = useRouter();
+    const storageMutation = storageApi.mutation.useDeleteRecording();
 
-    const handleEditClick = () => {
-        // router.replace(
-        //     ROUTES.STORAGE_EDIT_PAGE(user.username, row.original.id),
-        // );
-    };
+    const handleEditClick = () => {};
 
-    const handleFileClick = () => {
-        router.replace(ROUTES.STORAGE_PAGE(row.original.id));
-    };
+    const handleFileClick = () => {};
 
     const handleDelete = () => {
-        // Implement delete functionality
-        console.log("Delete storage:", row.original.id);
+        storageMutation.mutate({
+            param: {
+                id: row.original.id,
+            },
+        });
     };
 
     return (
@@ -71,6 +58,7 @@ export function VideoCell({ row }: StorageCellProps) {
                             variant="ghost"
                             className="px-2"
                             onClick={handleDelete}
+                            disabled={storageMutation.isPending}
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>

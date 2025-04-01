@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Clock, HardDrive } from "lucide-react";
+import { ArrowUpDown, Clock } from "lucide-react";
 
 import { formatDateFromString } from "@/lib/helpers/formatData";
-import { formatFileSize } from "@/lib/helpers/formatFileSize";
 
 import { StorageDTO } from "@/server/api/dtos/storage.dto";
 
@@ -14,16 +13,23 @@ import { VideoCell } from "./video-cell";
 function formatDuration(startTime: string, endTime: string) {
     const start = new Date(startTime).getTime();
     const end = new Date(endTime).getTime();
-    const duration = Math.floor((end - start) / 1000); // in seconds
-    return `${Math.floor(duration / 60)}:${(duration % 60)
-        .toString()
-        .padStart(2, "0")}`;
+    const durationInSeconds = Math.floor((end - start) / 1000);
+    const minutes = Math.floor(durationInSeconds / 60);
+
+    if (minutes === 0) {
+        const seconds = durationInSeconds % 60;
+        return `${seconds} second${seconds !== 1 ? "s" : ""}`;
+    } else if (minutes === 1) {
+        return "1 minute";
+    } else {
+        return `${minutes} minutes`;
+    }
 }
 
 export const StorageColumns: ColumnDef<StorageDTO.Select>[] = [
     {
         accessorKey: "title",
-        header: "Video",
+        header: "Name",
         cell: ({ row }) => <VideoCell row={row} />,
     },
     {

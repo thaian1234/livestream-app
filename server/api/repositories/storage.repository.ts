@@ -36,12 +36,18 @@ export class StorageRepository implements IStorageRepository {
     }
     async findByStreamId(streamId: string, pagination: QueryDTO.Pagination) {
         try {
-            return this.db.query.storageTable.findMany({
+            const totalRecords = await this.db.$count(
+                tableSchemas.storageTable,
+                eq(tableSchemas.storageTable.streamId, streamId),
+            );
+            const assets = await this.db.query.storageTable.findMany({
                 where: eq(tableSchemas.storageTable.streamId, streamId),
                 limit: pagination.size,
                 offset: pagination.size * (pagination.page - 1),
                 orderBy: [desc(tableSchemas.storageTable.createdAt)],
             });
+
+            return { assets, totalRecords };
         } catch (error) {
             console.error(error);
         }

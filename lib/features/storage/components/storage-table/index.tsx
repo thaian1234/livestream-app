@@ -7,7 +7,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { DataTablePagination } from "@/components/data-table-pagination";
 
 import { storageApi } from "../../apis";
-import { dummyStorageData } from "../../types/storage";
 import { StorageColumns } from "./storage-columns";
 
 export function StorageTable() {
@@ -22,7 +21,6 @@ export function StorageTable() {
         page: pageNumber.toString(),
         size: pageSize.toString(),
     });
-    const totalPages = Math.ceil(dummyStorageData.length / pageSize);
 
     if (isLoading || !storages) {
         return <Spinner size={"large"} />;
@@ -30,12 +28,13 @@ export function StorageTable() {
     if (isError) {
         return <div>Error</div>;
     }
+    const totalPages = storages.data.pagination.totalPages;
 
     return (
         <div className="lg:max-w-[600px] xl:max-w-full">
             <DataTablePagination
                 columns={StorageColumns}
-                data={storages.data.recordings}
+                data={storages.data.data}
                 pageSize={pageSize}
                 setPageSize={setPageSize}
                 pageNumber={pageNumber}
