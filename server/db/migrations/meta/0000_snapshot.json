@@ -1,5 +1,5 @@
 {
-  "id": "69fec174-4a9c-47c5-84c2-2e0a82886c1e",
+  "id": "ffb2e0aa-86b5-4b57-8b14-03bae9d4baed",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1737,7 +1737,7 @@
       "values": [
         "processing",
         "ready",
-        "error"
+        "draft"
       ]
     },
     "public.video_status": {

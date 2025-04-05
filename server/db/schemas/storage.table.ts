@@ -14,7 +14,7 @@ import { videoTable } from "./video.table";
 export const storageStatusEnum = pgEnum("storage_status", [
     "processing",
     "ready",
-    "error",
+    "draft",
 ]);
 
 export const storageTable = pgTable("storages", {

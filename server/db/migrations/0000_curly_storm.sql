@@ -1,6 +1,6 @@
 CREATE TYPE "public"."provider_id" AS ENUM('google', 'github');--> statement-breakpoint
 CREATE TYPE "public"."type" AS ENUM('stream_start', 'stream_end', 'new_follower');--> statement-breakpoint
-CREATE TYPE "public"."storage_status" AS ENUM('processing', 'ready', 'error');--> statement-breakpoint
+CREATE TYPE "public"."storage_status" AS ENUM('processing', 'ready', 'draft');--> statement-breakpoint
 CREATE TYPE "public"."video_status" AS ENUM('processing', 'ready', 'error');--> statement-breakpoint
 CREATE TYPE "public"."video_privacy" AS ENUM('public', 'private', 'followers_only', 'unlisted');--> statement-breakpoint
 CREATE TABLE "accounts" (

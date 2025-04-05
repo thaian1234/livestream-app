@@ -31,4 +31,8 @@ export class StorageService implements IStorageService {
     ) {
         return this.storageRepository.findByStreamId(streamId, pagination);
     }
+
+    public async getStorageStats(streamId: string) {
+        return this.storageRepository.getStorageStats(streamId);
+    }
 }

@@ -18,6 +18,7 @@ const resetSeeds = async () => {
     await db.delete(tableSchemas.userTable);
     await db.delete(tableSchemas.streamsToCategoriesTable);
     await db.delete(tableSchemas.categoryTable);
+    await db.delete(tableSchemas.storageTable);
     await db.delete(tableSchemas.videoTable);
 };
 
