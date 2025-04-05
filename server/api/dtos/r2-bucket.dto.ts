@@ -36,6 +36,7 @@ export class R2BucketDTO {
                 message:
                     "Invalid file type. Allowed types are: jpeg, png, gif, webp",
             }),
+        duration: z.number().optional(),
     });
 }
 export namespace R2BucketDTO {

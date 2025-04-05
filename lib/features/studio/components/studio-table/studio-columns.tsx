@@ -11,24 +11,11 @@ import { formatDateFromString } from "@/lib/helpers/formatData";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { IVideoStudio } from "../../types/studio";
 import { VideoCell } from "./video-cell";
 import { VisibilityCell } from "./visibility-cell";
 
-export interface IVideo {
-    id: string;
-    userId: string;
-    title: string;
-    videoUrl: string;
-    thumbnailUrl: string | null;
-    visibility: "public" | "private" | "followers_only" | "unlisted";
-    createdAt: string;
-    viewCount: number;
-    // comments: number;
-    likeCount?: number | null;
-    dislikeCount?: number | null;
-}
-
-export const StudioColumns: ColumnDef<IVideo>[] = [
+export const StudioColumns: ColumnDef<IVideoStudio>[] = [
     {
         accessorKey: "title",
         header: "Video",

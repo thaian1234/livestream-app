@@ -10,6 +10,7 @@ import { Validator } from "../lib/validations/validator";
 
 import { AuthMiddleware } from "../middleware/auth.middleware";
 
+import { IStorageService } from "../services/storage.service";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
 import { IVideoService } from "../services/video.service";
@@ -28,6 +29,7 @@ export class UploadController implements IUploadController {
         private readonly userService: IUserService,
         private readonly streamService: IStreamService,
         private readonly videoService: IVideoService,
+        private readonly storageService: IStorageService,
     ) {}
     public setupHandlers() {
         return this.factory
@@ -41,6 +43,7 @@ export class UploadController implements IUploadController {
                 "user-avatar",
                 "stream-thumbnail",
                 "video-thumbnail",
+                "video-recording",
             ]),
         });
         const queries = z.object({
@@ -57,10 +60,11 @@ export class UploadController implements IUploadController {
             async (c) => {
                 const jsonData = c.req.valid("json");
                 const currentUser = c.get("getUser");
+                console.log(jsonData);
                 const type = c.req.valid("param").type;
-                const { imageUrl, signedUrl } =
+                const { fileUrl, signedUrl } =
                     await this.r2BucketService.generateSignedUrl(jsonData);
-                if (!signedUrl || !imageUrl) {
+                if (!signedUrl || !fileUrl) {
                     console.log("I should be here");
                     throw new MyError.ServiceUnavailableError(
                         "Cannot upload image right now",
@@ -72,13 +76,13 @@ export class UploadController implements IUploadController {
                     case "user-avatar":
                         updatedEntity = await this.userService.updateUser(
                             currentUser.id,
-                            { imageUrl },
+                            { imageUrl: fileUrl },
                         );
                         break;
                     case "stream-thumbnail":
                         updatedEntity = await this.streamService.updateStream(
                             currentUser.stream.id,
-                            { thumbnailUrl: imageUrl },
+                            { thumbnailUrl: fileUrl },
                         );
                         break;
                     case "video-thumbnail":
@@ -103,8 +107,22 @@ export class UploadController implements IUploadController {
                         }
                         updatedEntity = await this.videoService.updateVideo(
                             videoId,
-                            { thumbnailUrl: imageUrl },
+                            { thumbnailUrl: fileUrl },
                         );
+                        break;
+                    case "video-recording":
+                        const startTime = new Date();
+                        const endTime = new Date(
+                            startTime.getTime() + (jsonData.duration || 0),
+                        );
+                        updatedEntity = await this.storageService.createAsset({
+                            streamId: currentUser.stream.id,
+                            fileName: jsonData.fileName,
+                            fileUrl: fileUrl,
+                            fileType: jsonData.fileType,
+                            startTime: startTime,
+                            endTime: endTime,
+                        });
                         break;
                     default:
                         throw new MyError.BadRequestError(
@@ -113,14 +131,14 @@ export class UploadController implements IUploadController {
                 }
                 if (!updatedEntity) {
                     throw new MyError.ServiceUnavailableError(
-                        "Cannot update thumbnail right now",
+                        "Cannot update file right now",
                     );
                 }
 
                 return ApiResponse.WriteJSON({
                     c,
                     status: HttpStatus.Created,
-                    data: { imageUrl, signedUrl },
+                    data: { fileUrl, signedUrl },
                     msg: "Get signed URL successfully",
                 });
             },

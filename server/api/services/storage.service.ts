@@ -2,6 +2,7 @@ import { Utils } from "../lib/helpers/utils";
 
 import { IStorageRepository } from "../repositories/storage.repository";
 
+import { QueryDTO } from "../dtos/query.dto";
 import { StorageDTO } from "../dtos/storage.dto";
 
 export interface IStorageService
@@ -24,7 +25,14 @@ export class StorageService implements IStorageService {
     public async deleteAsset(id: string) {
         return this.storageRepository.delete(id);
     }
-    public async getAssetsByStreamId(streamId: string) {
-        return this.storageRepository.findByStreamId(streamId);
+    public async getAssetsByStreamId(
+        streamId: string,
+        pagination: QueryDTO.Pagination,
+    ) {
+        return this.storageRepository.findByStreamId(streamId, pagination);
+    }
+
+    public async getStorageStats(streamId: string) {
+        return this.storageRepository.getStorageStats(streamId);
     }
 }

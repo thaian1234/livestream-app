@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 interface DragDropAreaProps {
     onFileSelect: (file: File) => void;
     children: React.ReactNode;
+    fileType?: string;
 }
 
 export default function DragDropArea({
     onFileSelect,
     children,
+    fileType
 }: DragDropAreaProps) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,7 +63,7 @@ export default function DragDropArea({
                 type="file"
                 ref={fileInputRef}
                 onChange={onFileInputChange}
-                accept="image/*"
+                accept={fileType ? fileType : "image/*"}
                 className="hidden"
             />
             {children}

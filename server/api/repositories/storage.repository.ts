@@ -1,10 +1,11 @@
-import { eq } from "drizzle-orm";
+import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
 
 import { Utils } from "../lib/helpers/utils";
 
+import { QueryDTO } from "../dtos/query.dto";
 import { StorageDTO } from "../dtos/storage.dto";
 
 export interface IStorageRepository
@@ -33,11 +34,20 @@ export class StorageRepository implements IStorageRepository {
             console.error(error);
         }
     }
-    async findByStreamId(streamId: string) {
+    async findByStreamId(streamId: string, pagination: QueryDTO.Pagination) {
         try {
-            return this.db.query.storageTable.findMany({
+            const totalRecords = await this.db.$count(
+                tableSchemas.storageTable,
+                eq(tableSchemas.storageTable.streamId, streamId),
+            );
+            const assets = await this.db.query.storageTable.findMany({
                 where: eq(tableSchemas.storageTable.streamId, streamId),
+                limit: pagination.size,
+                offset: pagination.size * (pagination.page - 1),
+                orderBy: [desc(tableSchemas.storageTable.createdAt)],
             });
+
+            return { assets, totalRecords };
         } catch (error) {
             console.error(error);
         }
@@ -72,6 +82,23 @@ export class StorageRepository implements IStorageRepository {
                 .where(eq(tableSchemas.storageTable.id, id));
         } catch (error) {
             console.error(error);
+        }
+    }
+    async getStorageStats(streamId: string) {
+        try {
+            const result = await this.db
+                .select({
+                    totalVideos: count(tableSchemas.storageTable.id),
+                    totalDuration: sql<number>`COALESCE(SUM(EXTRACT(EPOCH FROM (${tableSchemas.storageTable.endTime} - ${tableSchemas.storageTable.startTime}))), 0)`,
+                    averageDuration: sql<number>`COALESCE(AVG(EXTRACT(EPOCH FROM (${tableSchemas.storageTable.endTime} - ${tableSchemas.storageTable.startTime}))), 0)`,
+                    readyVideosCount: sql<number>`COUNT(CASE WHEN ${tableSchemas.storageTable.status} = 'ready' THEN 1 END)`,
+                })
+                .from(tableSchemas.storageTable)
+                .where(eq(tableSchemas.storageTable.streamId, streamId));
+
+            return result[0];
+        } catch (error) {
+            console.error("Error getting storage stats:", error);
         }
     }
 }

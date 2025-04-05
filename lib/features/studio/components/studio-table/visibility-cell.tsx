@@ -13,9 +13,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import { IVideo } from "./studio-columns";
+import { IVideoStudio } from "../../types/studio";
 
-export function VisibilityCell({ row }: { row: Row<IVideo> }) {
+export function VisibilityCell({ row }: { row: Row<IVideoStudio> }) {
     const { mutate: updateVisibility } = videoApi.mutation.useUpdateVideo();
     const [visibility, setVisibility] = useState(row.original.visibility);
     const queryClient = useQueryClient();
@@ -44,9 +44,7 @@ export function VisibilityCell({ row }: { row: Row<IVideo> }) {
                     {
                         onSuccess() {
                             queryClient.invalidateQueries({
-                                queryKey: [
-                                    "videos",
-                                ],
+                                queryKey: ["videos"],
                             });
                         },
                     },

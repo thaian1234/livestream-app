@@ -16,10 +16,10 @@ import { Button } from "@/components/ui/button";
 import { VideoThumbnail } from "@/components/thumbnail";
 import { TooltipModel } from "@/components/tooltip-model";
 
+import { IVideoStudio } from "../../types/studio";
 import { OptionsDropdown } from "./options-dropdown";
-import { IVideo } from "./studio-columns";
 
-export function VideoCell({ row }: { row: Row<IVideo> }) {
+export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
     const router = useRouter();
     const { user } = useUser();
     const handleEditClick = () => {
@@ -33,7 +33,7 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
             <div onClick={handleVideoClick}>
                 <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
             </div>
-            <div className="relative">
+            <div className="flex flex-col justify-between">
                 <Link
                     href={`/video/${row.original.id}`}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
@@ -41,33 +41,33 @@ export function VideoCell({ row }: { row: Row<IVideo> }) {
                 >
                     {row.original.title}
                 </Link>
-                <div className="absolute bottom-0 left-0 right-0 flex items-end">
-                    <Button
-                        variant="ghost"
-                        className="px-2"
-                        onClick={handleEditClick}
-                    >
-                        <TooltipModel content="Details" side="bottom">
+                <div className="flex">
+                    <TooltipModel content="Details" side="bottom">
+                        <Button
+                            variant="ghost"
+                            className="px-2"
+                            onClick={handleEditClick}
+                        >
                             <Pencil />
-                        </TooltipModel>
-                    </Button>
+                        </Button>
+                    </TooltipModel>
 
-                    <Button
-                        variant="ghost"
-                        className="px-2"
-                        onClick={handleVideoClick}
-                    >
-                        <TooltipModel content="View" side="bottom">
+                    <TooltipModel content="View" side="bottom">
+                        <Button
+                            variant="ghost"
+                            className="px-2"
+                            onClick={handleVideoClick}
+                        >
                             <TvMinimalPlay />
-                        </TooltipModel>
-                    </Button>
+                        </Button>
+                    </TooltipModel>
 
                     <OptionsDropdown videoId={row.original.id}>
-                        <Button variant="ghost" className="px-2">
-                            <TooltipModel content="Options" side="bottom">
+                        <TooltipModel content="Options" side="bottom">
+                            <Button variant="ghost" className="px-2">
                                 <EllipsisVertical />
-                            </TooltipModel>
-                        </Button>
+                            </Button>
+                        </TooltipModel>
                     </OptionsDropdown>
                 </div>
             </div>
