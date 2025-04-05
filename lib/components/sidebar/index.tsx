@@ -9,6 +9,7 @@ import { Recommend } from "@/lib/features/follow/components/recommended";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -35,21 +36,24 @@ export function Sidebar() {
             {!isHideSidebar && (
                 <div
                     className={cn(
-                        "fixed left-0 top-20 z-20 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2 via-teal-3 to-teal-2 transition-all duration-300 ease-in-out",
-                        isOpenSidebar && "h-full w-72",
+                        "fixed left-0 top-20 z-20 w-16 flex-shrink-0 overflow-x-hidden overflow-y-hidden rounded-br-3xl rounded-tr-3xl bg-gradient-to-t from-black-2/90 via-teal-3/95 to-teal-2 transition-all duration-300 ease-in-out",
+                        isOpenSidebar && "h-[calc(100vh-5rem)] w-72",
                     )}
                 >
                     {isOpenSidebar ? (
                         <Card className="w-auto divide-y divide-white/40 p-4">
-                            <CardTitle className="mb-2 flex flex-row items-center justify-between text-xl">
+                            <CardTitle className="flex flex-row items-center justify-between text-xl font-bold">
                                 Channels
                                 <TooltipModel content="Collapse" side="right">
-                                    <button onClick={onExpandSidebar}>
+                                    <Button
+                                        onClick={onExpandSidebar}
+                                        className="rounded-full bg-transparent p-2 transition-colors hover:bg-white/10"
+                                    >
                                         <Menu
                                             color="#ffffff"
                                             strokeWidth={2.25}
                                         />
-                                    </button>
+                                    </Button>
                                 </TooltipModel>
                             </CardTitle>
                             <ItemLayout title="Following Channel" link="/home">
@@ -64,15 +68,18 @@ export function Sidebar() {
                             </ItemLayout>
                         </Card>
                     ) : (
-                        <div className="flex flex-col items-center py-3">
+                        <div className="flex flex-col items-center space-y-2 py-3">
                             <TooltipModel content="Expand" side="right">
-                                <button onClick={onCollapseSidebar}>
+                                <Button
+                                    onClick={onCollapseSidebar}
+                                    className="rounded-full bg-transparent p-2 transition-colors hover:bg-white/10"
+                                >
                                     <Menu
                                         color="#ffffff"
                                         strokeWidth={2.25}
-                                        className="my-3"
+                                        className="my-2"
                                     />
-                                </button>
+                                </Button>
                             </TooltipModel>
                             <CollapseSidebar
                                 users={[...recommends, ...following]}

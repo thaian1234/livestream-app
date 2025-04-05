@@ -24,9 +24,9 @@ export function Recommend({ recommends }: RecommendProps) {
                 <button
                     onClick={() => handleNavigate(recommend.username)}
                     key={index}
-                    className="flex w-full items-center justify-between rounded-sm bg-transparent py-2 pr-4 hover:bg-search"
+                    className="bg-transparent hover:bg-gradient-to-r hover:from-transparent hover:via-search hover:to-transparent"
                 >
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
                         <UserAvatar imageUrl={recommend.imageUrl} />
                         <p className="w-auto truncate text-base">
                             {recommend.username}
