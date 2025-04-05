@@ -1,18 +1,18 @@
-import { Clock, HardDrive, Video } from "lucide-react";
+import { Clock, Video } from "lucide-react";
 
-import { formatFileSize } from "@/lib/helpers/formatFileSize";
-
+import { storageApi } from "../../apis";
 import { StatsCard } from "./stats-card";
 
-interface StorageStatsProps {}
-
 export function StorageStats() {
-    // Tính toán các thống kê
-    const totalVideos = 3;
-    const totalDuration = 0;
-    const totalSize = 0;
-    const averageDuration = Math.round(totalDuration / totalVideos);
-
+    const { data, isPending, isError } = storageApi.query.useGetStorageStats();
+    if (isPending || !data) {
+        return <div>Loading...</div>;
+    }
+    if (isError) {
+        return <div>Failed to get Stats</div>;
+    }
+    const { totalVideos, totalDuration, averageDuration, readyVideosCount } =
+        data.data;
     // Format thời gian
     const formatDuration = (seconds: number): string => {
         const hours = Math.floor(seconds / 3600);
@@ -21,7 +21,7 @@ export function StorageStats() {
     };
 
     return (
-        <div className="grid gap-6 rounded-lg border sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 rounded-lg border md:grid-cols-2 lg:grid-cols-4">
             <StatsCard title="Total Videos" value={totalVideos} icon={Video} />
             <StatsCard
                 title="Total Duration"
@@ -34,9 +34,9 @@ export function StorageStats() {
                 icon={Clock}
             />
             <StatsCard
-                title="Total Storage"
-                value={formatFileSize(totalSize)}
-                icon={HardDrive}
+                title="Total Ready Videos"
+                value={readyVideosCount}
+                icon={Clock}
             />
         </div>
     );

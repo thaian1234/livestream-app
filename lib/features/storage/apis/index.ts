@@ -11,6 +11,7 @@ const keys = {
     storages: baseKey,
     video: (id: string) => [...baseKey, id] as string[],
     recordings: [...baseKey, "recordings"] as string[],
+    stats: [...baseKey, "stats"] as string[],
 };
 
 export const storageApi = {
@@ -20,6 +21,10 @@ export const storageApi = {
             return Fetcher.useHonoQuery($get, keys.recordings, {
                 query: pagination,
             });
+        },
+        useGetStorageStats() {
+            const $get = baseApi.stats.$get;
+            return Fetcher.useHonoQuery($get, keys.stats);
         },
     },
     mutation: {

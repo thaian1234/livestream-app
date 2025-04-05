@@ -28,6 +28,7 @@ export class StorageController implements IStorageController {
             .createApp()
             .use(AuthMiddleware.isAuthenticated)
             .get("/recordings", ...this.getAllReccordings())
+            .get("/stats", ...this.getStorageStats())
             .delete("/recordings/:id", ...this.deleteAssetById());
     }
 
@@ -91,5 +92,23 @@ export class StorageController implements IStorageController {
                 });
             },
         );
+    }
+    private getStorageStats() {
+        return this.factory.createHandlers(async (c) => {
+            const user = c.get("getUser");
+            const stats = await this.storageService.getStorageStats(
+                user.stream.id,
+            );
+            if (!stats) {
+                throw new MyError.NotFoundError("Storage not found");
+            }
+
+            return ApiResponse.WriteJSON({
+                c,
+                msg: "Storage deleted successfully",
+                status: HttpStatus.OK,
+                data: stats,
+            });
+        });
     }
 }
