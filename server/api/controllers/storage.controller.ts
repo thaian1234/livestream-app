@@ -29,6 +29,7 @@ export class StorageController implements IStorageController {
             .use(AuthMiddleware.isAuthenticated)
             .get("/recordings", ...this.getAllReccordings())
             .get("/stats", ...this.getStorageStats())
+            .patch("/:id", ...this.updateAssetById())
             .delete("/recordings/:id", ...this.deleteAssetById());
     }
 
@@ -110,5 +111,46 @@ export class StorageController implements IStorageController {
                 data: stats,
             });
         });
+    }
+    private updateAssetById() {
+        const jsonData = StorageDTO.updateSchema;
+        const params = z.object({
+            id: z.string().uuid(),
+        });
+        const respSchema = StorageDTO.selectSchema;
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            zValidator("json", jsonData, Validator.handleParseError),
+            async (c) => {
+                const params = c.req.valid("param");
+                const body = c.req.valid("json");
+                const user = c.get("getUser");
+                const storage = await this.storageService.getAssetById(
+                    params.id,
+                );
+                if (!storage) {
+                    throw new MyError.NotFoundError("Storage not found");
+                }
+                if (storage.streamId !== user.stream.id) {
+                    throw new MyError.UnauthorizedError(
+                        "You are not allowed to update this storage",
+                    );
+                }
+                const updatedAsset = await this.storageService.updateAsset(
+                    params.id,
+                    body,
+                );
+                if (!updatedAsset) {
+                    throw new MyError.NotFoundError("Failed to update asset");
+                }
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    msg: "Storage updated successfully",
+                    status: HttpStatus.OK,
+                    data: respSchema.parse(updatedAsset),
+                });
+            },
+        );
     }
 }

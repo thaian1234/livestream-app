@@ -46,5 +46,23 @@ export const storageApi = {
             );
             return mutation;
         },
+        useUpdateRecording() {
+            const $patch = baseApi[":id"].$patch;
+            const { mutation, queryClient, toast } = Fetcher.useHonoMutation(
+                $patch,
+                {
+                    onSuccess({ msg }) {
+                        queryClient.invalidateQueries({
+                            queryKey: keys.stats,
+                        });
+                        toast.success(msg);
+                    },
+                    onError({ message }) {
+                        toast.error(message);
+                    },
+                },
+            );
+            return mutation;
+        },
     },
 };

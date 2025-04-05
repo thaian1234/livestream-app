@@ -1,6 +1,5 @@
 "use client";
 
-import { CallRecording } from "@stream-io/node-sdk";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
@@ -22,16 +21,19 @@ export function RecordingsPicker({
     onSelect,
 }: RecordingsPickerProps) {
     const [searchTerm, setSearchTerm] = useState("");
-    const { data, isPending } = storageApi.query.useGetRecordings();
+    const { data, isPending } = storageApi.query.useGetRecordings({
+        page: "1",
+        size: "50",
+    });
 
     if (isPending || !data) return <div>Loading...</div>;
 
-    const filteredRecordings = data.data.recordings.filter((recording) =>
+    const filteredRecordings = data.data.data.filter((recording) =>
         recording?.fileName.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const handleRecordingSelect = (id: string) => {
-        const recording = data.data.recordings.find(
+        const recording = data.data.data.find(
             (recording) => recording.id === id,
         );
         if (!recording) return;

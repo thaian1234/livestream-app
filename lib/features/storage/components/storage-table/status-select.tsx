@@ -13,6 +13,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import { storageApi } from "../../apis";
+
 interface StatusDropdownProps {
     row: Row<StorageDTO.Select>;
 }
@@ -21,14 +23,29 @@ const statuses = [
     { value: "draft", label: "Draft" },
     { value: "processing", label: "Processing" },
     { value: "ready", label: "Ready" },
-];
+] as const;
 
 export function StatusSelect({ row }: StatusDropdownProps) {
     const [value, setValue] = useState(row.original.status);
+    const storageMutation = storageApi.mutation.useUpdateRecording();
 
-    const handleStatusChange = (newStatus: string) => {
+    const handleStatusChange = async (newStatus: string) => {
         setValue(newStatus as StorageDTO.Select["status"]);
-        console.log("Status changed to:", newStatus);
+        storageMutation.mutate(
+            {
+                param: {
+                    id: row.original.id,
+                },
+                json: {
+                    status: newStatus as StorageDTO.Select["status"],
+                },
+            },
+            {
+                onError: (err) => {
+                    setValue(row.original.status);
+                },
+            },
+        );
     };
 
     return (
