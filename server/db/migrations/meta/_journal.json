@@ -8,6 +8,13 @@
       "when": 1743842457712,
       "tag": "0000_curly_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1744792216767,
+      "tag": "0001_military_mysterio",
+      "breakpoints": true
     }
   ]
 }

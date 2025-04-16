@@ -6,6 +6,7 @@ import {
 import { blockRelations, blockTable } from "./block.table";
 import { categoryRelations, categoryTable } from "./category.table";
 import { commentRelations, commentTable } from "./comment.table";
+import { donateCardRelations, donateCardTable } from "./donate-card.table";
 import {
     emailVerificationRelations,
     emailVerificationTable,
@@ -14,6 +15,11 @@ import { eventRelations, eventTable } from "./event.table";
 import { followRelations, followTable } from "./follow.table";
 import { forgetPasswordTable } from "./forget-password.table";
 import { notificationTable, typeEnum } from "./notification.table";
+import {
+    orderTransactionRelations,
+    orderTransactionTable,
+} from "./order-transaction.table";
+import { orderRelations, orderTable } from "./orders.table";
 import { sessionRelations, sessionTable } from "./session.table";
 import { settingRelations, settingTable } from "./setting.table";
 import {
@@ -58,6 +64,9 @@ const tableSchemas = {
     eventTable,
     videoLikeTable,
     commentTable,
+    orderTable,
+    orderTransactionTable,
+    donateCardTable,
 } as const;
 
 export const tableRelations = {
@@ -83,6 +92,9 @@ export const tableRelations = {
     eventRelations,
     videoLikeRelations,
     commentRelations,
+    orderRelations,
+    orderTransactionRelations,
+    donateCardRelations,
 } as const;
 
 export default tableSchemas;
