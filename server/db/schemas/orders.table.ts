@@ -11,6 +11,7 @@ import {
 import { orderTransactionTable } from "./order-transaction.table";
 import { streamTable } from "./stream.table";
 import { userTable } from "./user.table";
+import { walletTransactionTable } from "./wallet-transaction.table";
 
 const orderStatusEnum = pgEnum("order_status", [
     "PENDING",
@@ -44,6 +45,7 @@ const orderTable = pgTable("orders", {
     createdAt: timestamp("created_at", { mode: "string" })
         .defaultNow()
         .notNull(),
+
     updatedAt: timestamp("updated_at", { mode: "string" })
         .defaultNow()
         .notNull(),
@@ -60,6 +62,7 @@ const orderRelations = relations(orderTable, ({ one, many }) => ({
         references: [streamTable.id],
     }),
     orderTransactions: many(orderTransactionTable),
+    walletTransactions: many(walletTransactionTable),
 }));
 
 export { orderTable, orderRelations, orderStatusEnum, paymentMethodEnum };

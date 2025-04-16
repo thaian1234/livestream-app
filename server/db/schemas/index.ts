@@ -44,6 +44,12 @@ import {
     videoTable,
     videoVisibilityEnum,
 } from "./video.table";
+import {
+    transactionTypeEnum,
+    walletTransactionRelations,
+    walletTransactionTable,
+} from "./wallet-transaction.table";
+import { walletRelations, walletTable } from "./wallet.table";
 
 const tableSchemas = {
     userTable,
@@ -67,6 +73,8 @@ const tableSchemas = {
     orderTable,
     orderTransactionTable,
     donateCardTable,
+    walletTable,
+    walletTransactionTable,
 } as const;
 
 export const tableRelations = {
@@ -95,6 +103,9 @@ export const tableRelations = {
     orderRelations,
     orderTransactionRelations,
     donateCardRelations,
+    walletTransactionRelations,
+    walletRelations,
+    transactionTypeEnum,
 } as const;
 
 export default tableSchemas;
