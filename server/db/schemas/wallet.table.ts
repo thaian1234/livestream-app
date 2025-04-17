@@ -18,6 +18,7 @@ export const walletTable = pgTable("wallets", {
         .notNull(),
     updatedAt: timestamp("updated_at", { mode: "string" })
         .defaultNow()
+        .$onUpdate(() => new Date().toISOString())
         .notNull(),
     lastTransactionAt: timestamp("last_transaction_at", { mode: "string" }),
 });

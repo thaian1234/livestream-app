@@ -48,6 +48,7 @@ const orderTable = pgTable("orders", {
 
     updatedAt: timestamp("updated_at", { mode: "string" })
         .defaultNow()
+        .$onUpdate(() => new Date().toISOString())
         .notNull(),
     completedAt: timestamp("completed_at", { mode: "string" }), // Thời điểm hoàn thành
 });
