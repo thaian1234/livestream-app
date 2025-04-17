@@ -26,6 +26,15 @@ export class WalletTransactionDTO {
     public static transactionTypeEnum = createSelectSchema(
         tableRelations.transactionTypeEnum,
     );
+    public static addFundsSchema = this.insertSchema.omit({
+        id: true,
+        walletId: true,
+        amount: true,
+        balanceBefore: true,
+        balanceAfter: true,
+        createdAt: true,
+    });
+    public static detuctFundsSchema = this.addFundsSchema;
 }
 
 export namespace WalletTransactionDTO {
@@ -35,5 +44,9 @@ export namespace WalletTransactionDTO {
     export type Delete = z.infer<typeof WalletTransactionDTO.deleteSchema>;
     export type TransactionTypeEnum = z.infer<
         typeof WalletTransactionDTO.transactionTypeEnum
+    >;
+    export type AddFunds = z.infer<typeof WalletTransactionDTO.addFundsSchema>;
+    export type DetuctFunds = z.infer<
+        typeof WalletTransactionDTO.detuctFundsSchema
     >;
 }

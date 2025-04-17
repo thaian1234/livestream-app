@@ -42,7 +42,7 @@ export class WalletService implements IWalletService {
     async addFunds(
         walletId: string,
         amount: number,
-        transactionDetails: WalletTransactionDTO.Insert,
+        transactionDetails: WalletTransactionDTO.AddFunds,
     ) {
         if (amount <= 0) {
             throw new MyError.BadRequestError("Amount must be greater than 0");
@@ -55,15 +55,11 @@ export class WalletService implements IWalletService {
 
         // Create transaction record first
         const transaction = await this.walletTransactionRepository.create({
-            walletId,
-            amount,
-            type: transactionDetails.type,
-            description: transactionDetails.description,
+            ...transactionDetails,
             balanceBefore: wallet.balance,
             balanceAfter: wallet.balance + amount,
-            orderId: transactionDetails.orderId,
-            referenceId: transactionDetails.referenceId,
-            metadata: transactionDetails.metadata,
+            walletId,
+            amount,
         });
 
         // Update wallet balance
@@ -90,7 +86,7 @@ export class WalletService implements IWalletService {
     async deductFunds(
         walletId: string,
         amount: number,
-        transactionDetail: WalletTransactionDTO.Insert,
+        transactionDetail: WalletTransactionDTO.DetuctFunds,
     ) {
         if (amount <= 0) {
             throw new MyError.BadRequestError("Amount must be greater than 0");
@@ -108,15 +104,11 @@ export class WalletService implements IWalletService {
 
         // Create transaction record first
         const transaction = await this.walletTransactionRepository.create({
+            ...transactionDetail,
             walletId,
             amount: -amount, // Negative amount for deduction
-            type: transactionDetail.type,
-            description: transactionDetail.description,
             balanceBefore: wallet.balance,
             balanceAfter: wallet.balance - amount,
-            orderId: transactionDetail.orderId,
-            referenceId: transactionDetail.referenceId,
-            metadata: transactionDetail.metadata,
         });
 
         // Update wallet balance

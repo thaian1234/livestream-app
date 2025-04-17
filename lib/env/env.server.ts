@@ -26,6 +26,10 @@ export const envServer = createEnv({
         GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1),
         TOGETHER_AI_API_KEY: z.string().min(1),
         TOGETHER_AI_IMAGE_MODEL: z.string().min(1),
+        VNPAY_TMN_CODE: z.string().min(1),
+        VNPAY_HASH_SECRET: z.string().min(1),
+        VNPAY_HOST: z.string().min(1),
+        VNPAY_RETURN_URL: z.string().min(1),
     },
     shared: {
         NODE_ENV: z
@@ -57,6 +61,10 @@ export const envServer = createEnv({
         GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
         TOGETHER_AI_API_KEY: process.env.TOGETHER_AI_API_KEY,
         TOGETHER_AI_IMAGE_MODEL: process.env.TOGETHER_AI_IMAGE_MODEL,
+        VNPAY_TMN_CODE: process.env.VNPAY_TMN_CODE,
+        VNPAY_HASH_SECRET: process.env.VNPAY_HASH_SECRET,
+        VNPAY_RETURN_URL: process.env.VNPAY_RETURN_URL,
+        VNPAY_HOST: process.env.VNPAY_HOST,
     },
     skipValidation:
         !!process.env.CI || process.env.npm_lifecycle_event === "lint",

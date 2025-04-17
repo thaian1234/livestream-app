@@ -67,7 +67,6 @@ export class DonateCardService implements IDonateCardService {
     async deleteDonateCard(id: string, streamId: string) {
         const card = await this.getDonateCardById(id);
 
-        // Verify ownership
         if (card.streamId !== streamId) {
             throw new MyError.ForbiddenError(
                 "You don't have permission to delete this donate card",
