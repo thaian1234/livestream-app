@@ -7,7 +7,6 @@ import { IOrderRepository } from "../repositories/order.repository";
 import { IStreamRepository } from "../repositories/stream.repository";
 import { IUserRepository } from "../repositories/user.repository";
 
-import { IGetStreamService } from "../external-services/getstream.service";
 import { INotificationService } from "../external-services/notification.service";
 import { IVNPayService } from "../external-services/vnpay.service";
 
@@ -25,7 +24,6 @@ export class DonationService implements IDonationService {
         private readonly userRepository: IUserRepository,
         private readonly streamRepository: IStreamRepository,
         private readonly notificationService: INotificationService,
-        private readonly getStreamService: IGetStreamService,
     ) {}
 
     async createDonation(data: {

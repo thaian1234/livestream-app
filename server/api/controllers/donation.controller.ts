@@ -4,6 +4,7 @@ import { z } from "zod";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
+import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
 
@@ -15,9 +16,8 @@ import { IDonationService } from "../services/donation.service";
 import { DonateCardDTO } from "../dtos/donate-card.dto";
 import { DonationDTO } from "../dtos/donation.dto";
 
-export interface IDonationController {
-    setupHandlers(): any;
-}
+export interface IDonationController
+    extends Utils.AutoMappedClass<DonationController> {}
 
 export class DonationController implements IDonationController {
     constructor(
