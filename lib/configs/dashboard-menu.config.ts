@@ -5,6 +5,7 @@ import {
     UserRoundPenIcon,
     Users,
     Video,
+    WalletMinimal,
 } from "lucide-react";
 import { BsDatabaseFillDown } from "react-icons/bs";
 import { IconType } from "react-icons/lib";
@@ -73,6 +74,13 @@ export function getDashboardMenuList(
         {
             groupLabel: "Channels",
             menus: [
+                {
+                    href: ROUTES.DONATION_PAGE(username),
+                    label: "Donation",
+                    active: pathname === ROUTES.DONATION_PAGE(username),
+                    icon: WalletMinimal,
+                    submenus: [],
+                },
                 {
                     href: ROUTES.STUDIO_PAGE(username),
                     label: "Studio",
