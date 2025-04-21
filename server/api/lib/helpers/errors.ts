@@ -69,4 +69,8 @@ export class MyError {
         "Too many requests",
         HttpStatus.TooManyRequests,
     );
+    static ForbiddenError = ErrorFactory.createError(
+        "Forbidden",
+        HttpStatus.Forbidden,
+    );
 }
