@@ -195,23 +195,24 @@ export class DonationService implements IDonationService {
         });
 
         // Get donor and streamer information for notifications
-        // const donor = await this.userRepository.findById(order.userId);
-        // const streamer = await this.userRepository.findById(streamerId);
+        const donor = await this.userRepository.findById(order.userId);
+        const streamer = await this.userRepository.findById(streamerId);
+
+        //message: `${donor?.username} donated ${order.totalAmount.toLocaleString("vi-VN")}đ to you${order.message ? `: "${order.message}"` : ""}`,
 
         // Send notification to streamer
-        // await this.notificationService.createNotification({
-        //     userId: streamerId,
-        //     type: "DONATION",
-        //     title: "New Donation Received",
-        //     message: `${donor.username} donated ${order.totalAmount.toLocaleString("vi-VN")}đ to you${order.message ? `: "${order.message}"` : ""}`,
-        //     metadata: {
-        //         donorId: donor.id,
-        //         donorUsername: donor.username,
-        //         amount: order.totalAmount,
-        //         message: order.message,
-        //         orderId: order.id,
-        //     },
-        // });
+        await this.notificationService.createStreamDonationNotification({
+            actorAvatar: donor?.imageUrl || "",
+            actorName: donor?.username || "",
+            actorId: donor?.id || "",
+            targetId: streamerId,
+            extraData: {
+                title: "New Donation Received",
+                amount: order.totalAmount,
+                message: order.message,
+                orderId: order.id,
+            },
+        });
 
         // // Send real-time notification to stream if it's active
         // const isStreamActive = await this.streamRepository.isStreamActive(
@@ -220,6 +221,30 @@ export class DonationService implements IDonationService {
         // if (isStreamActive) {
         //     await this.sendStreamDonationAlert(order, donor, streamer);
         // }
+    }
+
+    async testNotification(streamerId: string, order: OrderDTO.Select) {
+        {
+            // Get donor and streamer information for notifications
+            const donor = await this.userRepository.findById(order.userId);
+            const streamer = await this.userRepository.findById(streamerId);
+
+            //message: `${donor?.username} donated ${order.totalAmount.toLocaleString("vi-VN")}đ to you${order.message ? `: "${order.message}"` : ""}`,
+
+            // Send notification to streamer
+            await this.notificationService.createStreamDonationNotification({
+                actorAvatar: donor?.imageUrl || "",
+                actorName: donor?.username || "",
+                actorId: donor?.id || "",
+                targetId: streamerId,
+                extraData: {
+                    title: "New Donation Received",
+                    amount: order.totalAmount,
+                    message: order.message,
+                    orderId: order.id,
+                },
+            });
+        }
     }
 
     private async sendStreamDonationAlert(

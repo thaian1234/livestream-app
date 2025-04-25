@@ -33,8 +33,9 @@ export class DonationController implements IDonationController {
             .get("/callback", ...this.donationCallbackHandler())
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
-            .patch("/cards/:id", ...this.updateDonateCardHandler())
-            .delete("/cards/:id", ...this.deleteDonateCardHandler());
+            .patch("/cards/:cardId", ...this.updateDonateCardHandler())
+            .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
+            .post("/test", ...this.testHandler());
     }
 
     private createDonationHandler() {
@@ -55,6 +56,45 @@ export class DonationController implements IDonationController {
                     ipAddress,
                     ...body,
                 });
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: result,
+                    status: HttpStatus.Created,
+                    msg: "Donation created successfully",
+                });
+            },
+        );
+    }
+
+    private testHandler() {
+        const bodySchema = z.object({
+            streamerId: z.string().uuid(),
+        });
+        return this.factory.createHandlers(
+            zValidator("json", bodySchema, Validator.handleParseError),
+            AuthMiddleware.isAuthenticated,
+            async (c) => {
+                const currentUser = c.get("getUser");
+                const { streamerId } = c.req.valid("json");
+
+                const result = await this.donationService.testNotification(
+                    streamerId,
+                    {
+                        message: "Test message",
+                        status: "COMPLETED",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        externalTransactionId: "123456789",
+                        id: "123456789",
+                        ipAddress: "127.0.0.1",
+                        paymentMethod: "VNPAY",
+                        streamId: "123456789",
+                        totalAmount: 10000,
+                        userId: currentUser.id,
+                        completedAt: "2021-01-01T00:00:00.000Z",
+                    },
+                );
 
                 return ApiResponse.WriteJSON({
                     c,
@@ -113,7 +153,7 @@ export class DonationController implements IDonationController {
                     await this.donateCardService.getDonateCardsByStreamId(
                         streamId,
                     );
-
+                console.log("This >>>>>>>>>>>>");
                 return ApiResponse.WriteJSON({
                     c,
                     data: { donateCards },
@@ -154,13 +194,15 @@ export class DonationController implements IDonationController {
         const params = z.object({
             cardId: z.string().uuid(),
         });
+        const bodySchema = DonateCardDTO.updateSchema;
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
+            zValidator("json", bodySchema, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const currentUser = c.get("getUser");
                 const { cardId } = c.req.valid("param");
-                const body = await c.req.json();
+                const body = c.req.valid("json");
 
                 // Use the current user's stream ID
                 const streamId = currentUser.stream.id;

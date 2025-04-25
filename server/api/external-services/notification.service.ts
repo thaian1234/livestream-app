@@ -1,8 +1,11 @@
-import { Utils } from "../lib/helpers/utils";
 import { DefaultGenerics, NewActivity, connect } from "getstream";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { OrderDTO } from "../dtos/order.dto";
 
 export const NotificationTypes = {
     STREAM_START: "stream_start",
@@ -11,6 +14,7 @@ export const NotificationTypes = {
     UNFOLLOW: "unfollow",
     BLOCKED: "blocked",
     UN_BLOCKED: "un_blocked",
+    DONATION_RECEIVED: "donation_received",
 } as const;
 
 type NotificationType = keyof typeof NotificationTypes;
@@ -29,6 +33,14 @@ interface StreamNotificationParams {
     streamerName: string;
     streamerAvatar: string | null;
     followerIds: string[];
+}
+
+interface StreamDonationNotificationParams {
+    donorId: string;
+    donorName: string;
+    donorAvatar: string | null;
+    streamerId: string;
+    order: OrderDTO.Select;
 }
 
 export interface INotificationService
@@ -64,6 +76,8 @@ export class NotificationService implements INotificationService {
             targetId,
         );
 
+        console.log("Extra data: ", {extraData})
+        console.log("After destruct", {...extraData})
         const activity: NewActivity<DefaultGenerics> = {
             actor: actorId,
             verb: type,
@@ -116,5 +130,10 @@ export class NotificationService implements INotificationService {
         };
 
         return targetFeed.addActivity(activity);
+    }
+    public async createStreamDonationNotification(
+        params: Omit<NotificationParams, "type">,
+    ) {
+        return this.createBaseNotification({ ...params, type: "DONATION_RECEIVED" });
     }
 }

@@ -10,6 +10,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import { donationApi } from "../apis";
+
 interface DeletePackageProps {
     children: React.ReactNode;
     packageId: string;
@@ -19,9 +21,14 @@ export function DeletePackageDialog({
     children,
     packageId,
 }: DeletePackageProps) {
+    const { mutate: deleteDonationCard, isPending } =
+        donationApi.mutation.useDeleteDonationCard();
     const handleDelete = () => {
         // Call the delete function here
         console.log("Deleting package with ID:", packageId);
+        deleteDonationCard({
+            param: { cardId: packageId },
+        });
     };
     return (
         <AlertDialog>
