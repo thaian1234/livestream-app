@@ -8,6 +8,8 @@ import {
     uuid,
 } from "drizzle-orm/pg-core";
 
+import { donateCardTable } from "./donate-card.table";
+import { orderTable } from "./orders.table";
 import { settingTable } from "./setting.table";
 import { storageTable } from "./storage.table";
 import { streamsToCategoriesTable } from "./stream-category.table";
@@ -42,4 +44,6 @@ export const streamRelations = relations(streamTable, ({ one, many }) => ({
     streamsToCategories: many(streamsToCategoriesTable),
     videos: many(videoTable),
     storages: many(storageTable),
+    donationCards: many(donateCardTable),
+    orders: many(orderTable),
 }));

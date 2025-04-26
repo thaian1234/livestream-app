@@ -7,6 +7,7 @@ import { commentTable } from "./comment.table";
 import { emailVerificationTable } from "./email-verification.table";
 import { followTable } from "./follow.table";
 import { forgetPasswordTable } from "./forget-password.table";
+import { orderTable } from "./orders.table";
 import { sessionTable } from "./session.table";
 import { streamTable } from "./stream.table";
 import { videoLikeTable } from "./video-like.table";
@@ -40,4 +41,5 @@ export const userRelations = relations(userTable, ({ many, one }) => ({
     videos: many(videoTable),
     videolikes: many(videoLikeTable),
     comments: many(commentTable),
+    userOrders: many(orderTable),
 }));

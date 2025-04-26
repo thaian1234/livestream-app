@@ -1,4 +1,5 @@
 import {
+    HandCoinsIcon,
     HeartHandshakeIcon,
     LockIcon,
     UserPlus2Icon,
@@ -55,6 +56,17 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
                         <VideoIcon className="mr-2 h-4 w-4 text-green-400" />
                         <span className="line-clamp-1">
                             {notification.actorName} started streaming
+                        </span>
+                    </>
+                );
+            case "DONATION_RECEIVED":
+                return (
+                    <>
+                        <HandCoinsIcon className="mr-2 h-4 w-4 text-yellow-300" />
+                        <span className="line-clamp-1">
+                            {notification.actorName?.slice(0, 20)} donated{" "}
+                            {notification.amount?.toLocaleString("vi-VN")}đ to
+                            you
                         </span>
                     </>
                 );

@@ -4,6 +4,9 @@ import { CreditCard, Pencil, Plus, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { useUser } from "@/lib/hooks/use-user";
+import { useAuth } from "@/lib/providers/auth-provider";
+
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -14,44 +17,20 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
+import { donationApi } from "../apis";
 import { IPackage } from "../types/package";
 import { DeletePackageDialog } from "./delete-package-dialog";
 import { PackageDialog } from "./package-dialog";
-import { Payment } from "./payment";
 
-// Sample donation packages
-const defaultPackages: IPackage[] = [
-    {
-        id: "1",
-        packageName: "Fan Support",
-        amount: 5,
-        description: "Show your support with a small donation",
-        // type: "VNPay",
-        // accountName: "Truong Nguyen Thuy Trang",
-        // accountNumber: "1234567890",
-    },
-    {
-        id: "2",
-        packageName: "Super Fan",
-        amount: 10,
-        // type: "bank",
-        // accountName: "Truong Nguyen Thuy",
-        // accountNumber: "1234567890",
-        // bankName: "Example Bank",
-    },
-    {
-        id: "3",
-        packageName: "VIP Supporter",
-        amount: 25,
-        description: "VIP status in chat and special perks",
-        // type: "bank",
-        // accountName: "Nguyen Van An ",
-        // accountNumber: "1234567890",
-        // bankName: "VietcomBank",
-    },
-];
 export function CurrentPackages() {
     const [packageAmount, setPackageAmount] = useState(3); // Example state to track the number of packages
+    const { user } = useUser();
+    const { data, error, isPending } = donationApi.query.useGetDonationCard(
+        user.stream.id,
+    );
+
+    const packages = data?.data.donateCards;
+    console.log("package >>>>>>>>>", packages);
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -73,55 +52,58 @@ export function CurrentPackages() {
                 </PackageDialog>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {defaultPackages.map((pkg) => {
-                    // const IconComponent = getIconComponent(pkg.icon);
-                    return (
-                        <Card
-                            key={pkg.id}
-                            className="flex flex-col rounded-lg border border-white/50 py-4 pr-4"
-                        >
-                            <CardHeader>
-                                <div className="flex items-center">
-                                    <div className="flex-1">
-                                        {/* <IconComponent
+                {packages &&
+                    packages.map((pkg) => {
+                        // const IconComponent = getIconComponent(pkg.icon);
+                        return (
+                            <Card
+                                key={pkg.id}
+                                className="flex flex-col rounded-lg border border-white/50 py-4 pr-4"
+                            >
+                                <CardHeader>
+                                    <div className="flex items-center">
+                                        <div className="flex-1">
+                                            {/* <IconComponent
                                             className={`h-5 w-5 ${pkg.color}`}
                                         /> */}
-                                        <CardTitle className="truncate text-2xl">
-                                            {pkg.packageName}
-                                        </CardTitle>
-                                    </div>
-                                    <div>
-                                        <PackageDialog defaultValue={pkg}>
-                                            <Button
-                                                variant="secondary"
-                                                size="icon"
-                                                className="hover:bg-white/10"
+                                            <CardTitle className="truncate text-2xl">
+                                                {pkg.title}
+                                            </CardTitle>
+                                        </div>
+                                        <div>
+                                            <PackageDialog defaultValue={pkg}>
+                                                <Button
+                                                    variant="secondary"
+                                                    size="icon"
+                                                    className="hover:bg-white/10"
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                            </PackageDialog>
+                                            <DeletePackageDialog
+                                                packageId={pkg.id}
                                             >
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                        </PackageDialog>
-                                        <DeletePackageDialog packageId={pkg.id}>
-                                            <Button
-                                                variant="secondary"
-                                                size="icon"
-                                                className="hover:bg-white/10"
-                                            >
-                                                <Trash className="h-4 w-4 text-red-500" />
-                                            </Button>
-                                        </DeletePackageDialog>
+                                                <Button
+                                                    variant="secondary"
+                                                    size="icon"
+                                                    className="hover:bg-white/10"
+                                                >
+                                                    <Trash className="h-4 w-4 text-red-500" />
+                                                </Button>
+                                            </DeletePackageDialog>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <CardDescription>
-                                    {pkg.description ? pkg.description : ""}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-1">
-                                <div className="text-3xl font-bold">
-                                    {pkg.amount}
-                                    <span className="text-xl">VNĐ</span>
-                                </div>
-                                {/* {pkg.type && (
+                                    <CardDescription>
+                                        {pkg.description ? pkg.description : ""}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex-1">
+                                    <div className="text-3xl font-bold">
+                                        {pkg.amount.toLocaleString("vi-VN")}
+                                        <span className="text-xl">VNĐ</span>
+                                    </div>
+                                    {/* {pkg.type && (
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-2">
                                             <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -142,10 +124,10 @@ export function CurrentPackages() {
                                         </div>
                                     </div>
                                 )} */}
-                            </CardContent>
-                        </Card>
-                    );
-                })}
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
             </div>
         </div>
     );

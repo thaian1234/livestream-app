@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { useUser } from "@/lib/hooks/use-user";
+
+import { DonateCardDTO } from "@/server/api/dtos/donate-card.dto";
+
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -21,30 +25,23 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { ErrorField } from "@/components/error-field";
 
-import { IPackage } from "../types/package";
+import { donationApi } from "../apis";
 
 interface AddPackageDialogProps {
     children: React.ReactNode;
-    defaultValue?: IPackage;
+    defaultValue?: DonateCardDTO.Select;
 }
-
-const packageSchema = z.object({
-    packageName: z.string().min(1, "Package name is required"),
-    amount: z.preprocess(
-        (val) => Number(val),
-        z
-            .number({ invalid_type_error: "Amount must be a number" })
-            .min(1, "Amount must be at least 1"),
-    ),
-    description: z.string().optional(),
-});
 
 export function PackageDialog({
     children,
     defaultValue,
 }: AddPackageDialogProps) {
     const [open, setOpen] = useState(false);
-
+    const { mutate: createDonationCard, isPending: createPending } =
+        donationApi.mutation.useCreateDonationCard();
+    const { mutate: updateDonationCard, isPending: updatePending } =
+        donationApi.mutation.useUpdateDonationCard();
+    const { user } = useUser();
     const {
         register,
         handleSubmit,
@@ -53,13 +50,16 @@ export function PackageDialog({
         control,
         watch,
         reset,
-    } = useForm<IPackage>({
-        resolver: zodResolver(packageSchema),
+    } = useForm<DonateCardDTO.Insert>({
+        resolver: zodResolver(DonateCardDTO.insertSchema),
+        defaultValues: {
+            streamId: user.stream.id,
+        },
     });
     const handleOpenChange = (newOpen: boolean) => {
         if (defaultValue) {
             setValue("id", defaultValue.id);
-            setValue("packageName", defaultValue.packageName);
+            setValue("title", defaultValue.title);
             setValue("amount", defaultValue.amount);
             if (defaultValue.description) {
                 setValue("description", defaultValue.description);
@@ -77,7 +77,31 @@ export function PackageDialog({
 
     const onSubmit = handleSubmit((data) => {
         console.log("Form data:", data);
+        if (defaultValue) {
+            console.log(defaultValue);
+            updateDonationCard({
+                param: { cardId: defaultValue?.id },
+                json: {
+                    ...data,
+                },
+            }, {
+                onSettled() {
+                    setOpen(false);
+                }
+            });
+        } else {
+            createDonationCard({
+                json: {
+                    ...data,
+                },
+            }, {
+                onSettled() {
+                    setOpen(false);
+                }
+            });
+        }
     });
+
     const selectedType = watch("amount");
     console.log(selectedType);
     return (
@@ -101,12 +125,12 @@ export function PackageDialog({
                                     Package Name
                                 </Label>
                                 <Input
-                                    {...register("packageName")}
+                                    {...register("title")}
                                     placeholder="e.g. Super Fan"
                                 />
-                                {errors.packageName && (
+                                {errors.title && (
                                     <ErrorField>
-                                        {errors.packageName.message}
+                                        {errors.title.message}
                                     </ErrorField>
                                 )}
                             </div>
@@ -118,7 +142,9 @@ export function PackageDialog({
                                     Amount (VNĐ)
                                 </Label>
                                 <Input
-                                    {...register("amount")}
+                                    {...register("amount", {
+                                        valueAsNumber: true,
+                                    })}
                                     type="number"
                                     placeholder="e.g. 100000"
                                 />
@@ -148,7 +174,11 @@ export function PackageDialog({
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant={"secondary"}>Add Package</Button>
+                            <Button variant={"secondary"} loading={createPending || updatePending}>
+                                {defaultValue
+                                    ? "Update Package"
+                                    : "Add Package"}
+                            </Button>
                         </DialogFooter>
                     </div>
                 </form>
