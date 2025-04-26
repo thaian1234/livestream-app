@@ -20,7 +20,6 @@ export abstract class BasePaymentProcessor {
         message?: string;
         ipAddress: string;
     }): Promise<{ orderId: string; paymentUrl: string }> {
-        // Validate streamer exists and stream belongs to streamer
         await this.validateDonationRequest(data);
 
         // Create order - common for all payment methods
@@ -34,7 +33,6 @@ export abstract class BasePaymentProcessor {
             ipAddress: data.ipAddress,
         });
 
-        // Create payment URL - specific to each payment method
         const paymentUrl = await this.createPaymentUrl({
             orderId: order.id,
             amount: data.amount,
@@ -160,7 +158,6 @@ export abstract class BasePaymentProcessor {
             },
         });
 
-        // Hook for additional processing
         await this.additionalSuccessProcessing(order, transactionId);
     }
 
@@ -209,7 +206,6 @@ export abstract class BasePaymentProcessor {
             );
         }
 
-        // Additional validation can be added here
         if (data.amount <= 0) {
             throw new MyError.BadRequestError("Amount must be greater than 0");
         }

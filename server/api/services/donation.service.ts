@@ -27,20 +27,13 @@ export class DonationService implements IDonationService {
         ipAddress: string;
         paymentMethod: OrderDTO.PaymentMethod;
     }) {
-        try {
-            // Get the appropriate payment processor
-            const processor = this.paymentProcessorFactory.getProcessor(
-                data.paymentMethod,
-            );
+        // Get the appropriate payment processor
+        const processor = this.paymentProcessorFactory.getProcessor(
+            data.paymentMethod,
+        );
 
-            // Process the donation using the selected payment processor
-            return await processor.processDonation(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error;
-            }
-            throw new MyError.InternalServerError("Failed to process donation");
-        }
+        // Process the donation using the selected payment processor
+        return await processor.processDonation(data);
     }
 
     async handleDonationCallback(
