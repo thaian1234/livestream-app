@@ -23,21 +23,6 @@ export const donationApi = {
         },
     },
     mutation: {
-        useTestNotification() {
-            const $post = baseApi.test.$post;
-            const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
-                $post,
-                {
-                    onSuccess(data) {
-                        console.log(data);
-                    },
-                    onError(err) {
-                        console.log(err);
-                    },
-                },
-            );
-            return mutation;
-        },
         useCreateDonation() {
             const $post = baseApi.donate.$post;
             const { mutation, toast, queryClient } = Fetcher.useHonoMutation(

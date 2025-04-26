@@ -79,26 +79,32 @@ export function PackageDialog({
         console.log("Form data:", data);
         if (defaultValue) {
             console.log(defaultValue);
-            updateDonationCard({
-                param: { cardId: defaultValue?.id },
-                json: {
-                    ...data,
+            updateDonationCard(
+                {
+                    param: { cardId: defaultValue?.id },
+                    json: {
+                        ...data,
+                    },
                 },
-            }, {
-                onSettled() {
-                    setOpen(false);
-                }
-            });
+                {
+                    onSettled() {
+                        setOpen(false);
+                    },
+                },
+            );
         } else {
-            createDonationCard({
-                json: {
-                    ...data,
+            createDonationCard(
+                {
+                    json: {
+                        ...data,
+                    },
                 },
-            }, {
-                onSettled() {
-                    setOpen(false);
-                }
-            });
+                {
+                    onSettled() {
+                        setOpen(false);
+                    },
+                },
+            );
         }
     });
 
@@ -174,7 +180,10 @@ export function PackageDialog({
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant={"secondary"} loading={createPending || updatePending}>
+                            <Button
+                                variant={"secondary"}
+                                loading={createPending || updatePending}
+                            >
                                 {defaultValue
                                     ? "Update Package"
                                     : "Add Package"}
