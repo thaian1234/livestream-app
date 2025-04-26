@@ -1,6 +1,7 @@
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 
+import { IOrderRepository } from "../repositories/order.repository";
 import { IUserRepository } from "../repositories/user.repository";
 
 import { INotificationService } from "../external-services/notification.service";
@@ -15,6 +16,7 @@ export class DonationService implements IDonationService {
     constructor(
         private readonly paymentProcessorFactory: PaymentProcessorFactory,
         private readonly userRepository: IUserRepository,
+        private readonly orderRepository: IOrderRepository,
         private readonly notificationService: INotificationService,
     ) {}
 
@@ -53,14 +55,32 @@ export class DonationService implements IDonationService {
 
             return result;
         } catch (error) {
-            if (error instanceof Error) {
-                throw error;
-            }
             throw new MyError.InternalServerError(
                 "Failed to process payment callback",
             );
         }
     }
 
-    private async sendDonationNotifications(orderId: string) {}
+    private async sendDonationNotifications(orderId: string) {
+        // Get donor and streamer information for notifications
+        const order = await this.orderRepository.findById(orderId);
+        if (!order) {
+            throw new MyError.NotFoundError("Order not found");
+        }
+        const donor = await this.userRepository.findById(order.userId);
+
+        // Send notification to streamer
+        await this.notificationService.createStreamDonationNotification({
+            actorAvatar: donor?.imageUrl || "",
+            actorName: donor?.username || "",
+            actorId: donor?.id || "",
+            targetId: order.streamId,
+            extraData: {
+                title: "New Donation Received",
+                amount: order.totalAmount,
+                message: order.message,
+                orderId: order.id,
+            },
+        });
+    }
 }

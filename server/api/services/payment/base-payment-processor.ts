@@ -141,6 +141,7 @@ export abstract class BasePaymentProcessor {
                 metadata: {
                     donorId: order.userId,
                     streamId: order.streamId,
+                    streamerId: streamerId,
                     grossAmount: order.totalAmount,
                 },
             },

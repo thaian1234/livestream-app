@@ -37,8 +37,8 @@ export class DonationController implements IDonationController {
             .get("/callback/:paymentMethod", ...this.donationCallbackHandler())
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
-            .patch("/cards/:id", ...this.updateDonateCardHandler())
-            .delete("/cards/:id", ...this.deleteDonateCardHandler());
+            .patch("/cards/:cardId", ...this.updateDonateCardHandler())
+            .delete("/cards/:cardId", ...this.deleteDonateCardHandler());
     }
 
     private createDonationHandler() {
@@ -111,7 +111,7 @@ export class DonationController implements IDonationController {
                     await this.donateCardService.getDonateCardsByStreamId(
                         streamId,
                     );
-
+                console.log("This >>>>>>>>>>>>");
                 return ApiResponse.WriteJSON({
                     c,
                     data: { donateCards },
@@ -152,13 +152,15 @@ export class DonationController implements IDonationController {
         const params = z.object({
             cardId: z.string().uuid(),
         });
+        const bodySchema = DonateCardDTO.updateSchema;
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
+            zValidator("json", bodySchema, Validator.handleParseError),
             AuthMiddleware.isAuthenticated,
             async (c) => {
                 const currentUser = c.get("getUser");
                 const { cardId } = c.req.valid("param");
-                const body = await c.req.json();
+                const body = c.req.valid("json");
 
                 // Use the current user's stream ID
                 const streamId = currentUser.stream.id;
