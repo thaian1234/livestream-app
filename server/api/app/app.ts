@@ -201,6 +201,7 @@ export class App {
         const donationService = new DonationService(
             paymentProcessorFactory,
             userRepository,
+            orderRepository,
             notificationService,
         );
 
