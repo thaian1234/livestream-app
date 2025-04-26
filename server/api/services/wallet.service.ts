@@ -44,16 +44,11 @@ export class WalletService implements IWalletService {
         amount: number,
         transactionDetails: WalletTransactionDTO.AddFunds,
     ) {
-        if (amount <= 0) {
-            throw new MyError.BadRequestError("Amount must be greater than 0");
-        }
-
         const wallet = await this.walletRepository.findById(walletId);
         if (!wallet) {
             throw new MyError.NotFoundError("Wallet not found");
         }
 
-        // Create transaction record first
         const transaction = await this.walletTransactionRepository.create({
             ...transactionDetails,
             balanceBefore: wallet.balance,
@@ -70,7 +65,7 @@ export class WalletService implements IWalletService {
 
         // Update total received if it's a donation
         if (transactionDetails.type === "DONATION_RECEIVED") {
-            const totalReceived = wallet.totalReceived || 0 + amount;
+            const totalReceived = (wallet.totalReceived || 0) + amount;
             await this.walletRepository.updateTotalReceived(
                 walletId,
                 totalReceived,
@@ -88,10 +83,6 @@ export class WalletService implements IWalletService {
         amount: number,
         transactionDetail: WalletTransactionDTO.DetuctFunds,
     ) {
-        if (amount <= 0) {
-            throw new MyError.BadRequestError("Amount must be greater than 0");
-        }
-
         const wallet = await this.walletRepository.findById(walletId);
         if (!wallet) {
             throw new MyError.NotFoundError("Wallet not found");
@@ -119,7 +110,7 @@ export class WalletService implements IWalletService {
 
         // Update total withdrawn if it's a withdrawal
         if (transactionDetail.type === "WITHDRAWAL") {
-            const totalWithdrawn = wallet.totalWithdrawn || 0 + amount;
+            const totalWithdrawn = (wallet.totalWithdrawn || 0) + amount;
             await this.walletRepository.updateTotalWithdrawn(
                 wallet.id,
                 totalWithdrawn,

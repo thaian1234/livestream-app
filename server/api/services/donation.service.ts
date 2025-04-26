@@ -34,19 +34,6 @@ export class DonationService implements IDonationService {
         message?: string;
         ipAddress: string;
     }) {
-        // Validate amount
-        if (data.amount <= 0) {
-            throw new MyError.BadRequestError(
-                "Donation amount must be greater than 0",
-            );
-        }
-
-        // Validate donor exists
-        const donor = await this.userRepository.findById(data.donorId);
-        if (!donor) {
-            throw new MyError.NotFoundError("Donor not found");
-        }
-
         // Validate streamer exists
         const streamer = await this.userRepository.findById(data.streamerId);
         if (!streamer) {
@@ -82,7 +69,7 @@ export class DonationService implements IDonationService {
         const paymentUrl = this.vnpayService.createPaymentUrl({
             vnp_OrderInfo: orderInfo,
             vnp_TxnRef: order.id,
-            vnp_Amount: data.amount * 100,
+            vnp_Amount: data.amount,
             vnp_IpAddr: data.ipAddress,
         });
 
@@ -95,13 +82,13 @@ export class DonationService implements IDonationService {
     async handleDonationCallback(query: ReturnQueryFromVNPay) {
         // Verify return URL
         const verifyResponse = this.vnpayService.verifyReturnUrl(query);
-        if (!verifyResponse.isSuccess || !verifyResponse.isVerified) {
+        if (!verifyResponse.isSuccess) {
             throw new MyError.BadRequestError("Invalid payment callback");
         }
 
         // Get order ID from query
         const orderId = verifyResponse.vnp_TxnRef;
-        const transactionId = String(verifyResponse.vnp_TransactionNo);
+        const transactionId = String(query.vnp_TransactionNo);
 
         // Get order
         const order = await this.orderRepository.findById(orderId);
@@ -155,7 +142,6 @@ export class DonationService implements IDonationService {
 
         const feePercentage = 10;
         const feeAmount = Math.floor(order.totalAmount * (feePercentage / 100));
-        const netAmount = order.totalAmount - feeAmount;
 
         // Get or create streamer wallet
         const streamerWallet =
@@ -169,18 +155,21 @@ export class DonationService implements IDonationService {
         });
 
         // Add funds to streamer wallet
-        await this.walletService.addFunds(streamerWallet.id, netAmount, {
-            type: "DONATION_RECEIVED",
-            description: `Donation from ${order.userId}${order.message ? `: ${order.message}` : ""}`,
-            orderId: order.id,
-            referenceId: transactionId,
-            metadata: {
-                donorId: order.userId,
-                streamId: order.streamId,
-                feeAmount: 0,
-                netAmount: 0,
+        await this.walletService.addFunds(
+            streamerWallet.id,
+            order.totalAmount,
+            {
+                type: "DONATION_RECEIVED",
+                description: `Donation from ${order.userId}${order.message ? `: ${order.message}` : ""}`,
+                orderId: order.id,
+                referenceId: transactionId,
+                metadata: {
+                    donorId: order.userId,
+                    streamId: order.streamId,
+                    grossAmount: order.totalAmount,
+                },
             },
-        });
+        );
 
         // Record fee transaction
         await this.walletService.deductFunds(streamerWallet.id, feeAmount, {

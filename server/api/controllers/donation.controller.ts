@@ -1,4 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
+import { ReturnQueryFromVNPay } from "vnpay";
 import { z } from "zod";
 
 import { HttpStatus } from "../lib/constant/http.type";
@@ -68,20 +69,11 @@ export class DonationController implements IDonationController {
 
     private donationCallbackHandler() {
         return this.factory.createHandlers(async (c) => {
-            const query = c.req.query();
+            const query = c.req.query() as ReturnQueryFromVNPay;
 
             try {
                 const result =
-                    await this.donationService.handleDonationCallback({
-                        vnp_Amount: query.vnp_Amount,
-                        vnp_BankCode: query.vnp_BankCode,
-                        vnp_BankTranNo: query.vnp_BankTranNo,
-                        vnp_CardType: query.vnp_CardType,
-                        vnp_OrderInfo: query.vnp_OrderInfo,
-                        vnp_ResponseCode: query.vnp_ResponseCode,
-                        vnp_TmnCode: query.vnp_TmnCode,
-                        vnp_TxnRef: query.vnp_TxnRef,
-                    });
+                    await this.donationService.handleDonationCallback(query);
 
                 if (result.success) {
                     return c.redirect(
