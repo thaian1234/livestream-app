@@ -2,6 +2,8 @@ import { zValidator } from "@hono/zod-validator";
 import { ReturnQueryFromVNPay } from "vnpay";
 import { z } from "zod";
 
+import { envClient } from "@/lib/env/env.client";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
@@ -16,6 +18,7 @@ import { IDonationService } from "../services/donation.service";
 
 import { DonateCardDTO } from "../dtos/donate-card.dto";
 import { DonationDTO } from "../dtos/donation.dto";
+import { OrderDTO } from "../dtos/order.dto";
 
 export interface IDonationController
     extends Utils.AutoMappedClass<DonationController> {}
@@ -31,7 +34,7 @@ export class DonationController implements IDonationController {
         return this.factory
             .createApp()
             .post("/donate", ...this.createDonationHandler())
-            .get("/callback", ...this.donationCallbackHandler())
+            .get("/callback/:paymentMethod", ...this.donationCallbackHandler())
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:id", ...this.updateDonateCardHandler())
@@ -68,29 +71,32 @@ export class DonationController implements IDonationController {
     }
 
     private donationCallbackHandler() {
-        return this.factory.createHandlers(async (c) => {
-            const query = c.req.query() as ReturnQueryFromVNPay;
+        const params = z.object({
+            paymentMethod: OrderDTO.paymentMethodSchema,
+        });
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            async (c) => {
+                const query = c.req.query() as ReturnQueryFromVNPay;
+                const { paymentMethod } = c.req.valid("param");
 
-            try {
                 const result =
-                    await this.donationService.handleDonationCallback(query);
+                    await this.donationService.handleDonationCallback(
+                        paymentMethod,
+                        query,
+                    );
 
                 if (result.success) {
                     return c.redirect(
-                        `/donation/success?orderId=${result.orderId}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/success?orderId=${result.orderId}`,
                     );
                 } else {
                     return c.redirect(
-                        `/donation/failed?orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/failed?orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
                     );
                 }
-            } catch (error) {
-                console.error("Donation callback error:", error);
-                return c.redirect(
-                    `/donation/failed?message=${encodeURIComponent("An error occurred during payment processing")}`,
-                );
-            }
-        });
+            },
+        );
     }
 
     private getDonateCardsHandler() {

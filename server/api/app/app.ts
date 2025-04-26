@@ -42,6 +42,8 @@ import { EmailVerificationService } from "../services/email-verification.service
 import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
+import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
+import { VNPayProcessor } from "../services/payment/vnpay-processor";
 import { SettingService } from "../services/setting.service";
 import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
@@ -186,12 +188,19 @@ export class App {
             walletTransactionRepository,
         );
         const vnpayService = new VNPayService();
-        const donationService = new DonationService(
-            orderRepository,
-            walletService,
+        const vnpayProcessor = new VNPayProcessor(
             vnpayService,
             userRepository,
+            orderRepository,
+            walletService,
             streamRepository,
+        );
+        const paymentProcessorFactory = new PaymentProcessorFactory(
+            vnpayProcessor,
+        );
+        const donationService = new DonationService(
+            paymentProcessorFactory,
+            userRepository,
             notificationService,
         );
 

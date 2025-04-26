@@ -5,7 +5,7 @@ import {
 } from "drizzle-zod";
 import { z } from "zod";
 
-import tableSchemas from "@/server/db/schemas";
+import tableSchemas, { tableRelations } from "@/server/db/schemas";
 
 export class OrderDTO {
     private static baseSchema = createSelectSchema(tableSchemas.orderTable);
@@ -21,6 +21,10 @@ export class OrderDTO {
     public static deleteSchema = this.selectSchema.pick({
         id: true,
     });
+
+    public static paymentMethodSchema = createSelectSchema(
+        tableRelations.paymentMethodEnum,
+    );
 }
 
 export namespace OrderDTO {
@@ -28,4 +32,5 @@ export namespace OrderDTO {
     export type Insert = z.infer<typeof OrderDTO.insertSchema>;
     export type Update = z.infer<typeof OrderDTO.updateSchema>;
     export type Delete = z.infer<typeof OrderDTO.deleteSchema>;
+    export type PaymentMethod = z.infer<typeof OrderDTO.paymentMethodSchema>;
 }
