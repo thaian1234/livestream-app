@@ -153,7 +153,7 @@ export default function AnalysisTabs() {
                 />
                 <AnalysisCard
                     title="Total Donors"
-                    amount={`${dummyAnalysis.totalDonors} VNĐ`}
+                    amount={`${dummyAnalysis.totalDonors}`}
                     subtitle={getChangePercentage(
                         dummyAnalysis.lastTotalDonors,
                         dummyAnalysis.totalDonors,
