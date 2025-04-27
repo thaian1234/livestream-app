@@ -76,34 +76,37 @@ export function PackageDialog({
     }, [open, reset]);
 
     const onSubmit = handleSubmit((data) => {
-        console.log("Form data:", data);
         if (defaultValue) {
-            console.log(defaultValue);
-            updateDonationCard({
-                param: { cardId: defaultValue?.id },
-                json: {
-                    ...data,
+            updateDonationCard(
+                {
+                    param: { cardId: defaultValue?.id },
+                    json: {
+                        ...data,
+                    },
                 },
-            }, {
-                onSettled() {
-                    setOpen(false);
-                }
-            });
+                {
+                    onSettled() {
+                        setOpen(false);
+                    },
+                },
+            );
         } else {
-            createDonationCard({
-                json: {
-                    ...data,
+            createDonationCard(
+                {
+                    json: {
+                        ...data,
+                    },
                 },
-            }, {
-                onSettled() {
-                    setOpen(false);
-                }
-            });
+                {
+                    onSettled() {
+                        setOpen(false);
+                    },
+                },
+            );
         }
     });
 
     const selectedType = watch("amount");
-    console.log(selectedType);
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>{children}</DialogTrigger>
@@ -174,7 +177,10 @@ export function PackageDialog({
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant={"secondary"} loading={createPending || updatePending}>
+                            <Button
+                                variant={"secondary"}
+                                loading={createPending || updatePending}
+                            >
                                 {defaultValue
                                     ? "Update Package"
                                     : "Add Package"}
