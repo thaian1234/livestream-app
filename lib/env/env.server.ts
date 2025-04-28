@@ -29,6 +29,15 @@ export const envServer = createEnv({
         VNPAY_TMN_CODE: z.string().min(1),
         VNPAY_HASH_SECRET: z.string().min(1),
         VNPAY_RETURN_URL: z.string().min(1),
+        MOMO_ACCESS_KEY: z.string().min(1),
+        MOMO_SECRET_KEY: z.string().min(1),
+        MOMO_PARTNER_CODE: z.string().min(1),
+        MOMO_REDIRECT_URL: z.string().min(1),
+        MOMO_IPN_URL: z.string().min(1),
+        MOMO_ORDER_GROUP_ID: z.string().min(0),
+        MOMO_AUTO_CAPTURE: z.string().min(1),
+        MOMO_LANG: z.string().min(1),
+        
     },
     shared: {
         NODE_ENV: z
@@ -63,6 +72,14 @@ export const envServer = createEnv({
         VNPAY_TMN_CODE: process.env.VNPAY_TMN_CODE,
         VNPAY_HASH_SECRET: process.env.VNPAY_HASH_SECRET,
         VNPAY_RETURN_URL: process.env.VNPAY_RETURN_URL,
+        MOMO_ACCESS_KEY: process.env.MOMO_ACCESS_KEY,
+        MOMO_SECRET_KEY: process.env.MOMO_SECRET_KEY,
+        MOMO_PARTNER_CODE: process.env.MOMO_PARTNER_CODE,
+        MOMO_REDIRECT_URL: process.env.MOMO_REDIRECT_URL,
+        MOMO_IPN_URL: process.env.MOMO_IPN_URL,
+        MOMO_ORDER_GROUP_ID: process.env.MOMO_ORDER_GROUP_ID,
+        MOMO_AUTO_CAPTURE: process.env.MOMO_AUTO_CAPTURE,
+        MOMO_LANG: process.env.MOMO_LANG,
     },
     skipValidation:
         !!process.env.CI || process.env.npm_lifecycle_event === "lint",

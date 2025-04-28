@@ -2,6 +2,7 @@ import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 
 import { IOrderRepository } from "../repositories/order.repository";
+import { IStreamRepository } from "../repositories/stream.repository";
 import { IUserRepository } from "../repositories/user.repository";
 
 import { INotificationService } from "../external-services/notification.service";
@@ -18,6 +19,7 @@ export class DonationService implements IDonationService {
         private readonly userRepository: IUserRepository,
         private readonly orderRepository: IOrderRepository,
         private readonly notificationService: INotificationService,
+        private readonly streamRepository: IStreamRepository,
     ) {}
 
     async createDonation(data: {
@@ -68,13 +70,13 @@ export class DonationService implements IDonationService {
             throw new MyError.NotFoundError("Order not found");
         }
         const donor = await this.userRepository.findById(order.userId);
-
+        const stream = await this.streamRepository.findById(order.streamId);
         // Send notification to streamer
         await this.notificationService.createStreamDonationNotification({
             actorAvatar: donor?.imageUrl || "",
             actorName: donor?.username || "",
             actorId: donor?.id || "",
-            targetId: order.streamId,
+            targetId: stream?.userId || "",
             extraData: {
                 title: "New Donation Received",
                 amount: order.totalAmount,
