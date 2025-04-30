@@ -1,4 +1,4 @@
-import { SendHorizontal } from "lucide-react";
+import { Gift, SendHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useMessageInputContext } from "stream-chat-react";
 import { EmojiPicker, EmojiPickerIcon } from "stream-chat-react/emojis";
@@ -61,7 +61,7 @@ export const CustomMessageInput = ({
                 isDelayed={isChatDelayed}
                 isFollowersOnly={isChatFollowersOnly}
             />
-            <div className="white flex items-center border-t border-gray-700 p-2">
+            <div className="space-y-2 border-t border-gray-700 p-2">
                 <Textarea
                     placeholder="Your message"
                     className="min-h-8 resize-none overflow-hidden bg-transparent py-2"
@@ -72,18 +72,26 @@ export const CustomMessageInput = ({
                     disabled={isChatDisabled}
                     maxLength={50}
                 />
-                <EmojiPicker
-                    buttonClassName="h-8 w-8 mt-1 rounded-md fill-white ml-2 hover:bg-accent disabled:opacity-50e"
-                    pickerProps={{ theme: "light" }}
-                />
-                <Button
-                    variant="ghost"
-                    className="ml-2 p-2"
-                    onClick={handleMessageSubmit}
-                    disabled={isChatDisabled}
-                >
-                    <SendHorizontal />
-                </Button>
+                <div className="flex items-center justify-between">
+                    <Button variant="ghost" className="p-2">
+                        <Gift className="h-6 w-6" />
+                    </Button>
+                    <div className="flex items-center">
+                        <EmojiPicker
+                            buttonClassName="h-10 w-10 p-2   rounded-md fill-white hover:bg-accent hover:fill-teal-2 disabled:opacity-50e"
+                            pickerProps={{ theme: "light" }}
+                        />
+
+                        <Button
+                            variant="ghost"
+                            className="p-2"
+                            onClick={handleMessageSubmit}
+                            disabled={isChatDisabled}
+                        >
+                            <SendHorizontal className="h-6 w-6" />
+                        </Button>
+                    </div>
+                </div>
             </div>
         </>
     );
