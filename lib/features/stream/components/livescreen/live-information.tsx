@@ -12,6 +12,8 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import { streamApi } from "../../apis";
 import { MoreActionPopover } from "./more-action-popover";
+import { Button } from "@/components/ui/button";
+import { donationApi } from "@/lib/features/donation/apis";
 
 interface LiveInformationProps {
     stream: StreamDTO.Select;
@@ -30,6 +32,15 @@ export function LiveInformation({
 }: LiveInformationProps) {
     const { data } = streamApi.query.useGetStreamCategories(stream.id);
     const categories = data?.data;
+    const {mutate: handleTest} = donationApi.mutation.useTestNotification();
+
+    const testNotify = () => {
+        handleTest({
+            json: {
+                streamerId: stream.userId,
+            }
+        });
+    }
 
     return (
         <div className="mt-2 flex justify-between px-2">
@@ -72,6 +83,9 @@ export function LiveInformation({
                         followingId={user.id}
                         isFollowed={isFollowing}
                     />
+                    <Button onClick={testNotify}>
+                        Test
+                    </Button>
                     <MoreActionPopover streamer={user} />
                 </div>
             )}
