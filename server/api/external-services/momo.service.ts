@@ -102,7 +102,7 @@ export class MomoService implements IMomoService {
             extraData = "",
         } = data;
 
-        var rawSignature =
+        const rawSignature =
             "accessKey=" +
             envServer.MOMO_ACCESS_KEY +
             "&amount=" +
@@ -124,7 +124,7 @@ export class MomoService implements IMomoService {
             "&requestType=" +
             requestType;
 
-        var signature = createHmac("sha256", envServer.MOMO_SECRET_KEY)
+        const signature = createHmac("sha256", envServer.MOMO_SECRET_KEY)
             .update(rawSignature)
             .digest("hex");
 
