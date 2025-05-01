@@ -25,7 +25,6 @@ export class VNPayService implements IVNPayService {
         this.vnpay = new VNPay({
             tmnCode: envServer.VNPAY_TMN_CODE,
             secureSecret: envServer.VNPAY_HASH_SECRET,
-            vnpayHost: envServer.VNPAY_HOST,
             hashAlgorithm: HashAlgorithm.SHA512,
             testMode: true,
             endpoints: {

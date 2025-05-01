@@ -1,5 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
+import { ReturnQueryFromVNPay } from "vnpay";
 import { z } from "zod";
+
+import { envClient } from "@/lib/env/env.client";
 
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
@@ -15,6 +18,7 @@ import { IDonationService } from "../services/donation.service";
 
 import { DonateCardDTO } from "../dtos/donate-card.dto";
 import { DonationDTO } from "../dtos/donation.dto";
+import { OrderDTO } from "../dtos/order.dto";
 
 export interface IDonationController
     extends Utils.AutoMappedClass<DonationController> {}
@@ -30,12 +34,12 @@ export class DonationController implements IDonationController {
         return this.factory
             .createApp()
             .post("/donate", ...this.createDonationHandler())
-            .get("/callback", ...this.donationCallbackHandler())
+            .get("/callback/:paymentMethod", ...this.donationCallbackHandler())
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:cardId", ...this.updateDonateCardHandler())
             .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
-            .post("/test", ...this.testHandler());
+            .post("/ipn/MOMO", ...this.momoIPNHandler());
     }
 
     private createDonationHandler() {
@@ -67,78 +71,49 @@ export class DonationController implements IDonationController {
         );
     }
 
-    private testHandler() {
-        const bodySchema = z.object({
-            streamerId: z.string().uuid(),
+    private donationCallbackHandler() {
+        const params = z.object({
+            paymentMethod: OrderDTO.paymentMethodSchema,
         });
         return this.factory.createHandlers(
-            zValidator("json", bodySchema, Validator.handleParseError),
-            AuthMiddleware.isAuthenticated,
+            zValidator("param", params, Validator.handleParseError),
             async (c) => {
-                const currentUser = c.get("getUser");
-                const { streamerId } = c.req.valid("json");
+                const query = c.req.query() as ReturnQueryFromVNPay;
+                const { paymentMethod } = c.req.valid("param");
 
-                const result = await this.donationService.testNotification(
-                    streamerId,
-                    {
-                        message: "Test message",
-                        status: "COMPLETED",
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                        externalTransactionId: "123456789",
-                        id: "123456789",
-                        ipAddress: "127.0.0.1",
-                        paymentMethod: "VNPAY",
-                        streamId: "123456789",
-                        totalAmount: 10000,
-                        userId: currentUser.id,
-                        completedAt: "2021-01-01T00:00:00.000Z",
-                    },
-                );
+                const result =
+                    await this.donationService.handleDonationCallback(
+                        paymentMethod,
+                        query,
+                    );
 
-                return ApiResponse.WriteJSON({
-                    c,
-                    data: result,
-                    status: HttpStatus.Created,
-                    msg: "Donation created successfully",
-                });
+                if (result.success) {
+                    return c.redirect(
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/success?orderId=${result.orderId}`,
+                    );
+                } else {
+                    return c.redirect(
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/failed?orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
+                    );
+                }
             },
         );
     }
 
-    private donationCallbackHandler() {
-        return this.factory.createHandlers(async (c) => {
-            const query = c.req.query();
+    private momoIPNHandler() {
+        return this.factory.createHandlers(
+            async (c) => {
+                const query = await c.req.json();
 
-            try {
                 const result =
-                    await this.donationService.handleDonationCallback({
-                        vnp_Amount: query.vnp_Amount,
-                        vnp_BankCode: query.vnp_BankCode,
-                        vnp_BankTranNo: query.vnp_BankTranNo,
-                        vnp_CardType: query.vnp_CardType,
-                        vnp_OrderInfo: query.vnp_OrderInfo,
-                        vnp_ResponseCode: query.vnp_ResponseCode,
-                        vnp_TmnCode: query.vnp_TmnCode,
-                        vnp_TxnRef: query.vnp_TxnRef,
-                    });
+                    await this.donationService.handleDonationCallback(
+                        "MOMO",
+                        query,
+                    );
 
-                if (result.success) {
-                    return c.redirect(
-                        `/donation/success?orderId=${result.orderId}`,
-                    );
-                } else {
-                    return c.redirect(
-                        `/donation/failed?orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
-                    );
-                }
-            } catch (error) {
-                console.error("Donation callback error:", error);
-                return c.redirect(
-                    `/donation/failed?message=${encodeURIComponent("An error occurred during payment processing")}`,
-                );
-            }
-        });
+                return c.body(null, HttpStatus.NoContent);
+            },
+        );
     }
 
     private getDonateCardsHandler() {
@@ -153,7 +128,7 @@ export class DonationController implements IDonationController {
                     await this.donateCardService.getDonateCardsByStreamId(
                         streamId,
                     );
-                console.log("This >>>>>>>>>>>>");
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: { donateCards },

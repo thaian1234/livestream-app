@@ -1,12 +1,6 @@
 import { z } from "zod";
 
 export class NotificationDTO {
-    static extraData = z.object({
-        title: z.string().optional(),
-        amount: z.number().optional(),
-        message: z.string().optional(),
-        orderId: z.string().optional(),
-    })
     static activitySchema = z.object({
         actor: z.string(),
         actorName: z.string().optional(),
@@ -14,16 +8,15 @@ export class NotificationDTO {
         foreign_id: z.string(),
         id: z.string(),
         object: z.string(),
-        origin: z.any(),
+        origin: z.any().optional(),
         target: z.string(),
         time: z.string(),
         type: z.string(),
         verb: z.string(),
         streamTitle: z.string().optional(),
-        // extraData: this.extraData.optional(),
         title: z.string().optional(),
         amount: z.number().optional(),
-        message: z.string().optional(),
+        message: z.string().optional().nullable(),
         orderId: z.string().optional(),
     });
 

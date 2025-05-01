@@ -1,5 +1,7 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 
+import tableSchemas from "@/server/db/schemas";
+
 import { Utils } from "../lib/helpers/utils";
 
 import { orderTable } from "../../db/schemas/orders.table";

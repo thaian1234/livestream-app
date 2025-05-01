@@ -76,8 +76,6 @@ export class NotificationService implements INotificationService {
             targetId,
         );
 
-        console.log("Extra data: ", {extraData})
-        console.log("After destruct", {...extraData})
         const activity: NewActivity<DefaultGenerics> = {
             actor: actorId,
             verb: type,
@@ -134,6 +132,9 @@ export class NotificationService implements INotificationService {
     public async createStreamDonationNotification(
         params: Omit<NotificationParams, "type">,
     ) {
-        return this.createBaseNotification({ ...params, type: "DONATION_RECEIVED" });
+        return this.createBaseNotification({
+            ...params,
+            type: "DONATION_RECEIVED",
+        });
     }
 }

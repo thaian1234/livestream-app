@@ -77,6 +77,7 @@ export function PackageDialog({
 
     const onSubmit = handleSubmit((data) => {
         if (defaultValue) {
+            console.log(defaultValue);
             updateDonationCard(
                 {
                     param: { cardId: defaultValue?.id },

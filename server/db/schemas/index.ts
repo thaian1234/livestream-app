@@ -19,7 +19,7 @@ import {
     orderTransactionRelations,
     orderTransactionTable,
 } from "./order-transaction.table";
-import { orderRelations, orderTable } from "./orders.table";
+import { orderRelations, orderTable, paymentMethodEnum } from "./orders.table";
 import { sessionRelations, sessionTable } from "./session.table";
 import { settingRelations, settingTable } from "./setting.table";
 import {
@@ -106,6 +106,7 @@ export const tableRelations = {
     walletTransactionRelations,
     walletRelations,
     transactionTypeEnum,
+    paymentMethodEnum,
 } as const;
 
 export default tableSchemas;
