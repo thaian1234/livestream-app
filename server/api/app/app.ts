@@ -42,6 +42,7 @@ import { EmailVerificationService } from "../services/email-verification.service
 import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
+import { MomoProcessor } from "../services/payment/momo-processor";
 import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
 import { VNPayProcessor } from "../services/payment/vnpay-processor";
 import { SettingService } from "../services/setting.service";
@@ -56,6 +57,7 @@ import { AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
+import { MomoService } from "../external-services/momo.service";
 import { NodemailService } from "../external-services/nodemail.service";
 import { NotificationService } from "../external-services/notification.service";
 import { R2BucketService } from "../external-services/r2-bucket.service";
@@ -195,14 +197,24 @@ export class App {
             walletService,
             streamRepository,
         );
+        const momoService = new MomoService();
+        const momoProcessor = new MomoProcessor(
+            momoService,
+            userRepository,
+            orderRepository,
+            walletService,
+            streamRepository,
+        );
         const paymentProcessorFactory = new PaymentProcessorFactory(
             vnpayProcessor,
+            momoProcessor,
         );
         const donationService = new DonationService(
             paymentProcessorFactory,
             userRepository,
             orderRepository,
             notificationService,
+            streamRepository
         );
 
         // Controllers

@@ -38,7 +38,8 @@ export class DonationController implements IDonationController {
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:cardId", ...this.updateDonateCardHandler())
-            .delete("/cards/:cardId", ...this.deleteDonateCardHandler());
+            .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
+            .post("/ipn/MOMO", ...this.momoIPNHandler());
     }
 
     private createDonationHandler() {
@@ -99,6 +100,22 @@ export class DonationController implements IDonationController {
         );
     }
 
+    private momoIPNHandler() {
+        return this.factory.createHandlers(
+            async (c) => {
+                const query = await c.req.json();
+
+                const result =
+                    await this.donationService.handleDonationCallback(
+                        "MOMO",
+                        query,
+                    );
+
+                return c.body(null, HttpStatus.NoContent);
+            },
+        );
+    }
+
     private getDonateCardsHandler() {
         const params = z.object({
             streamId: z.string().uuid(),
@@ -111,7 +128,7 @@ export class DonationController implements IDonationController {
                     await this.donateCardService.getDonateCardsByStreamId(
                         streamId,
                     );
-                console.log("This >>>>>>>>>>>>");
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: { donateCards },

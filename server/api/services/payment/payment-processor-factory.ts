@@ -1,6 +1,7 @@
 import { OrderDTO } from "../../dtos/order.dto";
 import { MyError } from "../../lib/helpers/errors";
 import { BasePaymentProcessor } from "./base-payment-processor";
+import { MomoProcessor } from "./momo-processor";
 import { VNPayProcessor } from "./vnpay-processor";
 
 export class PaymentProcessorFactory {
@@ -9,6 +10,7 @@ export class PaymentProcessorFactory {
 
     constructor(
         private readonly vnpayProcessor: VNPayProcessor,
+        private readonly momoProcessor: MomoProcessor,
         // Add other processors when implemented
     ) {
         this.registerProcessors();
@@ -16,6 +18,7 @@ export class PaymentProcessorFactory {
 
     private registerProcessors() {
         this.processors.set("VNPAY", this.vnpayProcessor);
+        this.processors.set("MOMO", this.momoProcessor);
         // Register other processors when implemented
     }
 
