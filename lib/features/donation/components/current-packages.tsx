@@ -2,7 +2,7 @@
 
 import { CreditCard, Pencil, Plus, Trash } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useUser } from "@/lib/hooks/use-user";
 import { useAuth } from "@/lib/providers/auth-provider";
@@ -23,11 +23,16 @@ import { DeletePackageDialog } from "./delete-package-dialog";
 import { PackageDialog } from "./package-dialog";
 
 export function CurrentPackages() {
-    const [packageAmount, setPackageAmount] = useState(3); // Example state to track the number of packages
+    const [packageAmount, setPackageAmount] = useState(0);
     const { user } = useUser();
     const { data, error, isPending } = donationApi.query.useGetDonationCard(
         user.stream.id,
     );
+
+    useEffect(() => {
+        const cards = data?.data.donateCards || []
+        setPackageAmount(cards.length);
+    }, [data]);
 
     const packages = data?.data.donateCards;
     return (

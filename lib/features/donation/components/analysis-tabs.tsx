@@ -1,7 +1,10 @@
 "use client";
 
 import { Medal } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
+
+import { useUser } from "@/lib/hooks/use-user";
 
 import {
     Card,
@@ -14,6 +17,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { UserAvatar } from "@/components/user-avatar";
 
+import { donationApi } from "../apis";
 import { IDonationAnalysis } from "../types/donation-analysis";
 import { AnalysisCard } from "./analysis-card";
 
@@ -109,9 +113,29 @@ function getChangePercentage(oldValue: number | undefined, newValue: number) {
 
     return `${sign}${formattedChange}% from last period`;
 }
-export default function AnalysisTabs() {
-    const [timeframe, setTimeframe] = useState("all"); // fetch data dựa trên state này
 
+export default function AnalysisTabs() {
+    const { user } = useUser();
+    const [timeframe, setTimeframe] = useState("all"); // fetch data dựa trên state này
+    const { data, error, isPending } = donationApi.query.useGetDonationStats(
+        user.stream.id,
+        timeframe,
+    );
+
+    if (!!error) {
+        redirect("/");
+    }
+
+    if (!data || isPending) {
+        return null;
+    }
+
+    const currentStats = data.data.periodStats;
+    const previousStats = data.data.previousStats;
+    const paymentMethodStats = data.data.paymentRank;
+    const topDonors = data.data.donorRank;
+
+    console.log(data.data);
     return (
         <div className="space-y-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -143,38 +167,38 @@ export default function AnalysisTabs() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <AnalysisCard
                     title="Total Donations"
-                    amount={`${dummyAnalysis.totalDonations.toLocaleString(
+                    amount={`${currentStats.totalAmount.toLocaleString(
                         "vi-VN",
                     )} VNĐ`}
                     subtitle={getChangePercentage(
-                        dummyAnalysis.lastTotalDonations,
-                        dummyAnalysis.totalDonations,
+                        previousStats.totalAmount,
+                        currentStats.totalAmount,
                     )}
                 />
                 <AnalysisCard
                     title="Total Donors"
-                    amount={`${dummyAnalysis.totalDonors}`}
+                    amount={`${currentStats.uniqueDonors}`}
                     subtitle={getChangePercentage(
-                        dummyAnalysis.lastTotalDonors,
-                        dummyAnalysis.totalDonors,
+                        previousStats.uniqueDonors,
+                        currentStats.uniqueDonors,
                     )}
                 />
                 <AnalysisCard
                     title="Average Donation"
-                    amount={`${dummyAnalysis.averageDonation.toLocaleString(
+                    amount={`${currentStats.avgAmount.toLocaleString(
                         "vi-VN",
                     )} VNĐ`}
                     subtitle={getChangePercentage(
-                        dummyAnalysis.lastAverageDonation,
-                        dummyAnalysis.averageDonation,
+                        previousStats.avgAmount,
+                        currentStats.avgAmount,
                     )}
                 />
                 <AnalysisCard
                     title="Highest Donation"
-                    amount={`${dummyAnalysis.highestDonation.amount.toLocaleString(
+                    amount={`${currentStats.maxAmount.toLocaleString(
                         "vi-VN",
                     )} VNĐ`}
-                    subtitle={`from ${dummyAnalysis.highestDonation.donor}`}
+                    subtitle={`from ${topDonors.length > 0 ? topDonors[0].username : ""}`}
                 />
             </div>
 
@@ -188,33 +212,39 @@ export default function AnalysisTabs() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {dummyAnalysis.topDonors.map((donor, index) => (
-                                <div
-                                    key={donor.id}
-                                    className="flex items-center justify-between"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Medal
-                                            className={`h-5 w-5 text-yellow-400`}
-                                        />
-                                        <UserAvatar imageUrl={donor.imageUrl} />
-                                        <div>
-                                            <p className="text-sm font-medium">
-                                                {donor.name}
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {donor.donationCount} donations
-                                            </p>
+                            {topDonors.length > 0 &&
+                                topDonors.map((donor, index) => (
+                                    <div
+                                        key={donor.userId}
+                                        className="flex items-center justify-between"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Medal
+                                                className={`h-5 w-5 text-yellow-400`}
+                                            />
+                                            <UserAvatar
+                                                imageUrl={donor.imageUrl}
+                                            />
+                                            <div>
+                                                <p className="text-sm font-medium">
+                                                    {donor.username
+                                                        ? donor.username
+                                                        : ""}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {donor.donateCount}{" "}
+                                                    donations
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="font-medium">
+                                            {donor.total.toLocaleString(
+                                                "vi-VN",
+                                            )}{" "}
+                                            VNĐ
                                         </div>
                                     </div>
-                                    <div className="font-medium">
-                                        {donor.totalAmount.toLocaleString(
-                                            "vi-VN",
-                                        )}{" "}
-                                        VNĐ
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </CardContent>
                 </Card>
@@ -230,31 +260,35 @@ export default function AnalysisTabs() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {dummyAnalysis.paymentMethodStats.map(
-                                (method, index) => (
-                                    <div key={index} className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-medium">
-                                                    {method.method}
-                                                </span>
-                                            </div>
-                                            <div className="text-sm text-muted-foreground">
-                                                {method.count} donations (
-                                                {method.percentage}%)
-                                            </div>
+                            {paymentMethodStats.map((method, index) => (
+                                <div key={index} className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm font-medium">
+                                                {method.paymentMethod}
+                                            </span>
                                         </div>
-                                        <div className="h-2 w-full rounded-full">
-                                            <div
-                                                className="h-2 rounded-full bg-teal-2"
-                                                style={{
-                                                    width: `${method.percentage}%`,
-                                                }}
-                                            ></div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {method.orderCount} donations (
+                                            {Math.ceil(
+                                                (method.orderCount /
+                                                    currentStats.totalDonations) *
+                                                    100 *
+                                                    100,
+                                            ) / 100}
+                                            %)
                                         </div>
                                     </div>
-                                ),
-                            )}
+                                    <div className="h-2 w-full rounded-full">
+                                        <div
+                                            className="h-2 rounded-full bg-teal-2"
+                                            style={{
+                                                width: `${Math.ceil((method.orderCount / currentStats.totalDonations) * 100 * 100) / 100}%`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </CardContent>
                 </Card>

@@ -36,6 +36,7 @@ export class DonationController implements IDonationController {
             .post("/donate", ...this.createDonationHandler())
             .get("/callback/:paymentMethod", ...this.donationCallbackHandler())
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
+            .get("/stats", ...this.getDonationStatsHandler())
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:cardId", ...this.updateDonateCardHandler())
             .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
@@ -232,6 +233,53 @@ export class DonationController implements IDonationController {
                     status: HttpStatus.OK,
                     msg: "Donate card deleted successfully",
                     data: undefined,
+                });
+            },
+        );
+    }
+
+    private getDonationStatsHandler() {
+        const queries = z.object({
+            streamId: z.string().uuid(),
+            period: z.string(),
+        });
+        return this.factory.createHandlers(
+            zValidator("query", queries, Validator.handleParseError),
+            async (c) => {
+                const { streamId, period } = c.req.valid("query");
+
+                const [ periodStats, previousStats, paymentRank, donorRank ] =
+                    await Promise.all([
+                        this.donationService.getDonationStatsByStreamId(
+                            streamId,
+                            0,
+                            period,
+                        ),
+                        this.donationService.getDonationStatsByStreamId(
+                            streamId,
+                            -1,
+                            period,
+                        ),
+                        this.donationService.getPaymentMethodRankByStreamId(
+                            streamId,
+                            period,
+                        ),
+                        this.donationService.getDonorRankByStreamId(
+                            streamId,
+                            period,
+                        ),
+                    ]);
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: { 
+                        periodStats,
+                        previousStats,
+                        paymentRank,
+                        donorRank
+                    },
+                    status: HttpStatus.OK,
+                    msg: "Donate cards retrieved successfully",
                 });
             },
         );

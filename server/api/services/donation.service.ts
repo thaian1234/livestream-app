@@ -85,4 +85,29 @@ export class DonationService implements IDonationService {
             },
         });
     }
+
+    async getDonationStatsByStreamId(streamId: string, offset = 0, period = "all") {
+        return await this.orderRepository.getDonationStatsByStreamId(
+            streamId,
+            offset,
+            period,
+        );
+    }
+
+    async getPaymentMethodRankByStreamId(
+        streamId: string,
+        period = "all",
+    ) {
+        return await this.orderRepository.getPaymentMethodRankByStreamId(
+            streamId,
+            period,
+        );
+    }
+
+    async getDonorRankByStreamId(streamId: string, period = "all") {
+        return await this.orderRepository.getDonorRankByStreamId(
+            streamId,
+            period,
+        );
+    }
 }

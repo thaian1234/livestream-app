@@ -20,6 +20,11 @@ export class DonateCardService implements IDonateCardService {
             throw new MyError.BadRequestError("Amount must be greater than 0");
         }
 
+        const ownCardNo = await this.donateCardRepository.countActiveCard(streamId) 
+        if (ownCardNo > 4) {
+            throw new MyError.BadRequestError("You've reach the limit number of donate card.")
+        }
+
         return this.donateCardRepository.create({
             ...donationCardData,
             streamId,

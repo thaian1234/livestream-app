@@ -9,6 +9,10 @@ const keys = {
     baseKey: ["donation-card"],
     donation_card: (streamId: string) =>
         ["donation-card", streamId] as string[],
+    donation_stats: (streamId: string, period: string) => [
+        `stats-${streamId}`,
+        period,
+    ],
 };
 
 export const donationApi = {
@@ -20,6 +24,19 @@ export const donationApi = {
                     streamId,
                 },
             });
+        },
+        useGetDonationStats(streamId: string, period: string) {
+            const $get = baseApi.stats.$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.donation_stats(streamId, period),
+                {
+                    query: {
+                        streamId: streamId,
+                        period: period,
+                    },
+                },
+            );
         },
     },
     mutation: {

@@ -113,9 +113,13 @@ export function PackageDialog({
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent className="border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add New Donation Package</DialogTitle>
+                    <DialogTitle>
+                        {defaultValue ? "Update " : "Add New "}
+                        Donation Package
+                    </DialogTitle>
                     <DialogDescription>
-                        Create a new donation option
+                        {defaultValue ? "Update " : "Create a new "}
+                        donation option
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>

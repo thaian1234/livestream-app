@@ -39,6 +39,10 @@ const seeds = async () => {
         await db.delete(tableSchemas.followTable);
         await db.delete(tableSchemas.blockTable);
         await db.delete(tableSchemas.notificationTable);
+        await db.delete(tableSchemas.donateCardTable);
+        await db.delete(tableSchemas.walletTransactionTable);
+        await db.delete(tableSchemas.walletTable);
+        await db.delete(tableSchemas.orderTable);
         await db.delete(tableSchemas.streamTable);
         await db.delete(tableSchemas.settingTable);
         await db.delete(tableSchemas.accountTable);
@@ -243,11 +247,56 @@ const seeds = async () => {
             .values(videosToInsert)
             .returning()
             .onConflictDoNothing();
+
+        const paymentMethods = ["VNPAY", "MOMO", "ZALOPAY"] as const;
+        const statuses = ["COMPLETED", "PENDING", "CANCELLED"] as const;
+        const endDate = new Date();
+        const startDate = new Date(
+            endDate.getFullYear(),
+            endDate.getMonth() - 3 + 1,
+        );
+        const ordersData = [];
+
+        for (let i = 0; i < users.length * 5; i++) {
+            const user = users[Math.floor(Math.random() * users.length)];
+            const stream = streams[Math.floor(Math.random() * streams.length) % 3];
+            const paymentMethod =
+                paymentMethods[
+                    Math.floor(Math.random() * paymentMethods.length)
+                ];
+            const status =
+                statuses[Math.floor(Math.random() * statuses.length)];
+            const totalAmount = Math.floor(Math.random() * 490000) + 10000; // 10,000 đến 500,000 VNĐ
+            const createdAt = randomDate(startDate, endDate);
+
+            ordersData.push({
+                userId: user.id,
+                streamId: stream.id,
+                totalAmount,
+                status: status as "COMPLETED" | "PENDING" | "CANCELLED",
+                message: `Donation ${i + 1}`,
+                paymentMethod,
+                createdAt,
+                updatedAt: createdAt,
+                completedAt:
+                    status === "COMPLETED"
+                        ? randomDate(new Date(createdAt), endDate)
+                        : null,
+            });
+        }
+        await db.insert(tableSchemas.orderTable).values(ordersData);
     } catch (error) {
         console.log(error);
         throw new Error("Failed to seed database");
     }
 };
+
+function randomDate(start: Date, end: Date): string {
+    const date = new Date(
+        start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+    );
+    return date.toISOString();
+}
 
 seeds()
     .then(() => {

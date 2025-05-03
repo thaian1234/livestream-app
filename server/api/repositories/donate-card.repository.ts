@@ -6,6 +6,7 @@ import { Utils } from "../lib/helpers/utils";
 
 import { donateCardTable } from "../../db/schemas/donate-card.table";
 import { DonateCardDTO } from "../dtos/donate-card.dto";
+import tableSchemas from "@/server/db/schemas";
 
 export interface IDonateCardRepository
     extends Utils.AutoMappedClass<DonateCardRepository> {}
@@ -57,5 +58,15 @@ export class DonateCardRepository implements IDonateCardRepository {
             .where(eq(donateCardTable.id, id))
             .returning({ id: donateCardTable.id });
         return result.length > 0;
+    }
+
+    async countActiveCard(streamId: string) {
+        const totalRecords = await this.db.$count(
+            tableSchemas.donateCardTable,
+            and(
+                eq(tableSchemas.donateCardTable.streamId, streamId),
+            ),
+        );
+        return totalRecords;
     }
 }
