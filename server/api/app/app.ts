@@ -42,6 +42,7 @@ import { EmailVerificationService } from "../services/email-verification.service
 import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
+import { OrderService } from "../services/order.service";
 import { MomoProcessor } from "../services/payment/momo-processor";
 import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
 import { VNPayProcessor } from "../services/payment/vnpay-processor";
@@ -72,6 +73,7 @@ import { EventController } from "../controllers/event.controller";
 import { FollowController } from "../controllers/follow.controller";
 import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
+import { OrderController } from "../controllers/order.controller";
 import { SearchController } from "../controllers/search.controller";
 import { SettingController } from "../controllers/setting.controller";
 import { StorageController } from "../controllers/storage.controller";
@@ -90,6 +92,7 @@ import { DonationRoutes } from "../routes/donation.routes";
 import { EventRoutes } from "../routes/event.routes";
 import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
+import { OrderRoutes } from "../routes/order.routes";
 import { SearchRoutes } from "../routes/search.routes";
 import { SettingRoutes } from "../routes/setting.routes";
 import { StorageRoutes } from "../routes/storage.routes";
@@ -185,6 +188,7 @@ export class App {
         const aiServiceBuilder = new AIServiceBuilder();
         const eventService = new EventService(eventRepository, userService);
         const donateCardService = new DonateCardService(donateCardRepository);
+        const orderService = new OrderService(orderRepository);
         const walletService = new WalletService(
             walletRepository,
             walletTransactionRepository,
@@ -214,7 +218,7 @@ export class App {
             userRepository,
             orderRepository,
             notificationService,
-            streamRepository
+            streamRepository,
         );
 
         // Controllers
@@ -312,6 +316,11 @@ export class App {
             factory,
             commentService,
         );
+        const orderController = new OrderController(
+            factory,
+            orderService,
+            streamService,
+        );
         const eventController = new EventController(factory, eventService);
         const donationController = new DonationController(
             factory,
@@ -346,6 +355,7 @@ export class App {
         );
         const commentRoutes = new CommentRoutes(factory, commentController);
         const eventRoutes = new EventRoutes(factory, eventController);
+        const orderRoutes = new OrderRoutes(factory, orderController);
         const donationRoutes = new DonationRoutes(factory, donationController);
 
         return this.app
@@ -366,6 +376,7 @@ export class App {
             .route("/", eventRoutes.setupRoutes())
             .route("/", videolikeRoutes.setupRoutes())
             .route("/", commentRoutes.setupRoutes())
+            .route("/", orderRoutes.setupRoutes())
             .route("/", donationRoutes.setupRoutes());
     }
 }

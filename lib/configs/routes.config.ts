@@ -24,4 +24,5 @@ export const ROUTES = {
     ABOUT_PAGE: (username: string) => `/about/${username}`,
     DASHBOARD_SCHEDULE_PAGE: (username: string) =>
         `/dashboard/${username}/schedule`,
+    DONATION_NOTICE_PAGE: "/donation-notice",
 };

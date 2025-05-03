@@ -21,6 +21,14 @@ export const donationApi = {
                 },
             });
         },
+        useGetOrderInfo(orderId: string) {
+            // const $get = baseApi.order[":orderId"].$get;
+            // return Fetcher.useHonoQuery($get, keys.order_info(orderId), {
+            //     param: {
+            //         orderId,
+            //     },
+            // });
+        },
     },
     mutation: {
         useCreateDonation() {
