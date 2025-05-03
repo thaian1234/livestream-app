@@ -35,4 +35,45 @@ export class OrderService implements IOrderService {
             period,
         );
     }
+
+    public async getTopDonors(streamId: string, period = "all", limit = 5) {
+        return await this.orderRepository.getTopDonorsByStreamId(
+            streamId,
+            period,
+            limit,
+        );
+    }
+
+    public async getPaymentMethodStats(streamId: string, period = "all") {
+        return await this.orderRepository.getPaymentMethodStatsByStreamId(
+            streamId,
+            period,
+        );
+    }
+
+    public async getHighestDonation(streamId: string, period = "all") {
+        return await this.orderRepository.getHighestDonationByStreamId(
+            streamId,
+            period,
+        );
+    }
+
+    public async getPeriodComparison(
+        streamId: string,
+        currentPeriod = "month",
+        previousPeriod = "last_month",
+    ) {
+        return await this.orderRepository.getPeriodComparisonByStreamId(
+            streamId,
+            currentPeriod,
+            previousPeriod,
+        );
+    }
+
+    public async getCompleteDonationAnalysis(streamId: string, period = "all") {
+        return await this.orderRepository.getCompleteDonationAnalysis(
+            streamId,
+            period,
+        );
+    }
 }

@@ -326,6 +326,8 @@ export class App {
             factory,
             donationService,
             donateCardService,
+            orderService,
+            streamService,
         );
 
         // Routes

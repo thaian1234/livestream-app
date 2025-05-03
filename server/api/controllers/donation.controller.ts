@@ -15,6 +15,8 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 
 import { IDonateCardService } from "../services/donate-card.service";
 import { IDonationService } from "../services/donation.service";
+import { IOrderService } from "../services/order.service";
+import { IStreamService } from "../services/stream.service";
 
 import { DonateCardDTO } from "../dtos/donate-card.dto";
 import { DonationDTO } from "../dtos/donation.dto";
@@ -28,6 +30,8 @@ export class DonationController implements IDonationController {
         private readonly factory: CreateFactoryType,
         private readonly donationService: IDonationService,
         private readonly donateCardService: IDonateCardService,
+        private readonly orderService: IOrderService,
+        private readonly streamService: IStreamService,
     ) {}
 
     public setupHandlers() {
@@ -35,11 +39,14 @@ export class DonationController implements IDonationController {
             .createApp()
             .post("/donate", ...this.createDonationHandler())
             .get("/callback/:paymentMethod", ...this.donationCallbackHandler())
+
             .get("/cards/:streamId", ...this.getDonateCardsHandler())
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:cardId", ...this.updateDonateCardHandler())
             .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
-            .post("/ipn/MOMO", ...this.momoIPNHandler());
+            .post("/ipn/MOMO", ...this.momoIPNHandler())
+
+            .get("/analysis", ...this.getCompleteAnalysisHandler());
     }
 
     private createDonationHandler() {
@@ -229,6 +236,33 @@ export class DonationController implements IDonationController {
                     status: HttpStatus.OK,
                     msg: "Donate card deleted successfully",
                     data: undefined,
+                });
+            },
+        );
+    }
+
+    private getCompleteAnalysisHandler() {
+        const querySchema = z.object({
+            period: z.string().optional().default("all"),
+        });
+
+        return this.factory.createHandlers(
+            AuthMiddleware.isAuthenticated,
+            zValidator("query", querySchema, Validator.handleParseError),
+            async (c) => {
+                const { period } = c.req.valid("query");
+                const currentUser = c.get("getUser");
+
+                const analysis =
+                    await this.orderService.getCompleteDonationAnalysis(
+                        currentUser.stream.id,
+                        period,
+                    );
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: analysis,
+                    status: HttpStatus.OK,
                 });
             },
         );

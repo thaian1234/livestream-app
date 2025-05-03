@@ -1,6 +1,5 @@
 import AnalysisTabs from "@/lib/features/donation/components/analysis-tabs";
 import { CurrentPackages } from "@/lib/features/donation/components/current-packages";
-import { Payment } from "@/lib/features/donation/components/payment";
 
 export default function DonationPage() {
     return (

@@ -9,6 +9,8 @@ const keys = {
     baseKey: ["donation-card"],
     donation_card: (streamId: string) =>
         ["donation-card", streamId] as string[],
+    donation_analysis: (period: string) =>
+        ["donation-analysis", period] as string[],
 };
 
 export const donationApi = {
@@ -21,13 +23,13 @@ export const donationApi = {
                 },
             });
         },
-        useGetOrderInfo(orderId: string) {
-            // const $get = baseApi.order[":orderId"].$get;
-            // return Fetcher.useHonoQuery($get, keys.order_info(orderId), {
-            //     param: {
-            //         orderId,
-            //     },
-            // });
+        useGetDonationAnalysis(period: string) {
+            const $get = baseApi.analysis.$get;
+            return Fetcher.useHonoQuery($get, keys.donation_analysis(period), {
+                query: {
+                    period,
+                },
+            });
         },
     },
     mutation: {

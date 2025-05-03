@@ -13,9 +13,6 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IOrderService } from "../services/order.service";
 import { IStreamService } from "../services/stream.service";
 
-import { INotificationService } from "../external-services/notification.service";
-
-import { OrderDTO } from "../dtos/order.dto";
 import { QueryDTO } from "../dtos/query.dto";
 
 export interface IOrderController

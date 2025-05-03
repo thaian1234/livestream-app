@@ -17,12 +17,29 @@ export interface IPaymentMethodStats {
 }
 export interface IDonationAnalysis {
     totalDonations: number;
-    lastTotalDonations?: number;
+    totalAmount: number;
+    lastTotalAmount?: number;
     totalDonors: number;
     lastTotalDonors?: number;
     averageDonation: number;
     lastAverageDonation?: number;
-    highestDonation: IHighestDonation;
-    topDonors: ITopDonors[];
-    paymentMethodStats: IPaymentMethodStats[];
+
+    highestDonation: {
+        amount: number;
+        donor: string;
+        date: string;
+    };
+    topDonors: Array<{
+        id: string;
+        name: string;
+        totalAmount: number;
+        donationCount: number;
+        imageUrl?: string;
+    }>;
+    paymentMethodStats: Array<{
+        method: string;
+        count: number;
+        percentage: number;
+    }>;
+    period: string;
 }
