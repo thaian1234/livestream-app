@@ -78,7 +78,7 @@ export class DonationController implements IDonationController {
         return this.factory.createHandlers(
             zValidator("param", params, Validator.handleParseError),
             async (c) => {
-                const query = c.req.query() as ReturnQueryFromVNPay;
+                const query = c.req.query();
                 const { paymentMethod } = c.req.valid("param");
 
                 const result =
@@ -89,11 +89,11 @@ export class DonationController implements IDonationController {
 
                 if (result.success) {
                     return c.redirect(
-                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/success?orderId=${result.orderId}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=true&&orderId=${result.orderId}`,
                     );
                 } else {
                     return c.redirect(
-                        `${envClient.NEXT_PUBLIC_APP_URL}/donation/failed?orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=false&&orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
                     );
                 }
             },
@@ -101,19 +101,16 @@ export class DonationController implements IDonationController {
     }
 
     private momoIPNHandler() {
-        return this.factory.createHandlers(
-            async (c) => {
-                const query = await c.req.json();
+        return this.factory.createHandlers(async (c) => {
+            const query = await c.req.json();
 
-                const result =
-                    await this.donationService.handleDonationCallback(
-                        "MOMO",
-                        query,
-                    );
+            const result = await this.donationService.handleDonationCallback(
+                "MOMO",
+                query,
+            );
 
-                return c.body(null, HttpStatus.NoContent);
-            },
-        );
+            return c.body(null, HttpStatus.NoContent);
+        });
     }
 
     private getDonateCardsHandler() {
