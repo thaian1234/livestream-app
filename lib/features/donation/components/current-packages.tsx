@@ -1,11 +1,8 @@
 "use client";
 
-import { CreditCard, Pencil, Plus, Trash } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { Pencil, Plus, Trash } from "lucide-react";
 
 import { useUser } from "@/lib/hooks/use-user";
-import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,19 +13,20 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 import { donationApi } from "../apis";
-import { IPackage } from "../types/package";
 import { DeletePackageDialog } from "./delete-package-dialog";
 import { PackageDialog } from "./package-dialog";
 
 export function CurrentPackages() {
-    const [packageAmount, setPackageAmount] = useState(4); // Example state to track the number of packages
     const { user } = useUser();
     const { data, error, isPending } = donationApi.query.useGetDonationCard(
         user.stream.id,
     );
+    if (data === undefined || isPending) return <Spinner size={"small"} />;
 
+    const packageAmount = data?.data.donateCards.length || 0;
     const packages = data?.data.donateCards;
     return (
         <div className="space-y-4">
