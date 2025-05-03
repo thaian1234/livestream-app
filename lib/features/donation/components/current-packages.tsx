@@ -23,7 +23,7 @@ import { DeletePackageDialog } from "./delete-package-dialog";
 import { PackageDialog } from "./package-dialog";
 
 export function CurrentPackages() {
-    const [packageAmount, setPackageAmount] = useState(3); // Example state to track the number of packages
+    const [packageAmount, setPackageAmount] = useState(4); // Example state to track the number of packages
     const { user } = useUser();
     const { data, error, isPending } = donationApi.query.useGetDonationCard(
         user.stream.id,

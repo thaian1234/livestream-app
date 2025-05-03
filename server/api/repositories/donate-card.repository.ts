@@ -1,6 +1,7 @@
 import { SQL, and, desc, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
+import tableSchemas from "@/server/db/schemas";
 
 import { Utils } from "../lib/helpers/utils";
 
@@ -57,5 +58,13 @@ export class DonateCardRepository implements IDonateCardRepository {
             .where(eq(donateCardTable.id, id))
             .returning({ id: donateCardTable.id });
         return result.length > 0;
+    }
+
+    async countActiveCard(streamId: string) {
+        const totalRecords = await this.db.$count(
+            tableSchemas.donateCardTable,
+            and(eq(tableSchemas.donateCardTable.streamId, streamId)),
+        );
+        return totalRecords;
     }
 }

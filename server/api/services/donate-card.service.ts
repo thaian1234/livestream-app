@@ -15,6 +15,13 @@ export class DonateCardService implements IDonateCardService {
         streamId: string,
         donationCardData: DonateCardDTO.Insert,
     ) {
+        const ownCardNo =
+            await this.donateCardRepository.countActiveCard(streamId);
+        if (ownCardNo > 4) {
+            throw new MyError.BadRequestError(
+                "You've reach the limit number of donate card.",
+            );
+        }
         // Validate amount
         if (donationCardData.amount <= 0) {
             throw new MyError.BadRequestError("Amount must be greater than 0");
