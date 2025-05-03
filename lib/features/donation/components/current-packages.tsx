@@ -30,14 +30,13 @@ export function CurrentPackages() {
     );
 
     const packages = data?.data.donateCards;
-    console.log("package >>>>>>>>>", packages);
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">
                     Current Donation Packages{" "}
                     <span className="text-sm font-medium text-muted-foreground">
-                        (Maximum 6 packages allowed)
+                        (Maximum 4 packages allowed)
                     </span>
                 </h2>
                 <PackageDialog>
@@ -45,7 +44,7 @@ export function CurrentPackages() {
                         variant="outline"
                         size="icon"
                         className="hover:bg-white/10"
-                        disabled={packageAmount >= 6}
+                        disabled={packageAmount >= 4}
                     >
                         <Plus className="h-5 w-5" />
                     </Button>

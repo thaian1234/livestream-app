@@ -76,9 +76,7 @@ export function PackageDialog({
     }, [open, reset]);
 
     const onSubmit = handleSubmit((data) => {
-        console.log("Form data:", data);
         if (defaultValue) {
-            console.log(defaultValue);
             updateDonationCard(
                 {
                     param: { cardId: defaultValue?.id },
@@ -109,7 +107,6 @@ export function PackageDialog({
     });
 
     const selectedType = watch("amount");
-    console.log(selectedType);
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>{children}</DialogTrigger>
