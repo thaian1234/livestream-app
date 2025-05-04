@@ -86,7 +86,7 @@ export class MomoService implements IMomoService {
             transactionId: body.transId || "",
         };
 
-        if (body.resultCode === 0 && signature === body.signature) {
+        if (body.resultCode === '0' && signature === body.signature) {
             response.isSuccess = true;
         }
 
