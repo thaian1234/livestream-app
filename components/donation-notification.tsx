@@ -16,7 +16,6 @@ export default function DonationNotification({
     donorName,
     amount,
 }: DonationNotificationProps) {
-    console.log("Received notifcation top");
     return (
         // To make the notification fixed, add classes like `fixed bottom-4 right-4` to the container element.
         <div className="shadow-black/5 z-[100] rounded-lg border border-border bg-white p-3 text-black-1 shadow-lg">
