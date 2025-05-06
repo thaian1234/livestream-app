@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 import { ChatInfo } from "./chat-info";
+import { DonateDialog } from "./donate-dialog";
 
 interface CustomMessageInputProps {
     isChatDelayed?: boolean;
@@ -73,9 +74,11 @@ export const CustomMessageInput = ({
                     maxLength={50}
                 />
                 <div className="flex items-center justify-between">
-                    <Button variant="ghost" className="p-2">
-                        <Gift className="h-6 w-6" />
-                    </Button>
+                    <DonateDialog>
+                        <Button variant="ghost" className="p-2">
+                            <Gift className="h-6 w-6" />
+                        </Button>
+                    </DonateDialog>
                     <div className="flex items-center">
                         <EmojiPicker
                             buttonClassName="h-10 w-10 p-2   rounded-md fill-white hover:bg-accent hover:fill-teal-2 disabled:opacity-50e"
