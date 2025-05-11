@@ -1,12 +1,13 @@
 "use client";
 
-import useInitializeChatClient from "../features/stream/hooks/useInitializeChatClient";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
 import { Channel, Chat } from "stream-chat-react";
 import { EmojiPicker } from "stream-chat-react/emojis";
 
 import { Skeleton } from "@/components/ui/skeleton";
+
+import useInitializeChatClient from "../features/stream/hooks/useInitializeChatClient";
 
 const customReactionOptions = [
     {
@@ -32,14 +33,15 @@ export function ChatProvider({
     streamId,
     children,
     streamerId,
-    viewerId
+    viewerId,
 }: ChatProviderProps) {
     const { chatClient, chatChannel } = useInitializeChatClient(
         streamId,
         streamerId,
-        viewerId
+        viewerId,
     );
-    if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
+    if (!chatClient || !chatChannel)
+        return <Skeleton className="h-[calc(100vh-7rem)]" />;
 
     return (
         <Chat client={chatClient}>

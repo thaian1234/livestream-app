@@ -70,7 +70,7 @@ export function ChatMessage() {
             onMouseLeave={() => setIsHovered(false)}
         >
             <div>
-                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2 py-2">
+                <div className="grid w-full grid-cols-[auto_1fr] space-x-2 py-2">
                     <Avatar className="h-7 w-7">
                         <AvatarImage
                             src={message.user?.image}
@@ -82,7 +82,10 @@ export function ChatMessage() {
                         <div className="text-sm text-teal-2">
                             {isMyMessage() ? "You" : message.user?.name}
                         </div>
-                        <p className="break-word whitespace-pre-wrap text-sm font-light tracking-wide">
+                        <p
+                            style={{ overflowWrap: "anywhere" }}
+                            className="whitespace-pre-wrap break-words text-sm font-light tracking-wide"
+                        >
                             {message.text}
                         </p>
                     </div>
