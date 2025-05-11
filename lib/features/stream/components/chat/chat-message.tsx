@@ -45,7 +45,7 @@ const CustomReactionSelector = () => {
     const { reactionOptions } = useComponentContext();
     if (threadList) return null;
     return (
-        <div className="absolute right-0 top-1 z-10 flex flex-row space-x-2 rounded-md bg-white/30 p-1 shadow-md">
+        <div className="absolute right-0 top-1 z-10 flex flex-row space-x-1 rounded-md bg-white/30 shadow-md">
             {reactionOptions?.map(({ Component, name, type }) => (
                 <button
                     key={type}
@@ -65,12 +65,12 @@ export function ChatMessage() {
 
     return (
         <div
-            className="relative w-full flex-row"
+            className="relative w-full"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div>
-                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2 py-2 pr-16">
+                <div className="grid w-full grid-cols-[auto_1fr] items-center space-x-2 py-2">
                     <Avatar className="h-7 w-7">
                         <AvatarImage
                             src={message.user?.image}
@@ -78,11 +78,11 @@ export function ChatMessage() {
                         />
                         <AvatarFallback />
                     </Avatar>
-                    <div className="flex min-w-0 items-center space-x-2">
+                    <div className="flex min-w-0 flex-col">
                         <div className="text-sm text-teal-2">
                             {isMyMessage() ? "You" : message.user?.name}
                         </div>
-                        <p className="line-clamp-2 whitespace-pre-wrap break-words text-sm">
+                        <p className="break-word whitespace-pre-wrap text-sm font-light tracking-wide">
                             {message.text}
                         </p>
                     </div>

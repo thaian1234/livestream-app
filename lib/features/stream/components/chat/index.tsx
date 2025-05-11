@@ -53,7 +53,7 @@ export function Chat({
 
     return (
         <div className="flex w-full flex-col rounded-xl border border-gray-700 bg-transparent text-white">
-            <CustomChannelHeader isHost={isHost} streamerId={streamerId}/>
+            <CustomChannelHeader isHost={isHost} streamerId={streamerId} />
             {isOpenPrivateChat ? (
                 isHost ? (
                     <PrivateChat streamerId={streamerId} />
