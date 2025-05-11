@@ -34,6 +34,9 @@ export class StreamRepository implements IStreamRepository {
     async findById(id: string) {
         return this.db.query.streamTable.findFirst({
             where: eq(tableSchemas.streamTable.id, id),
+            with: {
+                user: true,
+            },
         });
     }
     async advancedSearchStream(query: QueryDTO.AdvancedWithCategory) {

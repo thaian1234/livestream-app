@@ -9,6 +9,8 @@ const keys = {
     baseKey: ["donation-card"],
     donation_card: (streamId: string) =>
         ["donation-card", streamId] as string[],
+    donation_card_streamer: (streamerId: string) =>
+        ["donation-card-streamer", streamerId] as string[],
     donation_analysis: (period: string) =>
         ["donation-analysis", period] as string[],
 };
@@ -22,6 +24,18 @@ export const donationApi = {
                     streamId,
                 },
             });
+        },
+        useGetDonationCardByStreamer(streamerId: string) {
+            const $get = baseApi["cards-streamer"][":streamerId"].$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.donation_card_streamer(streamerId),
+                {
+                    param: {
+                        streamerId,
+                    },
+                },
+            );
         },
         useGetDonationAnalysis(period: string) {
             const $get = baseApi.analysis.$get;

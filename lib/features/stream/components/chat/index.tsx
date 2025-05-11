@@ -93,6 +93,7 @@ export function Chat({
                                 }
                                 isHost={isHost}
                                 isFollowing={isFollowing}
+                                streamerId={streamerId}
                             />
                         )}
                     />

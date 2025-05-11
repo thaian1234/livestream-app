@@ -44,7 +44,13 @@ export class DonationController implements IDonationController {
             .post("/cards", ...this.createDonateCardHandler())
             .patch("/cards/:cardId", ...this.updateDonateCardHandler())
             .delete("/cards/:cardId", ...this.deleteDonateCardHandler())
+
             .post("/ipn/MOMO", ...this.momoIPNHandler())
+
+            .get(
+                "/cards-streamer/:streamerId",
+                ...this.getDonationCardByStreamerIdHandler(),
+            )
 
             .get("/analysis", ...this.getCompleteAnalysisHandler());
     }
@@ -62,10 +68,20 @@ export class DonationController implements IDonationController {
                     c.req.header("x-real-ip") ||
                     "127.0.0.1";
 
+                const stream = await this.streamService.getStreamByUserId(
+                    body.streamerId || "",
+                );
+
+                if (!stream) {
+                    throw new MyError.NotFoundError("Stream not found");
+                }
+
                 const result = await this.donationService.createDonation({
+                    ...body,
                     donorId: currentUser.id,
                     ipAddress,
-                    ...body,
+                    streamId: stream.id,
+                    streamerId: stream.userId,
                 });
 
                 return ApiResponse.WriteJSON({
@@ -131,6 +147,36 @@ export class DonationController implements IDonationController {
                 const donateCards =
                     await this.donateCardService.getDonateCardsByStreamId(
                         streamId,
+                    );
+
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: { donateCards },
+                    status: HttpStatus.OK,
+                    msg: "Donate cards retrieved successfully",
+                });
+            },
+        );
+    }
+
+    private getDonationCardByStreamerIdHandler() {
+        const params = z.object({
+            streamerId: z.string().uuid(),
+        });
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            async (c) => {
+                const { streamerId } = c.req.valid("param");
+                const stream =
+                    await this.streamService.getStreamByUserId(streamerId);
+
+                if (!stream) {
+                    throw new MyError.NotFoundError("Stream not found");
+                }
+
+                const donateCards =
+                    await this.donateCardService.getDonateCardsByStreamId(
+                        stream.id,
                     );
 
                 return ApiResponse.WriteJSON({

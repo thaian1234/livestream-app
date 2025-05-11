@@ -1,13 +1,14 @@
 import { Gift, SendHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useMessageInputContext } from "stream-chat-react";
-import { EmojiPicker, EmojiPickerIcon } from "stream-chat-react/emojis";
+import { EmojiPicker } from "stream-chat-react/emojis";
+
+import { DonateDialog } from "@/lib/features/donation/components/donate-dialog";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 import { ChatInfo } from "./chat-info";
-import { DonateDialog } from "./donate-dialog";
 
 interface CustomMessageInputProps {
     isChatDelayed?: boolean;
@@ -15,6 +16,7 @@ interface CustomMessageInputProps {
     isChatFollowersOnly?: boolean;
     isFollowing?: boolean;
     isHost?: boolean;
+    streamerId?: string;
 }
 
 export const CustomMessageInput = ({
@@ -22,8 +24,8 @@ export const CustomMessageInput = ({
     isChatEnabled = true,
     isChatFollowersOnly = false,
     isFollowing = false,
-
     isHost = false,
+    streamerId,
 }: CustomMessageInputProps) => {
     const { text, handleChange, handleSubmit } = useMessageInputContext();
     const [isDelayBlock, setIsDelayBlock] = useState(false);
@@ -74,7 +76,7 @@ export const CustomMessageInput = ({
                     maxLength={50}
                 />
                 <div className="flex items-center justify-between">
-                    <DonateDialog>
+                    <DonateDialog streamerId={streamerId}>
                         <Button variant="ghost" className="p-2">
                             <Gift className="h-6 w-6" />
                         </Button>
