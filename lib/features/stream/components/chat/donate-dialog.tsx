@@ -149,7 +149,7 @@ export function DonateDialog({ children }: DonateDialogProps) {
                                     onChange={(e) =>
                                         setCustomAmount(e.target.value)
                                     }
-                                    className="border-gray-700 bg-gray-800 text-white"
+                                    className="border-gray-700 bg-gray-800 text-white focus-visible:ring-0"
                                 />
                             </div>
                         </TabsContent>
@@ -164,7 +164,7 @@ export function DonateDialog({ children }: DonateDialogProps) {
                         placeholder="Add a message with your donation"
                         value={customMessage}
                         onChange={(e) => setCustomMessage(e.target.value)}
-                        className="min-h-0 border-gray-700 bg-gray-800 text-white"
+                        className="min-h-0 border-gray-700 bg-gray-800 text-white focus-visible:ring-0"
                         rows={2}
                     />
                 </div>
