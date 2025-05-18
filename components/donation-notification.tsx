@@ -38,8 +38,8 @@ export default function DonationNotification({
                             </span>{" "}
                             just donated to you!
                         </p>
-                        <p className="text-xs font-medium">
-                            {amount?.toLocaleString("vi-VN")} đ
+                        <p className="text-xs font-medium text-green-500">
+                            +{amount?.toLocaleString("vi-VN")} đ
                         </p>
                     </div>
                 </div>

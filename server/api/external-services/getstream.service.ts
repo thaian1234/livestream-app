@@ -130,4 +130,16 @@ export class GetStreamService implements IGetStreamService {
         const isValid = this.streamClient.verifyWebhook(body, signature);
         return isValid;
     }
+
+    public async sendSystemMessageToChannel(channelId: string, text: string) {
+        const channel = this.streamChatClient.channel("livestream", channelId);
+        const message = {
+            text,
+            type: "system",
+            user: {
+                id: "systemUser",
+            },
+        };
+        await channel.sendMessage(message);
+    }
 }

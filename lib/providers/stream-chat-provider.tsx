@@ -1,12 +1,14 @@
 "use client";
 
-import useInitializeChatClient from "../features/stream/hooks/useInitializeChatClient";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
 import { Channel, Chat } from "stream-chat-react";
 import { EmojiPicker } from "stream-chat-react/emojis";
 
 import { Skeleton } from "@/components/ui/skeleton";
+
+import { CustomSystemMessage } from "../features/stream/components/chat/custom-system-message";
+import useInitializeChatClient from "../features/stream/hooks/useInitializeChatClient";
 
 const customReactionOptions = [
     {
@@ -47,6 +49,7 @@ export function ChatProvider({
                 reactionOptions={customReactionOptions}
                 EmojiPicker={EmojiPicker}
                 channel={chatChannel}
+                MessageSystem={CustomSystemMessage}
             >
                 {children}
             </Channel>
