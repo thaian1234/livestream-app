@@ -219,6 +219,7 @@ export class App {
             orderRepository,
             notificationService,
             streamRepository,
+            getstreamService
         );
 
         // Controllers
