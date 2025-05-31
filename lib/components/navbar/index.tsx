@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SearchBar } from "@/lib/features/search/components/search-bar";
 
 import { Actions } from "./actions";
+import { WalletButton } from "./wallet-button";
 
 export function Navbar() {
     return (
@@ -20,6 +21,7 @@ export function Navbar() {
             </div>
             <div className="flex items-center justify-around space-x-8">
                 <SearchBar />
+                <WalletButton />
                 <Actions />
             </div>
         </nav>
