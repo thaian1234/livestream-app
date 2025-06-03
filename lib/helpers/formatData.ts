@@ -83,3 +83,10 @@ export const formatNumber = (num?: number | null) => {
     if (num < 1_000_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
     return `${(num / 1_000_000_000).toFixed(1)}B`;
 };
+
+export function randomDate(start: Date, end: Date): string {
+    const date = new Date(
+        start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+    );
+    return date.toISOString();
+}

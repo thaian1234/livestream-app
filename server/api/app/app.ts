@@ -17,48 +17,63 @@ import { AccountRepository } from "../repositories/account.repository";
 import { BlockRepository } from "../repositories/block.repository";
 import { CategoryRepository } from "../repositories/category.repository";
 import { CommentRepository } from "../repositories/comment.repository";
+import { DonateCardRepository } from "../repositories/donate-card.repository";
 import { EmailVerificationRepository } from "../repositories/email-verification.repository";
 import { EventRepository } from "../repositories/event.repository";
 import { FollowRepository } from "../repositories/follow.repository";
 import { ForgetPasswordRepository } from "../repositories/forget-password.repository";
+import { OrderRepository } from "../repositories/order.repository";
 import { SettingRepository } from "../repositories/setting.repository";
 import { StorageRepository } from "../repositories/storage.repository";
 import { StreamRepository } from "../repositories/stream.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { VideoLikeRepository } from "../repositories/video-like.repository";
 import { VideoRepository } from "../repositories/video.repository";
+import { WalletTransactionRepository } from "../repositories/wallet-transaction.repository";
+import { WalletRepository } from "../repositories/wallet.repository";
 
 import { AuthService } from "../services/auth.service";
 import { BlockService } from "../services/block.service";
 import { CategoryService } from "../services/category.service";
 import { CommentService } from "../services/comment.service";
+import { DonateCardService } from "../services/donate-card.service";
+import { DonationService } from "../services/donation.service";
 import { EmailVerificationService } from "../services/email-verification.service";
 import { EventService } from "../services/event.service";
 import { FollowService } from "../services/follow.service";
 import { ForgetPasswordService } from "../services/forget-password.service";
+import { OrderService } from "../services/order.service";
+import { MomoProcessor } from "../services/payment/momo-processor";
+import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
+import { VNPayProcessor } from "../services/payment/vnpay-processor";
 import { SettingService } from "../services/setting.service";
 import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
 import { UserService } from "../services/user.service";
 import { VideoLikeService } from "../services/video-like.service";
 import { VideoService } from "../services/video.service";
+import { WalletService } from "../services/wallet.service";
 
 import { AIServiceBuilder } from "../external-services/ai.service";
 import { GetStreamService } from "../external-services/getstream.service";
 import { GitHubService } from "../external-services/github.service";
 import { GoogleService } from "../external-services/google.service";
+import { MomoService } from "../external-services/momo.service";
 import { NodemailService } from "../external-services/nodemail.service";
 import { NotificationService } from "../external-services/notification.service";
 import { R2BucketService } from "../external-services/r2-bucket.service";
+import { VNPayService } from "../external-services/vnpay.service";
 
 import { AuthController } from "../controllers/auth.controller";
 import { BlockController } from "../controllers/block.controller";
 import { CategoryController } from "../controllers/category.controller";
 import { CommentController } from "../controllers/comment.controller";
+import { DonationController } from "../controllers/donation.controller";
 import { EventController } from "../controllers/event.controller";
 import { FollowController } from "../controllers/follow.controller";
 import { NotificationController } from "../controllers/notification.controller";
 import { OauthController } from "../controllers/oauth.controller";
+import { OrderController } from "../controllers/order.controller";
 import { SearchController } from "../controllers/search.controller";
 import { SettingController } from "../controllers/setting.controller";
 import { StorageController } from "../controllers/storage.controller";
@@ -73,9 +88,11 @@ import { AuthRoutes } from "../routes/auth.routes";
 import { BlockRoutes } from "../routes/block.routes";
 import { CategoryRoutes } from "../routes/category.routes";
 import { CommentRoutes } from "../routes/comment.routes";
+import { DonationRoutes } from "../routes/donation.routes";
 import { EventRoutes } from "../routes/event.routes";
 import { FollowRoutes } from "../routes/follow.routes";
 import { NotificationRoutes } from "../routes/notification.routes";
+import { OrderRoutes } from "../routes/order.routes";
 import { SearchRoutes } from "../routes/search.routes";
 import { SettingRoutes } from "../routes/setting.routes";
 import { StorageRoutes } from "../routes/storage.routes";
@@ -129,6 +146,10 @@ export class App {
         const videolikeRepository = new VideoLikeRepository();
         const commentRepository = new CommentRepository();
         const eventRepository = new EventRepository();
+        const donateCardRepository = new DonateCardRepository();
+        const orderRepository = new OrderRepository();
+        const walletRepository = new WalletRepository();
+        const walletTransactionRepository = new WalletTransactionRepository();
 
         // Services
         const userService = new UserService(userRepository);
@@ -166,6 +187,40 @@ export class App {
         const commentService = new CommentService(commentRepository);
         const aiServiceBuilder = new AIServiceBuilder();
         const eventService = new EventService(eventRepository, userService);
+        const donateCardService = new DonateCardService(donateCardRepository);
+        const orderService = new OrderService(orderRepository);
+        const walletService = new WalletService(
+            walletRepository,
+            walletTransactionRepository,
+        );
+        const vnpayService = new VNPayService();
+        const vnpayProcessor = new VNPayProcessor(
+            vnpayService,
+            userRepository,
+            orderRepository,
+            walletService,
+            streamRepository,
+        );
+        const momoService = new MomoService();
+        const momoProcessor = new MomoProcessor(
+            momoService,
+            userRepository,
+            orderRepository,
+            walletService,
+            streamRepository,
+        );
+        const paymentProcessorFactory = new PaymentProcessorFactory(
+            vnpayProcessor,
+            momoProcessor,
+        );
+        const donationService = new DonationService(
+            paymentProcessorFactory,
+            userRepository,
+            orderRepository,
+            notificationService,
+            streamRepository,
+            getstreamService
+        );
 
         // Controllers
         const userController = new UserController(
@@ -242,7 +297,7 @@ export class App {
             aiServiceBuilder,
             categoryService,
             followService,
-            r2BucketService
+            r2BucketService,
         );
         const webhookController = new WebhookController(
             factory,
@@ -262,7 +317,19 @@ export class App {
             factory,
             commentService,
         );
+        const orderController = new OrderController(
+            factory,
+            orderService,
+            streamService,
+        );
         const eventController = new EventController(factory, eventService);
+        const donationController = new DonationController(
+            factory,
+            donationService,
+            donateCardService,
+            orderService,
+            streamService,
+        );
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -291,6 +358,8 @@ export class App {
         );
         const commentRoutes = new CommentRoutes(factory, commentController);
         const eventRoutes = new EventRoutes(factory, eventController);
+        const orderRoutes = new OrderRoutes(factory, orderController);
+        const donationRoutes = new DonationRoutes(factory, donationController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -309,6 +378,8 @@ export class App {
             .route("/", storageRoutes.setupRoutes())
             .route("/", eventRoutes.setupRoutes())
             .route("/", videolikeRoutes.setupRoutes())
-            .route("/", commentRoutes.setupRoutes());
+            .route("/", commentRoutes.setupRoutes())
+            .route("/", orderRoutes.setupRoutes())
+            .route("/", donationRoutes.setupRoutes());
     }
 }

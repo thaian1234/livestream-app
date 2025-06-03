@@ -8,13 +8,18 @@ export class NotificationDTO {
         foreign_id: z.string(),
         id: z.string(),
         object: z.string(),
-        origin: z.any(),
+        origin: z.any().optional(),
         target: z.string(),
         time: z.string(),
         type: z.string(),
         verb: z.string(),
         streamTitle: z.string().optional(),
+        title: z.string().optional(),
+        amount: z.number().optional(),
+        message: z.string().optional().nullable(),
+        orderId: z.string().optional(),
     });
+
     static resultSchema = z.object({
         activities: z.array(this.activitySchema),
         activity_count: z.number(),
