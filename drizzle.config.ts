@@ -17,7 +17,7 @@ export default defineConfig({
         port: 5432,
         host: process.env.DB_HOST || "localhost",
         url: process.env.DB_URL || "",
-        ssl: false,
+        ssl: { rejectUnauthorized: false },
     },
     casing: "snake_case",
 });
