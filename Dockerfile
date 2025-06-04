@@ -26,7 +26,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Create .env from .env.example for build
-RUN cp .env.example .env
+RUN cp .env.production .env
 
 # Set environment variables for build
 ENV NODE_ENV=production
