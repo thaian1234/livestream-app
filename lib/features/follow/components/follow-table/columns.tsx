@@ -20,16 +20,13 @@ export type Follow = {
     createdAt: string;
 };
 
-const handleNavigate = (id: string) => {
-    console.log("Navigate to user profile: " + id);
-};
-export const columns = (isFollowerState: boolean): ColumnDef<Follow>[] => [
+export const columns = (isFollowerState: boolean, handleNavigate: (username: string) => void): ColumnDef<Follow>[] => [
     {
         id: "avatar",
         cell: ({ row }) => {
             const follow = row.original;
             return (
-                <button onClick={() => handleNavigate(follow.id)}>
+                <button onClick={() => handleNavigate(follow.username)}>
                     <UserAvatar imageUrl={follow?.imageUrl} />
                 </button>
             );
