@@ -37,7 +37,6 @@ export const envServer = createEnv({
         MOMO_ORDER_GROUP_ID: z.string().min(0),
         MOMO_AUTO_CAPTURE: z.string().min(1),
         MOMO_LANG: z.string().min(1),
-        
     },
     shared: {
         NODE_ENV: z
@@ -82,5 +81,7 @@ export const envServer = createEnv({
         MOMO_LANG: process.env.MOMO_LANG,
     },
     skipValidation:
-        !!process.env.CI || process.env.npm_lifecycle_event === "lint",
+        !!process.env.CI ||
+        process.env.npm_lifecycle_event === "lint" ||
+        process.env.NODE_ENV === "production",
 });
