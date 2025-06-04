@@ -53,15 +53,34 @@ export class UserController {
                 const jsonData = c.req.valid("json");
                 const currentUser = c.get("getUser");
 
-                const updatedUser = await this.userService.updateUser(
+                const updatedUserPromise = this.userService.updateUser(
                     currentUser.id,
                     jsonData,
                 );
+                const updatedStreamPromise = this.streamService.updateStream(
+                    currentUser.stream.id,
+                    {
+                        name: `${jsonData.username}'s stream`,
+                    },
+                );
+
+                const [updatedUser, updatedStream] = await Promise.all([
+                    updatedUserPromise,
+                    updatedStreamPromise,
+                ]);
+
                 if (!updatedUser) {
                     throw new MyError.UnauthorizedError(
                         "Username already exist",
                     );
                 }
+
+                if (!updatedStream) {
+                    throw new MyError.InternalServerError(
+                        "Fail to update stream title"
+                    )
+                }
+                
                 return ApiResponse.WriteJSON({
                     c,
                     data: respSchema.parse(updatedUser),
