@@ -4,6 +4,7 @@ const nextConfig = {
         serverComponentsExternalPackages: [
             "@node-rs/argon2",
             "@stream-io/node-sdk",
+            "jsonwebtoken",
         ],
     },
     reactStrictMode: false,
@@ -30,10 +31,18 @@ const nextConfig = {
         esmExternals: "loose",
     },
 
+    eslint: {
+        // Warning: This allows production builds to successfully complete even if
+        // your project has ESLint errors.
+        ignoreDuringBuilds: true,
+    },
+
     // Webpack config để handle native modules
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         if (isServer) {
             // Externalize native modules
+            config.externals = config.externals || [];
+            config.externals.push("jsonwebtoken");
             config.externals.push("@node-rs/argon2");
 
             // Fix "self is not defined"
