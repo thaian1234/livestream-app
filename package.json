@@ -15,7 +15,9 @@
         "db:drop": "drizzle-kit drop",
         "db:introspect": "drizzle-kit introspect",
         "db:seed": "bun ./server/db/scripts/seed.ts",
-        "db:reset": "bun ./server/db/scripts/reset.ts"
+        "db:reset": "bun ./server/db/scripts/reset.ts",
+        "docker:build": "docker build -t livestream-app .",
+        "docker:run": "docker run -p 3000:3000 livestream-app"
     },
     "dependencies": {
         "@ai-sdk/google": "^1.1.17",
