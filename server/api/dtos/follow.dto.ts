@@ -14,9 +14,13 @@ export class FollowDTO {
         followedId: true,
         followerId: true,
     });
-    public static selectUserOnlySchema = UserDTO.selectSchema.extend({
-        createdAt: z.date(),
-    });
+    public static selectUserOnlySchema = UserDTO.selectSchema
+        .extend({
+            createdAt: z.date(),
+        })
+        .omit({
+            bio: true,
+        });
     public static parseUserOnlyMany(data: unknown) {
         try {
             return this.selectUserOnlySchema.array().parse(data);
