@@ -20,5 +20,7 @@ export const envClient = createEnv({
         NEXT_PUBLIC_GETSTREAM_APP_ID: process.env.NEXT_PUBLIC_GETSTREAM_APP_ID,
     },
     skipValidation:
-        !!process.env.CI || process.env.npm_lifecycle_event === "lint",
+        !!process.env.CI ||
+        process.env.npm_lifecycle_event === "lint" ||
+        process.env.NODE_ENV === "production",
 });
