@@ -40,7 +40,7 @@ RUN bun run build
 
 # Clean up build artifacts
 RUN rm -f .env
-RUN rm -rf .env.example
+RUN rm -rf .env.production
 
 # Production image, copy all the files and run next
 FROM base AS runner
