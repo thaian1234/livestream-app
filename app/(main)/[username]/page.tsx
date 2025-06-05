@@ -26,7 +26,7 @@ export default function StreamPage() {
     const params = useParams<ParamsType>();
     const currentUser = useUser();
     const { data, isPending, isError } =
-        streamApi.query.useGetStreamInformation(params.username);
+        streamApi.query.useGetStreamInformation(params?.username || "");
     const { isOpenChatComponent, isOpenPrivateChat } = useLiveInfor();
     const desktopScreen = useMediaQuery("(min-width: 1280px)");
 

@@ -10,44 +10,19 @@ import { VideoThumbnail } from "@/components/thumbnail";
 import { videoApi } from "../apis";
 import { PreviewVideoListSkeleton } from "./preview-video-list-skeleton";
 
-const recommendedVideos = [
-    {
-        title: "slow days, soft sounds — (music playlist for moments of peace)",
-        views: "142K views",
-        timeAgo: "4 months ago",
-        duration: "31:19",
-        thumbnail:
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fathuan611%2F%25E1%25BA%25A3nh-169%2F&psig=AOvVaw3n1uhLO7LOMaGooIgZLHx9&ust=1740549122864000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiBzfKQ3osDFQAAAAAdAAAAABAE",
-    },
-    {
-        title: "peaceful and inspiring music for painting, reading or relaxing",
-        views: "451K views",
-        timeAgo: "5 months ago",
-        duration: "1:17:28",
-        thumbnail:
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fathuan611%2F%25E1%25BA%25A3nh-169%2F&psig=AOvVaw3n1uhLO7LOMaGooIgZLHx9&ust=1740549122864000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiBzfKQ3osDFQAAAAAdAAAAABAE",
-    },
-    {
-        title: "peace comes from within, do not seek it without — (a playlist)",
-        views: "270K views",
-        timeAgo: "4 months ago",
-        duration: "31:12",
-        thumbnail:
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fathuan611%2F%25E1%25BA%25A3nh-169%2F&psig=AOvVaw3n1uhLO7LOMaGooIgZLHx9&ust=1740549122864000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCIiBzfKQ3osDFQAAAAAdAAAAABAE",
-    },
-];
 type ParamsType = {
     videoId: string;
 };
 export function PreviewVideoList() {
-    const { videoId } = useParams<ParamsType>();
+    const params = useParams<ParamsType>();
     const router = useRouter();
-    const { data, isPending, error } =
-        videoApi.query.useGetRelateVideo(videoId);
+    const { data, isPending, error } = videoApi.query.useGetRelateVideo(
+        params?.videoId as string,
+    );
     const navigateVideoPage = (videoId: string) => {
         router.replace(ROUTES.VIDEO_PAGE(videoId));
     };
-    if (!!error) {
+    if (!!error || !params?.videoId) {
         redirect("/");
     }
 

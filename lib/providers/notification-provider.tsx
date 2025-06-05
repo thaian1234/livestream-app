@@ -101,7 +101,7 @@ export function NotificationProvider({
                 case "BLOCKED":
                     if (
                         isUsernamePage() &&
-                        params.username === latestActivity.actorName
+                        params?.username === latestActivity.actorName
                     ) {
                         router.replace("/");
                     }
@@ -131,10 +131,10 @@ export function NotificationProvider({
             }
         };
         const isUsernamePage = () => {
-            const pathSegments = pathname.split("/");
+            const pathSegments = pathname?.split("/");
             return (
-                params.username &&
-                pathSegments.length === 2 &&
+                params?.username &&
+                pathSegments?.length === 2 &&
                 pathSegments[1] !== ""
             );
         };
@@ -191,7 +191,8 @@ export function NotificationProvider({
         return () => {
             notificationFeed.unsubscribe();
         };
-    }, [data, params.username, pathname, router, userId]);
+    }, [data, params?.username, pathname, router, userId]);
+
     return (
         <NotificationContext.Provider
             value={{ notifications, notificationFeed, results }}

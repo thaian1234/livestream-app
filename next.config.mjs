@@ -57,7 +57,7 @@ const nextConfig = {
 
     output: "standalone",
     typescript: {
-        ignoreBuildErrors: true, // Strict trong production
+        ignoreBuildErrors: false, // Strict trong production
     },
     eslint: {
         ignoreDuringBuilds: true, // Strict trong production

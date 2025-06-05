@@ -28,7 +28,7 @@ export function Infor() {
     const router = useRouter();
     const params = useParams<ParamsType>();
     const { data, isPending, isError } =
-        streamApi.query.useGetStreamInformation(params.username);
+        streamApi.query.useGetStreamInformation(params?.username || "");
     if (isPending) {
         return <LoadingStreamAbout />;
     }

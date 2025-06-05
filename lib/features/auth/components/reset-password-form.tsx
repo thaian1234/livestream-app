@@ -21,7 +21,7 @@ type ParamsType = {
 };
 
 export function ResetPasswordForm() {
-    const token = useParams<ParamsType>();
+    const params = useParams<ParamsType>();
     const {
         register,
         handleSubmit,
@@ -31,10 +31,13 @@ export function ResetPasswordForm() {
     });
     const { mutate: handleResetPassword, isPending } =
         authApi.mutation.useResetPassword();
+
     const onSubmit = handleSubmit((data) => {
+        if (!params) return;
+
         handleResetPassword({
             param: {
-                token: token.token,
+                token: params.token,
             },
             json: {
                 password: data.password,

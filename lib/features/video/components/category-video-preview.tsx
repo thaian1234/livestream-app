@@ -5,12 +5,12 @@ import { videoApi } from "../apis";
 import { PreviewVideoCarousel } from "./video-preview-carousel";
 
 export function CategoryVideoPreview() {
-    const { username } = useParams();
+    const params = useParams<{ username: string }>();
     const { data, error, isPending } = videoApi.query.useGetVideosByUsername(
         { page: "1", size: "5" },
-        username as string,
+        params?.username as string,
     );
-    if (!!error) {
+    if (!!error || !params?.username) {
         redirect("/");
     }
 

@@ -19,7 +19,7 @@ export default function StreamPage() {
     if (isPending) {
         return <Spinner size={"large"} />;
     }
-    if (isError || !videoClient) {
+    if (isError || !videoClient || !params?.streamId) {
         return <p>Something went wrong</p>;
     }
 

@@ -43,8 +43,10 @@ type ParamsType = {
 
 export function VideoPlayer() {
     const [hasCounted, setHasCounted] = useState(false);
-    const { videoId } = useParams<ParamsType>();
-    const { data, isPending, error } = videoApi.query.useGetVideo(videoId);
+    const params = useParams<ParamsType>();
+    const { data, isPending, error } = videoApi.query.useGetVideo(
+        params?.videoId || "",
+    );
     const {
         mutate: updateViewCount,
         isPending: pendingViewCount,
@@ -82,10 +84,10 @@ export function VideoPlayer() {
     };
 
     useEffect(() => {
-        if (!hasCounted && data && videoId) {
+        if (!hasCounted && data && params?.videoId) {
             updateViewCount({
                 param: {
-                    id: videoId,
+                    id: params?.videoId,
                 },
                 json: {
                     viewCount: data.data.viewCount + 1,
@@ -93,15 +95,18 @@ export function VideoPlayer() {
             });
             setHasCounted(true);
         }
-    }, [data, hasCounted, updateViewCount, videoId]);
-    if (!!error) {
+    }, [data, hasCounted, updateViewCount, params?.videoId]);
+
+    if (!!error || !params?.videoId) {
         redirect("/");
     }
 
     if (!data || isPending) {
         return <VideoPlayerSkeleton />;
     }
+
     const video = data.data;
+
     return (
         <>
             {/* Video Player */}
