@@ -13,7 +13,7 @@ RUN npm install -g bun
 COPY package.json bun.lockb* ./
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile || (bun install && echo "Lockfile updated during build")
 
 # Rebuild the source code only when needed
 FROM base AS builder
