@@ -1,7 +1,8 @@
 "use client";
 
-import { authApi } from "../apis";
 import { FaGoogle } from "react-icons/fa";
+
+import { authApi } from "../apis";
 
 export function GoogleButton() {
     const { mutate: handleSignIn, isPending } =

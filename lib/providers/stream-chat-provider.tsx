@@ -34,12 +34,12 @@ export function ChatProvider({
     streamId,
     children,
     streamerId,
-    viewerId
+    viewerId,
 }: ChatProviderProps) {
     const { chatClient, chatChannel } = useInitializeChatClient(
         streamId,
         streamerId,
-        viewerId
+        viewerId,
     );
     if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
 

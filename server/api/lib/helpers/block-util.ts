@@ -1,5 +1,4 @@
 import { BlockRepository } from "../../repositories/block.repository";
-
 import { MyError } from "./errors";
 
 const blockRepository = new BlockRepository();

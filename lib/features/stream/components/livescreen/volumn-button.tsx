@@ -1,9 +1,10 @@
 import { Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { useState } from "react";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 export function VolumnButton() {
     const [isVolumeHovered, setIsVolumeHovered] = useState(false);

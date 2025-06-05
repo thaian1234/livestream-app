@@ -1,27 +1,27 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1743842457712,
-      "tag": "0000_curly_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1744792216767,
-      "tag": "0001_military_mysterio",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1744798902155,
-      "tag": "0002_yummy_dorian_gray",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "postgresql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "7",
+            "when": 1743842457712,
+            "tag": "0000_curly_storm",
+            "breakpoints": true
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1744792216767,
+            "tag": "0001_military_mysterio",
+            "breakpoints": true
+        },
+        {
+            "idx": 2,
+            "version": "7",
+            "when": 1744798902155,
+            "tag": "0002_yummy_dorian_gray",
+            "breakpoints": true
+        }
+    ]
 }

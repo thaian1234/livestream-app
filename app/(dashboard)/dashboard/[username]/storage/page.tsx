@@ -4,10 +4,10 @@ import { storageApi } from "@/lib/features/storage/apis";
 import { StorageStats } from "@/lib/features/storage/components/stats/storage-stats";
 import { StorageTable } from "@/lib/features/storage/components/storage-table";
 import { dummyStorageData } from "@/lib/features/storage/types/storage";
+import { UploadVideoFormDialog } from "@/lib/features/upload/components/upload-video-form-dialog";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { UploadVideoFormDialog } from "@/lib/features/upload/components/upload-video-form-dialog";
 
 export default function StudioPage() {
     return (

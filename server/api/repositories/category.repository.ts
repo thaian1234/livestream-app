@@ -1,7 +1,3 @@
-import { CategoryDTO } from "../dtos/category.dto";
-import { QueryDTO } from "../dtos/query.dto";
-import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
-import { Utils } from "../lib/helpers/utils";
 import {
     SQL,
     and,
@@ -19,6 +15,12 @@ import { SQLiteTable } from "drizzle-orm/sqlite-core";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { CategoryDTO } from "../dtos/category.dto";
+import { QueryDTO } from "../dtos/query.dto";
+import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
 
 const buildConflictUpdateColumns = <
@@ -231,8 +233,7 @@ export class CategoryRepository implements ICategoryRepository {
                                 videoId,
                             ),
                             notInArray(
-                                tableSchemas.videosToCategoriesTable
-                                    .categoryId,
+                                tableSchemas.videosToCategoriesTable.categoryId,
                                 categoryIds,
                             ),
                         ),
@@ -262,10 +263,7 @@ export class CategoryRepository implements ICategoryRepository {
             const rows = await this.db
                 .delete(tableSchemas.videosToCategoriesTable)
                 .where(
-                    eq(
-                        tableSchemas.videosToCategoriesTable.videoId,
-                        videoId,
-                    ),
+                    eq(tableSchemas.videosToCategoriesTable.videoId, videoId),
                 )
                 .returning();
             return rows.length > 0;

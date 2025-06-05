@@ -78,7 +78,7 @@ export class MomoService implements IMomoService {
         const signature = createHmac("sha256", envServer.MOMO_SECRET_KEY)
             .update(rawSignature)
             .digest("hex");
-        
+
         const response = {
             isSuccess: false,
             message: body.message,
@@ -86,7 +86,7 @@ export class MomoService implements IMomoService {
             transactionId: body.transId || "",
         };
 
-        if (body.resultCode === '0' && signature === body.signature) {
+        if (body.resultCode === "0" && signature === body.signature) {
             response.isSuccess = true;
         }
 

@@ -11,7 +11,7 @@ interface DragDropAreaProps {
 export default function DragDropArea({
     onFileSelect,
     children,
-    fileType
+    fileType,
 }: DragDropAreaProps) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);

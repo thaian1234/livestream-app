@@ -1,10 +1,13 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
-
-
+import {
+    index,
+    pgTable,
+    timestamp,
+    uniqueIndex,
+    uuid,
+} from "drizzle-orm/pg-core";
 
 import { userTable } from "./user.table";
-
 
 export const blockTable = pgTable(
     "blocks",

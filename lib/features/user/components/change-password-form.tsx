@@ -1,6 +1,5 @@
 "use client";
 
-import { userApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockIcon } from "lucide-react";
 import { useState } from "react";
@@ -30,6 +29,8 @@ import { Label } from "@/components/ui/label";
 import { SecretInput } from "@/components/ui/secret-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+
+import { userApi } from "../apis";
 
 export function ChangePasswordForm() {
     const { mutate: handleChangePassword, isPending } =

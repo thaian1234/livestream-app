@@ -1,7 +1,6 @@
-import ProfileSkeleton from "../profile/profile-skeleton";
-
 import { Skeleton } from "@/components/ui/skeleton";
 
+import ProfileSkeleton from "../profile/profile-skeleton";
 import { ListSkeleton } from "./list-skeleton";
 
 export function CommunitySkeleton() {

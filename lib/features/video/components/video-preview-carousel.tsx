@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { timeAgo } from "@/lib/helpers/formatData";
 
+import { VideoDTO } from "@/server/api/dtos/video.dto";
+
 import {
     Carousel,
     CarouselContent,
@@ -14,8 +16,6 @@ import {
 } from "@/components/ui/carousel";
 
 import { VideoThumbnail } from "@/components/thumbnail";
-
-import { VideoDTO } from "@/server/api/dtos/video.dto";
 
 interface PreviewVideoCarouselProps {
     videoData: VideoDTO.Select[];

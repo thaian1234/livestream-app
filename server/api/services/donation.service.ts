@@ -1,3 +1,5 @@
+import { formatVND } from "@/lib/helpers/currency";
+
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 
@@ -10,7 +12,6 @@ import { INotificationService } from "../external-services/notification.service"
 
 import { OrderDTO } from "../dtos/order.dto";
 import { PaymentProcessorFactory } from "./payment/payment-processor-factory";
-import { formatVND } from "@/lib/helpers/currency";
 
 export interface IDonationService
     extends Utils.AutoMappedClass<DonationService> {}
@@ -78,7 +79,8 @@ export class DonationService implements IDonationService {
         const stream = await this.streamRepository.findById(order.streamId);
 
         // Send notification to streamer
-        if (!stream || !donor) throw new MyError.NotFoundError("Stream or Donor not found");
+        if (!stream || !donor)
+            throw new MyError.NotFoundError("Stream or Donor not found");
 
         await this.notificationService.createStreamDonationNotification({
             actorAvatar: donor?.imageUrl || "",
@@ -93,7 +95,10 @@ export class DonationService implements IDonationService {
             },
         });
 
-        const donateMessageInfo = `${donor.username},${formatVND(order.totalAmount)}`
-        await this.getStreamService.sendSystemMessageToChannel(stream.id, donateMessageInfo);
+        const donateMessageInfo = `${donor.username},${formatVND(order.totalAmount)}`;
+        await this.getStreamService.sendSystemMessageToChannel(
+            stream.id,
+            donateMessageInfo,
+        );
     }
 }

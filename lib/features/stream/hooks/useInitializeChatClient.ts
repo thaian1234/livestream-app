@@ -1,14 +1,15 @@
-import { streamApi } from "../apis";
 import { useEffect, useState } from "react";
 import { Channel, DefaultGenerics, StreamChat } from "stream-chat";
 
 import { envClient } from "@/lib/env/env.client";
 import { useAuth } from "@/lib/providers/auth-provider";
 
+import { streamApi } from "../apis";
+
 export default function useInitializeChatClient(
     streamId: string,
     streamerId?: string,
-    viewerId?: string
+    viewerId?: string,
 ) {
     const { user } = useAuth();
     const { data: tokenData } = streamApi.query.useGetChatToken();
@@ -42,8 +43,7 @@ export default function useInitializeChatClient(
                 "private-stream-chat",
                 `${streamId.replace(/-/g, "")}${viewerId.replace(/-/g, "")}`,
             );
-        }
-        else if (streamerId) {
+        } else if (streamerId) {
             channel = client.channel(
                 "private-stream-chat",
                 `${streamId.replace(/-/g, "")}${user.id.replace(/-/g, "")}`,

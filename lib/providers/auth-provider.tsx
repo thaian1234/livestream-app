@@ -1,11 +1,12 @@
 "use client";
 
-import { authApi } from "../features/auth/apis";
 import { createContext, useContext } from "react";
 import React, { useMemo } from "react";
 
 import { StreamDTO } from "@/server/api/dtos/stream.dto";
 import { UserDTO } from "@/server/api/dtos/user.dto";
+
+import { authApi } from "../features/auth/apis";
 
 type AuthContextType = {
     user?: UserDTO.Select;

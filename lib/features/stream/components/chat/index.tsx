@@ -58,7 +58,7 @@ export function Chat({
                 isHost ? (
                     <PrivateChat streamerId={streamerId} />
                 ) : (
-                    <BoxChatViewer />
+                    <BoxChatViewer streamerId={streamerId} />
                 )
             ) : chatStatus === ChatStatus.Chat ? (
                 <>

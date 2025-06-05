@@ -1,10 +1,11 @@
-import { MyError } from "../lib/helpers/errors";
-import { Utils } from "../lib/helpers/utils";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { envServer } from "@/lib/env/env.server";
+
+import { MyError } from "../lib/helpers/errors";
+import { Utils } from "../lib/helpers/utils";
 
 export interface INodemailService
     extends Utils.AutoMappedClass<NodemailService> {}

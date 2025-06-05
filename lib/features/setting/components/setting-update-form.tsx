@@ -1,7 +1,6 @@
-import { settingApi } from "../apis";
-
 import { Spinner } from "@/components/ui/spinner";
 
+import { settingApi } from "../apis";
 import { ToggleCard } from "./toggle-card";
 
 interface SettingUpdateFormProps {}

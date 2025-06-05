@@ -1,6 +1,5 @@
 "use client";
 
-import { userApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -20,6 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+
+import { userApi } from "../apis";
 
 export function ProfileUpdateForm() {
     const { user } = useUser();
