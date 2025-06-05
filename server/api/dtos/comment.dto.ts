@@ -16,7 +16,7 @@ const userSchema = createSelectSchema(tableSchemas.userTable, {
     hashedPassword: true,
     bio: true,
     emailVerified: true,
-    email: true
+    email: true,
 });
 
 export class CommentDTO {

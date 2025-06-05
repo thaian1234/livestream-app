@@ -1,14 +1,17 @@
-import { GithubDTO } from "../dtos/github.dto";
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
-import { IGitHubAccountRepository } from "../repositories/account.repository";
-import { IStreamService } from "../services/stream.service";
-import { IUserService } from "../services/user.service";
 import { GitHub, generateState } from "arctic";
 
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
 
+import { Utils } from "../lib/helpers/utils";
+
+import { IGitHubAccountRepository } from "../repositories/account.repository";
+
+import { IStreamService } from "../services/stream.service";
+import { IUserService } from "../services/user.service";
+
+import { GithubDTO } from "../dtos/github.dto";
+import { UserDTO } from "../dtos/user.dto";
 import { IGetStreamService } from "./getstream.service";
 import { ILuciaService, LuciaService } from "./lucia.service";
 

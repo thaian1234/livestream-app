@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/providers/auth-provider";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+
 import { UserAvatar } from "@/components/user-avatar";
 
 import ProfileSkeleton from "./profile-skeleton";

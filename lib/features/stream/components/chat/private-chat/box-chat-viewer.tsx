@@ -1,7 +1,5 @@
 "use client";
 
-import { ChatMessage } from "../chat-message";
-import { CustomMessageInput } from "../custom-message-input";
 import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
@@ -14,7 +12,14 @@ import { cn } from "@/lib/utils";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export function BoxChatViewer() {
+import { ChatMessage } from "../chat-message";
+import { CustomMessageInput } from "../custom-message-input";
+
+interface BoxChatViewerProps {
+    streamerId?: string;
+}
+
+export function BoxChatViewer({ streamerId }: BoxChatViewerProps) {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { messages } = useChannelStateContext();
     //chat scrolls to the bottom
@@ -51,7 +56,9 @@ export function BoxChatViewer() {
                     </div>
                 )}
             </ScrollArea>
-            <MessageInput Input={() => <CustomMessageInput />} />
+            <MessageInput
+                Input={() => <CustomMessageInput streamerId={streamerId} />}
+            />
         </>
     );
 }

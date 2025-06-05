@@ -8,7 +8,6 @@ import { getUserNavConfig } from "@/lib/configs/user-nav.config";
 import { SignOutButton } from "@/lib/features/auth/components/signout-button";
 import { useAuth } from "@/lib/providers/auth-provider";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -20,6 +19,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
+
+import { TooltipModel } from "@/components/tooltip-model";
 import { UserAvatar } from "@/components/user-avatar";
 
 export function UserNav() {

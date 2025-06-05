@@ -1,6 +1,8 @@
-import { BlockDTO } from "../dtos/block.dto";
 import { Utils } from "../lib/helpers/utils";
+
 import { IBlockRepository } from "../repositories/block.repository";
+
+import { BlockDTO } from "../dtos/block.dto";
 
 export interface IBlockService extends Utils.AutoMappedClass<BlockService> {}
 

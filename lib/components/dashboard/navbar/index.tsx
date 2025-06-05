@@ -1,10 +1,10 @@
-import { UserNav } from "../../../features/user/components/user-nav";
-import { StreamUpdateDialog } from "../../stream-update-dialog";
-import { SheetMenu } from "../sidebar/sheet-menu";
-
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { useUser } from "@/lib/hooks/use-user";
 import { NotificationProvider } from "@/lib/providers/notification-provider";
+
+import { UserNav } from "../../../features/user/components/user-nav";
+import { StreamUpdateDialog } from "../../stream-update-dialog";
+import { SheetMenu } from "../sidebar/sheet-menu";
 
 interface NavbarProps {}
 

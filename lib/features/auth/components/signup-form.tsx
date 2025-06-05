@@ -1,6 +1,5 @@
 "use client";
 
-import { authApi } from "../apis";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MailIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
@@ -8,11 +7,14 @@ import { useForm } from "react-hook-form";
 
 import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
-import { ErrorField } from "@/components/error-field";
-import { IconInput, LeftIcon } from "@/components/icon-input";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { PasswordInput } from "@/components/ui/password-input";
+
+import { ErrorField } from "@/components/error-field";
+import { IconInput, LeftIcon } from "@/components/icon-input";
+
+import { authApi } from "../apis";
 
 export function SignUpForm() {
     const {

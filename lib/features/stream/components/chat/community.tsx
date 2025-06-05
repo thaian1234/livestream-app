@@ -1,7 +1,5 @@
 "use client";
 
-import { streamApi } from "../../apis";
-import { useChannelViewers } from "../../hooks/use-channel-viewers";
 import { Search as SearchIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -10,9 +8,13 @@ import { ROUTES } from "@/lib/configs/routes.config";
 import { BlockButton } from "@/lib/features/block/components/block-button";
 import { useUser } from "@/lib/hooks/use-user";
 
+import { Spinner } from "@/components/ui/spinner";
+
 import { CollapsibleSection } from "@/components/collapsible-section";
 import { IconInput, LeftIcon } from "@/components/icon-input";
-import { Spinner } from "@/components/ui/spinner";
+
+import { streamApi } from "../../apis";
+import { useChannelViewers } from "../../hooks/use-channel-viewers";
 
 type ParamsType = {
     username: string;

@@ -16,6 +16,7 @@ export const ROUTES = {
     KEY_PAGE: (username: string) => `/dashboard/${username}/key`,
     COMMUNITY_PAGE: (username: string) => `/dashboard/${username}/community`,
     STUDIO_PAGE: (username: string) => `/dashboard/${username}/studio`,
+    DONATION_PAGE: (username: string) => `/dashboard/${username}/donation`,
     VIDEO_EDIT_PAGE: (username: string, videoId: string) =>
         `/dashboard/${username}/video/${videoId}`,
     STORAGE_PAGE: (username: string) => `/dashboard/${username}/storage`,
@@ -23,4 +24,5 @@ export const ROUTES = {
     ABOUT_PAGE: (username: string) => `/about/${username}`,
     DASHBOARD_SCHEDULE_PAGE: (username: string) =>
         `/dashboard/${username}/schedule`,
+    DONATION_NOTICE_PAGE: "/donation-notice",
 };

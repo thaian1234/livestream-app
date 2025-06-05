@@ -109,7 +109,7 @@ export class GetStreamService implements IGetStreamService {
 
     public generateStreamChatToken(userId: string) {
         const expirationTime = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 1 week
-        const issuedAt = Math.floor(Date.now() / 1000) - 60;
+        const issuedAt = Math.floor(Date.now() / 1000) - 6000;
         const token = this.streamChatClient.createToken(
             userId,
             expirationTime,
@@ -129,5 +129,17 @@ export class GetStreamService implements IGetStreamService {
     public verifyWebhook(body: string | Buffer, signature: string) {
         const isValid = this.streamClient.verifyWebhook(body, signature);
         return isValid;
+    }
+
+    public async sendSystemMessageToChannel(channelId: string, text: string) {
+        const channel = this.streamChatClient.channel("livestream", channelId);
+        const message = {
+            text,
+            type: "system",
+            user: {
+                id: "systemUser",
+            },
+        };
+        await channel.sendMessage(message);
     }
 }

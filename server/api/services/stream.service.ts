@@ -1,7 +1,9 @@
+import { Utils } from "../lib/helpers/utils";
+
+import { IStreamRepository } from "../repositories/stream.repository";
+
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamDTO } from "../dtos/stream.dto";
-import { Utils } from "../lib/helpers/utils";
-import { IStreamRepository } from "../repositories/stream.repository";
 
 export interface IStreamService extends Utils.AutoMappedClass<StreamService> {}
 
@@ -50,5 +52,9 @@ export class StreamService implements IStreamService {
     }
     public async getStreamCategories(streamId: string) {
         return this.streamRepository.getStreamCategories(streamId);
+    }
+
+    public async findById(id: string) {
+        return this.streamRepository.findById(id);
     }
 }

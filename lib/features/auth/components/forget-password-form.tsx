@@ -1,19 +1,20 @@
 "use client";
 
-import { userApi } from "../../user/apis";
-import { authApi } from "../apis";
+import "@/style/auth.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPen } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { AuthDTO } from "@/server/api/dtos/auth.dto";
 
-import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import "@/style/auth.css";
+import { ErrorField } from "@/components/error-field";
+
+import { userApi } from "../../user/apis";
+import { authApi } from "../apis";
 
 export function ForgetPasswordForm() {
     const {

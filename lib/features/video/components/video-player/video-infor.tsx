@@ -76,7 +76,10 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             </h1>
             <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <UserAvatar size={"lg"} />
+                    <UserAvatar
+                        size={"lg"}
+                        imageUrl={videoData.user.imageUrl}
+                    />
                     <div className="mr-4">
                         <p>{videoData.user.username}</p>
                         <p className="flex space-x-6 text-sm text-white/70">

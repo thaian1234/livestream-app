@@ -58,14 +58,14 @@ export function Chat({
                 isHost ? (
                     <PrivateChat streamerId={streamerId} />
                 ) : (
-                    <BoxChatViewer />
+                    <BoxChatViewer streamerId={streamerId} />
                 )
             ) : chatStatus === ChatStatus.Chat ? (
                 <>
                     <ScrollArea
                         ref={scrollAreaRef}
                         className={cn(
-                            "h-[calc(100vh-13rem)] px-4 transition-all duration-300 ease-in-out",
+                            "h-[calc(100vh-15rem)] px-4 transition-all duration-300 ease-in-out",
                         )}
                     >
                         {messages && messages.length > 0 ? (
@@ -93,6 +93,7 @@ export function Chat({
                                 }
                                 isHost={isHost}
                                 isFollowing={isFollowing}
+                                streamerId={streamerId}
                             />
                         )}
                     />

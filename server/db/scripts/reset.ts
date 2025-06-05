@@ -1,5 +1,3 @@
-import { sql } from "drizzle-orm";
-
 import Database from "..";
 import tableSchemas from "../schemas";
 
@@ -12,6 +10,10 @@ const resetSeeds = async () => {
     await db.delete(tableSchemas.followTable);
     await db.delete(tableSchemas.blockTable);
     await db.delete(tableSchemas.notificationTable);
+    await db.delete(tableSchemas.donateCardTable);
+    await db.delete(tableSchemas.walletTransactionTable);
+    await db.delete(tableSchemas.walletTable);
+    await db.delete(tableSchemas.orderTable);
     await db.delete(tableSchemas.streamTable);
     await db.delete(tableSchemas.settingTable);
     await db.delete(tableSchemas.accountTable);

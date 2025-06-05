@@ -1,4 +1,5 @@
 import { Utils } from "../lib/helpers/utils";
+
 import { IEmailVerificationRepository } from "../repositories/email-verification.repository";
 
 export interface IEmailVerificationService

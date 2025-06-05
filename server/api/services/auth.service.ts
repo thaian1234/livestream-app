@@ -1,11 +1,12 @@
-import { AuthDTO } from "../dtos/auth.dto";
+import { Utils } from "../lib/helpers/utils";
+
 import { IGetStreamService } from "../external-services/getstream.service";
 import {
     ILuciaService,
     LuciaService,
 } from "../external-services/lucia.service";
-import { Utils } from "../lib/helpers/utils";
 
+import { AuthDTO } from "../dtos/auth.dto";
 import { IUserService } from "./user.service";
 
 export interface IAuthService extends Utils.AutoMappedClass<AuthService> {}

@@ -1,8 +1,8 @@
-import { settingApi } from "../apis";
-
 import { SettingDTO } from "@/server/api/dtos/setting.dto";
 
 import { Switch } from "@/components/ui/switch";
+
+import { settingApi } from "../apis";
 
 type FieldTypes = "isChatEnabled" | "isChatDelayed" | "isChatFollowersOnly";
 interface ToggleCardProps {

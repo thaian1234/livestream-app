@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
@@ -16,7 +17,6 @@ import {
 
 import { uploadApi } from "../apis";
 import DragDropArea from "./drag-drop-area";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface FileWithPreview extends File {
     preview: string;
@@ -80,7 +80,9 @@ export function UploadVideoFormDialog() {
                 {
                     onSettled() {
                         setIsOpen(false);
-                        queryClient.invalidateQueries({ queryKey: ["storages", "recordings"] });
+                        queryClient.invalidateQueries({
+                            queryKey: ["storages", "recordings"],
+                        });
                     },
                 },
             );

@@ -5,8 +5,9 @@ import { useCallback } from "react";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 export function CinemaModeButton() {
     const { liveSrceenStatus } = useLiveInfor();

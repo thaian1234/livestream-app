@@ -1,8 +1,7 @@
 "use client";
 
-import { StreamTheme } from "@stream-io/video-react-sdk";
-
 import "@/style/video.css";
+import { StreamTheme } from "@stream-io/video-react-sdk";
 
 export default function StreamDashboardLayout({
     children,

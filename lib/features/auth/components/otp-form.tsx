@@ -1,13 +1,12 @@
 "use client";
 
-import { authApi } from "../apis";
+import "@/style/auth.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useForm } from "react-hook-form";
 
 import { EmailVerificationDTO } from "@/server/api/dtos/email-verification.dto";
 
-import { ErrorField } from "@/components/error-field";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import {
@@ -16,7 +15,9 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-import "@/style/auth.css";
+import { ErrorField } from "@/components/error-field";
+
+import { authApi } from "../apis";
 
 export function OtpForm() {
     const userId = authApi.query.useGetUserId();

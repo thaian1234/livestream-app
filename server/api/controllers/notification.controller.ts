@@ -1,9 +1,11 @@
-import { INotificationService } from "../external-services/notification.service";
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
+import { INotificationService } from "../external-services/notification.service";
 
 export interface INotificationController
     extends Utils.AutoMappedClass<NotificationController> {}

@@ -1,4 +1,3 @@
-import useStreamerPrivateChats from "../../hooks/use-streamer-private-chats";
 import { ArrowRightToLine, Globe, User, Users } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
@@ -8,6 +7,8 @@ import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
 
 import { TooltipModel } from "@/components/tooltip-model";
+
+import useStreamerPrivateChats from "../../hooks/use-streamer-private-chats";
 
 interface CustomChannelHeaderProps {
     isHost: boolean;
@@ -93,13 +94,11 @@ function PrivateChatButtonForViewer({ streamerId }: { streamerId?: string }) {
     return (
         <div className="relative">
             <User className={cn("", isOpenPrivateChat ? "text-teal-2" : "")} />
-            {
-                countUnread > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium">
-                        {countUnread >= 100 ? "99+" : countUnread}
-                    </span>
-                )
-            }
+            {countUnread > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium">
+                    {countUnread >= 100 ? "99+" : countUnread}
+                </span>
+            )}
         </div>
     );
 }

@@ -1,9 +1,11 @@
+import { Utils } from "../lib/helpers/utils";
+
+import { ICategoryRepository } from "../repositories/category.repository";
+
 import { CategoryDTO } from "../dtos/category.dto";
 import { QueryDTO } from "../dtos/query.dto";
 import { StreamToCategoriesDTO } from "../dtos/streamToCategories.dto";
 import { VideoToCategoriesDTO } from "../dtos/videoToCategories.dto";
-import { Utils } from "../lib/helpers/utils";
-import { ICategoryRepository } from "../repositories/category.repository";
 
 export interface ICategoryService
     extends Utils.AutoMappedClass<CategoryService> {}
@@ -56,9 +58,7 @@ export class CategoryService implements ICategoryService {
     }
     public async deleteAllCategoriesFromVideo(videoId: string) {
         const result =
-            await this.categoryRepository.deleteAllCategoriesFromVideo(
-                videoId,
-            );
+            await this.categoryRepository.deleteAllCategoriesFromVideo(videoId);
         return result;
     }
 }

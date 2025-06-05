@@ -1,9 +1,10 @@
 "use client";
 
-import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
 import { CallingState, useCallStateHooks } from "@stream-io/video-react-sdk";
 
 import { LiveStreamPlayerState } from "@/components/livestream-player-state";
+
+import { MyLivestreamLayout } from "../../layouts/my-stream-layout";
 
 export const LocalLivestreamPlayer = () => {
     const { useCallCallingState } = useCallStateHooks();
