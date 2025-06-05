@@ -127,10 +127,10 @@ export default function SearchPage() {
     });
 
     const searchParams = useSearchParams();
-    const searchQuery = searchParams.get("searchTerm");
+    const searchQuery = searchParams?.get("searchTerm");
 
     const { data, error, isPending } = searchApi.query.useSearch({
-        filterBy: searchQuery,
+        filterBy: searchQuery || "",
         page: parseInt(currentPage),
         size: SIZE,
         categoryIds: selectedIds,

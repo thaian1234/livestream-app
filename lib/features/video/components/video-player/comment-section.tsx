@@ -20,71 +20,17 @@ export interface IComment {
     likes: number;
     timeAgo: string;
 }
-// const comments = [
-//     {
-//         id: 1,
-//         user: "Jane Doe",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "This playlist is exactly what I needed today. So calming and inspiring!",
-//         likes: 24,
-//         timeAgo: "2 days ago",
-//     },
-//     {
-//         id: 2,
-//         user: "John Smith",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "I've been listening to this on repeat. It's perfect for my meditation sessions.",
-//         likes: 18,
-//         timeAgo: "1 week ago",
-//     },
-//     {
-//         id: 3,
-//         user: "John Smith",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "I've been listening to this on repeat. It's perfect for my meditation sessions.",
-//         likes: 18,
-//         timeAgo: "1 week ago",
-//     },
-//     {
-//         id: 2,
-//         user: "John Smith",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "I've been listening to this on repeat. It's perfect for my meditation sessions.",
-//         likes: 18,
-//         timeAgo: "1 week ago",
-//     },
-//     {
-//         id: 2,
-//         user: "John Smith",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "I've been listening to this on repeat. It's perfect for my meditation sessions.",
-//         likes: 18,
-//         timeAgo: "1 week ago",
-//     },
-//     {
-//         id: 2,
-//         user: "John Smith",
-//         avatar: "/placeholder.svg",
-//         content:
-//             "I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions. I've been listening to this on repeat. It's perfect for my meditation sessions.",
-//         likes: 18,
-//         timeAgo: "1 week ago",
-//     },
-// ];
 
 type ParamsType = {
     videoId: string;
 };
 
 export function CommentSection() {
-    const { videoId } = useParams<ParamsType>();
+    const params = useParams<ParamsType>();
     const [newComment, setNewComment] = useState("");
-    const { data, isPending, error } = commentApi.query.useGetComments(videoId);
+    const { data, isPending, error } = commentApi.query.useGetComments(
+        params?.videoId || "",
+    );
     const { mutate: createComment } = commentApi.mutation.useCreateComment();
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -94,11 +40,19 @@ export function CommentSection() {
         }
     };
 
+    if (!!error || !params?.videoId) {
+        redirect("/");
+    }
+
+    if (!data || isPending) {
+        return <Loader />;
+    }
+
     const handleMessageSubmit = () => {
         createComment(
             {
                 json: {
-                    videoId: videoId,
+                    videoId: params.videoId,
                     content: newComment,
                 },
             },
@@ -110,16 +64,9 @@ export function CommentSection() {
         );
     };
 
-    if (!!error) {
-        redirect("/");
-    }
-
-    if (!data || isPending) {
-        return <Loader />;
-    }
-
     const comments = data.data.comments;
     const total = data.data.totalRecords;
+
     return (
         <div className="mx-2 mt-6">
             <h2 className="mb-2 text-xl font-semibold">Comments ({total})</h2>

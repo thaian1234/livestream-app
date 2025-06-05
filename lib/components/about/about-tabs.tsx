@@ -17,17 +17,19 @@ const TABS = ["Home", "Video", "Schedule"] as const;
 
 export function AboutTabs() {
     const auth = useAuth();
-    const { username } = useParams();
-    const eventQuery = eventApi.query.useGetAllEvents(username as string);
+    const params = useParams<{ username: string }>();
+    const eventQuery = eventApi.query.useGetAllEvents(
+        params?.username as string,
+    );
 
     if (eventQuery.isPending || !eventQuery.data) {
         return <Spinner size="large" />;
     }
-    if (eventQuery.isError) {
+    if (eventQuery.isError || !params) {
         return <div>Failed to fetch Eventa</div>;
     }
 
-    const isOwner = auth?.user?.username === username;
+    const isOwner = auth?.user?.username === params.username;
 
     const events: CalendarEventExternal[] = eventQuery.data.data.map(
         (event) => ({

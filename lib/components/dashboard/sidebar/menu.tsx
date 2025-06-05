@@ -30,7 +30,9 @@ export function Menu({ isOpen }: MenuProps) {
     if (error) {
         notFound();
     }
-    const menuList = getDashboardMenuList(pathname, user.username);
+    const menuList = pathname
+        ? getDashboardMenuList(pathname, user.username)
+        : [];
 
     return (
         <nav className="mt-8 h-dvh w-full">

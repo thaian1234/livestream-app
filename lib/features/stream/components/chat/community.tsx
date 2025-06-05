@@ -43,7 +43,7 @@ export function Community() {
         data: streamer,
         isPending,
         isError,
-    } = streamApi.query.useGetStreamInformation(params.username);
+    } = streamApi.query.useGetStreamInformation(params?.username || "");
 
     // Memoized sections data
     const sections = useMemo(() => {

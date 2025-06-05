@@ -8,19 +8,22 @@ import { VideoThumbnail } from "@/components/thumbnail";
 import { videoApi } from "../apis";
 
 export function AllVideoPreview() {
-    const { username } = useParams();
+    const params = useParams<{ username: string }>();
     const { data, error, isPending } = videoApi.query.useGetVideosByUsername(
         { page: "1", size: "20" },
-        username as string,
+        params?.username as string,
     );
-    if (!!error) {
+
+    if (!!error || !params?.username) {
         redirect("/");
     }
 
     if (!data || isPending) {
         return <Loader2 />;
     }
+
     const videos = data.data.videos;
+
     return (
         <ul className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {videos && videos.length > 0 ? (

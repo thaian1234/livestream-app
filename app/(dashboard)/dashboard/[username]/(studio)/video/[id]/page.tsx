@@ -6,13 +6,12 @@ import { videoApi } from "@/lib/features/video/apis";
 import { EditVideoForm } from "@/lib/features/video/components/edit-video-form";
 
 export default function VideoEditPage() {
-    const { id } = useParams<{
-        id: string;
-    }>();
+    const params = useParams<{ id: string }>();
+    const { data, isPending, error } = videoApi.query.useGetVideo(
+        params?.id || "",
+    );
 
-    const { data, isPending, error } = videoApi.query.useGetVideo(id);
-
-    if (!!error) {
+    if (!!error || !params) {
         redirect("/");
     }
 
@@ -22,7 +21,7 @@ export default function VideoEditPage() {
 
     return (
         <>
-            <EditVideoForm videoId={id} defaultVideo={data.data} />
+            <EditVideoForm videoId={params.id} defaultVideo={data.data} />
         </>
     );
 }
