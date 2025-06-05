@@ -49,7 +49,9 @@ export function FollowingStream({}: FollowingStreamProps) {
                         </li>
                     ))
                 ) : (
-                    <p>No following stream</p>
+                    <div className="pl-2 text-Text/Subtle">
+                        No following stream
+                    </div>
                 )}
             </ul>
         </div>

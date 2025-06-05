@@ -33,6 +33,7 @@ const config = {
                     "1": "#16181E",
                     "2": "#130B29",
                 },
+                "Text/Subtle": "#949293",
                 search: "#F9F9F94D",
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",

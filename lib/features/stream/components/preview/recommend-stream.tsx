@@ -50,7 +50,9 @@ export function RecommendStream({}: RecommendStreamProps) {
                         </li>
                     ))
                 ) : (
-                    <p>No streams available</p>
+                    <p className="pl-2 text-Text/Subtle">
+                        No streams available
+                    </p>
                 )}
             </ul>
         </div>
