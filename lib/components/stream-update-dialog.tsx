@@ -1,13 +1,8 @@
-import { ROUTES } from "../configs/routes.config";
-import { categoryApi } from "../features/category/apis";
-import { SettingUpdateForm } from "../features/setting/components/setting-update-form";
-import { streamApi } from "../features/stream/apis";
-import { StreamCategoriesForm } from "../features/stream/components/local-livescreen/stream-categories-form";
-import { StreamUpdateForm } from "../features/stream/components/local-livescreen/stream-update-form";
-import { UploadThumbnailForm } from "../features/upload/components/upload-thumbnail-form";
 import { SettingsIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+
+import { ROUTES } from "../configs/routes.config";
 
 import {
     Dialog,
@@ -21,6 +16,13 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { categoryApi } from "../features/category/apis";
+import { SettingUpdateForm } from "../features/setting/components/setting-update-form";
+import { streamApi } from "../features/stream/apis";
+import { StreamCategoriesForm } from "../features/stream/components/local-livescreen/stream-categories-form";
+import { StreamUpdateForm } from "../features/stream/components/local-livescreen/stream-update-form";
+import { UploadThumbnailForm } from "../features/upload/components/upload-thumbnail-form";
 
 const KeyInformation = dynamic(
     () =>

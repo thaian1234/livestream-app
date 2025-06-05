@@ -1,9 +1,10 @@
-import { Utils } from "../lib/helpers/utils";
 import { eq } from "drizzle-orm";
 import { TimeSpan, createDate } from "oslo";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
 
 export interface IForgetPasswordRepository
     extends Utils.AutoMappedClass<ForgetPasswordRepository> {}

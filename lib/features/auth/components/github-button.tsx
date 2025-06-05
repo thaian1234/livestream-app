@@ -1,7 +1,8 @@
 "use client";
 
-import { authApi } from "../apis";
 import { FaGithub } from "react-icons/fa";
+
+import { authApi } from "../apis";
 
 export function GithubButton() {
     const { mutate: handleSignInGithub, isPending } =

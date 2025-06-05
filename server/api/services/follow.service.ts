@@ -1,7 +1,8 @@
-import { FollowDTO } from "../dtos/follow.dto";
 import { Utils } from "../lib/helpers/utils";
+
 import { IFollowRepository } from "../repositories/follow.repository";
 
+import { FollowDTO } from "../dtos/follow.dto";
 import { IBlockService } from "./block.service";
 
 export interface IFollowService extends Utils.AutoMappedClass<FollowService> {}

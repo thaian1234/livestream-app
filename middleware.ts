@@ -30,14 +30,15 @@ export async function middleware(request: NextRequest) {
     const sessionId = request.cookies.get("auth_session");
     const isPublicRoutes = middlewareRoutes.publicRoutes.has(pathname);
     const isDefaultPage = middlewareRoutes.DEFAULT_PAGE.startsWith(pathname);
+
     const isDashboardPage = pathname.startsWith("/dashboard/");
     const isResetPassword = pathname.startsWith("/reset-password");
-    if (isDefaultPage) {
+    const isDonationNoticePage = pathname.startsWith("/donation-notice");
+
+    if (isDefaultPage || isResetPassword || isDonationNoticePage) {
         return NextResponse.next();
     }
-    if (isResetPassword) {
-        return NextResponse.next();
-    }
+
     if (!sessionId) {
         return isPublicRoutes
             ? NextResponse.next()

@@ -23,11 +23,13 @@ export class BlockDTO {
     public static parseMany(data: unknown) {
         return this.selectSchema.array().parse(data);
     }
-    public static selectUserOnlySchema = UserDTO.selectSchema.omit({
-        bio: true,
-    }).extend({
-        createdAt: z.date()
-    });
+    public static selectUserOnlySchema = UserDTO.selectSchema
+        .omit({
+            bio: true,
+        })
+        .extend({
+            createdAt: z.date(),
+        });
     public static parseUserOnlyMany(data: unknown) {
         try {
             return this.selectUserOnlySchema.array().parse(data);

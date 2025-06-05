@@ -50,7 +50,8 @@ export class R2BucketService implements IR2BucketService {
         file: R2BucketDTO.UploadFile,
         buffer: Buffer<ArrayBuffer>,
     ) {
-        const { fileUrl: imageUrl, signedUrl } = await this.generateSignedUrl(file);
+        const { fileUrl: imageUrl, signedUrl } =
+            await this.generateSignedUrl(file);
         if (!signedUrl || !imageUrl) {
             throw new MyError.ServiceUnavailableError(
                 "Cannot upload image right now",

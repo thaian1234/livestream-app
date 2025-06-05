@@ -1,4 +1,5 @@
 import {
+    SQL,
     and,
     asc,
     count,
@@ -30,8 +31,16 @@ export class StreamRepository implements IStreamRepository {
     constructor() {
         this.db = Database.getInstance().db;
     }
+    async findById(id: string) {
+        return this.db.query.streamTable.findFirst({
+            where: eq(tableSchemas.streamTable.id, id),
+            with: {
+                user: true,
+            },
+        });
+    }
     async advancedSearchStream(query: QueryDTO.AdvancedWithCategory) {
-        const conditions = [];
+        const conditions: SQL[] = [];
         let orderBy;
         if (query.filterBy) {
             conditions.push(

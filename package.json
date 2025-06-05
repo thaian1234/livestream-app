@@ -2,11 +2,24 @@
     "name": "livestream-app",
     "version": "0.1.0",
     "private": true,
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "prettier --write",
+            "eslint --fix"
+        ],
+        "*.{json,css,md}": [
+            "prettier --write"
+        ]
+    },
     "scripts": {
         "dev": "next dev --turbo",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
+        "prepare": "husky",
+        "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+        "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+        "lint:fix": "next lint --fix",
         "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
         "db:push": "drizzle-kit push",
@@ -15,7 +28,9 @@
         "db:drop": "drizzle-kit drop",
         "db:introspect": "drizzle-kit introspect",
         "db:seed": "bun ./server/db/scripts/seed.ts",
-        "db:reset": "bun ./server/db/scripts/reset.ts"
+        "db:reset": "bun ./server/db/scripts/reset.ts",
+        "docker:build": "docker build -t livestream-app .",
+        "docker:run": "docker run -p 3000:3000 livestream-app"
     },
     "dependencies": {
         "@ai-sdk/google": "^1.1.17",
@@ -73,7 +88,7 @@
         "date-fns": "^4.1.0",
         "dotenv": "^16.4.7",
         "drizzle-orm": "^0.39.3",
-        "drizzle-zod": "0.7.0",
+        "drizzle-zod": "0.7.1",
         "embla-carousel-react": "^8.5.2",
         "emoji-mart": "^5.6.0",
         "getstream": "^8.6.1",
@@ -101,6 +116,7 @@
         "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7",
         "usehooks-ts": "^3.1.1",
+        "vnpay": "^2.2.0",
         "zod": "^3.24.2",
         "zustand": "^5.0.3"
     },
@@ -112,6 +128,8 @@
         "drizzle-kit": "0.30.4",
         "eslint": "^8.57.1",
         "eslint-config-next": "^15.1.3",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.0",
         "postcss": "^8.5.3",
         "tailwindcss": "^3.4.17",
         "typescript": "5.0.3"

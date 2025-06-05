@@ -1,13 +1,12 @@
 "use client";
 
+import "@/style/home.css";
 import React from "react";
 
 import { Navbar } from "@/lib/components/navbar";
 import { Sidebar } from "@/lib/components/sidebar";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
-
-import "@/style/home.css";
 
 export default function HomeLayout({
     children,

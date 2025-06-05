@@ -2,8 +2,9 @@ import { AppWindow } from "lucide-react";
 
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 export function MiniplayerButton() {
     const handleMiniPlayer = () => {};

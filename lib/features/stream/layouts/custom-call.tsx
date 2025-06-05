@@ -1,9 +1,10 @@
-import { useJoinCall } from "../hooks/use-join-call";
 import { StreamCall } from "@stream-io/video-react-sdk";
 
 import { HttpStatus } from "@/server/api/lib/constant/http.type";
 
 import { LiveStreamPlayerState } from "@/components/livestream-player-state";
+
+import { useJoinCall } from "../hooks/use-join-call";
 
 interface CustomCallProps {
     streamId: string;

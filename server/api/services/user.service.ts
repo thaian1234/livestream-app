@@ -1,7 +1,9 @@
+import { Utils } from "../lib/helpers/utils";
+
+import { IUserRepository } from "../repositories/user.repository";
+
 import { QueryDTO } from "../dtos/query.dto";
 import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
-import { IUserRepository } from "../repositories/user.repository";
 
 export interface IUserService extends Utils.AutoMappedClass<UserService> {}
 

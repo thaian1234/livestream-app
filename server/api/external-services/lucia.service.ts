@@ -1,10 +1,12 @@
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
 import { Lucia, TimeSpan } from "lucia";
 
 import { envServer } from "@/lib/env/env.server";
 
 import Database from "@/server/db";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { UserDTO } from "../dtos/user.dto";
 
 export interface ILuciaService extends Utils.AutoMappedClass<LuciaService> {}
 

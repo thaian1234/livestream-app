@@ -1,4 +1,3 @@
-import { useNotification } from "../../../providers/notification-provider";
 import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
 
+import { useNotification } from "../../../providers/notification-provider";
 import { NotificationFeed } from "./notification-feed";
 
 export function NotificationPopover() {

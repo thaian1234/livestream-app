@@ -1,6 +1,5 @@
 "use client";
 
-import { searchApi } from "../apis";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
@@ -8,6 +7,8 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+
+import { searchApi } from "../apis";
 
 const DEBOUNCE_DELAY = 500;
 const SUGGESTIONS_LIMIT = 3;

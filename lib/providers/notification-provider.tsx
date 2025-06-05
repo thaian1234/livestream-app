@@ -1,4 +1,3 @@
-import { notificationApi } from "../features/notification/apis";
 import { DefaultGenerics, RealTimeMessage, connect } from "getstream";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
@@ -14,7 +13,10 @@ import { envClient } from "@/lib/env/env.client";
 
 import { NotificationDTO } from "@/server/api/dtos/notification.dto";
 
+import DonationNotification from "@/components/donation-notification";
 import StreamNotification from "@/components/stream-notification";
+
+import { notificationApi } from "../features/notification/apis";
 
 interface NotificationContextType {
     notifications: NotificationDTO.Activity[];
@@ -112,6 +114,18 @@ export function NotificationProvider({
                         />
                     ));
                     break;
+                case "DONATION_RECEIVED":
+                    toast.custom(
+                        () => (
+                            <DonationNotification
+                                donorName={latestActivity.actorName}
+                                amount={latestActivity.amount}
+                            />
+                        ),
+                        {
+                            position: "top-center",
+                        },
+                    );
                 default:
                     break;
             }

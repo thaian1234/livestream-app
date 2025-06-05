@@ -1,8 +1,9 @@
 import { Maximize, Minimize } from "lucide-react";
 import { useState } from "react";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 export function FullScreenButton() {
     const [isFullscreen, setIsFullscreen] = useState(false);

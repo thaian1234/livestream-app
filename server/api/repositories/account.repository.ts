@@ -1,12 +1,14 @@
-import { AccountDTO } from "../dtos/account.dto";
-import { GithubDTO } from "../dtos/github.dto";
-import { GoogleDTO } from "../dtos/google.dto";
-import { UserDTO } from "../dtos/user.dto";
-import { Utils } from "../lib/helpers/utils";
 import { and, eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { AccountDTO } from "../dtos/account.dto";
+import { GithubDTO } from "../dtos/github.dto";
+import { GoogleDTO } from "../dtos/google.dto";
+import { UserDTO } from "../dtos/user.dto";
 
 export interface IAccountRepository
     extends Utils.AutoMappedClass<AccountRepository> {}

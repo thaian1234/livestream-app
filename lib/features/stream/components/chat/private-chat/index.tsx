@@ -11,5 +11,14 @@ interface PrivateChatProps {
 
 export function PrivateChat({ streamerId }: PrivateChatProps) {
     const { viewerId } = useViewerId();
-    return <>{viewerId ? <BoxChat /> : <Preview streamerId={streamerId} />}</>;
+
+    return (
+        <>
+            {viewerId ? (
+                <BoxChat streamerId={streamerId} />
+            ) : (
+                <Preview streamerId={streamerId} />
+            )}
+        </>
+    );
 }
