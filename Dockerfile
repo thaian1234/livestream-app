@@ -1,21 +1,20 @@
-# Use the official Node.js 18 Alpine image
-FROM node:18-alpine AS base
+# Use Node.js as base
+FROM node:20-alpine AS base
 
-# Install dependencies only when needed
+# Install dependencies with Bun
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
+# Install Bun for dependency installation
+RUN npm install -g bun
 WORKDIR /app
 
-# Install Bun
-RUN npm install -g bun
-
-# Copy package.json and lock file
+# Copy package files
 COPY package.json bun.lockb* ./
 
 # Install dependencies
 RUN bun install --frozen-lockfile || (bun install && echo "Lockfile updated during build")
 
-# Rebuild the source code only when needed
+# Build with Node.js (more compatible)
 FROM base AS builder
 WORKDIR /app
 
@@ -25,55 +24,46 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
-# Create .env from .env.example for build
-RUN cp .env.production .env
-
-# Set environment variables for build
+# Build environment setup
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install Bun for building
-RUN npm install -g bun
+# Create .env from production config for build
+RUN if [ -f .env.production ]; then cp .env.production .env; fi
 
-# Build the application
-RUN bun run build
+# Build with Node.js instead of Bun
+RUN npm run build
 
-# Clean up build artifacts
-RUN rm -f .env
-RUN rm -rf .env.production
-
-# Production image, copy all the files and run next
+# Production image
 FROM base AS runner
 WORKDIR /app
 
-# Set production environment
+# Production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-# Create nextjs user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Create system user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Copy public assets
+# Copy public directory
 COPY --from=builder /app/public ./public
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Create .next directory with correct permissions
+RUN mkdir .next && \
+    chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
+# Copy Next.js build output with correct ownership
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Switch to nextjs user
+# Switch to non-root user
 USER nextjs
 
 # Expose port
 EXPOSE 3000
-
-# Set port environment variable
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
 
 # Start the application
 CMD ["node", "server.js"]
