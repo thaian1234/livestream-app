@@ -1,4 +1,4 @@
-import { OauthButton } from "../components/oauth-buttons";
+import "@/style/auth.css";
 import Link from "next/link";
 import React from "react";
 
@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import "@/style/auth.css";
+import { OauthButton } from "../components/oauth-buttons";
 
 interface AuthLayoutProps {
     title: string;
@@ -38,7 +38,7 @@ export function AuthLayout({
           };
 
     return (
-        <Card className="justify-between text-base">
+        <Card className="min-w-[400px] justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>

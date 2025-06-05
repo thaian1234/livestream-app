@@ -1,7 +1,5 @@
 "use client";
 
-import { ChatMessage } from "../chat-message";
-import { CustomMessageInput } from "../custom-message-input";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
@@ -15,6 +13,9 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { ChatMessage } from "../chat-message";
+import { CustomMessageInput } from "../custom-message-input";
 
 export function BoxChat() {
     const { setViewerId } = useViewerId();
@@ -49,7 +50,7 @@ export function BoxChat() {
             <ScrollArea
                 ref={scrollAreaRef}
                 className={cn(
-                    "h-[calc(100vh-16rem)] px-4 transition-all duration-300 ease-in-out",
+                    "h-[calc(100vh-15rem)] px-4 transition-all duration-300 ease-in-out",
                 )}
             >
                 {messages && messages.length > 0 ? (

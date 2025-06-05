@@ -1,6 +1,7 @@
+import "@/style/auth.css";
 import Image from "next/image";
 
-import "@/style/auth.css";
+import { Background } from "@/lib/features/auth/layouts/background";
 
 export default function AuthLayout({
     children,
@@ -8,15 +9,17 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <main className="containerAuth">
-            <Image
-                src="/logoipsum-330.svg"
-                className="logoContainer"
-                width={100}
-                height={100}
-                alt="Logo"
-            />
-            <section className="popup">{children}</section>
-        </main>
+        <Background>
+            <main className="containerAuth absolute z-50">
+                <Image
+                    src="/logoipsum-330.svg"
+                    className="logoContainer"
+                    width={100}
+                    height={100}
+                    alt="Logo"
+                />
+                <section className="popup">{children}</section>
+            </main>
+        </Background>
     );
 }
