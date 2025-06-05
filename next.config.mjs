@@ -8,6 +8,9 @@ const nextConfig = {
             "nodemailer",
         ],
         optimizePackageImports: ["lucide-react", "react-icons"],
+        preloadEntriesOnStart: false,
+        serverSourceMaps: false,
+        webpackBuildWorker: true,
     },
 
     // Performance optimizations
@@ -38,7 +41,7 @@ const nextConfig = {
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
         minimumCacheTTL: 60 * 60 * 24 * 30, // Cache 30 ngày
         dangerouslyAllowSVG: false, // Bảo mật
-        unoptimized: true,
+        loader: "default",
         contentSecurityPolicy:
             "default-src 'self'; script-src 'none'; sandbox;",
     },
@@ -64,8 +67,16 @@ const nextConfig = {
     async headers() {
         return [
             {
-                // Static assets caching
                 source: "/_next/static/(.*)",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "public, max-age=31536000, immutable",
+                    },
+                ],
+            },
+            {
+                source: "/_next/image(.*)",
                 headers: [
                     {
                         key: "Cache-Control",
@@ -95,48 +106,70 @@ const nextConfig = {
                 "nodemailer",
                 "sharp",
             );
+        }
 
-            // Fix "self is not defined"
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                net: false,
-                tls: false,
-                crypto: false,
-                stream: false,
-                url: false,
-                zlib: false,
-                http: false,
-                https: false,
-                assert: false,
-                os: false,
-                path: false,
-            };
+        // Webpack optimizations
+        webpack: (
+            config,
+            { buildId, dev, isServer, defaultLoaders, webpack },
+        ) => {
+            // Define globals
+            config.plugins.push(
+                new webpack.DefinePlugin({
+                    "typeof window": isServer ? '"undefined"' : '"object"',
+                    "typeof self": isServer ? '"undefined"' : '"object"',
+                    __DEV__: dev,
+                    __PROD__: !dev,
+                }),
+            );
 
-            // Disable splitChunks for server-side to avoid the issue
-            config.optimization.splitChunks = false;
-        } else {
-            // Only apply splitChunks for client-side
-            config.optimization = {
-                ...config.optimization,
-                splitChunks: {
-                    chunks: "all",
-                    cacheGroups: {
-                        vendor: {
-                            test: /[\\/]node_modules[\\/]/,
-                            name: "vendors",
-                            chunks: "all",
-                        },
-                        common: {
-                            name: "common",
-                            minChunks: 2,
-                            chunks: "all",
-                            enforce: true,
+            // Server-side externals
+            if (isServer) {
+                config.externals = config.externals || [];
+                config.externals.push(
+                    "jsonwebtoken",
+                    "@node-rs/argon2",
+                    "nodemailer",
+                    "sharp",
+                );
+            }
+
+            // Optimize bundle splitting
+            if (!dev && !isServer) {
+                config.optimization = {
+                    ...config.optimization,
+                    splitChunks: {
+                        chunks: "all",
+                        cacheGroups: {
+                            vendor: {
+                                test: /[\\/]node_modules[\\/]/,
+                                name: "vendors",
+                                priority: 10,
+                                reuseExistingChunk: true,
+                            },
+                            common: {
+                                name: "common",
+                                minChunks: 2,
+                                priority: 5,
+                                reuseExistingChunk: true,
+                            },
+                            // Separate chunk for large libraries
+                            react: {
+                                test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+                                name: "react",
+                                priority: 20,
+                            },
+                            // Separate chunk for UI libraries
+                            ui: {
+                                test: /[\\/]node_modules[\\/](@radix-ui|lucide-react)[\\/]/,
+                                name: "ui",
+                                priority: 15,
+                            },
                         },
                     },
-                },
-            };
-        }
+                };
+            }
+        };
 
         if (config.cache && !dev) {
             config.cache = Object.freeze({
