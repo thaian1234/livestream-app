@@ -14,7 +14,37 @@ interface VideoThumbnailProps {
     sizes?: string;
     alt?: string;
     placeholder?: "blur" | "empty";
-    blurDataURL?: string;
+}
+
+function generateBlurDataURL(width: number = 16, height: number = 9): string {
+    if (typeof window === "undefined") {
+        return "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAJAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rq5TcjaMEux9ixcPLvXaOPaA=";
+    }
+
+    try {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, "#374151"); // gray-700
+            gradient.addColorStop(0.5, "#4B5563"); // gray-600
+            gradient.addColorStop(1, "#374151"); // gray-700
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            return canvas.toDataURL("image/jpeg", 0.1);
+        }
+    } catch (error) {
+        console.warn("Failed to generate canvas blur data URL:", error);
+    }
+
+    // Fallback blur data URL
+    return "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAJAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rq5TcjaMEux9ixcPLvXaOPaA=";
 }
 
 export function VideoThumbnail({
@@ -22,8 +52,7 @@ export function VideoThumbnail({
     priority = false,
     sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
     alt = "Video thumbnail",
-    placeholder = "empty",
-    blurDataURL,
+    placeholder = "blur",
 }: VideoThumbnailProps) {
     const [thumbnailError, setThumbnailError] = useState(!thumbnailUrl);
     const [imageLoading, setImageLoading] = useState(true);
@@ -53,7 +82,7 @@ export function VideoThumbnail({
                             sizes={sizes}
                             quality={85}
                             placeholder={placeholder}
-                            blurDataURL={blurDataURL}
+                            blurDataURL={generateBlurDataURL()}
                             className={cn(
                                 "rounded-lg object-cover transition-opacity duration-300",
                                 imageLoading ? "opacity-0" : "opacity-100",
