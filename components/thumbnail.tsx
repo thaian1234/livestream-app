@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+import { generateOptimizedBlurDataURL } from "@/lib/helpers/optimize-img";
 import { cn } from "@/lib/utils";
 
 import { AspectRatio } from "./ui/aspect-ratio";

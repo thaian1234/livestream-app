@@ -213,6 +213,6 @@ class BlurDataURLGenerator {
     }
 }
 
-function generateOptimizedBlurDataURL(imageUrl: string | null): string {
+export function generateOptimizedBlurDataURL(imageUrl: string | null): string {
     return BlurDataURLGenerator.generate(imageUrl);
 }
