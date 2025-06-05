@@ -1,9 +1,11 @@
-import { FollowDTO } from "../dtos/follow.dto";
-import { Utils } from "../lib/helpers/utils";
 import { and, desc, eq, inArray, ne, notInArray, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { FollowDTO } from "../dtos/follow.dto";
 
 export interface IFollowRepository
     extends Utils.AutoMappedClass<FollowRepository> {}

@@ -23,14 +23,6 @@ const nextConfig = {
     output: "standalone",
     productionBrowserSourceMaps: false,
 
-    // Tối ưu memory cho build process
-    experimental: {
-        workerThreads: false,
-        cpus: 1,
-        // Thêm config này để handle native modules
-        esmExternals: "loose",
-    },
-
     eslint: {
         // Warning: This allows production builds to successfully complete even if
         // your project has ESLint errors.

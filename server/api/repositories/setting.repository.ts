@@ -1,9 +1,11 @@
-import { SettingDTO } from "../dtos/setting.dto";
-import { Utils } from "../lib/helpers/utils";
 import { eq } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+
+import { Utils } from "../lib/helpers/utils";
+
+import { SettingDTO } from "../dtos/setting.dto";
 
 export interface ISettingRepository
     extends Utils.AutoMappedClass<SettingRepository> {}

@@ -11,8 +11,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json bun.lockb* ./
 
-# Use Bun for installing dependencies
-RUN bun install --frozen-lockfile
+# Install dependencies
+RUN bun install --frozen-lockfile || (bun install && echo "Lockfile updated during build")
 
 # Build with Node.js (more compatible)
 FROM base AS builder

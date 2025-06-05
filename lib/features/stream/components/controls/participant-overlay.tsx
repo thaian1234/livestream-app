@@ -1,4 +1,3 @@
-import { CinemaModeButton } from "../livescreen/cinema-mode-button";
 import { useCallStateHooks } from "@stream-io/video-react-sdk";
 import { ArrowLeftToLine, Users2Icon } from "lucide-react";
 import { useRef, useState } from "react";
@@ -6,10 +5,12 @@ import { useRef, useState } from "react";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
-import { LiveBadge } from "@/components/live-badge";
-import { TooltipModel } from "@/components/tooltip-model";
 import { Badge } from "@/components/ui/badge";
 
+import { LiveBadge } from "@/components/live-badge";
+import { TooltipModel } from "@/components/tooltip-model";
+
+import { CinemaModeButton } from "../livescreen/cinema-mode-button";
 import { PiPButton } from "./PiP-button";
 import { PlayButton } from "./play-button";
 import { ToggleFullScreenButton } from "./toggle-fullscreen-button";

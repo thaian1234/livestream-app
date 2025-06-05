@@ -1,6 +1,5 @@
 "use client";
 
-import { blockApi } from "../apis";
 import { CircleSlash2, LockOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +13,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+import { blockApi } from "../apis";
 
 interface BlockButtonProps {
     blockedId: string;

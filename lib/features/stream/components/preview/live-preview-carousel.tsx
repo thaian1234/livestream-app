@@ -1,5 +1,3 @@
-import { streamApi } from "../../apis";
-
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +9,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import { streamApi } from "../../apis";
 import { LivePreviewCard } from "./live-preview-card";
 
 export function LivePreviewCarousel() {

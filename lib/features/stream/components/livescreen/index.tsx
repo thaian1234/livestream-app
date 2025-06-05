@@ -8,8 +8,9 @@ import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 import { CinemaModeButton } from "./cinema-mode-button";
 import { FullScreenButton } from "./full-screen-button";

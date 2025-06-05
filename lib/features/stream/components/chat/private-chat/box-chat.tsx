@@ -1,7 +1,5 @@
 "use client";
 
-import { ChatMessage } from "../chat-message";
-import { CustomMessageInput } from "../custom-message-input";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
@@ -16,7 +14,14 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export function BoxChat() {
+import { ChatMessage } from "../chat-message";
+import { CustomMessageInput } from "../custom-message-input";
+
+interface BoxChatProps {
+    streamerId?: string;
+}
+
+export function BoxChat({ streamerId }: BoxChatProps) {
     const { setViewerId } = useViewerId();
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -32,6 +37,7 @@ export function BoxChat() {
             }
         }
     }, [messages]);
+
     return (
         <div className="px-2 py-1">
             <div className="flex flex-row items-center border-b border-gray-700 pb-1">
@@ -67,7 +73,9 @@ export function BoxChat() {
                     </div>
                 )}
             </ScrollArea>
-            <MessageInput Input={() => <CustomMessageInput />} />
+            <MessageInput
+                Input={() => <CustomMessageInput streamerId={streamerId} />}
+            />
         </div>
     );
 }

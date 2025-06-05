@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 import { ChatMessage } from "./chat-message";
 

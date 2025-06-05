@@ -1,6 +1,5 @@
 "use client";
 
-import { followApi } from "../apis";
 import { UserCheck, UserMinus, UserPlus } from "lucide-react";
 import { useState } from "react";
 import React from "react";
@@ -16,6 +15,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+import { followApi } from "../apis";
 
 interface FollowButtonProps {
     followingId: string;

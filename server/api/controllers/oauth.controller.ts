@@ -1,13 +1,3 @@
-import { GithubDTO } from "../dtos/github.dto";
-import { GoogleDTO } from "../dtos/google.dto";
-import { IGitHubService } from "../external-services/github.service";
-import { IGoogleService } from "../external-services/google.service";
-import { HttpStatus } from "../lib/constant/http.type";
-import { ApiResponse } from "../lib/helpers/api-response";
-import { MyError } from "../lib/helpers/errors";
-import { Utils } from "../lib/helpers/utils";
-import { CreateFactoryType } from "../lib/types/factory.type";
-import { Validator } from "../lib/validations/validator";
 import { zValidator } from "@hono/zod-validator";
 import { getCookie, setCookie } from "hono/cookie";
 import { generateIdFromEntropySize } from "lucia";
@@ -16,6 +6,19 @@ import { z } from "zod";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { envClient } from "@/lib/env/env.client";
 import { envServer } from "@/lib/env/env.server";
+
+import { HttpStatus } from "../lib/constant/http.type";
+import { ApiResponse } from "../lib/helpers/api-response";
+import { MyError } from "../lib/helpers/errors";
+import { Utils } from "../lib/helpers/utils";
+import { CreateFactoryType } from "../lib/types/factory.type";
+import { Validator } from "../lib/validations/validator";
+
+import { IGitHubService } from "../external-services/github.service";
+import { IGoogleService } from "../external-services/google.service";
+
+import { GithubDTO } from "../dtos/github.dto";
+import { GoogleDTO } from "../dtos/google.dto";
 
 export interface IOauthController
     extends Utils.AutoMappedClass<OauthController> {}

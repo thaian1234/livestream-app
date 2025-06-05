@@ -1,13 +1,14 @@
 "use client";
 
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
-import { useIsClient } from "../hooks/use-is-client";
 import {
     QueryClient,
     QueryClientProvider,
     isServer,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { useIsClient } from "../hooks/use-is-client";
 
 // In Next.js, this file would be called: app/providers.jsx
 

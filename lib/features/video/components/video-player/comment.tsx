@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { formatTime, timeAgo } from "@/lib/helpers/formatData";
 import { cn } from "@/lib/utils";
+
+import { CommentDTO } from "@/server/api/dtos/comment.dto";
 
 import { Button } from "@/components/ui/button";
 
 import { UserAvatar } from "@/components/user-avatar";
 
 import { IComment } from "./comment-section";
-import { CommentDTO } from "@/server/api/dtos/comment.dto";
-import { formatTime, timeAgo } from "@/lib/helpers/formatData";
 
 export function Comment({ data }: { data: CommentDTO.CommentWithUser }) {
     const [isShowMore, setIsShowMore] = useState(false);

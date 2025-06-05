@@ -1,6 +1,5 @@
 "use client";
 
-import { settingApi } from "../apis";
 import {
     ClipboardPasteIcon,
     KeySquareIcon,
@@ -10,7 +9,6 @@ import { toast } from "sonner";
 
 import { useCopyToClipboard } from "@/lib/hooks/use-copy-clipboard";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import {
     Card,
     CardContent,
@@ -20,6 +18,9 @@ import {
 } from "@/components/ui/card";
 import { SecretInput } from "@/components/ui/secret-input";
 
+import { TooltipModel } from "@/components/tooltip-model";
+
+import { settingApi } from "../apis";
 import { GenerateKeyAlert } from "./generate-key-alert";
 
 interface KeyFormProps {

@@ -1,9 +1,10 @@
 "use client";
 
-import { categoryApi } from "../apis";
 import Image from "next/image";
 
 import { Card, CardContent } from "@/components/ui/card";
+
+import { categoryApi } from "../apis";
 
 interface Category {
     id: number;

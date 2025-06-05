@@ -55,6 +55,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
         setValue,
         watch,
         reset,
+        getValues,
     } = useForm<DonationDTO.DonationRequest>({
         resolver: zodResolver(DonationDTO.donationRequestSchema),
         defaultValues: {
@@ -251,18 +252,6 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                         </div> */}
                                         <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
                                             <RadioGroupItem
-                                                value="MOMO"
-                                                id="momo"
-                                            />
-                                            <Label
-                                                htmlFor="momo"
-                                                className="flex-1 cursor-pointer"
-                                            >
-                                                MoMo
-                                            </Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
-                                            <RadioGroupItem
                                                 value="VNPAY"
                                                 id="vnpay"
                                             />
@@ -271,6 +260,18 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 className="flex-1 cursor-pointer"
                                             >
                                                 VNPay
+                                            </Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
+                                            <RadioGroupItem
+                                                value="MOMO"
+                                                id="momo"
+                                            />
+                                            <Label
+                                                htmlFor="momo"
+                                                className="flex-1 cursor-pointer"
+                                            >
+                                                MoMo
                                             </Label>
                                         </div>
                                     </RadioGroup>
@@ -290,14 +291,13 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                 onClick={() => {
                                     if (!selectedCard) return;
 
+                                    const payload = getValues();
+
                                     createDonation(
                                         {
                                             json: {
-                                                streamerId,
-                                                cardId: selectedCard.id,
-                                                message: "",
+                                                ...payload,
                                                 amount: selectedCard.amount,
-                                                paymentMethod: "VNPAY",
                                             },
                                         },
                                         {

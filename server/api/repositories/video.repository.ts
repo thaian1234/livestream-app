@@ -223,9 +223,7 @@ export class VideoRepository implements IVideoRepository {
                     this.db
                         .select({ userId: tableSchemas.userTable.id })
                         .from(tableSchemas.userTable)
-                        .where(
-                            eq(tableSchemas.userTable.username, username),
-                        ),
+                        .where(eq(tableSchemas.userTable.username, username)),
                 ),
             );
             return { videos, totalRecords };

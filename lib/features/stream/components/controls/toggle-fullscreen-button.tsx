@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 
 import { useControlVideoStore } from "@/lib/stores/use-control-video-store";
 
-import { TooltipModel } from "@/components/tooltip-model";
 import { Button } from "@/components/ui/button";
+
+import { TooltipModel } from "@/components/tooltip-model";
 
 interface ToggleFullScreenButtonProps {}
 

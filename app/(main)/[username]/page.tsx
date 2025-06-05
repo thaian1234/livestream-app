@@ -86,9 +86,7 @@ export default function StreamPage() {
                         <ChatProvider
                             streamId={stream.id}
                             streamerId={
-                                isOpenPrivateChat
-                                    ? stream.userId
-                                    : undefined
+                                isOpenPrivateChat ? stream.userId : undefined
                             }
                         >
                             {isOpenChatComponent && (
@@ -125,9 +123,7 @@ export default function StreamPage() {
                         <ChatProvider
                             streamId={stream.id}
                             streamerId={
-                                isOpenPrivateChat
-                                    ? stream.userId
-                                    : undefined
+                                isOpenPrivateChat ? stream.userId : undefined
                             }
                         >
                             <Chat

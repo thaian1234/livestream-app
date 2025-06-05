@@ -1,8 +1,9 @@
-import { streamApi } from "../../apis";
 import { useCall } from "@stream-io/video-react-sdk";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+
+import { streamApi } from "../../apis";
 
 interface ToggleLiveButtonProps {
     isLive: boolean;

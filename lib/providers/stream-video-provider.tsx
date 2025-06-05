@@ -1,10 +1,11 @@
 "use client";
 
-import { useVideoClient } from "../features/stream/hooks/use-stream-video";
 import { StreamVideo } from "@stream-io/video-react-sdk";
 import React from "react";
 
 import { LiveStreamPlayerState } from "@/components/livestream-player-state";
+
+import { useVideoClient } from "../features/stream/hooks/use-stream-video";
 
 interface StreamProviderProps {
     children: React.ReactNode;

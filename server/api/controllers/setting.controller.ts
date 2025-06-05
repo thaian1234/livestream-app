@@ -1,14 +1,19 @@
-import { SettingDTO } from "../dtos/setting.dto";
-import { IGetStreamService } from "../external-services/getstream.service";
+import { zValidator } from "@hono/zod-validator";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { ISettingService } from "../services/setting.service";
-import { zValidator } from "@hono/zod-validator";
+
+import { IGetStreamService } from "../external-services/getstream.service";
+
+import { SettingDTO } from "../dtos/setting.dto";
 
 export interface ISettingController
     extends Utils.PickMethods<SettingController, "setupHandlers"> {}

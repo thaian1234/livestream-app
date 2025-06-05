@@ -1,6 +1,5 @@
 "use client";
 
-import useStreamerPrivateChats from "../../../hooks/use-streamer-private-chats";
 import { MessageSquare } from "lucide-react";
 
 import { timeAgo } from "@/lib/helpers/formatData";
@@ -9,6 +8,8 @@ import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+import useStreamerPrivateChats from "../../../hooks/use-streamer-private-chats";
 
 interface PreviewProps {
     streamerId?: string;

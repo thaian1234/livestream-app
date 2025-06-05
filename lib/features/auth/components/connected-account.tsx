@@ -1,9 +1,10 @@
 "use client";
 
-import { authApi } from "../apis";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
+
+import { authApi } from "../apis";
 
 export function ConnectedAccount() {
     const { mutate: handleGoogleSignIn, isPending: isGoolePending } =

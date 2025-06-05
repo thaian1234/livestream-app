@@ -1,6 +1,8 @@
-import { SettingDTO } from "../dtos/setting.dto";
 import { Utils } from "../lib/helpers/utils";
+
 import { ISettingRepository } from "../repositories/setting.repository";
+
+import { SettingDTO } from "../dtos/setting.dto";
 
 export interface ISettingService
     extends Utils.AutoMappedClass<SettingService> {}

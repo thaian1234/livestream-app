@@ -1,15 +1,19 @@
-import { CategoryDTO } from "../dtos/category.dto";
-import { QueryDTO } from "../dtos/query.dto";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
 import { HttpStatus } from "../lib/constant/http.type";
 import { ApiResponse } from "../lib/helpers/api-response";
 import { MyError } from "../lib/helpers/errors";
 import { Utils } from "../lib/helpers/utils";
 import { CreateFactoryType } from "../lib/types/factory.type";
 import { Validator } from "../lib/validations/validator";
+
 import { AuthMiddleware } from "../middleware/auth.middleware";
+
 import { ICategoryService } from "../services/category.service";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+
+import { CategoryDTO } from "../dtos/category.dto";
+import { QueryDTO } from "../dtos/query.dto";
 
 export interface ICategoryController
     extends Utils.PickMethods<CategoryController, "setupHandlers"> {}

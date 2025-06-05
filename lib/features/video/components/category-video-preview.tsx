@@ -1,7 +1,8 @@
 import { Loader2 } from "lucide-react";
+import { redirect, useParams } from "next/navigation";
+
 import { videoApi } from "../apis";
 import { PreviewVideoCarousel } from "./video-preview-carousel";
-import { redirect, useParams } from "next/navigation";
 
 export function CategoryVideoPreview() {
     const { username } = useParams();
