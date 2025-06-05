@@ -38,7 +38,7 @@ export function AuthLayout({
           };
 
     return (
-        <Card className="justify-between text-base">
+        <Card className="min-w-[400px] justify-between text-base">
             <CardBody>
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>

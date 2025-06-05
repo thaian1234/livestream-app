@@ -18,7 +18,7 @@ export function VideoThumbnail({ thumbnailUrl }: VideoThumbnailProps) {
 
     return (
         <AspectRatio ratio={16 / 9} className="group relative">
-            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-600 transition-all duration-300 group-hover:shadow-lg">
+            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 transition-all duration-300 group-hover:shadow-lg">
                 {thumbnailError ? (
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Avatar className="size-14">
