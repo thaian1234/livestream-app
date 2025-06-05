@@ -27,7 +27,6 @@ import { UserAvatar } from "@/components/user-avatar";
 export function UserNav() {
     const router = useRouter();
     const { user, isPending, error, stream } = useAuth();
-    console.log("user", user);
     if (isPending) {
         return <Spinner />;
     }
