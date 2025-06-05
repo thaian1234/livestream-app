@@ -21,7 +21,6 @@ export function Navbar() {
             </div>
             <div className="flex items-center justify-around space-x-8">
                 <SearchBar />
-                <WalletButton />
                 <Actions />
             </div>
         </nav>

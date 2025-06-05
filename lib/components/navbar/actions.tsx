@@ -2,9 +2,10 @@
 
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import React from "react";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";
 import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
@@ -15,13 +16,24 @@ import { NotificationProvider } from "@/lib/providers/notification-provider";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { TooltipModel } from "@/components/tooltip-model";
+
+import { WalletButton } from "./wallet-button";
+
 export const AfterSignin = () => {
     const { user } = useAuth();
     if (!user) {
         notFound();
     }
+    const router = useRouter();
     return (
         <>
+            <TooltipModel content="Donation" side="bottom">
+                <Link href={`/dashboard/${user.username}/donation`}>
+                    <WalletButton />
+                </Link>
+            </TooltipModel>
+
             <NotificationProvider userId={user.id}>
                 <NotificationPopover />
             </NotificationProvider>
