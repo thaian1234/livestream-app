@@ -2,7 +2,8 @@
 
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import React from "react";
-import { Channel, Chat } from "stream-chat-react";
+import { DefaultGenerics } from "stream-chat";
+import { Channel, Chat, EventComponentProps } from "stream-chat-react";
 import { EmojiPicker } from "stream-chat-react/emojis";
 
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,7 +51,11 @@ export function ChatProvider({
                 reactionOptions={customReactionOptions}
                 EmojiPicker={EmojiPicker}
                 channel={chatChannel}
-                MessageSystem={CustomSystemMessage}
+                MessageSystem={
+                    CustomSystemMessage as React.ComponentType<
+                        EventComponentProps<DefaultGenerics>
+                    >
+                }
             >
                 {children}
             </Channel>

@@ -58,7 +58,7 @@ export class AIService implements IAIService {
 
     public getStreamText() {
         return streamText({
-            model: this.ai("gemini-1.5-pro-latest"),
+            model: this.ai("gemini-2.0-flash"),
             messages: [this.basePrompt, ...this.messages] as
                 | CoreMessage[]
                 | Omit<Message, "id">[],

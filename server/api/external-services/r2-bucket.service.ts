@@ -48,7 +48,7 @@ export class R2BucketService implements IR2BucketService {
     }
     public async uploadImage(
         file: R2BucketDTO.UploadFile,
-        buffer: Buffer<ArrayBuffer>,
+        buffer: BodyInit | null,
     ) {
         const { fileUrl: imageUrl, signedUrl } =
             await this.generateSignedUrl(file);
