@@ -33,7 +33,7 @@ export function CollapseSidebar({ users }: CollapseSidebarProps) {
                     <button onClick={() => handleNavigate(item.username)}>
                         <Avatar className="mx-auto mb-2 h-10 w-10">
                             <AvatarImage
-                                src={item.imageUrl || "/user.svg"}
+                                src={item.imageUrl || "/default-image"}
                                 alt={item.username}
                             />
                             <AvatarFallback>User</AvatarFallback>

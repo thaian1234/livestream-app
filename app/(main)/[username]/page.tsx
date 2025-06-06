@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useMediaQuery } from "usehooks-ts";
 
+import { AboutChannel } from "@/lib/components/livestream-user/about-channel";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
@@ -76,6 +77,7 @@ export default function StreamPage() {
                             isFollowing={isFollowing}
                             isOwnedStream={currentUser.user.id === user.id}
                         />
+                        <AboutChannel user={user} />
                     </div>
                     <div
                         className={cn(
