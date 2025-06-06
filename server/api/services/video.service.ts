@@ -71,4 +71,7 @@ export class VideoService implements IVideoService {
         const imageBuffer = Buffer.from(images[0].base64, "base64");
         return imageBuffer;
     }
+    public async findVideoForHomeProfile(username: string) {
+        return await this.videoRepository.findVideoForHomeProfile(username);
+    }
 }

@@ -2,6 +2,7 @@ import { and, asc, count, desc, eq, inArray, ne, sql } from "drizzle-orm";
 
 import Database from "@/server/db";
 import tableSchemas from "@/server/db/schemas";
+import { videosToCategoriesRelations } from "@/server/db/schemas/video-category.table";
 
 import { Utils } from "../lib/helpers/utils";
 
@@ -230,5 +231,86 @@ export class VideoRepository implements IVideoRepository {
         } catch (error) {
             console.error(error);
         }
+    }
+    async findVideoForHomeProfile(username: string) {
+        const top4Categories = await this.db
+            .select({
+                categoryId: tableSchemas.categoryTable.id,
+                name: tableSchemas.categoryTable.name,
+                totalViews:
+                    sql<number>`SUM(${tableSchemas.videoTable.viewCount})`.as(
+                        "totalViews",
+                    ),
+            })
+            .from(tableSchemas.videoTable)
+            .innerJoin(
+                tableSchemas.videosToCategoriesTable,
+                eq(
+                    tableSchemas.videosToCategoriesTable.videoId,
+                    tableSchemas.videoTable.id,
+                ),
+            )
+            .innerJoin(
+                tableSchemas.categoryTable,
+                eq(
+                    tableSchemas.categoryTable.id,
+                    tableSchemas.videosToCategoriesTable.categoryId,
+                ),
+            )
+            .where(
+                inArray(
+                    tableSchemas.videoTable.userId,
+                    this.db
+                        .select({ userId: tableSchemas.userTable.id })
+                        .from(tableSchemas.userTable)
+                        .where(eq(tableSchemas.userTable.username, username)),
+                ),
+            )
+            .groupBy(tableSchemas.categoryTable.id)
+            .orderBy(sql`SUM(${tableSchemas.videoTable.viewCount}) DESC`)
+            .limit(4);
+
+        const result = [];
+
+        for (let category of top4Categories) {
+            const videos = await this.db
+                .select()
+                .from(tableSchemas.videoTable)
+                .innerJoin(
+                    tableSchemas.videosToCategoriesTable,
+                    eq(
+                        tableSchemas.videoTable.id,
+                        tableSchemas.videosToCategoriesTable.videoId,
+                    ),
+                )
+                .where(
+                    and(
+                        eq(
+                            tableSchemas.videosToCategoriesTable.categoryId,
+                            category.categoryId,
+                        ),
+                        inArray(
+                            tableSchemas.videoTable.userId,
+                            this.db
+                                .select({ userId: tableSchemas.userTable.id })
+                                .from(tableSchemas.userTable)
+                                .where(
+                                    eq(
+                                        tableSchemas.userTable.username,
+                                        username,
+                                    ),
+                                ),
+                        ),
+                    ),
+                )
+                .orderBy(desc(tableSchemas.videoTable.viewCount))
+                .limit(5);
+
+            result.push({
+                category: category.name,
+                video: videos.map((row) => row.videos),
+            });
+        }
+        return result;
     }
 }
