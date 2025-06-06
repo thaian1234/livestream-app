@@ -42,7 +42,8 @@ export function ChatProvider({
         streamerId,
         viewerId,
     );
-    if (!chatClient || !chatChannel) return <Skeleton className="size-full" />;
+    if (!chatClient || !chatChannel)
+        return <Skeleton className="h-[calc(100vh-7rem)]" />;
 
     return (
         <Chat client={chatClient}>

@@ -44,16 +44,16 @@ export function Infor() {
     const isFollowing = data.data.isFollowing;
 
     return (
-        <div className="relative mx-auto aspect-video min-h-[780px]">
+        <div className="relative aspect-video max-w-full lg:min-h-[calc(100vh-15rem)]">
             <StreamVideoProvider>
-                <div className="flex w-full justify-center border border-slate-700">
+                <div className="flex w-full justify-center border border-b-0 border-slate-700">
                     <CustomCall streamId={stream.id}>
                         <LivestreamPlayer />
                     </CustomCall>
                 </div>
             </StreamVideoProvider>
             {/* Channel Info */}
-            <div className="bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent p-4 text-white lg:absolute">
+            <div className="static bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent p-4 text-white lg:absolute">
                 <div className="flex flex-row gap-4">
                     <div className="flex-shrink-0">
                         <UserAvatar
@@ -63,7 +63,7 @@ export function Infor() {
                         />
                     </div>
                     <div className="flex-1">
-                        <div className="flex flex-col justify-between gap-2 md:flex-row">
+                        <div className="flex flex-col justify-between gap-2 sm:flex-row">
                             <div>
                                 <h1 className="text-lg font-bold xl:text-2xl">
                                     {user.username}

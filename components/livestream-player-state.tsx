@@ -21,7 +21,7 @@ export function LiveStreamPlayerState({
     const { isOpenChatComponent, onToggleChatComponent } = useLiveInfor();
 
     return (
-        <div className="relative flex aspect-video items-center justify-center rounded-xl bg-black-2 xl:col-span-9 xl:size-full">
+        <div className="relative flex aspect-video size-full items-center justify-center rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 xl:col-span-9">
             <div className="absolute inset-x-0 left-0 right-0 top-0 h-14 w-full bg-gradient-to-b from-black-0/60 to-transparent"></div>
             <div className="absolute inset-x-0 right-4 top-0 flex h-14 justify-end">
                 {!isOpenChatComponent && (

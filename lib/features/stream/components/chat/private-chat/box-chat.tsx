@@ -55,7 +55,7 @@ export function BoxChat({ streamerId }: BoxChatProps) {
             <ScrollArea
                 ref={scrollAreaRef}
                 className={cn(
-                    "h-[calc(100vh-16rem)] px-4 transition-all duration-300 ease-in-out",
+                    "h-[calc(100vh-15rem)] px-4 transition-all duration-300 ease-in-out",
                 )}
             >
                 {messages && messages.length > 0 ? (

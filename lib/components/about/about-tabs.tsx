@@ -43,7 +43,7 @@ export function AboutTabs() {
     );
 
     return (
-        <Tabs defaultValue="Home" className="w-full">
+        <Tabs defaultValue="Home" className="w-full pr-10">
             <TabsList className="grid w-full grid-cols-3 bg-background pb-14">
                 {TABS.map((tab, index) => (
                     <TabsTrigger

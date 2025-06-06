@@ -59,9 +59,11 @@ export function NotificationPopover() {
                 side="bottom"
                 className="mt-4 w-[350px] border-slate-500 p-0"
             >
-                <div className="flex items-center gap-2 border-b p-4 text-sm font-medium">
+                <div className="flex items-center gap-2 border-b border-gray-700 p-4 text-sm font-medium">
                     <Bell className="size-6" />
-                    <p>Notifications</p>
+                    <p className="text-base font-semibold tracking-wider">
+                        Notifications
+                    </p>
                 </div>
                 <NotificationFeed notifications={notifications} />
             </PopoverContent>

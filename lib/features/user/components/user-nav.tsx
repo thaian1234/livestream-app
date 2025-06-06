@@ -2,8 +2,9 @@
 
 import { LogOut } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 
+import { ROUTES } from "@/lib/configs/routes.config";
 import { getUserNavConfig } from "@/lib/configs/user-nav.config";
 import { SignOutButton } from "@/lib/features/auth/components/signout-button";
 import { useAuth } from "@/lib/providers/auth-provider";
@@ -24,6 +25,7 @@ import { TooltipModel } from "@/components/tooltip-model";
 import { UserAvatar } from "@/components/user-avatar";
 
 export function UserNav() {
+    const router = useRouter();
     const { user, isPending, error, stream } = useAuth();
     if (isPending) {
         return <Spinner />;
@@ -31,6 +33,10 @@ export function UserNav() {
     if (error || !user || !stream) {
         notFound();
     }
+
+    const handleNavigate = () => {
+        router.push(ROUTES.COMMUNITY_PAGE(user.username));
+    };
 
     return (
         <DropdownMenu>
@@ -48,7 +54,10 @@ export function UserNav() {
             <DropdownMenuContent className="w-56" align="center" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-2">
-                        <p className="text-sm font-medium leading-none">
+                        <p
+                            className="cursor-pointer text-sm font-medium leading-none hover:underline"
+                            onClick={handleNavigate}
+                        >
                             {user.username}
                         </p>
                         <p className="truncate text-xs leading-none text-muted-foreground">

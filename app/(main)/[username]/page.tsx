@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useMediaQuery } from "usehooks-ts";
 
+import { AboutChannel } from "@/lib/components/livestream-user/about-channel";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { streamApi } from "@/lib/features/stream/apis";
 import { Chat } from "@/lib/features/stream/components/chat";
@@ -76,6 +77,7 @@ export default function StreamPage() {
                             isFollowing={isFollowing}
                             isOwnedStream={currentUser.user.id === user.id}
                         />
+                        <AboutChannel user={user} />
                     </div>
                     <div
                         className={cn(
@@ -101,40 +103,51 @@ export default function StreamPage() {
                     </div>
                 </>
             ) : (
-                <>
+                <div className="col-span-12 space-y-4">
                     {/* Mobile Screen */}
-                    <div className="col-span-12 aspect-video">
+                    <div className="aspect-video">
                         <StreamVideoProvider>
                             <CustomCall streamId={stream.id}>
                                 <LivestreamPlayer />
                             </CustomCall>
                         </StreamVideoProvider>
                     </div>
-                    <div className="col-span-7">
-                        <LiveInformation
-                            followerCount={followers?.length || 0}
-                            stream={stream}
-                            user={user}
-                            isFollowing={isFollowing}
-                            isOwnedStream={currentUser.user.id === user.id}
-                        />
-                    </div>
-                    <div className="col-span-5 col-start-8">
-                        <ChatProvider
-                            streamId={stream.id}
-                            streamerId={
-                                isOpenPrivateChat ? stream.userId : undefined
-                            }
-                        >
-                            <Chat
-                                isHost={false}
-                                setting={setting}
+                    <div className="flex w-full flex-col justify-between gap-1 md:flex-row">
+                        <div className="w-full">
+                            <LiveInformation
+                                followerCount={followers?.length || 0}
+                                stream={stream}
+                                user={user}
                                 isFollowing={isFollowing}
-                                streamerId={stream.userId}
+                                isOwnedStream={currentUser.user.id === user.id}
                             />
-                        </ChatProvider>
+                            <div className="hidden md:block">
+                                <AboutChannel user={user} />
+                            </div>
+                        </div>
+
+                        <div className="min-w-[400px]">
+                            <ChatProvider
+                                streamId={stream.id}
+                                streamerId={
+                                    isOpenPrivateChat
+                                        ? stream.userId
+                                        : undefined
+                                }
+                            >
+                                <Chat
+                                    isHost={false}
+                                    setting={setting}
+                                    isFollowing={isFollowing}
+                                    streamerId={stream.userId}
+                                />
+                            </ChatProvider>
+                        </div>
+                        <div className="block md:hidden">
+                            <AboutChannel user={user} />
+                        </div>
                     </div>
-                </>
+                </div>
             )}
         </section>
     );

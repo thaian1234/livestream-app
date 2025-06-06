@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 import { UserAvatar } from "@/components/user-avatar";
 
+import { EditProfileDialog } from "./edit-profile-dialog";
 import ProfileSkeleton from "./profile-skeleton";
 
 interface ProfileProps {
@@ -29,33 +30,29 @@ export function Profile({ followers, followings }: ProfileProps) {
             <UserAvatar imageUrl={user.imageUrl} size={"xxl"} />
             <p className="max-w-full break-words text-2xl">{user.username}</p>
             <div className="flex w-full justify-around">
-                <Link
-                    href={`/dashboard/${user.username}/community`}
-                    className="hover:underline"
-                >
+                <div>
                     <span className="font-light text-white/50">
                         Followers:{" "}
                     </span>
                     <span>{followers}</span>
-                </Link>
-                <Link
-                    href={`/dashboard/${user.username}/community`}
-                    className="hover:underline"
-                >
+                </div>
+                <div>
                     <span className="font-light text-white/50">
                         Following:{" "}
                     </span>
                     <span>{followings}</span>
-                </Link>
+                </div>
             </div>
             <div className="max-w-full whitespace-pre-wrap break-words font-extralight text-white/70">
                 {user.bio}
             </div>
-            <Link href={`/dashboard/${user.username}/profile`}>
+            {/* <Link href={`/dashboard/${user.username}/profile`}> */}
+            <EditProfileDialog>
                 <Button variant="gradient" className="w-full">
                     Edit profile
                 </Button>
-            </Link>
+            </EditProfileDialog>
+            {/* </Link> */}
         </div>
     );
 }
