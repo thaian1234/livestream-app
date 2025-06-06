@@ -103,16 +103,16 @@ export default function StreamPage() {
                     </div>
                 </>
             ) : (
-                <>
+                <div className="col-span-12 space-y-4">
                     {/* Mobile Screen */}
-                    <div className="col-span-12 aspect-video">
+                    <div className="aspect-video">
                         <StreamVideoProvider>
                             <CustomCall streamId={stream.id}>
                                 <LivestreamPlayer />
                             </CustomCall>
                         </StreamVideoProvider>
                     </div>
-                    <div className="col-span-7">
+                    <div className="flex w-full flex-col justify-between gap-1 md:flex-row">
                         <LiveInformation
                             followerCount={followers?.length || 0}
                             stream={stream}
@@ -120,23 +120,25 @@ export default function StreamPage() {
                             isFollowing={isFollowing}
                             isOwnedStream={currentUser.user.id === user.id}
                         />
+                        <div className="min-w-[400px]">
+                            <ChatProvider
+                                streamId={stream.id}
+                                streamerId={
+                                    isOpenPrivateChat
+                                        ? stream.userId
+                                        : undefined
+                                }
+                            >
+                                <Chat
+                                    isHost={false}
+                                    setting={setting}
+                                    isFollowing={isFollowing}
+                                    streamerId={stream.userId}
+                                />
+                            </ChatProvider>
+                        </div>
                     </div>
-                    <div className="col-span-5 col-start-8">
-                        <ChatProvider
-                            streamId={stream.id}
-                            streamerId={
-                                isOpenPrivateChat ? stream.userId : undefined
-                            }
-                        >
-                            <Chat
-                                isHost={false}
-                                setting={setting}
-                                isFollowing={isFollowing}
-                                streamerId={stream.userId}
-                            />
-                        </ChatProvider>
-                    </div>
-                </>
+                </div>
             )}
         </section>
     );

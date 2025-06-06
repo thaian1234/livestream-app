@@ -37,7 +37,7 @@ export function Navbar() {
                 </TooltipModel>
             </div>
 
-            <div className="flex items-center justify-around space-x-8">
+            <div className="flex items-center justify-around gap-4 sm:gap-8">
                 <SearchBar />
                 <Actions />
             </div>

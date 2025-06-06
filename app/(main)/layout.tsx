@@ -25,10 +25,10 @@ export default function HomeLayout({
                 {/* Main content */}
                 <main
                     className={cn(
-                        "flex-grow py-6 pr-6 transition-[margin-left] duration-300 ease-in-out",
+                        "flex-grow py-6 transition-[margin-left] duration-300 ease-in-out sm:pr-6",
                         sidebar.isOpenSidebar
-                            ? "ml-4 lg:ml-80"
-                            : "ml-4 sm:ml-[90px]",
+                            ? "sm:pl-4 lg:pl-80"
+                            : "sm:pl-[90px]",
                     )}
                 >
                     {children}

@@ -62,27 +62,29 @@ export function Chat({
                 )
             ) : chatStatus === ChatStatus.Chat ? (
                 <>
-                    <ScrollArea
-                        ref={scrollAreaRef}
-                        className={cn(
-                            "h-[calc(100vh-15rem)] px-4 transition-all duration-300 ease-in-out",
-                        )}
-                    >
-                        {messages && messages.length > 0 ? (
-                            <MessageList
-                                showUnreadNotificationAlways={false}
-                                disableDateSeparator={false}
-                                Message={ChatMessage}
-                            />
-                        ) : (
-                            <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
-                                <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
-                                <p className="max-w-[250px] text-center text-lg text-muted-foreground">
-                                    No messages yet. Let start chating!
-                                </p>
-                            </div>
-                        )}
-                    </ScrollArea>
+                    <div className="pb-[79px] sm:pb-0">
+                        <ScrollArea
+                            ref={scrollAreaRef}
+                            className={cn(
+                                "h-[calc(100vh-15rem)] px-4 transition-all duration-300 ease-in-out",
+                            )}
+                        >
+                            {messages && messages.length > 0 ? (
+                                <MessageList
+                                    showUnreadNotificationAlways={false}
+                                    disableDateSeparator={false}
+                                    Message={ChatMessage}
+                                />
+                            ) : (
+                                <div className="my-4 flex flex-col items-center justify-center rounded-lg bg-muted/30 p-4">
+                                    <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
+                                    <p className="max-w-[250px] text-center text-lg text-muted-foreground">
+                                        No messages yet. Let start chating!
+                                    </p>
+                                </div>
+                            )}
+                        </ScrollArea>
+                    </div>
                     <MessageInput
                         Input={() => (
                             <CustomMessageInput

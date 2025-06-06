@@ -59,7 +59,7 @@ export const CustomMessageInput = ({
     };
 
     return (
-        <>
+        <div className="fixed bottom-0 left-0 right-0 bg-black-1 sm:static sm:block sm:bg-transparent">
             <ChatInfo
                 isDelayed={isChatDelayed}
                 isFollowersOnly={isChatFollowersOnly}
@@ -98,6 +98,6 @@ export const CustomMessageInput = ({
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
