@@ -57,7 +57,7 @@ export function AllVideoPreview() {
                     </li>
                 ))
             ) : (
-                <p>No item</p>
+                <p className="text-center text-base text-gray-400">No item</p>
             )}
         </ul>
     );
