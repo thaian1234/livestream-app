@@ -64,7 +64,7 @@ export function Sidebar() {
                             </ItemLayout>
                         </Card>
                     ) : (
-                        <div className="flex flex-col items-center py-3">
+                        <div className="hidden flex-col items-center py-3 sm:flex">
                             <TooltipModel content="Expand" side="right">
                                 <button onClick={onCollapseSidebar}>
                                     <Menu
