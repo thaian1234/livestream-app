@@ -12,7 +12,7 @@ export default function AuthLayout({
         <Background>
             <main className="containerAuth absolute z-50">
                 <Image
-                    src="/logoipsum-330.svg"
+                    src="/logo.svg"
                     className="logoContainer"
                     width={100}
                     height={100}
