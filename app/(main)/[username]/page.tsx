@@ -113,13 +113,19 @@ export default function StreamPage() {
                         </StreamVideoProvider>
                     </div>
                     <div className="flex w-full flex-col justify-between gap-1 md:flex-row">
-                        <LiveInformation
-                            followerCount={followers?.length || 0}
-                            stream={stream}
-                            user={user}
-                            isFollowing={isFollowing}
-                            isOwnedStream={currentUser.user.id === user.id}
-                        />
+                        <div className="w-full">
+                            <LiveInformation
+                                followerCount={followers?.length || 0}
+                                stream={stream}
+                                user={user}
+                                isFollowing={isFollowing}
+                                isOwnedStream={currentUser.user.id === user.id}
+                            />
+                            <div className="hidden md:block">
+                                <AboutChannel user={user} />
+                            </div>
+                        </div>
+
                         <div className="min-w-[400px]">
                             <ChatProvider
                                 streamId={stream.id}
@@ -136,6 +142,9 @@ export default function StreamPage() {
                                     streamerId={stream.userId}
                                 />
                             </ChatProvider>
+                        </div>
+                        <div className="block md:hidden">
+                            <AboutChannel user={user} />
                         </div>
                     </div>
                 </div>
