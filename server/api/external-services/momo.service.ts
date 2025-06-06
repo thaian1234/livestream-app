@@ -70,11 +70,27 @@ export class MomoService implements IMomoService {
     }
 
     public verifyReturnUrl(body: any) {
-        const rawSignature =
-            `accessKey=${envServer.MOMO_ACCESS_KEY}&amount=${body.amount}&extraData=${body.extraData}&message=${body.message}` +
-            `&orderId=${body.orderId}&orderInfo=${body.orderInfo}&orderType=${body.orderType}` +
-            `&partnerCode=${body.partnerCode}&payType=${body.payType}&requestId=${body.requestId}` +
-            `&responseTime=${body.responseTime}&resultCode=${body.resultCode}&transId=${body.transId}`;
+        const params: Record<string, any> = {
+            accessKey: envServer.MOMO_ACCESS_KEY,
+            amount: body.amount,
+            extraData: body.extraData,
+            message: body.message,
+            orderId: body.orderId,
+            orderInfo: body.orderInfo,
+            orderType: body.orderType,
+            partnerCode: body.partnerCode,
+            payType: body.payType,
+            requestId: body.requestId,
+            responseTime: body.responseTime,
+            resultCode: body.resultCode,
+            transId: body.transId,
+        };
+
+        const rawSignature = Object.entries(params)
+            .filter(([_, value]) => value !== undefined && value !== null)
+            .map(([key, value]) => `${key}=${value}`)
+            .join("&");
+
         const signature = createHmac("sha256", envServer.MOMO_SECRET_KEY)
             .update(rawSignature)
             .digest("hex");
@@ -86,7 +102,7 @@ export class MomoService implements IMomoService {
             transactionId: body.transId || "",
         };
 
-        if (body.resultCode === "0" && signature === body.signature) {
+        if (body.resultCode === 0 && signature === body.signature) {
             response.isSuccess = true;
         }
 
