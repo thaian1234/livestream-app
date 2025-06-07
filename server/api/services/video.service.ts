@@ -74,4 +74,7 @@ export class VideoService implements IVideoService {
     public async findVideoForHomeProfile(username: string) {
         return await this.videoRepository.findVideoForHomeProfile(username);
     }
+    public async getNumberOfVideoByUserId(userId: string) {
+        return await this.videoRepository.getNumberOfVideoByUserId(userId);
+    }
 }

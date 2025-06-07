@@ -313,4 +313,11 @@ export class VideoRepository implements IVideoRepository {
         }
         return result;
     }
+    async getNumberOfVideoByUserId(userId: string) {
+        const totalRecords = await this.db.$count(
+            tableSchemas.videoTable,
+            eq(tableSchemas.videoTable.userId, userId),
+        );
+        return totalRecords;
+    }
 }
