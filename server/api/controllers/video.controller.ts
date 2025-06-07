@@ -42,6 +42,7 @@ export class VideoController implements IVideoController {
                 .get("/", ...this.getAllVideos())
                 .post("/", ...this.createVideo())
                 .get("/username/:username", ...this.getVideosWithUsername())
+                .get("/profile-video/:username", ...this.getVideosForProfile())
                 // me
                 .get("/me", ...this.getOwnedVideos())
                 // cateogries
@@ -485,6 +486,31 @@ export class VideoController implements IVideoController {
                         totalRecords: videos.totalRecords,
                         currentOffset: page - 1,
                         limit: size,
+                    },
+                    status: HttpStatus.OK,
+                });
+            },
+        );
+    }
+    private getVideosForProfile() {
+        const respSchema = VideoDTO.videosProfileScheme;
+        const params = z.object({
+            username: z.string(),
+        });
+        return this.factory.createHandlers(
+            zValidator("param", params, Validator.handleParseError),
+            async (c) => {
+                const { username } = c.req.valid("param");
+                const videos = await this.videoService.findVideoForHomeProfile(
+                    username
+                );
+                if (!videos) {
+                    throw new MyError.BadRequestError("Videos not found");
+                }
+                return ApiResponse.WriteJSON({
+                    c,
+                    data: {
+                        videos: respSchema.array().parse(videos),
                     },
                     status: HttpStatus.OK,
                 });

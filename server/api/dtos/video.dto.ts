@@ -63,6 +63,10 @@ export class VideoDTO {
         ),
         messages: z.array(z.string()),
     });
+    public static videosProfileScheme = z.object({
+        category: z.string(),
+        video: this.selectSchema.array(),
+    });
 }
 
 export namespace VideoDTO {

@@ -19,6 +19,7 @@ const keys = {
     videosRelate: (videoId: string) => ["video_relate", videoId] as string[],
     videosByUsername: (pagination: PaginationType, username: string) =>
         [...baseKey, username, pagination] as string[],
+    videosProfile: (username: string) => [...baseKey, "profile"] as string[],
 };
 
 export const videoApi = {
@@ -85,6 +86,14 @@ export const videoApi = {
                     },
                 },
             );
+        },
+        useGetVideoProfilesByUsername(username: string) {
+            const $get = baseApi["profile-video"][":username"].$get;
+            return Fetcher.useHonoQuery($get, keys.videosProfile(username), {
+                param: {
+                    username,
+                },
+            });
         },
     },
     mutation: {
