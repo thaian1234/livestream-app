@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
-import { timeAgo } from "@/lib/helpers/formatData";
+import { formatVideoDuration, timeAgo } from "@/lib/helpers/formatData";
 
 import { VideoDTO } from "@/server/api/dtos/video.dto";
 
@@ -52,7 +52,7 @@ export function PreviewVideoCarousel({ videoData }: PreviewVideoCarouselProps) {
                                     />
 
                                     <div className="absolute bottom-1 right-1 rounded px-1 text-xs">
-                                        {video.duration}
+                                        {formatVideoDuration(video.duration || 0)}
                                     </div>
                                 </div>
                                 <div className="flex-1">

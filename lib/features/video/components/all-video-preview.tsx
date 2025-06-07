@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { redirect, useParams } from "next/navigation";
 
-import { timeAgo } from "@/lib/helpers/formatData";
+import { formatVideoDuration, timeAgo } from "@/lib/helpers/formatData";
 
 import { VideoThumbnail } from "@/components/thumbnail";
 
@@ -39,7 +39,7 @@ export function AllVideoPreview() {
                                 />
 
                                 <div className="absolute bottom-1 right-1 rounded px-1 text-xs">
-                                    {video.duration}
+                                    {formatVideoDuration(video.duration || 0)}
                                 </div>
                             </div>
                             <div className="flex-1">

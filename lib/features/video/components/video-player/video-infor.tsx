@@ -69,6 +69,10 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
         }
     }, [videoData.description]);
 
+    const navigateAboutPage = (username: string) => {
+        router.replace(ROUTES.ABOUT_PAGE(username));
+    };
+    
     return (
         <div className="mt-4">
             <h1 className="line-clamp-2 text-xl font-semibold">
@@ -81,7 +85,14 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                         imageUrl={videoData.user.imageUrl}
                     />
                     <div className="mr-4">
-                        <p>{videoData.user.username}</p>
+                        <p
+                            onClick={() => {
+                                navigateAboutPage(videoData.user.username);
+                            }}
+                            className="cursor-pointer"
+                        >
+                            {videoData.user.username}
+                        </p>
                         <p className="flex space-x-6 text-sm text-white/70">
                             <span>
                                 Followers: {formatNumber(videoData.followers)}
