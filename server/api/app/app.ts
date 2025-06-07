@@ -229,6 +229,7 @@ export class App {
             followService,
             streamService,
             settingService,
+            videoService
         );
         const followController = new FollowController(
             factory,

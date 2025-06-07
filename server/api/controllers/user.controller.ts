@@ -15,6 +15,7 @@ import { IFollowService } from "../services/follow.service";
 import { ISettingService } from "../services/setting.service";
 import { IStreamService } from "../services/stream.service";
 import { IUserService } from "../services/user.service";
+import { IVideoService } from "../services/video.service";
 
 import { FollowDTO } from "../dtos/follow.dto";
 import { SettingDTO } from "../dtos/setting.dto";
@@ -31,6 +32,7 @@ export class UserController {
         private followService: IFollowService,
         private streamService: IStreamService,
         private settingService: ISettingService,
+        private videoService: IVideoService,
     ) {}
     setupHandlers() {
         return this.factory
@@ -77,10 +79,10 @@ export class UserController {
 
                 if (!updatedStream) {
                     throw new MyError.InternalServerError(
-                        "Fail to update stream title"
-                    )
+                        "Fail to update stream title",
+                    );
                 }
-                
+
                 return ApiResponse.WriteJSON({
                     c,
                     data: respSchema.parse(updatedUser),
@@ -167,15 +169,17 @@ export class UserController {
                 isCurrentUserDifferent &&
                     (await BlockUtils.checkUserBlock(currentUser.id, user.id));
 
-                const [stream, followers] = await Promise.all([
+                const [stream, followers, numberOfVideos] = await Promise.all([
                     this.streamService.getStreamByUserId(user.id),
                     this.followService.findFollowerByUserId(user.id),
+                    this.videoService.getNumberOfVideoByUserId(user.id),
                 ]);
 
                 const responseData = {
                     user: UserDTO.parse(user),
                     stream: StreamDTO.parse(stream),
                     followers: FollowDTO.parseUserOnlyMany(followers),
+                    numberOfVideos: numberOfVideos,
                     isFollowing: false,
                     isBlocked: false,
                 };
