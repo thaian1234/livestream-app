@@ -92,7 +92,7 @@ export function SearchBar() {
             </button>
 
             {showSuggestions && hasSuggestions && (
-                <div className="absolute z-10 mt-3 w-full rounded-lg border border-slate-400 bg-black-1 py-2 shadow-lg">
+                <div className="absolute z-10 mt-3 w-full rounded-lg border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 py-2 shadow-lg">
                     {streams.map((stream, index) => (
                         <SuggestionItem
                             key={`stream-${index}`}
