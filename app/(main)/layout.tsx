@@ -25,7 +25,7 @@ export default function HomeLayout({
                 {/* Main content */}
                 <main
                     className={cn(
-                        "flex-grow py-6 transition-[margin-left] duration-300 ease-in-out sm:pr-6",
+                        "flex-grow px-1 py-6 transition-[margin-left] duration-300 ease-in-out sm:pr-6",
                         sidebar.isOpenSidebar
                             ? "sm:pl-4 lg:pl-80"
                             : "sm:pl-[90px]",

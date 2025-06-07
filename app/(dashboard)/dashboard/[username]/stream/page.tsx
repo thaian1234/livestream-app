@@ -57,20 +57,22 @@ export default function StreamPage() {
                             />
                         </div>
                     ) : (
-                        <>
-                            <div className="col-span-12 aspect-video">
+                        <div className="col-span-12 space-y-4">
+                            <div className="aspect-video">
                                 <LocalLivestreamPlayer />
                             </div>
-                            <div className="col-span-12 grid grid-cols-4 gap-4">
-                                <div className="col-span-2">
+                            <div className="flex w-full flex-col justify-between gap-2 md:grid md:grid-cols-5">
+                                <div className="flex w-full flex-1 flex-col md:col-span-3">
                                     <LocalLiveInformation />
-                                    <CallStats
-                                        LatencyChartSuspenseFallback={
-                                            <Spinner size="large" />
-                                        }
-                                    />
+                                    <div className="hidden flex-1 md:block">
+                                        <CallStats
+                                            LatencyChartSuspenseFallback={
+                                                <Spinner size="large" />
+                                            }
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col-span-2">
+                                <div className="md:col-span-2">
                                     <ChatProvider
                                         streamId={auth.stream.id}
                                         viewerId={viewerId}
@@ -82,8 +84,15 @@ export default function StreamPage() {
                                         />
                                     </ChatProvider>
                                 </div>
+                                <div className="block md:hidden">
+                                    <CallStats
+                                        LatencyChartSuspenseFallback={
+                                            <Spinner size="large" />
+                                        }
+                                    />
+                                </div>
                             </div>
-                        </>
+                        </div>
                     )}
                 </CustomCall>
             </StreamVideoProvider>

@@ -10,7 +10,7 @@ interface StatsCardProps {
 
 export function StatsCard({ title, value, icon: Icon }: StatsCardProps) {
     return (
-        <Card className="rounded-none border-0 py-4 transition-all hover:shadow-lg">
+        <Card className="rounded-lg border border-white/30 py-4 transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                     {title}

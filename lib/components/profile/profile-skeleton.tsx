@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfileSkeleton() {
     return (
-        <div className="w-[350px] space-y-4 p-6 text-center">
+        <div className="space-y-4 p-6 text-center lg:min-w-[300px] xl:min-w-[400px]">
             <Skeleton className="mx-auto h-[150px] w-[150px] rounded-full" />
             <Skeleton className="mx-auto h-6 w-32" />
             <div className="flex justify-around">

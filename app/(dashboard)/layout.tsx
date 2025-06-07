@@ -19,7 +19,7 @@ export default function DashboardLayout({
                 <Sidebar />
                 <main
                     className={cn(
-                        "mx-auto flex-grow bg-muted px-10 py-2 transition-[margin-left] duration-300 ease-in-out",
+                        "mx-auto flex-grow bg-muted px-1 py-2 transition-[margin-left] duration-300 ease-in-out sm:px-10",
                         sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72",
                     )}
                 >
