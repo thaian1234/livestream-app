@@ -2,6 +2,7 @@
 
 import { Navbar } from "@/lib/components/dashboard/navbar";
 import { Sidebar } from "@/lib/components/dashboard/sidebar";
+import { StreamVideoContextProvider } from "@/lib/providers/stream-video-context-provider";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +24,9 @@ export default function DashboardLayout({
                         sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72",
                     )}
                 >
-                    {children}
+                    <StreamVideoContextProvider>
+                        {children}
+                    </StreamVideoContextProvider>
                 </main>
             </div>
         </div>

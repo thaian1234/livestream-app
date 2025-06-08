@@ -9,7 +9,6 @@ import { FollowButton } from "@/lib/features/follow/components/follow-button";
 import { streamApi } from "@/lib/features/stream/apis";
 import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/livestream-player";
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
-import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -46,13 +45,11 @@ export function Infor() {
 
     return (
         <div className="relative aspect-video max-w-full lg:min-h-[calc(100vh-15rem)]">
-            <StreamVideoProvider>
-                <div className="flex w-full justify-center border border-b-0 border-slate-700">
-                    <CustomCall streamId={stream.id}>
-                        <LivestreamPlayer />
-                    </CustomCall>
-                </div>
-            </StreamVideoProvider>
+            <div className="flex w-full justify-center border border-b-0 border-slate-700">
+                <CustomCall streamId={stream.id}>
+                    <LivestreamPlayer />
+                </CustomCall>
+            </div>
             {/* Channel Info */}
             <div className="static bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent p-4 text-white lg:absolute">
                 <div className="flex flex-row gap-4">
@@ -71,8 +68,7 @@ export function Infor() {
                                 </h1>
                                 <div className="mt-1 text-xs text-white/50 xl:text-sm">
                                     Followers: {followers?.length || 0} •{" "}
-                                    {numberOfVideos}{" "}
-                                    videos
+                                    {numberOfVideos} videos
                                 </div>
                             </div>
                             <div className="flex items-center space-x-2">

@@ -5,11 +5,13 @@ import {
 } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
+import { useStreamVideoContext } from "@/lib/providers/stream-video-context-provider";
+
 const MAX_RETRIES = 1;
 const RETRY_DELAY = 2000; // 2 seconds
 
 export function useJoinCall(streamId: string) {
-    const videoClient = useStreamVideoClient();
+    const { videoClient } = useStreamVideoContext();
     const [state, setState] = useState({
         call: undefined as Call | undefined,
         isPending: true,

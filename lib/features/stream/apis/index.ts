@@ -17,6 +17,7 @@ const baseApi = baseClient<StreamRouteType>().streams;
 const userClient = baseClient<UserRouteType>().users;
 const keys = {
     stream_token: ["stream_token"],
+    stream_anonymous_token: ["stream_anonymous_token"],
     stream_information: (username: string) => ["stream_information", username],
     streams: (queries: DefaultQueries) => ["streams", queries] as string[],
     chat_token: ["chat_token"],
@@ -30,14 +31,29 @@ const keys = {
 
 export const streamApi = {
     query: {
-        useGetStreamToken() {
+        useGetStreamToken(enabled: boolean = false) {
             const $get = baseApi["stream-token"].$get;
             return Fetcher.useHonoQuery(
                 $get,
                 keys.stream_token,
                 {},
                 {
-                    retry: 1,
+                    retry: 3,
+                    enabled,
+                    staleTime: 5 * 60 * 1000,
+                },
+            );
+        },
+        useGetStreamAnonymousToken(enabled: boolean = false) {
+            const $get = baseApi["stream-token"].anonymous.$get;
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.stream_anonymous_token,
+                {},
+                {
+                    retry: 3,
+                    enabled,
+                    staleTime: 5 * 60 * 1000,
                 },
             );
         },
