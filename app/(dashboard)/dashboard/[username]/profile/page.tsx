@@ -16,7 +16,7 @@ export default function AccountPage() {
             subTitle="This is how others will see you on the site."
         >
             {/* TODO: Adding Profile uploading */}
-            <section className="grid lg:grid-cols-12 lg:space-x-8">
+            <section className="grid space-y-4 lg:grid-cols-12 lg:space-x-8 lg:space-y-0">
                 <div className="space-y-4 lg:col-span-7">
                     <CardSection
                         title="Your avatar"

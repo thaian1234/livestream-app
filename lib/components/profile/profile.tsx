@@ -26,7 +26,7 @@ export function Profile({ followers, followings }: ProfileProps) {
     }
 
     return (
-        <div className="flex w-[400px] flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 lg:min-w-[300px] xl:min-w-[400px]">
             <UserAvatar imageUrl={user.imageUrl} size={"xxl"} />
             <p className="max-w-full break-words text-2xl">{user.username}</p>
             <div className="flex w-full justify-around">

@@ -59,7 +59,7 @@ export const CustomMessageInput = ({
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-black-1 sm:static sm:block sm:bg-transparent">
+        <div className="fixed bottom-0 left-0 right-0 z-10 bg-black-1 sm:static sm:block sm:bg-transparent">
             <ChatInfo
                 isDelayed={isChatDelayed}
                 isFollowersOnly={isChatFollowersOnly}

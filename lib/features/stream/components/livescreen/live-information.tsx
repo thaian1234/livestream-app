@@ -34,7 +34,7 @@ export function LiveInformation({
     const categories = data?.data;
 
     return (
-        <div className="mt-2 flex h-fit flex-1 flex-row flex-wrap justify-between gap-4 overflow-hidden px-2">
+        <div className="mt-2 flex h-fit flex-1 flex-wrap justify-between gap-4 overflow-hidden px-2">
             <Link
                 href={ROUTES.ABOUT_PAGE(user.username)}
                 className="space-y-1 truncate text-white"

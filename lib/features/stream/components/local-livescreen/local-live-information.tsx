@@ -32,7 +32,7 @@ export function LocalLiveInformation() {
     }
 
     return (
-        <section className="mt-2 flex justify-between">
+        <section className="mb-3 mt-0 flex h-fit flex-1 flex-wrap justify-between gap-2 overflow-hidden xl:mt-2">
             <AdditionalInformation isLive={isLive} username={user.username} />
             {!isHost ? (
                 <div className="flex items-center space-x-4">
@@ -99,7 +99,7 @@ function AdditionalInformation({
     const follwers = data.data.followers;
 
     return (
-        <div className="w-full truncate p-2 text-white">
+        <div className="text-white">
             <h2 className="text-xl">{stream.name}</h2>
             <div className="flex w-full items-center space-x-4">
                 <UserAvatar

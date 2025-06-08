@@ -27,7 +27,7 @@ export function StudioTable() {
     }
     const videos = data.data.videos;
     return (
-        <div className="lg:max-w-[570px] xl:max-w-[830px] 2xl:max-w-full">
+        <div className="min-w-0 max-w-full">
             {videos && (
                 <DataTablePagination
                     columns={StudioColumns}
