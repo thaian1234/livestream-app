@@ -12,8 +12,7 @@ import { LivestreamPlayer } from "@/lib/features/stream/components/livescreen/li
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useUser } from "@/lib/hooks/use-user";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
-import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
-import { ChatStatus, useLiveInfor } from "@/lib/stores/store-live-infor";
+import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { cn } from "@/lib/utils";
 
 import { LoadingStreamPage } from "@/components/loading-stream-page";
@@ -49,20 +48,18 @@ export default function StreamPage() {
             {/* Desktop Screen */}
             {desktopScreen ? (
                 <>
-                    <StreamVideoProvider>
-                        <div
-                            className={cn(
-                                "row-span-5 rounded-lg border border-slate-700",
-                                isOpenChatComponent
-                                    ? "col-span-9"
-                                    : "col-span-12 mx-14 aspect-[2/1]",
-                            )}
-                        >
-                            <CustomCall streamId={stream.id}>
-                                <LivestreamPlayer />
-                            </CustomCall>
-                        </div>
-                    </StreamVideoProvider>
+                    <div
+                        className={cn(
+                            "row-span-5 rounded-lg border border-slate-700",
+                            isOpenChatComponent
+                                ? "col-span-9"
+                                : "col-span-12 mx-14 aspect-[2/1]",
+                        )}
+                    >
+                        <CustomCall streamId={stream.id}>
+                            <LivestreamPlayer />
+                        </CustomCall>
+                    </div>
                     <div
                         className={cn(
                             isOpenChatComponent
@@ -106,11 +103,9 @@ export default function StreamPage() {
                 <div className="col-span-12 space-y-4">
                     {/* Mobile Screen */}
                     <div className="aspect-video">
-                        <StreamVideoProvider>
-                            <CustomCall streamId={stream.id}>
-                                <LivestreamPlayer />
-                            </CustomCall>
-                        </StreamVideoProvider>
+                        <CustomCall streamId={stream.id}>
+                            <LivestreamPlayer />
+                        </CustomCall>
                     </div>
                     <div className="flex w-full flex-col justify-between gap-1 md:flex-row">
                         <div className="w-full">

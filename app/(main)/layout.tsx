@@ -5,6 +5,7 @@ import React from "react";
 
 import { Navbar } from "@/lib/components/navbar";
 import { Sidebar } from "@/lib/components/sidebar";
+import { StreamVideoContextProvider } from "@/lib/providers/stream-video-context-provider";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,9 @@ export default function HomeLayout({
                             : "sm:pl-[90px]",
                     )}
                 >
-                    {children}
+                    <StreamVideoContextProvider>
+                        {children}
+                    </StreamVideoContextProvider>
                 </main>
             </div>
         </div>

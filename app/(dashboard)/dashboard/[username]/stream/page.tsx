@@ -11,7 +11,6 @@ import { LocalLivestreamPlayer } from "@/lib/features/stream/components/local-li
 import { CustomCall } from "@/lib/features/stream/layouts/custom-call";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { ChatProvider } from "@/lib/providers/stream-chat-provider";
-import { StreamVideoProvider } from "@/lib/providers/stream-video-provider";
 import { useLiveInfor } from "@/lib/stores/store-live-infor";
 import { useViewerId } from "@/lib/stores/store-viewer-id-chat";
 import { cn } from "@/lib/utils";
@@ -37,54 +36,33 @@ export default function StreamPage() {
 
     return (
         <section className="grid grid-cols-12 gap-4">
-            <StreamVideoProvider>
-                <CustomCall streamId={auth.stream.id}>
-                    {desktopScreen ? (
-                        <div
-                            className={cn(
-                                "row-span-5",
-                                isOpenChatComponent
-                                    ? "col-span-9 aspect-video"
-                                    : "col-span-12 mx-6 aspect-[2/1]",
-                            )}
-                        >
+            <CustomCall streamId={auth.stream.id}>
+                {desktopScreen ? (
+                    <div
+                        className={cn(
+                            "row-span-5",
+                            isOpenChatComponent
+                                ? "col-span-9 aspect-video"
+                                : "col-span-12 mx-6 aspect-[2/1]",
+                        )}
+                    >
+                        <LocalLivestreamPlayer />
+                        <LocalLiveInformation />
+                        <CallStats
+                            LatencyChartSuspenseFallback={
+                                <Spinner size="large" />
+                            }
+                        />
+                    </div>
+                ) : (
+                    <div className="col-span-12 space-y-4">
+                        <div className="aspect-video">
                             <LocalLivestreamPlayer />
-                            <LocalLiveInformation />
-                            <CallStats
-                                LatencyChartSuspenseFallback={
-                                    <Spinner size="large" />
-                                }
-                            />
                         </div>
-                    ) : (
-                        <div className="col-span-12 space-y-4">
-                            <div className="aspect-video">
-                                <LocalLivestreamPlayer />
-                            </div>
-                            <div className="flex w-full flex-col justify-between gap-2 md:grid md:grid-cols-5">
-                                <div className="flex w-full flex-1 flex-col md:col-span-3">
-                                    <LocalLiveInformation />
-                                    <div className="hidden flex-1 md:block">
-                                        <CallStats
-                                            LatencyChartSuspenseFallback={
-                                                <Spinner size="large" />
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                                <div className="md:col-span-2">
-                                    <ChatProvider
-                                        streamId={auth.stream.id}
-                                        viewerId={viewerId}
-                                    >
-                                        <Chat
-                                            setting={setting.data.setting}
-                                            isHost={true}
-                                            streamerId={auth.user.id}
-                                        />
-                                    </ChatProvider>
-                                </div>
-                                <div className="block md:hidden">
+                        <div className="flex w-full flex-col justify-between gap-2 md:grid md:grid-cols-5">
+                            <div className="flex w-full flex-1 flex-col md:col-span-3">
+                                <LocalLiveInformation />
+                                <div className="hidden flex-1 md:block">
                                     <CallStats
                                         LatencyChartSuspenseFallback={
                                             <Spinner size="large" />
@@ -92,10 +70,29 @@ export default function StreamPage() {
                                     />
                                 </div>
                             </div>
+                            <div className="md:col-span-2">
+                                <ChatProvider
+                                    streamId={auth.stream.id}
+                                    viewerId={viewerId}
+                                >
+                                    <Chat
+                                        setting={setting.data.setting}
+                                        isHost={true}
+                                        streamerId={auth.user.id}
+                                    />
+                                </ChatProvider>
+                            </div>
+                            <div className="block md:hidden">
+                                <CallStats
+                                    LatencyChartSuspenseFallback={
+                                        <Spinner size="large" />
+                                    }
+                                />
+                            </div>
                         </div>
-                    )}
-                </CustomCall>
-            </StreamVideoProvider>
+                    </div>
+                )}
+            </CustomCall>
             {desktopScreen && (
                 <div className="col-span-3 col-start-10">
                     <ChatProvider streamId={auth.stream.id} viewerId={viewerId}>

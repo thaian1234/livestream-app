@@ -1,4 +1,8 @@
-import { StreamVideoClient } from "@stream-io/video-react-sdk";
+import {
+    StreamVideoClient,
+    User,
+    UserRequest,
+} from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
 
 import { envClient } from "@/lib/env/env.client";
@@ -15,11 +19,17 @@ export function useVideoClient() {
         isError: false,
         retryCount: 0,
     });
-    const { user } = useAuth();
-    const { data: tokenData } = streamApi.query.useGetStreamToken();
+    const { user, isSignedIn } = useAuth();
+
+    const { data: authenticatedTokenData } =
+        streamApi.query.useGetStreamToken(isSignedIn);
+    const { data: anonymousTokenData } =
+        streamApi.query.useGetStreamAnonymousToken(!isSignedIn);
+
+    const tokenData = isSignedIn ? authenticatedTokenData : anonymousTokenData;
 
     useEffect(() => {
-        if (!user || !tokenData) return;
+        if (!tokenData) return;
 
         const connectWithRetry = async (
             retryCount: number,
@@ -27,9 +37,19 @@ export function useVideoClient() {
             setState((prev) => ({ ...prev, isPending: true, isError: false }));
 
             try {
+                const getStreamUser: User = user
+                    ? {
+                          id: user.id,
+                          name: user.username,
+                          image: user?.imageUrl || "",
+                          type: "authenticated",
+                      }
+                    : {
+                          type: "anonymous",
+                      };
                 const client = StreamVideoClient.getOrCreateInstance({
                     apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-                    user: { id: user.id, name: user.username },
+                    user: getStreamUser,
                     token: tokenData.data.token,
                     options: { timeout: 10000 },
                 });
@@ -70,6 +90,7 @@ export function useVideoClient() {
 
         return () => {
             if (client) {
+                console.log("i should be destroyed");
                 client.disconnectUser().catch(console.error);
             }
         };

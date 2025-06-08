@@ -52,6 +52,21 @@ export class GetStreamService implements IGetStreamService {
         });
         return token;
     }
+
+    public generateAnonymousUserToken() {
+        const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60; // 24 hours
+        const issuedAt = Math.floor(Date.now() / 1000) - 60;
+
+        const randomUserId = Math.random().toString(36).substring(2, 15);
+
+        const token = this.streamClient.generateUserToken({
+            user_id: `anonymous_${randomUserId}`,
+            exp: expirationTime,
+            iat: issuedAt,
+        });
+        return token;
+    }
+
     public convertUserToUserRequest(user: UserDTO.Select): UserRequest {
         const imageUrl = user.imageUrl !== null ? user.imageUrl : undefined;
         return {
