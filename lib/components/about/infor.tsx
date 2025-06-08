@@ -42,6 +42,7 @@ export function Infor() {
     const followers = data.data.followers;
     const setting = data.data.setting;
     const isFollowing = data.data.isFollowing;
+    const numberOfVideos = data.data.numberOfVideos;
 
     return (
         <div className="relative aspect-video max-w-full lg:min-h-[calc(100vh-15rem)]">
@@ -69,7 +70,8 @@ export function Infor() {
                                     {user.username}
                                 </h1>
                                 <div className="mt-1 text-xs text-white/50 xl:text-sm">
-                                    Followers: {followers?.length || 0} • 449
+                                    Followers: {followers?.length || 0} •{" "}
+                                    {numberOfVideos}{" "}
                                     videos
                                 </div>
                             </div>
