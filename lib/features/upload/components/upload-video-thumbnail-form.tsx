@@ -23,6 +23,7 @@ import {
 import { videoApi } from "../../video/apis";
 import { uploadApi } from "../apis";
 import { ThumbnailGenerateDialog } from "./thumbnail-generate-dialog";
+import { VideoThumbnail } from "@/components/thumbnail";
 
 interface FileWithPreview extends File {
     preview: string;
@@ -101,12 +102,8 @@ export function UploadVideoThumbnailForm({
                 disabled={isPending}
             />
             <div className="group relative aspect-video h-[153px] w-[200px] border border-dashed border-neutral-400">
-                <Image
-                    src={initialImageUrl || "/circle-play.svg"}
-                    className="object-contain"
-                    fill
-                    sizes="(max-width: 480px) 100vw, (max-width: 768px) 75vw, (max-width: 1024px) 50vw, 33vw"
-                    alt="Thumbnail"
+                <VideoThumbnail 
+                    thumbnailUrl={initialImageUrl}
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
