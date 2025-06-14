@@ -11,6 +11,7 @@ interface StreamVideoContextType {
     videoClient: StreamVideoClient | null;
     isError: boolean;
     isPending: boolean;
+    retry: () => void;
 }
 
 const StreamVideoContext = createContext<StreamVideoContextType | undefined>(
@@ -22,12 +23,13 @@ interface StreamProviderProps {
 }
 
 export function StreamVideoContextProvider({ children }: StreamProviderProps) {
-    const { videoClient, isError, isPending } = useVideoClient();
+    const { videoClient, isError, isPending, retry } = useVideoClient();
 
     const contextValue: StreamVideoContextType = {
         videoClient,
         isError,
         isPending,
+        retry,
     };
 
     if (!videoClient || isError || isPending) {
