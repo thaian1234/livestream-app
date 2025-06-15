@@ -21,6 +21,12 @@ export class CustomAdapter extends DrizzlePostgreSQLAdapter {
                     with: {
                         accounts: true,
                         stream: true,
+                        wallet: {
+                            columns: {
+                                id: true,
+                                balance: true,
+                            },
+                        },
                     },
                 },
             },

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { formatVND } from "@/lib/helpers/currency";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { DonationDTO } from "@/server/api/dtos/donation.dto";
 import { OrderDTO } from "@/server/api/dtos/order.dto";
@@ -48,6 +49,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
         "package",
     );
 
+    const { user } = useUser();
     const { data: donationCardsData, isLoading: isLoadingCards } =
         donationApi.query.useGetDonationCardByStreamer(streamerId);
     const { mutate: createDonation, isPending: isCreatingDonation } =
@@ -389,7 +391,11 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 From Wallet
                                                 <span className="ml-2 text-sm text-gray-400">
                                                     (Balance:{" "}
-                                                    {formatVND(200000)})
+                                                    {formatVND(
+                                                        user.wallet.balance ||
+                                                            0,
+                                                    )}
+                                                    )
                                                 </span>
                                             </Label>
                                         </div>
