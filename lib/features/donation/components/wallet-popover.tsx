@@ -249,7 +249,7 @@ export function WalletPopover({
                                         </Button>
                                     )}
                                 </div>
-                                <div className="max-h-50 space-y-2 overflow-y-auto">
+                                <div className="max-h-48 space-y-2 overflow-y-auto">
                                     {recentTransactions.map((transaction) => (
                                         <div
                                             key={transaction.id}

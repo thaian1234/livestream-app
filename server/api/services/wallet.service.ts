@@ -74,7 +74,7 @@ export class WalletService implements IWalletService {
 
         return {
             wallet: updatedWallet,
-            transaction: transactionDetails,
+            transaction,
         };
     }
 
