@@ -1,40 +1,47 @@
 "use client";
 
-import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
+import { Wallet } from "lucide-react";
+import { notFound } from "next/navigation";
 import React from "react";
 
 import { SignInForm } from "@/lib/features/auth/components/signin-form";
 import { SignUpForm } from "@/lib/features/auth/components/signup-form";
 import { AuthDialog } from "@/lib/features/auth/layouts/auth-dialog.layout";
+import { WalletPopover } from "@/lib/features/donation/components/wallet-popover";
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { UserNav } from "@/lib/features/user/components/user-nav";
 import { useAuth } from "@/lib/providers/auth-provider";
 import { NotificationProvider } from "@/lib/providers/notification-provider";
 
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-
-import { TooltipModel } from "@/components/tooltip-model";
-
-import { WalletButton } from "./wallet-button";
 
 export const AfterSignin = () => {
     const { user } = useAuth();
+
     if (!user) {
         notFound();
     }
-    const router = useRouter();
+
     return (
         <>
-            <TooltipModel content="Donation" side="bottom">
-                <Link href={`/dashboard/${user.username}/donation`}>
-                    <WalletButton />
-                </Link>
-            </TooltipModel>
-
             <NotificationProvider userId={user.id}>
                 <NotificationPopover />
             </NotificationProvider>
+            <WalletPopover>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative"
+                    aria-label="Wallets"
+                >
+                    <Wallet
+                        className="size-6"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                    />
+                </Button>
+            </WalletPopover>
             <UserNav />
         </>
     );

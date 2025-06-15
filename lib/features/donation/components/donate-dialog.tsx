@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { formatVND } from "@/lib/helpers/currency";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { DonationDTO } from "@/server/api/dtos/donation.dto";
 import { OrderDTO } from "@/server/api/dtos/order.dto";
@@ -26,7 +27,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MoneyInput } from "@/components/ui/money-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,7 +45,11 @@ interface DonateDialogProps {
 
 export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
     const [open, setOpen] = useState(false);
+    const [donationType, setDonationType] = useState<"package" | "custom">(
+        "package",
+    );
 
+    const { user } = useUser();
     const { data: donationCardsData, isLoading: isLoadingCards } =
         donationApi.query.useGetDonationCardByStreamer(streamerId);
     const { mutate: createDonation, isPending: isCreatingDonation } =
@@ -56,24 +63,31 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
         watch,
         reset,
         getValues,
-    } = useForm<DonationDTO.DonationRequest>({
+    } = useForm<DonationDTO.DonationRequest & { customAmount?: number }>({
         resolver: zodResolver(DonationDTO.donationRequestSchema),
         defaultValues: {
             paymentMethod: "VNPAY",
             streamerId: streamerId,
             amount: 0,
+            customAmount: 0,
         },
     });
 
     const selectedCardId = watch("cardId");
     const selectedPaymentMethod = watch("paymentMethod");
+    const customAmount = watch("customAmount");
     const donationCards = donationCardsData?.data.donateCards;
 
     useEffect(() => {
-        if (donationCards && donationCards?.length > 0 && !selectedCardId) {
+        if (
+            donationCards &&
+            donationCards?.length > 0 &&
+            !selectedCardId &&
+            donationType === "package"
+        ) {
             setValue("cardId", donationCards?.[0].id);
         }
-    }, [donationCardsData, setValue, selectedCardId]);
+    }, [donationCards, setValue, selectedCardId, donationType]);
 
     if (isLoadingCards || donationCards === undefined)
         return <Spinner size="small" />;
@@ -86,19 +100,32 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
         setOpen(newOpen);
         if (!newOpen) {
             reset();
+            setDonationType("package");
         }
     };
 
+    const getDonationAmount = () => {
+        if (donationType === "custom") {
+            return customAmount || 0;
+        }
+        return selectedCard?.amount || 0;
+    };
+
     const onSubmit = handleSubmit((data) => {
-        if (!selectedCard) return;
+        const amount = getDonationAmount();
+
+        if (amount <= 0) {
+            return;
+        }
 
         createDonation(
             {
                 json: {
                     streamerId,
-                    cardId: data.cardId,
+                    cardId:
+                        donationType === "package" ? data.cardId : undefined,
                     message: data.message || "",
-                    amount: selectedCard.amount,
+                    amount: amount,
                     paymentMethod: data.paymentMethod,
                 },
             },
@@ -106,6 +133,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                 onSuccess: () => {
                     setOpen(false);
                     reset();
+                    setDonationType("package");
                 },
             },
         );
@@ -118,7 +146,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                 <DialogHeader>
                     <DialogTitle>Support this Streamer</DialogTitle>
                     <DialogDescription>
-                        Choose a donation package and payment method
+                        Choose a donation package or enter custom amount
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
@@ -127,74 +155,171 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                             <div className="py-4 text-center">
                                 Loading donation packages...
                             </div>
-                        ) : donationCards?.length === 0 ? (
-                            <div className="py-4 text-center">
-                                No donation packages available
-                            </div>
                         ) : (
                             <>
-                                <div className="grid gap-2 py-2">
+                                {/* Donation Type Selection */}
+                                <div className="grid gap-2">
                                     <Label className="text-white">
-                                        Select a Donation Package
+                                        Donation Type
                                     </Label>
-                                    <div className="grid max-h-[500px] grid-cols-1 overflow-y-auto pr-2">
-                                        <RadioGroup
-                                            value={selectedCardId}
-                                            onValueChange={(value) =>
-                                                setValue("cardId", value)
+                                    <RadioGroup
+                                        value={donationType}
+                                        onValueChange={(value) => {
+                                            setDonationType(
+                                                value as "package" | "custom",
+                                            );
+                                            if (value === "custom") {
+                                                setValue("cardId", "");
+                                            } else if (
+                                                donationCards &&
+                                                donationCards.length > 0
+                                            ) {
+                                                setValue(
+                                                    "cardId",
+                                                    donationCards[0].id,
+                                                );
                                             }
-                                        >
-                                            {donationCards.map((card) => (
-                                                <div
-                                                    key={card.id}
-                                                    className="flex items-center space-x-2"
-                                                >
-                                                    <RadioGroupItem
-                                                        value={card.id}
-                                                        id={card.id}
-                                                    />
-                                                    <Card
-                                                        className={`flex-1 cursor-pointer rounded-lg border ${
-                                                            selectedCardId ===
-                                                            card.id
-                                                                ? "border-primary"
-                                                                : "border-gray-700"
-                                                        }`}
-                                                        onClick={() =>
-                                                            setValue(
-                                                                "cardId",
-                                                                card.id,
-                                                            )
-                                                        }
-                                                    >
-                                                        <CardHeader className="py-1">
-                                                            <CardTitle>
-                                                                {card.title}
-                                                            </CardTitle>
-                                                            <CardDescription>
-                                                                {formatVND(
-                                                                    card.amount,
-                                                                )}
-                                                            </CardDescription>
-                                                        </CardHeader>
-                                                        {card.description && (
-                                                            <CardContent className="py-1 text-sm">
-                                                                {
-                                                                    card.description
-                                                                }
-                                                            </CardContent>
-                                                        )}
-                                                    </Card>
-                                                </div>
-                                            ))}
-                                        </RadioGroup>
-                                    </div>
-                                    {errors.cardId && (
-                                        <ErrorField>
-                                            {errors.cardId.message}
-                                        </ErrorField>
-                                    )}
+                                        }}
+                                        className="grid grid-cols-2 gap-2"
+                                    >
+                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
+                                            <RadioGroupItem
+                                                value="package"
+                                                id="package"
+                                            />
+                                            <Label
+                                                htmlFor="package"
+                                                className="flex-1 cursor-pointer"
+                                            >
+                                                Choose Package
+                                            </Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
+                                            <RadioGroupItem
+                                                value="custom"
+                                                id="custom"
+                                            />
+                                            <Label
+                                                htmlFor="custom"
+                                                className="flex-1 cursor-pointer"
+                                            >
+                                                Custom Amount
+                                            </Label>
+                                        </div>
+                                    </RadioGroup>
                                 </div>
+
+                                {/* Package Selection */}
+                                {donationType === "package" && (
+                                    <div className="grid gap-2 py-2">
+                                        <Label className="text-white">
+                                            Select a Donation Package
+                                        </Label>
+                                        {donationCards?.length === 0 ? (
+                                            <div className="py-4 text-center">
+                                                No donation packages available
+                                            </div>
+                                        ) : (
+                                            <div className="grid max-h-[400px] grid-cols-1 overflow-y-auto pr-2">
+                                                <RadioGroup
+                                                    value={selectedCardId}
+                                                    onValueChange={(value) =>
+                                                        setValue(
+                                                            "cardId",
+                                                            value,
+                                                        )
+                                                    }
+                                                >
+                                                    {donationCards?.map(
+                                                        (card) => (
+                                                            <div
+                                                                key={card.id}
+                                                                className="flex items-center space-x-2"
+                                                            >
+                                                                <RadioGroupItem
+                                                                    value={
+                                                                        card.id
+                                                                    }
+                                                                    id={card.id}
+                                                                />
+                                                                <Card
+                                                                    className={`flex-1 cursor-pointer rounded-lg border ${
+                                                                        selectedCardId ===
+                                                                        card.id
+                                                                            ? "border-primary"
+                                                                            : "border-gray-700"
+                                                                    }`}
+                                                                    onClick={() =>
+                                                                        setValue(
+                                                                            "cardId",
+                                                                            card.id,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <CardHeader className="py-1">
+                                                                        <CardTitle>
+                                                                            {
+                                                                                card.title
+                                                                            }
+                                                                        </CardTitle>
+                                                                        <CardDescription>
+                                                                            {formatVND(
+                                                                                card.amount,
+                                                                            )}
+                                                                        </CardDescription>
+                                                                    </CardHeader>
+                                                                    {card.description && (
+                                                                        <CardContent className="py-1 text-sm">
+                                                                            {
+                                                                                card.description
+                                                                            }
+                                                                        </CardContent>
+                                                                    )}
+                                                                </Card>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </RadioGroup>
+                                            </div>
+                                        )}
+                                        {errors.cardId && (
+                                            <ErrorField>
+                                                {errors.cardId.message}
+                                            </ErrorField>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Custom Amount Input */}
+                                {donationType === "custom" && (
+                                    <div className="grid gap-2">
+                                        <Label
+                                            htmlFor="customAmount"
+                                            className="text-white"
+                                        >
+                                            Enter Amount (VNĐ)
+                                        </Label>
+
+                                        <MoneyInput
+                                            value={customAmount || 0}
+                                            onChange={(value) =>
+                                                setValue("customAmount", value)
+                                            }
+                                            currency="VND"
+                                            locale="vi-VN"
+                                            min={1000}
+                                            max={50_000_000}
+                                            placeholder="Enter amount (minimum 1,000 VNĐ)"
+                                            className="text-white"
+                                        />
+
+                                        {errors.customAmount && (
+                                            <ErrorField>
+                                                {errors.customAmount.message}
+                                            </ErrorField>
+                                        )}
+                                    </div>
+                                )}
 
                                 <div className="grid gap-2">
                                     <Label
@@ -230,26 +355,6 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                         }
                                         className="grid grid-cols-1 gap-2"
                                     >
-                                        {/* <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
-                                            <RadioGroupItem
-                                                value="WALLET"
-                                                id="wallet"
-                                            />
-                                            <Label
-                                                htmlFor="wallet"
-                                                className="flex-1 cursor-pointer"
-                                            >
-                                                From Wallet
-                                                <span className="ml-2 text-sm text-gray-400">
-                                                    (Balance:{" "}
-                                                    {formatVND(
-                                                        user?.wallet?.balance ||
-                                                            0,
-                                                    )}{" "}
-                                                    VNĐ)
-                                                </span>
-                                            </Label>
-                                        </div> */}
                                         <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
                                             <RadioGroupItem
                                                 value="VNPAY"
@@ -274,6 +379,26 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 MoMo
                                             </Label>
                                         </div>
+                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
+                                            <RadioGroupItem
+                                                value="WALLET"
+                                                id="wallet"
+                                            />
+                                            <Label
+                                                htmlFor="wallet"
+                                                className="flex-1 cursor-pointer"
+                                            >
+                                                From Wallet
+                                                <span className="ml-2 text-sm text-gray-400">
+                                                    (Balance:{" "}
+                                                    {formatVND(
+                                                        user.wallet.balance ||
+                                                            0,
+                                                    )}
+                                                    )
+                                                </span>
+                                            </Label>
+                                        </div>
                                     </RadioGroup>
                                     {errors.paymentMethod && (
                                         <ErrorField>
@@ -289,7 +414,9 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                 type="button"
                                 variant="secondary"
                                 onClick={() => {
-                                    if (!selectedCard) return;
+                                    const amount = getDonationAmount();
+
+                                    if (amount <= 0) return;
 
                                     const payload = getValues();
 
@@ -297,13 +424,18 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                         {
                                             json: {
                                                 ...payload,
-                                                amount: selectedCard.amount,
+                                                cardId:
+                                                    donationType === "package"
+                                                        ? payload.cardId
+                                                        : undefined,
+                                                amount: amount,
                                             },
                                         },
                                         {
                                             onSuccess: ({ data }) => {
                                                 setOpen(false);
                                                 reset();
+                                                setDonationType("package");
 
                                                 window.location.href =
                                                     data.paymentUrl;
@@ -312,10 +444,17 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                     );
                                 }}
                                 loading={isCreatingDonation}
-                                disabled={!selectedCardId || isLoadingCards}
+                                disabled={
+                                    isLoadingCards ||
+                                    getDonationAmount() <= 0 ||
+                                    (donationType === "package" &&
+                                        !selectedCardId) ||
+                                    (donationType === "custom" &&
+                                        (!customAmount || customAmount < 1000))
+                                }
                             >
-                                {selectedCard
-                                    ? `Donate ${formatVND(selectedCard.amount)}`
+                                {getDonationAmount() > 0
+                                    ? `Donate ${formatVND(getDonationAmount())}`
                                     : "Donate"}
                             </Button>
                         </DialogFooter>

@@ -46,6 +46,7 @@ import { OrderService } from "../services/order.service";
 import { MomoProcessor } from "../services/payment/momo-processor";
 import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
 import { VNPayProcessor } from "../services/payment/vnpay-processor";
+import { WalletProcessor } from "../services/payment/wallet-processor";
 import { SettingService } from "../services/setting.service";
 import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
@@ -82,6 +83,7 @@ import { UploadController } from "../controllers/upload.controller";
 import { UserController } from "../controllers/user.controller";
 import { VideoLikeController } from "../controllers/video-like.controller";
 import { VideoController } from "../controllers/video.controller";
+import { WalletController } from "../controllers/wallet.controller";
 import { WebhookController } from "../controllers/webhook.controller";
 
 import { AuthRoutes } from "../routes/auth.routes";
@@ -101,6 +103,7 @@ import { UploadRoutes } from "../routes/upload.routes";
 import { UserRoutes } from "../routes/user.routes";
 import { VideoLikeRoutes } from "../routes/video-like.routes";
 import { VideoRoutes } from "../routes/video.routes";
+import { WalletRoutes } from "../routes/wallet.routes";
 import { WebhookRoutes } from "../routes/webhook.routes";
 
 export class App {
@@ -209,9 +212,15 @@ export class App {
             walletService,
             streamRepository,
         );
+        const walletProcessor = new WalletProcessor(
+            orderRepository,
+            walletService,
+            streamRepository,
+        );
         const paymentProcessorFactory = new PaymentProcessorFactory(
             vnpayProcessor,
             momoProcessor,
+            walletProcessor,
         );
         const donationService = new DonationService(
             paymentProcessorFactory,
@@ -229,7 +238,7 @@ export class App {
             followService,
             streamService,
             settingService,
-            videoService
+            videoService,
         );
         const followController = new FollowController(
             factory,
@@ -331,6 +340,7 @@ export class App {
             orderService,
             streamService,
         );
+        const walletController = new WalletController(factory, walletService);
 
         // Routes
         const userRoutes = new UserRoutes(factory, userController);
@@ -361,6 +371,7 @@ export class App {
         const eventRoutes = new EventRoutes(factory, eventController);
         const orderRoutes = new OrderRoutes(factory, orderController);
         const donationRoutes = new DonationRoutes(factory, donationController);
+        const walletRoutes = new WalletRoutes(factory, walletController);
 
         return this.app
             .basePath(AppConfig.BASE_PATH)
@@ -381,6 +392,7 @@ export class App {
             .route("/", videolikeRoutes.setupRoutes())
             .route("/", commentRoutes.setupRoutes())
             .route("/", orderRoutes.setupRoutes())
-            .route("/", donationRoutes.setupRoutes());
+            .route("/", donationRoutes.setupRoutes())
+            .route("/", walletRoutes.setupRoutes());
     }
 }
