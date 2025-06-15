@@ -391,10 +391,12 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 From Wallet
                                                 <span className="ml-2 text-sm text-gray-400">
                                                     (Balance:{" "}
-                                                    {formatVND(
-                                                        user.wallet.balance ||
-                                                            0,
-                                                    )}
+                                                    {user?.wallet
+                                                        ? formatVND(
+                                                              user.wallet
+                                                                  .balance || 0,
+                                                          )
+                                                        : 0}
                                                     )
                                                 </span>
                                             </Label>
