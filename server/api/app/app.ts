@@ -46,6 +46,7 @@ import { OrderService } from "../services/order.service";
 import { MomoProcessor } from "../services/payment/momo-processor";
 import { PaymentProcessorFactory } from "../services/payment/payment-processor-factory";
 import { VNPayProcessor } from "../services/payment/vnpay-processor";
+import { WalletProcessor } from "../services/payment/wallet-processor";
 import { SettingService } from "../services/setting.service";
 import { StorageService } from "../services/storage.service";
 import { StreamService } from "../services/stream.service";
@@ -209,9 +210,15 @@ export class App {
             walletService,
             streamRepository,
         );
+        const walletProcessor = new WalletProcessor(
+            orderRepository,
+            walletService,
+            streamRepository,
+        );
         const paymentProcessorFactory = new PaymentProcessorFactory(
             vnpayProcessor,
             momoProcessor,
+            walletProcessor,
         );
         const donationService = new DonationService(
             paymentProcessorFactory,
@@ -229,7 +236,7 @@ export class App {
             followService,
             streamService,
             settingService,
-            videoService
+            videoService,
         );
         const followController = new FollowController(
             factory,

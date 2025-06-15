@@ -3,6 +3,7 @@ import { MyError } from "../../lib/helpers/errors";
 import { BasePaymentProcessor } from "./base-payment-processor";
 import { MomoProcessor } from "./momo-processor";
 import { VNPayProcessor } from "./vnpay-processor";
+import { WalletProcessor } from "./wallet-processor";
 
 export class PaymentProcessorFactory {
     private processors: Map<OrderDTO.PaymentMethod, BasePaymentProcessor> =
@@ -11,6 +12,7 @@ export class PaymentProcessorFactory {
     constructor(
         private readonly vnpayProcessor: VNPayProcessor,
         private readonly momoProcessor: MomoProcessor,
+        private readonly walletProcessor: WalletProcessor,
         // Add other processors when implemented
     ) {
         this.registerProcessors();
@@ -19,6 +21,7 @@ export class PaymentProcessorFactory {
     private registerProcessors() {
         this.processors.set("VNPAY", this.vnpayProcessor);
         this.processors.set("MOMO", this.momoProcessor);
+        this.processors.set("WALLET", this.walletProcessor);
         // Register other processors when implemented
     }
 

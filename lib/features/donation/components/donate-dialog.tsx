@@ -377,6 +377,22 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 MoMo
                                             </Label>
                                         </div>
+                                        <div className="flex items-center space-x-2 rounded-md border border-gray-700 p-3">
+                                            <RadioGroupItem
+                                                value="WALLET"
+                                                id="wallet"
+                                            />
+                                            <Label
+                                                htmlFor="wallet"
+                                                className="flex-1 cursor-pointer"
+                                            >
+                                                From Wallet
+                                                <span className="ml-2 text-sm text-gray-400">
+                                                    (Balance:{" "}
+                                                    {formatVND(200000)})
+                                                </span>
+                                            </Label>
+                                        </div>
                                     </RadioGroup>
                                     {errors.paymentMethod && (
                                         <ErrorField>

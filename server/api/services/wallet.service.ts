@@ -15,10 +15,10 @@ export class WalletService implements IWalletService {
     ) {}
 
     async getWalletByUserId(userId: string) {
-        const wallet = await this.walletRepository.findByUserId(userId);
+        let wallet = await this.walletRepository.findByUserId(userId);
 
         if (!wallet) {
-            throw new MyError.NotFoundError("Wallet not found for this user");
+            wallet = await this.walletRepository.create({ userId });
         }
 
         return wallet;

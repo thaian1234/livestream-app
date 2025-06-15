@@ -112,7 +112,7 @@ export class DonationController implements IDonationController {
 
                 if (result.success) {
                     return c.redirect(
-                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=true&&orderId=${result.orderId}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=true&orderId=${result.orderId}`,
                     );
                 } else {
                     return c.redirect(

@@ -189,7 +189,7 @@ export abstract class BasePaymentProcessor {
     }
 
     // Common validation logic
-    private async validateDonationRequest(data: {
+    protected async validateDonationRequest(data: {
         streamerId: string;
         streamId: string;
         amount: number;
