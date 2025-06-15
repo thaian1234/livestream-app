@@ -36,7 +36,7 @@ export class WalletController implements IWalletController {
             async (c) => {
                 const currentUser = c.get("getUser");
 
-                const wallet = await this.walletService.getWalletByUserId(
+                const wallet = await this.walletService.createWalletIfNotExists(
                     currentUser.id,
                 );
 
