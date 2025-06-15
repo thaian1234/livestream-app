@@ -7,9 +7,13 @@ import { z } from "zod";
 
 import tableSchemas, { tableRelations } from "@/server/db/schemas";
 
+import { UserDTO } from "./user.dto";
+
 export class OrderDTO {
     private static baseSchema = createSelectSchema(tableSchemas.orderTable);
-    public static selectSchema = this.baseSchema;
+    public static selectSchema = this.baseSchema.extend({
+        user: UserDTO.selectSchema,
+    });
     public static insertSchema = createInsertSchema(tableSchemas.orderTable);
     public static updateSchema = createUpdateSchema(
         tableSchemas.orderTable,
