@@ -26,8 +26,12 @@ export class OrderRepository
     async findById(id: string) {
         return this.db.query.orderTable.findFirst({
             where: eq(orderTable.id, id),
+            with: {
+                user: true,
+            },
         });
     }
+
     async findByUserId(userId: string, page = 1, size = 10) {
         const offset = (page - 1) * size;
 

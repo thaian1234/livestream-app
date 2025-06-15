@@ -2,7 +2,7 @@
 
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, Wallet, WalletIcon, XCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -67,7 +67,16 @@ const PaymentMethodDisplay = ({
                 <span className="font-medium text-[#0066b3]">VNPay</span>
             </div>
         );
+    } else if (method === "WALLET") {
+        return (
+            <div className="flex items-center gap-2">
+                <div className="relative size-10">
+                    <WalletIcon />
+                </div>
+            </div>
+        );
     }
+
     return <span className="font-medium text-black-1">{method}</span>;
 };
 
@@ -133,11 +142,17 @@ export function DonationNotice({
                     asChild
                     className="transition-transform hover:scale-105"
                 >
-                    <Link href="/donate">Make Another Donation</Link>
+                    <Link
+                        href={{
+                            pathname: donationDetails.user.username,
+                        }}
+                    >
+                        Make Another Donation
+                    </Link>
                 </Button>
             </>
         ),
-        [],
+        [donationDetails.user.username],
     );
 
     const failureButtons = useMemo(

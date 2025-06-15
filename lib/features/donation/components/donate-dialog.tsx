@@ -308,7 +308,17 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                             currency="VND"
                                             locale="vi-VN"
                                             min={1000}
-                                            max={50_000_000}
+                                            max={
+                                                user?.wallet
+                                                    ? user.wallet.balance
+                                                    : 0
+                                            }
+                                            disabled={
+                                                user?.wallet
+                                                    ? user.wallet.balance <=
+                                                      1000
+                                                    : true
+                                            }
                                             placeholder="Enter amount (minimum 1,000 VNĐ)"
                                             className="text-white"
                                         />
