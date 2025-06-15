@@ -81,7 +81,7 @@ export abstract class BasePaymentProcessor {
 
         // Process payment result
         if (verificationResult.isSuccess) {
-            await this.processSuccessfulDonation(order, transactionId);
+            await this.processSuccessfulPayment(order, transactionId);
 
             return {
                 success: true,
@@ -103,8 +103,7 @@ export abstract class BasePaymentProcessor {
         }
     }
 
-    // Common method for all payment processors
-    protected async processSuccessfulDonation(
+    protected async processSuccessfulPayment(
         order: OrderDTO.Select,
         transactionId: string,
     ): Promise<void> {
@@ -115,51 +114,130 @@ export abstract class BasePaymentProcessor {
         }
         const streamerId = stream.userId;
 
-        const feePercentage = 10;
-        const feeAmount = Math.floor(order.totalAmount * (feePercentage / 100));
+        // Step 1: Handle payment method specific logic (DEPOSIT for external payments)
+        await this.handlePaymentMethodSpecificLogic(order, transactionId);
 
-        // Get or create streamer wallet
-        const streamerWallet =
-            await this.walletService.createWalletIfNotExists(streamerId);
+        // Step 2: Process the actual donation transaction (common for all methods)
+        await this.processDonationTransaction(order, streamerId);
 
-        // Update order status to COMPLETED
+        // Step 3: Update order status to COMPLETED
         await this.orderRepository.update(order.id, {
             status: "COMPLETED",
             externalTransactionId: transactionId,
             completedAt: new Date().toISOString(),
         });
 
-        // Add funds to streamer wallet
+        await this.additionalSuccessProcessing(order, transactionId);
+    }
+
+    // Handle payment method specific logic (can be overridden)
+    protected async handlePaymentMethodSpecificLogic(
+        order: OrderDTO.Select,
+        transactionId: string,
+    ): Promise<void> {
+        // For external payments (VNPAY, MOMO), add funds to donor wallet first
+        if (this.getPaymentMethodName() !== "WALLET") {
+            const donorWallet =
+                await this.walletService.createWalletIfNotExists(order.userId);
+
+            await this.walletService.addFunds(
+                donorWallet.id,
+                order.totalAmount,
+                {
+                    type: "DEPOSIT",
+                    description: `Deposit via ${this.getPaymentMethodName()} for donation`,
+                    orderId: order.id,
+                    referenceId: transactionId,
+                    metadata: {
+                        paymentMethod: this.getPaymentMethodName(),
+                        externalTransactionId: transactionId,
+                        purpose: "DONATION_FUNDING",
+                        originalAmount: order.totalAmount,
+                    },
+                },
+            );
+        }
+    }
+
+    // Common donation transaction logic for all payment methods
+    private async processDonationTransaction(
+        order: OrderDTO.Select,
+        streamerId: string,
+    ): Promise<void> {
+        const feePercentage = 10;
+        const feeAmount = Math.floor(order.totalAmount * (feePercentage / 100));
+        const netAmount = order.totalAmount - feeAmount;
+
+        // Get donor and streamer wallets
+        const donorWallet = await this.walletService.getWalletByUserId(
+            order.userId,
+        );
+        const streamerWallet =
+            await this.walletService.createWalletIfNotExists(streamerId);
+
+        if (!donorWallet) {
+            throw new MyError.NotFoundError("Donor wallet not found");
+        }
+
+        // Check if donor has sufficient balance
+        if (donorWallet.balance < order.totalAmount) {
+            throw new MyError.BadRequestError(
+                "Insufficient wallet balance for donation",
+            );
+        }
+
+        // Transaction 1: Deduct from donor's wallet (DONATION_SENT)
+        await this.walletService.deductFunds(
+            donorWallet.id,
+            order.totalAmount,
+            {
+                type: "DONATION_SENT",
+                description: `Donation to streamer${order.message ? `: ${order.message}` : ""}`,
+                orderId: order.id,
+                metadata: {
+                    streamId: order.streamId,
+                    streamerId: streamerId,
+                    grossAmount: order.totalAmount,
+                    feeAmount,
+                    netAmount,
+                    paymentMethod: this.getPaymentMethodName(),
+                },
+            },
+        );
+
+        // Transaction 2: Add to streamer's wallet (DONATION_RECEIVED)
         await this.walletService.addFunds(
             streamerWallet.id,
             order.totalAmount,
             {
                 type: "DONATION_RECEIVED",
-                description: `Donation from ${order.userId}${order.message ? `: ${order.message}` : ""}`,
+                description: `Donation received${order.message ? `: ${order.message}` : ""}`,
                 orderId: order.id,
-                referenceId: transactionId,
                 metadata: {
                     donorId: order.userId,
                     streamId: order.streamId,
-                    streamerId: streamerId,
                     grossAmount: order.totalAmount,
+                    feeAmount,
+                    netAmount,
+                    paymentMethod: this.getPaymentMethodName(),
                 },
             },
         );
 
-        // Record fee transaction
+        // Transaction 3: Deduct platform fee from streamer's wallet
         await this.walletService.deductFunds(streamerWallet.id, feeAmount, {
             type: "FEE",
-            description: "Platform fee for donation",
+            description: `Platform fee (${feePercentage}%) for donation`,
             orderId: order.id,
             metadata: {
                 feePercentage,
                 grossAmount: order.totalAmount,
                 feeAmount,
+                netAmount,
+                donorId: order.userId,
+                paymentMethod: this.getPaymentMethodName(),
             },
         });
-
-        await this.additionalSuccessProcessing(order, transactionId);
     }
 
     // Abstract methods to be implemented by concrete payment processors

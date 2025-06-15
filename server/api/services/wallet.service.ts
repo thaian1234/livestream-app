@@ -135,4 +135,42 @@ export class WalletService implements IWalletService {
             size,
         );
     }
+
+    async getRecentTransactions(walletId: string, limit = 5) {
+        const wallet = await this.walletRepository.findById(walletId);
+        if (!wallet) {
+            throw new MyError.NotFoundError("Wallet not found");
+        }
+
+        return this.walletTransactionRepository.findRecentByWalletId(
+            walletId,
+            limit,
+        );
+    }
+
+    async getWalletWithRecentTransactions(
+        userId: string,
+        transactionLimit = 3,
+    ) {
+        const wallet = await this.walletRepository.findByUserId(userId);
+        if (!wallet) {
+            // Create wallet if it doesn't exist
+            const newWallet = await this.createWalletIfNotExists(userId);
+            return {
+                wallet: newWallet,
+                recentTransactions: [],
+            };
+        }
+
+        const recentTransactions =
+            await this.walletTransactionRepository.findRecentByWalletId(
+                wallet.id,
+                transactionLimit,
+            );
+
+        return {
+            wallet,
+            recentTransactions,
+        };
+    }
 }

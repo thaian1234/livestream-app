@@ -69,4 +69,15 @@ export class WalletTransactionRepository
             .where(eq(walletTransactionTable.orderId, orderId))
             .orderBy(desc(walletTransactionTable.createdAt));
     }
+
+    async findRecentByWalletId(walletId: string, limit = 5) {
+        const transactions =
+            await this.db.query.walletTransactionTable.findMany({
+                where: eq(walletTransactionTable.walletId, walletId),
+                limit,
+                orderBy: [desc(walletTransactionTable.createdAt)],
+            });
+
+        return transactions;
+    }
 }
