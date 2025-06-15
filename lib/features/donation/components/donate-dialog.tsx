@@ -297,6 +297,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                         >
                                             Enter Amount (VNĐ)
                                         </Label>
+
                                         <MoneyInput
                                             value={customAmount || 0}
                                             onChange={(value) =>

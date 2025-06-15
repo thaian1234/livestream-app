@@ -95,8 +95,6 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
                 const numValue = parseInt(cleanValue) || 0;
                 const clampedValue = Math.min(Math.max(numValue, min), max);
                 onChange?.(clampedValue);
-            } else {
-                setDisplayValue(inputValue);
             }
         };
 
@@ -114,8 +112,8 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
             ) {
                 return;
             }
-            // Ensure that it is a number and stop the keypress
-            if (!/^\d$/.test(e.key) && !e.key.startsWith("Arrow")) {
+            // Allow navigation keys and modifiers
+            if (e.key.length === 1 && !/^\d$/.test(e.key)) {
                 e.preventDefault();
             }
             props.onKeyDown?.(e);
@@ -133,6 +131,10 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder || `Enter amount in ${currency}`}
                 className={cn("font-mono", className)}
+                aria-label={`Money input in ${currency}`}
+                aria-valuemin={min}
+                aria-valuemax={max}
+                aria-valuenow={value}
             />
         );
     },
