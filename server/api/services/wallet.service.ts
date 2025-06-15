@@ -18,7 +18,7 @@ export class WalletService implements IWalletService {
         let wallet = await this.walletRepository.findByUserId(userId);
 
         if (!wallet) {
-            wallet = await this.walletRepository.create({ userId });
+            throw new MyError.NotFoundError("Wallet not found");
         }
 
         return wallet;

@@ -116,7 +116,7 @@ export class DonationController implements IDonationController {
                     );
                 } else {
                     return c.redirect(
-                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=false&&orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
+                        `${envClient.NEXT_PUBLIC_APP_URL}/donation-notice?success=false&orderId=${result.orderId}&message=${encodeURIComponent(result.message)}`,
                     );
                 }
             },

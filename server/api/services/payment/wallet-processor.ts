@@ -36,6 +36,15 @@ export class WalletProcessor extends BasePaymentProcessor {
         const orderId = queryParams.orderId || "";
         const transactionId = `wallet_${orderId}_${Date.now()}`;
 
+        if (!orderId) {
+            return {
+                isSuccess: false,
+                message: "Missing orderId in callback",
+                orderId: "",
+                transactionId: "",
+            };
+        }
+
         return {
             isSuccess: true,
             message: "Wallet payment completed successfully",
