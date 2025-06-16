@@ -74,7 +74,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
             <h1 className="line-clamp-2 text-xl font-semibold">
                 {videoData.title}
             </h1>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex flex-col justify-between md:flex-row md:items-center">
                 <div className="flex items-center gap-2">
                     <UserAvatar
                         size={"lg"}
@@ -110,7 +110,7 @@ export function VideoInfor({ videoData }: { videoData: VideoInforProps }) {
                     )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-end gap-2">
                     <Button
                         variant="secondary"
                         className="gap-2"

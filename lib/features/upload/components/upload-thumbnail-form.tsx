@@ -58,7 +58,7 @@ export function UploadThumbnailForm({
     };
 
     return (
-        <div className="flex w-full flex-col justify-between rounded-lg bg-background py-6 shadow-md">
+        <div className="flex w-full flex-col justify-between rounded-lg bg-transparent py-6 shadow-md">
             <DragDropArea onFileSelect={handleFile}>
                 {file ? (
                     <div className="relative aspect-video h-full w-full">
