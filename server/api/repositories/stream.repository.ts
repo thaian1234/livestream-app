@@ -262,7 +262,10 @@ export class StreamRepository implements IStreamRepository {
                 ),
                 offset: offset,
                 limit: limit,
-                orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
+                orderBy: [
+                    desc(tableSchemas.streamTable.isLive), // Prioritize isLive = 1
+                    sql`md5(${tableSchemas.streamTable.id}::text || date_trunc('hour', now())::text)`,
+                ],
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
@@ -295,7 +298,10 @@ export class StreamRepository implements IStreamRepository {
                 },
                 offset: offset,
                 limit: limit,
-                orderBy: sql`md5(id::text || date_trunc('hour', now())::text)`,
+                orderBy: [
+                    desc(tableSchemas.streamTable.isLive), // Prioritize isLive = 1
+                    sql`md5(${tableSchemas.streamTable.id}::text || date_trunc('hour', now())::text)`,
+                ],
             });
             const totalRecords = await this.db.$count(tableSchemas.streamTable);
 
@@ -335,6 +341,7 @@ export class StreamRepository implements IStreamRepository {
                 ),
                 offset: offset,
                 limit: limit,
+                orderBy: desc(tableSchemas.streamTable.isLive),
             });
             const totalRecords = await this.db.$count(
                 tableSchemas.streamTable,
