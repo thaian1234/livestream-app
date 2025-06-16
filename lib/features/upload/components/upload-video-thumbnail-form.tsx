@@ -78,7 +78,10 @@ export function UploadVideoThumbnailForm({
             const fileWithPreview = Object.assign(selectedFile, {
                 preview: URL.createObjectURL(selectedFile),
             });
-            setFile(fileWithPreview);
+            setFile((prev) => {
+                if (prev) URL.revokeObjectURL(prev.preview);
+                return fileWithPreview;
+            });
             setPreviewUrl(fileWithPreview.preview);
         }
     };

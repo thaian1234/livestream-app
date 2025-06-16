@@ -34,12 +34,14 @@ export function UploadThumbnailForm({
         uploadApi.mutation.useUpload(file);
 
     const handleFile = useCallback((selectedFile: File) => {
-        if (selectedFile.type.startsWith("image/")) {
-            const fileWithPreview = Object.assign(selectedFile, {
+        if (!selectedFile.type.startsWith("image/")) return;
+
+        setFile((prev) => {
+            if (prev) URL.revokeObjectURL(prev.preview);
+            return Object.assign(selectedFile, {
                 preview: URL.createObjectURL(selectedFile),
             });
-            setFile(fileWithPreview);
-        }
+        });
     }, []);
 
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +75,7 @@ export function UploadThumbnailForm({
                 },
                 {
                     onSuccess: () => {
-                        setFile(file);
+                        removeFile();
                     },
                 },
             );
@@ -163,37 +165,39 @@ export function UploadThumbnailForm({
 
                 {/* File info - chỉ hiện khi có file được chọn */}
                 {file && (
-                    <div className="mt-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium">
-                                    {file.name}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                </p>
+                    <>
+                        <div className="mt-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-medium">
+                                        {file.name}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        {(file.size / 1024 / 1024).toFixed(2)}{" "}
+                                        MB
+                                    </p>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={removeFile}
+                                    disabled={isPending}
+                                    aria-label={`Remove ${file.name}`}
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={removeFile}
-                                disabled={isPending}
-                                aria-label={`Remove ${file.name}`}
-                            >
-                                <X className="h-4 w-4" />
-                            </Button>
                         </div>
-                    </div>
+                        <Button
+                            onClick={handleUpload}
+                            disabled={isPending || !file}
+                            className="mt-8 w-full"
+                            variant={"gradient"}
+                        >
+                            Upload Thumbnail
+                        </Button>
+                    </>
                 )}
-
-                <Button
-                    onClick={handleUpload}
-                    disabled={isPending || !file}
-                    className="mt-8 w-full"
-                    variant={"gradient"}
-                >
-                    Upload Thumbnail
-                </Button>
             </div>
         </>
     );
