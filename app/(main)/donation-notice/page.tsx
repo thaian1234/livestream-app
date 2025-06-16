@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { orderApi } from "@/lib/features/order/apis";
@@ -19,15 +19,15 @@ export default function DonationNoticePage({
         paymentMethod?: string;
     };
 }) {
+    const router = useRouter();
     const orderId = searchParams.orderId || "";
-    const { data, isPending, isError } = orderApi.query.useGetOrderInfo(
+    const { data, isPending, error } = orderApi.query.useGetOrderInfo(
         orderId || "",
     );
     const isSuccess = searchParams.success === "true";
 
-    if (isError) return redirect(ROUTES.HOME_PAGE);
-
     if (isPending || data === undefined) return <Spinner size={"large"} />;
+    if (error && !data?.data) return router.replace(ROUTES.HOME_PAGE);
 
     return <DonationNotice isSuccess={isSuccess} orderDetails={data.data} />;
 }

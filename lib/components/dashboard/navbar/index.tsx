@@ -1,6 +1,11 @@
+import { Wallet } from "lucide-react";
+
+import { WalletPopover } from "@/lib/features/donation/components/wallet-popover";
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { useUser } from "@/lib/hooks/use-user";
 import { NotificationProvider } from "@/lib/providers/notification-provider";
+
+import { Button } from "@/components/ui/button";
 
 import { UserNav } from "../../../features/user/components/user-nav";
 import { StreamUpdateDialog } from "../../stream-update-dialog";
@@ -21,6 +26,20 @@ export function Navbar({}: NavbarProps) {
                         <NotificationPopover />
                     </NotificationProvider>
                     <StreamUpdateDialog username={user.username} />
+                    <WalletPopover>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative"
+                            aria-label="Wallets"
+                        >
+                            <Wallet
+                                className="size-6"
+                                strokeWidth={2}
+                                aria-hidden="true"
+                            />
+                        </Button>
+                    </WalletPopover>
                     <UserNav />
                 </div>
             </div>

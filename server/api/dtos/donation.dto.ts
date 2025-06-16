@@ -6,7 +6,7 @@ export class DonationDTO {
     public static donationRequestSchema = z
         .object({
             streamerId: z.string().uuid().optional(),
-            amount: z.number().positive(),
+            amount: z.number().positive().min(1000).max(50_000_000),
             message: z.string().max(255).optional(),
             cardId: z.string().uuid().optional(),
         })

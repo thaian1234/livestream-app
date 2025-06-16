@@ -13,6 +13,7 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 import { IOrderService } from "../services/order.service";
 import { IStreamService } from "../services/stream.service";
 
+import { OrderDTO } from "../dtos/order.dto";
 import { QueryDTO } from "../dtos/query.dto";
 
 export interface IOrderController
@@ -56,7 +57,7 @@ export class OrderController implements IOrderController {
 
                 return ApiResponse.WriteJSON({
                     c,
-                    data: order,
+                    data: OrderDTO.selectSchema.parse(order),
                     status: HttpStatus.OK,
                 });
             },

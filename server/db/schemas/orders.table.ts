@@ -25,6 +25,7 @@ const paymentMethodEnum = pgEnum("payment_method", [
     "VNPAY",
     "MOMO",
     "ZALOPAY",
+    "WALLET",
 ]);
 
 const orderTable = pgTable("orders", {

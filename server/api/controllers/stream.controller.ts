@@ -47,6 +47,10 @@ export class StreamController implements IStreamController {
             .patch("/", ...this.updateStreamHandler())
 
             .get("/stream-token", ...this.getStreamTokenHandler())
+            .get(
+                "/stream-token/anonymous",
+                ...this.getStreamAnonymousTokenHandler(),
+            )
             .get("/recommend", ...this.getRecommendStreams())
             .get("/following", ...this.getFollowingStreams())
             .get("/chat-token", ...this.getStreamChatTokenHandler())
@@ -73,6 +77,20 @@ export class StreamController implements IStreamController {
             },
         );
     }
+
+    private getStreamAnonymousTokenHandler() {
+        return this.factory.createHandlers((c) => {
+            const token = this.getStreamService.generateAnonymousUserToken();
+
+            return ApiResponse.WriteJSON({
+                c,
+                msg: "Get token successfully",
+                data: { token },
+                status: HttpStatus.Created,
+            });
+        });
+    }
+
     private async handleStreamTokenGeneration(userId: string) {
         const stream = await this.streamService.getStreamWithSetting(userId);
         if (!stream?.setting) {

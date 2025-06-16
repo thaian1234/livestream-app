@@ -3,7 +3,11 @@
 import { redirect, useParams, useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
-import { formatNumber, timeAgo } from "@/lib/helpers/formatData";
+import {
+    formatNumber,
+    formatVideoDuration,
+    timeAgo,
+} from "@/lib/helpers/formatData";
 
 import { VideoThumbnail } from "@/components/thumbnail";
 
@@ -41,7 +45,7 @@ export function PreviewVideoList() {
                         <VideoThumbnail thumbnailUrl={video.thumbnailUrl} />
 
                         <div className="absolute bottom-1 right-1 rounded px-1 text-xs">
-                            {video.duration}
+                            {formatVideoDuration(video.duration || 0)}
                         </div>
                     </div>
                     <div className="flex-1">

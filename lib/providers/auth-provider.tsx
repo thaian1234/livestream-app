@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data, isPending, error } = authApi.query.useVerifySession();
-    const isSignedIn = !error;
+    const isSignedIn = !isPending && !error;
 
     const contextValue = useMemo(
         () => ({
@@ -32,6 +32,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }),
         [error, isPending, isSignedIn, data?.data.user],
     );
+
+    if (isPending) return null;
 
     return (
         <AuthContext.Provider value={contextValue}>

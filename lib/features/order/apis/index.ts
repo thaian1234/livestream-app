@@ -15,11 +15,18 @@ export const orderApi = {
     query: {
         useGetOrderInfo(orderId: string) {
             const $get = baseApi[":id"].$get;
-            return Fetcher.useHonoQuery($get, keys.order_info(orderId), {
-                param: {
-                    id: orderId,
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.order_info(orderId),
+                {
+                    param: {
+                        id: orderId,
+                    },
                 },
-            });
+                {
+                    enabled: !!orderId,
+                },
+            );
         },
     },
     mutation: {},

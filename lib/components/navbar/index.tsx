@@ -8,7 +8,6 @@ import { useSidebar } from "@/lib/stores/store-sidebar";
 import { TooltipModel } from "@/components/tooltip-model";
 
 import { Actions } from "./actions";
-import { WalletButton } from "./wallet-button";
 
 export function Navbar() {
     const { onCollapseSidebar } = useSidebar();

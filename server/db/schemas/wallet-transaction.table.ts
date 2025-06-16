@@ -13,11 +13,12 @@ import { orderTable } from "./orders.table";
 import { walletTable } from "./wallet.table";
 
 export const transactionTypeEnum = pgEnum("transaction_type", [
-    "DONATION_RECEIVED",
-    "WITHDRAWAL",
-    "REFUND",
-    "SYSTEM_ADJUSTMENT",
-    "FEE",
+    "DEPOSIT", // Nạp tiền vào ví (từ external payment)
+    "WITHDRAWAL", // Rút tiền từ ví
+    "DONATION_SENT", // Gửi donation (trừ tiền từ ví donor)
+    "DONATION_RECEIVED", // Nhận donation (cộng tiền vào ví streamer)
+    "FEE", // Phí platform
+    "SYSTEM_ADJUSTMENT", // Điều chỉnh hệ thống
 ]);
 
 export const walletTransactionTable = pgTable("wallet_transactions", {

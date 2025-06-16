@@ -1,12 +1,17 @@
-import { StreamVideoClient } from "@stream-io/video-react-sdk";
-import { useEffect, useState } from "react";
+import {
+    StreamVideoClient,
+    User,
+    UserRequest,
+} from "@stream-io/video-react-sdk";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { envClient } from "@/lib/env/env.client";
 import { streamApi } from "@/lib/features/stream/apis";
 import { useAuth } from "@/lib/providers/auth-provider";
+import { delay } from "@/lib/utils";
 
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 2000;
+const RETRY_DELAY = 1500;
 
 export function useVideoClient() {
     const [state, setState] = useState({
@@ -15,24 +20,51 @@ export function useVideoClient() {
         isError: false,
         retryCount: 0,
     });
-    const { user } = useAuth();
-    const { data: tokenData } = streamApi.query.useGetStreamToken();
+    const { user, isSignedIn } = useAuth();
+    const clientRef = useRef<StreamVideoClient | null>(null);
+    const isConnectingRef = useRef(false);
 
-    useEffect(() => {
-        if (!user || !tokenData) return;
+    const { data: authenticatedTokenData } =
+        streamApi.query.useGetStreamToken(isSignedIn);
+    const { data: anonymousTokenData } =
+        streamApi.query.useGetStreamAnonymousToken(!isSignedIn);
 
-        const connectWithRetry = async (
-            retryCount: number,
-        ): Promise<StreamVideoClient | null> => {
+    const tokenData = isSignedIn ? authenticatedTokenData : anonymousTokenData;
+
+    const connectWithRetry = useCallback(
+        async (retryCount: number): Promise<StreamVideoClient | null> => {
+            if (isConnectingRef.current) return null;
+            isConnectingRef.current = true;
+
             setState((prev) => ({ ...prev, isPending: true, isError: false }));
 
             try {
+                if (clientRef.current) {
+                    await clientRef.current
+                        .disconnectUser()
+                        .catch(console.error);
+                    clientRef.current = null;
+                }
+
+                const getStreamUser: User = user
+                    ? {
+                          id: user.id,
+                          name: user.username,
+                          image: user?.imageUrl || "",
+                          type: "authenticated",
+                      }
+                    : {
+                          type: "anonymous",
+                      };
+
                 const client = StreamVideoClient.getOrCreateInstance({
                     apiKey: envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
-                    user: { id: user.id, name: user.username },
-                    token: tokenData.data.token,
+                    user: getStreamUser,
+                    token: tokenData?.data?.token,
                     options: { timeout: 10000 },
                 });
+
+                clientRef.current = client;
 
                 setState({
                     videoClient: client,
@@ -41,6 +73,7 @@ export function useVideoClient() {
                     retryCount,
                 });
 
+                isConnectingRef.current = false;
                 return client;
             } catch (error) {
                 console.error(
@@ -49,9 +82,8 @@ export function useVideoClient() {
                 );
 
                 if (retryCount < MAX_RETRIES) {
-                    await new Promise((resolve) =>
-                        setTimeout(resolve, RETRY_DELAY),
-                    );
+                    await delay(RETRY_DELAY);
+                    isConnectingRef.current = false;
                     return connectWithRetry(retryCount + 1);
                 }
 
@@ -61,18 +93,36 @@ export function useVideoClient() {
                     isError: true,
                     retryCount,
                 }));
+                isConnectingRef.current = false;
                 return null;
             }
-        };
+        },
+        [user, tokenData],
+    );
 
-        let client: StreamVideoClient | null = null;
-        connectWithRetry(0).then((result) => (client = result));
+    const retry = useCallback(() => {
+        if (!isConnectingRef.current && tokenData) {
+            connectWithRetry(0);
+        }
+    }, [connectWithRetry, tokenData]);
+
+    useEffect(() => {
+        if (!tokenData?.data?.token) {
+            setState((prev) => ({ ...prev, isPending: false, isError: false }));
+            return;
+        }
+
+        connectWithRetry(0);
 
         return () => {
-            if (client) {
-                client.disconnectUser().catch(console.error);
+            isConnectingRef.current = false;
+            if (clientRef.current) {
+                console.log("Cleaning up video client");
+                clientRef.current.disconnectUser().catch(console.error);
+                clientRef.current = null;
             }
         };
-    }, [user, tokenData]);
-    return state;
+    }, [connectWithRetry, tokenData?.data?.token]);
+
+    return { ...state, retry };
 }

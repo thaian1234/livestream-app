@@ -84,6 +84,12 @@ export class UserDTO {
     public static userWithAccountsAndStreamSchema = this.selectSchema.extend({
         accounts: AccountDTO.selectSchema.array(),
         stream: StreamDTO.selectSchema,
+        wallet: z
+            .object({
+                id: z.string(),
+                balance: z.number(),
+            })
+            .nullable(),
     });
     public static selectUserSearch = this.selectSchema
         .extend({

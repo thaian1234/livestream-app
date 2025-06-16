@@ -113,7 +113,8 @@ export class UploadController implements IUploadController {
                     case "video-recording":
                         const startTime = new Date();
                         const endTime = new Date(
-                            startTime.getTime() + (jsonData.duration || 0),
+                            startTime.getTime() +
+                                (jsonData.duration || 0) * 1000,
                         );
                         updatedEntity = await this.storageService.createAsset({
                             streamId: currentUser.stream.id,
