@@ -31,7 +31,7 @@ export function StorageTable() {
     const totalPages = storages.data.pagination.totalPages;
 
     return (
-        <div className="min-w-0 max-w-full">
+        <div className="max-w-xs sm:max-w-lg md:max-w-[750px] lg:max-w-[660px] xl:max-w-[920px] 2xl:max-w-full">
             <DataTablePagination
                 columns={StorageColumns}
                 data={storages.data.data}

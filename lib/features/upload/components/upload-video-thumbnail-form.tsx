@@ -102,7 +102,7 @@ export function UploadVideoThumbnailForm({
                 onChange={onFileInputChange}
                 disabled={isPending}
             />
-            <div className="group relative aspect-video h-[153px] w-[200px] border border-dashed border-neutral-400">
+            <div className="group relative aspect-video h-auto w-[200px] border border-dashed border-neutral-400">
                 <VideoThumbnail thumbnailUrl={initialImageUrl} />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

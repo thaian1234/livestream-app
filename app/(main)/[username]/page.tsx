@@ -121,7 +121,7 @@ export default function StreamPage() {
                             </div>
                         </div>
 
-                        <div className="min-w-[400px]">
+                        <div className="min-w-[380px]">
                             <ChatProvider
                                 streamId={stream.id}
                                 streamerId={
@@ -138,9 +138,9 @@ export default function StreamPage() {
                                 />
                             </ChatProvider>
                         </div>
-                        <div className="block md:hidden">
+                        {/* <div className="block md:hidden">
                             <AboutChannel user={user} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}
