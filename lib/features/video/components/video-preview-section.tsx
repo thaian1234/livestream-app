@@ -12,6 +12,7 @@ interface VideoPreviewSectionProps {
 
 export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
     const videoLink = `${envClient.NEXT_PUBLIC_APP_URL}/video/${video.id}`;
+
     const formatDuration = () => {
         if (video.duration) {
             const totalSeconds = Math.floor(video.duration / 1000);

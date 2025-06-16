@@ -1,16 +1,8 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {
-    ImagePlusIcon,
-    MoreVerticalIcon,
-    RotateCcwIcon,
-    SparkleIcon,
-    Upload,
-    X,
-} from "lucide-react";
-import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ImagePlusIcon, MoreVerticalIcon, SparkleIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +12,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { videoApi } from "../../video/apis";
+import { VideoThumbnail } from "@/components/thumbnail";
+
 import { uploadApi } from "../apis";
 import { ThumbnailGenerateDialog } from "./thumbnail-generate-dialog";
-import { VideoThumbnail } from "@/components/thumbnail";
 
 interface FileWithPreview extends File {
     preview: string;
@@ -37,14 +29,49 @@ export function UploadVideoThumbnailForm({
     initialImageUrl,
     videoId,
 }: UploadVideoThumbnailFormProps) {
-    const queryClient = useQueryClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [file, setFile] = useState<FileWithPreview | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(
+        initialImageUrl,
+    );
     const [open, setOpen] = useState(false);
 
     const { mutate: uploadImage, isPending } =
         uploadApi.mutation.useUpload(file);
+
+    useEffect(() => {
+        const handleUpload = () => {
+            if (file) {
+                uploadImage({
+                    json: {
+                        fileName: file.name,
+                        fileSize: file.size,
+                        fileType: file.type,
+                    },
+                    param: {
+                        type: "video-thumbnail",
+                    },
+                    query: {
+                        videoId: videoId,
+                    },
+                });
+            }
+        };
+        handleUpload();
+    }, [file, uploadImage, videoId]);
+
+    useEffect(() => {
+        if (initialImageUrl) {
+            setPreviewUrl(initialImageUrl);
+        }
+    }, [initialImageUrl]);
+
+    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFile(e.target.files[0]);
+        }
+    };
 
     const handleFile = (selectedFile: File) => {
         if (selectedFile.type.startsWith("image/")) {
@@ -52,42 +79,7 @@ export function UploadVideoThumbnailForm({
                 preview: URL.createObjectURL(selectedFile),
             });
             setFile(fileWithPreview);
-        }
-    };
-
-    useEffect(() => {
-        const handleUpload = () => {
-            if (file) {
-                uploadImage(
-                    {
-                        json: {
-                            fileName: file.name,
-                            fileSize: file.size,
-                            fileType: file.type,
-                        },
-                        param: {
-                            type: "video-thumbnail",
-                        },
-                        query: {
-                            videoId: videoId,
-                        },
-                    },
-                    {
-                        onSuccess: () => {
-                            queryClient.invalidateQueries({
-                                queryKey: ["videos", videoId],
-                            });
-                        },
-                    },
-                );
-            }
-        };
-        handleUpload();
-    }, [file, queryClient, uploadImage, videoId]);
-
-    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            handleFile(e.target.files[0]);
+            setPreviewUrl(fileWithPreview.preview);
         }
     };
 
@@ -101,10 +93,8 @@ export function UploadVideoThumbnailForm({
                 onChange={onFileInputChange}
                 disabled={isPending}
             />
-            <div className="group relative aspect-video h-[153px] w-[200px] border border-dashed border-neutral-400">
-                <VideoThumbnail 
-                    thumbnailUrl={initialImageUrl}
-                />
+            <div className="group relative aspect-video max-w-sm rounded-lg border border-dashed border-neutral-400">
+                <VideoThumbnail thumbnailUrl={previewUrl} />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button

@@ -16,25 +16,38 @@ export const uploadApi = {
     mutation: {
         useUpload(file: File | null) {
             const $post = baseApi[":type"].$post;
-            const { mutation, toast } = Fetcher.useHonoMutation($post, {
-                onSuccess({ data }) {
-                    if (!file) {
-                        throw new Error(
-                            "Please select one file for uploading!",
-                        );
-                    }
-                    toast.promise(uploadToR2Bucket(data.signedUrl, file), {
-                        loading: "Uploading...",
-                        success: () => {
-                            return "Image uploaded successfully";
-                        },
-                        error: "Failed to upload image",
-                    });
+            const { mutation, toast, queryClient } = Fetcher.useHonoMutation(
+                $post,
+                {
+                    onSuccess({ data }, { param, query }) {
+                        if (!file) {
+                            throw new Error(
+                                "Please select one file for uploading!",
+                            );
+                        }
+                        toast.promise(uploadToR2Bucket(data.signedUrl, file), {
+                            loading: "Uploading...",
+                            success: () => {
+                                if (param.type === "stream-thumbnail") {
+                                    queryClient.invalidateQueries({
+                                        queryKey: ["stream_information"],
+                                    });
+                                }
+                                if (param.type === "video-thumbnail") {
+                                    queryClient.invalidateQueries({
+                                        queryKey: ["videos", query.videoId],
+                                    });
+                                }
+                                return "Image uploaded successfully";
+                            },
+                            error: "Failed to upload image",
+                        });
+                    },
+                    onError(err) {
+                        toast.error(err.message);
+                    },
                 },
-                onError(err) {
-                    toast.error(err.message);
-                },
-            });
+            );
             return mutation;
         },
     },

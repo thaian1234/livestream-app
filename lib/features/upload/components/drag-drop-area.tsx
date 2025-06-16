@@ -53,7 +53,7 @@ export default function DragDropArea({
             onDrop={onDrop}
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-                "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
+                "cursor-pointer rounded-lg border-2 border-dashed text-center transition-colors",
                 isDragging
                     ? "border-primary bg-primary/10"
                     : "border-gray-300 hover:border-primary",
