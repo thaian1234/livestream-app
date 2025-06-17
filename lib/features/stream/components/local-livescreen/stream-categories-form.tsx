@@ -63,6 +63,7 @@ export function StreamCategoriesForm({ streamId }: StreamCategoriesFormProps) {
                 <MultipleSelector
                     ref={ref}
                     value={values}
+                    className="bg-background"
                     placeholder="Select categories you like..."
                     emptyIndicator={
                         <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
