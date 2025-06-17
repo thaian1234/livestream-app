@@ -1,41 +1,41 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1743842457712,
-      "tag": "0000_curly_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1744792216767,
-      "tag": "0001_military_mysterio",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1744798902155,
-      "tag": "0002_yummy_dorian_gray",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1749957244354,
-      "tag": "0003_dear_stingray",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1749978324233,
-      "tag": "0004_dusty_spacker_dave",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "postgresql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "7",
+            "when": 1743842457712,
+            "tag": "0000_curly_storm",
+            "breakpoints": true
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1744792216767,
+            "tag": "0001_military_mysterio",
+            "breakpoints": true
+        },
+        {
+            "idx": 2,
+            "version": "7",
+            "when": 1744798902155,
+            "tag": "0002_yummy_dorian_gray",
+            "breakpoints": true
+        },
+        {
+            "idx": 3,
+            "version": "7",
+            "when": 1749957244354,
+            "tag": "0003_dear_stingray",
+            "breakpoints": true
+        },
+        {
+            "idx": 4,
+            "version": "7",
+            "when": 1749978324233,
+            "tag": "0004_dusty_spacker_dave",
+            "breakpoints": true
+        }
+    ]
 }

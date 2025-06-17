@@ -52,7 +52,9 @@ export function PreviewVideoCarousel({ videoData }: PreviewVideoCarouselProps) {
                                     />
 
                                     <div className="absolute bottom-1 right-1 rounded px-1 text-xs">
-                                        {formatVideoDuration(video.duration || 0)}
+                                        {formatVideoDuration(
+                                            video.duration || 0,
+                                        )}
                                     </div>
                                 </div>
                                 <div className="flex-1">

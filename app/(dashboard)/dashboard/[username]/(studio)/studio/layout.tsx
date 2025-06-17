@@ -8,7 +8,7 @@ export default function StudioLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <Card className="mx-auto max-w-screen-2xl">
+        <Card className="mx-auto max-w-screen-2xl px-2 sm:px-8">
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Channel content</CardTitle>
                 <CreateVideoDialog />

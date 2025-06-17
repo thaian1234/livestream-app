@@ -3,6 +3,7 @@
 import { CalendarEventExternal } from "@schedule-x/calendar";
 import { format, isAfter, parseISO } from "date-fns";
 import { Calendar, Clock, Info, MapPin } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 import { eventApi } from "@/lib/features/schedule/apis";
@@ -13,11 +14,17 @@ import { Spinner } from "@/components/ui/spinner";
 
 import { TooltipModel } from "@/components/tooltip-model";
 
+type ParamsType = {
+    username: string;
+};
 interface AboutChannelProps {
     user: UserDTO.Select;
 }
 export function AboutChannel({ user }: AboutChannelProps) {
-    const { data, isPending, isError } = eventApi.query.useGetAllEvents();
+    const params = useParams<ParamsType>();
+    const { data, isPending, isError } = eventApi.query.useGetAllEvents(
+        params?.username || "",
+    );
     const [isEditingSchedule, setIsEditingSchedule] = useState(false);
 
     if (isPending || !data) {

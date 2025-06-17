@@ -21,7 +21,7 @@ export function StorageStats() {
     };
 
     return (
-        <div className="grid gap-6 rounded-lg border md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 rounded-lg border md:grid-cols-2 xl:grid-cols-4">
             <StatsCard title="Total Videos" value={totalVideos} icon={Video} />
             <StatsCard
                 title="Total Duration"

@@ -3,7 +3,11 @@
 import { redirect, useParams, useRouter } from "next/navigation";
 
 import { ROUTES } from "@/lib/configs/routes.config";
-import { formatNumber, formatVideoDuration, timeAgo } from "@/lib/helpers/formatData";
+import {
+    formatNumber,
+    formatVideoDuration,
+    timeAgo,
+} from "@/lib/helpers/formatData";
 
 import { VideoThumbnail } from "@/components/thumbnail";
 

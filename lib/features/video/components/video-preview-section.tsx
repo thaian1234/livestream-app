@@ -60,22 +60,22 @@ export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
                         {video.status}
                     </p>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center space-x-1">
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">
+                        <Eye className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="shrink-0 text-sm font-medium">
                             {video.viewCount} views
                         </span>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <Heart className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">
+                        <Heart className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="shrink-0 text-sm font-medium">
                             {video.likeCount} likes
                         </span>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">
+                        <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="shrink-0 text-sm font-medium">
                             {formatDuration()}
                         </span>
                     </div>
