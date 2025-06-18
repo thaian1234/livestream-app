@@ -27,6 +27,7 @@ import { UserAvatar } from "@/components/user-avatar";
 export function UserNav() {
     const router = useRouter();
     const { user, isPending, error, stream } = useAuth();
+
     if (isPending) {
         return <Spinner />;
     }
@@ -77,6 +78,7 @@ export function UserNav() {
                                 <Link
                                     href={href}
                                     className="flex items-center py-3"
+                                    prefetch={false}
                                 >
                                     <Icon className="mr-3 h-4 w-4" />
                                     {label}

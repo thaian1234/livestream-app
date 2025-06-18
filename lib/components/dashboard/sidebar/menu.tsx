@@ -7,7 +7,6 @@ import { notFound, usePathname } from "next/navigation";
 import { getDashboardMenuList } from "@/lib/configs/dashboard-menu.config";
 import { ROUTES } from "@/lib/configs/routes.config";
 import { useUser } from "@/lib/hooks/use-user";
-import { useAuth } from "@/lib/providers/auth-provider";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -83,7 +82,10 @@ export function Menu({ isOpen }: MenuProps) {
                                                         className="mb-1 h-10 w-full justify-start"
                                                         asChild
                                                     >
-                                                        <Link href={href}>
+                                                        <Link
+                                                            href={href}
+                                                            prefetch={false}
+                                                        >
                                                             <span
                                                                 className={cn(
                                                                     isOpen &&

@@ -17,6 +17,7 @@ import DonationNotification from "@/components/donation-notification";
 import StreamNotification from "@/components/stream-notification";
 
 import { notificationApi } from "../features/notification/apis";
+import { useAuth } from "./auth-provider";
 
 interface NotificationContextType {
     notifications: NotificationDTO.Activity[];
@@ -32,14 +33,11 @@ type ParamsType = {
     username: string;
 };
 
-export function NotificationProvider({
-    children,
-    userId,
-}: {
-    children: ReactNode;
-    userId: string;
-}) {
-    const { data } = notificationApi.query.useGetNotificationToken(userId);
+export function NotificationProvider({ children }: { children: ReactNode }) {
+    const { user } = useAuth();
+    const { data } = notificationApi.query.useGetNotificationToken(
+        user?.id || "",
+    );
     const [notifications, setNotifications] = useState<
         NotificationDTO.Activity[]
     >([]);
@@ -52,7 +50,7 @@ export function NotificationProvider({
     const params = useParams<ParamsType>();
 
     useEffect(() => {
-        if (!data) return;
+        if (!data || !user?.id) return;
 
         const client = connect(
             envClient.NEXT_PUBLIC_GETSTREAM_API_KEY,
@@ -61,15 +59,14 @@ export function NotificationProvider({
             { timeout: 10000, location: "singapore" },
         );
 
-        const notificationFeed = client.feed("notifications", userId);
+        const notificationFeed = client.feed("notifications", user.id);
 
         const handleNotification = (data: RealTimeMessage<DefaultGenerics>) => {
-            console.log("data", data);
             if (data.new?.length > 0) {
                 const newActivity = NotificationDTO.activitySchema
                     .array()
                     .parse(data.new)
-                    .filter((activity) => activity.actor !== userId);
+                    .filter((activity) => activity.actor !== user.id);
 
                 setNotifications((prev) => {
                     const uniqueActivities = [...newActivity, ...prev].filter(
@@ -91,7 +88,6 @@ export function NotificationProvider({
                 if (latestActivity) {
                     handleNotificationEvent(latestActivity);
                 }
-                console.log("New notification:", newActivity);
             }
         };
         const handleNotificationEvent = (
@@ -165,7 +161,7 @@ export function NotificationProvider({
                 validatedNotificationsResponse.results.forEach((result) => {
                     setNotifications((prev) => {
                         const uniqueActivities = [...result.activities, ...prev]
-                            .filter((activity) => activity.actor !== userId)
+                            .filter((activity) => activity.actor !== user.id)
                             .filter(
                                 (activity, index, self) =>
                                     index ===
@@ -191,7 +187,7 @@ export function NotificationProvider({
         return () => {
             notificationFeed.unsubscribe();
         };
-    }, [data, params?.username, pathname, router, userId]);
+    }, [data, params?.username, pathname, router, user?.id, user]);
 
     return (
         <NotificationContext.Provider

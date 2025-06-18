@@ -11,7 +11,6 @@ import { WalletPopover } from "@/lib/features/donation/components/wallet-popover
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { UserNav } from "@/lib/features/user/components/user-nav";
 import { useAuth } from "@/lib/providers/auth-provider";
-import { NotificationProvider } from "@/lib/providers/notification-provider";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,9 +24,7 @@ export const AfterSignin = () => {
 
     return (
         <>
-            <NotificationProvider userId={user.id}>
-                <NotificationPopover />
-            </NotificationProvider>
+            <NotificationPopover />
             <WalletPopover>
                 <Button
                     variant="ghost"
@@ -79,6 +76,8 @@ export const IsPending = () => {
 
 export function Actions() {
     const { isSignedIn, isPending } = useAuth();
+
     if (isPending) return <IsPending />;
+
     return isSignedIn ? <AfterSignin /> : <BeforeSignin />;
 }

@@ -10,14 +10,16 @@ export default function AuthLayout({
 }) {
     return (
         <Background>
-            <main className="containerAuth absolute z-50">
-                <Image
-                    src="/logo.svg"
-                    className="logoContainer"
-                    width={100}
-                    height={100}
-                    alt="Logo"
-                />
+            <main className="absolute z-50 flex w-full items-center justify-around">
+                <div className="hidden md:block">
+                    <Image
+                        src="/logo.svg"
+                        className="logoContainer"
+                        width={100}
+                        height={100}
+                        alt="Logo"
+                    />
+                </div>
                 <section className="popup">{children}</section>
             </main>
         </Background>
