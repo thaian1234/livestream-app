@@ -21,6 +21,7 @@ export default function SchedulePage() {
     if (isError) {
         return <div>Error</div>;
     }
+
     const events: CalendarEventExternal[] = data.data.map((event) => ({
         id: event.id,
         description: event?.description || "",
