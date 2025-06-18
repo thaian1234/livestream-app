@@ -35,7 +35,7 @@ export function Sidebar() {
                     variant="link"
                     asChild
                 >
-                    <Link href="/dashboard" className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                         <PanelsTopLeft className="mr-1 h-6 w-6" />
                         <h1
                             className={cn(
@@ -47,7 +47,7 @@ export function Sidebar() {
                         >
                             Dashboard
                         </h1>
-                    </Link>
+                    </div>
                 </Button>
                 <Suspense fallback={<p>loading sidebar...</p>}>
                     <Menu isOpen={sidebar?.isOpen} />

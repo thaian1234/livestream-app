@@ -3,7 +3,6 @@ import { Wallet } from "lucide-react";
 import { WalletPopover } from "@/lib/features/donation/components/wallet-popover";
 import { NotificationPopover } from "@/lib/features/notification/components/notification-popover";
 import { useUser } from "@/lib/hooks/use-user";
-import { NotificationProvider } from "@/lib/providers/notification-provider";
 
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +14,7 @@ interface NavbarProps {}
 
 export function Navbar({}: NavbarProps) {
     const { user } = useUser();
+
     return (
         <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
             <div className="mx-4 flex h-16 items-center sm:mx-8">
@@ -22,9 +22,7 @@ export function Navbar({}: NavbarProps) {
                     <SheetMenu />
                 </div>
                 <div className="flex flex-1 items-center justify-end space-x-8 pr-4">
-                    <NotificationProvider userId={user.id}>
-                        <NotificationPopover />
-                    </NotificationProvider>
+                    <NotificationPopover />
                     <StreamUpdateDialog username={user.username} />
                     <WalletPopover>
                         <Button

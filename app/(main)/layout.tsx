@@ -5,6 +5,7 @@ import React from "react";
 
 import { Navbar } from "@/lib/components/navbar";
 import { Sidebar } from "@/lib/components/sidebar";
+import { NotificationProvider } from "@/lib/providers/notification-provider";
 import { StreamVideoContextProvider } from "@/lib/providers/stream-video-context-provider";
 import { useSidebar } from "@/lib/stores/store-sidebar";
 import { cn } from "@/lib/utils";
@@ -18,8 +19,10 @@ export default function HomeLayout({
 
     return (
         <div className="flex min-h-screen flex-col">
-            {/* navbar */}
-            <Navbar />
+            <NotificationProvider>
+                {/* navbar */}
+                <Navbar />
+            </NotificationProvider>
             {/* Sidebar */}
             <div className="flex flex-grow">
                 <Sidebar />

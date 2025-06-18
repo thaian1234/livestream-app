@@ -9,7 +9,15 @@ export const notificationApi = {
     query: {
         useGetNotificationToken(userId: string) {
             const $get = baseApi["notification-token"].$get;
-            return Fetcher.useHonoQuery($get, ["notification-token", userId]);
+
+            return Fetcher.useHonoQuery(
+                $get,
+                ["notification-token", userId],
+                {},
+                {
+                    enabled: !!userId,
+                },
+            );
         },
     },
     mutation: {},

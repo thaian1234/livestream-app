@@ -1,7 +1,4 @@
 .containerAuth {
-    /* background-color: #0f0f0f; */
-    padding-right: 10vw;
-    padding-left: 10vw;
     display: flex;
     justify-content: space-between;
     align-items: center;

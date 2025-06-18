@@ -2,6 +2,7 @@
 
 import { Navbar } from "@/lib/components/dashboard/navbar";
 import { Sidebar } from "@/lib/components/dashboard/sidebar";
+import { NotificationProvider } from "@/lib/providers/notification-provider";
 import { StreamVideoContextProvider } from "@/lib/providers/stream-video-context-provider";
 import { useSidebarToggle } from "@/lib/stores/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,9 @@ export default function DashboardLayout({
 
     return (
         <div className="flex min-h-screen flex-col">
-            <Navbar />
+            <NotificationProvider>
+                <Navbar />
+            </NotificationProvider>
             <div className="flex flex-grow">
                 <Sidebar />
                 <main
