@@ -82,6 +82,9 @@ export class DonationService implements IDonationService {
         if (!stream || !donor)
             throw new MyError.NotFoundError("Stream or Donor not found");
 
+        if (stream.userId === donor.id)
+            return;
+
         await this.notificationService.createStreamDonationNotification({
             actorAvatar: donor?.imageUrl || "",
             actorName: donor?.username || "",

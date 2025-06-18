@@ -5,6 +5,7 @@ import {
     EyeOff,
     Minus,
     Plus,
+    PlusIcon,
     TrendingDown,
     TrendingUp,
     Wallet,
@@ -24,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { walletApi } from "../../wallet/apis";
+import { AddMoneyDialog } from "./add-money-dialog";
 
 interface WalletPopoverProps {
     children: React.ReactNode;
@@ -152,17 +154,24 @@ export function WalletPopover({
                             <Wallet className="h-5 w-5 text-primary" />
                             <h3 className="font-semibold">My Wallet</h3>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowBalance(!showBalance)}
-                        >
-                            {showBalance ? (
-                                <EyeOff className="h-4 w-4" />
-                            ) : (
-                                <Eye className="h-4 w-4" />
-                            )}
-                        </Button>
+                        <div>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowBalance(!showBalance)}
+                            >
+                                {showBalance ? (
+                                    <EyeOff className="h-4 w-4" />
+                                ) : (
+                                    <Eye className="h-4 w-4" />
+                                )}
+                            </Button>
+                            <AddMoneyDialog>
+                                <Button variant="ghost" size="sm">
+                                    <PlusIcon className="h-4 w-4" />
+                                </Button>
+                            </AddMoneyDialog>
+                        </div>
                     </div>
 
                     {/* Balance */}
