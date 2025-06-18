@@ -2,7 +2,7 @@
 
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
-import { CheckCircle2, Wallet, WalletIcon, XCircle } from "lucide-react";
+import { CheckCircle2, Wallet2, XCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -31,7 +31,6 @@ interface DonationNoticeProps {
     orderDetails: OrderDetails;
 }
 
-// Component to render payment method with appropriate styling
 const PaymentMethodDisplay = ({
     method,
 }: {
@@ -70,9 +69,8 @@ const PaymentMethodDisplay = ({
     } else if (method === "WALLET") {
         return (
             <div className="flex items-center gap-2">
-                <div className="relative size-10">
-                    <WalletIcon />
-                </div>
+                <Wallet2 color="#a08147" />
+                <span className="fotn-medium text-[#725b30]">Wallet</span>
             </div>
         );
     }
