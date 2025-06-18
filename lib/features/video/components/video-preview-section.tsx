@@ -1,4 +1,4 @@
-import { Clock, Eye, Heart, LinkIcon } from "lucide-react";
+import { Clock, ExternalLink, Eye, Heart, LinkIcon } from "lucide-react";
 import Link from "next/link";
 import ReactPlayer from "react-player";
 
@@ -48,9 +48,12 @@ export function VideoPreviewSection({ video }: VideoPreviewSectionProps) {
                         <LinkIcon className="h-4 w-4 flex-shrink-0" />
                         <Link
                             href={videoLink}
-                            className="truncate text-sm font-medium text-blue-500 underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 truncate text-sm font-medium text-blue-500 underline transition-colors hover:text-blue-600"
                         >
-                            {videoLink}
+                            <span className="truncate">{videoLink}</span>
+                            <ExternalLink className="size-3 flex-shrink-0" />
                         </Link>
                     </div>
                 </div>
