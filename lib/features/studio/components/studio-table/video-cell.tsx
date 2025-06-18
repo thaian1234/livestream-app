@@ -36,6 +36,7 @@ export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
             <div className="flex flex-col justify-between">
                 <Link
                     href={`/video/${row.original.id}`}
+                    prefetch={false}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                     onClick={handleEditClick}
                 >
