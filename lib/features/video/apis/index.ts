@@ -30,11 +30,18 @@ export const videoApi = {
         },
         useGetVideo(id: string) {
             const $get = baseApi[":id"].$get;
-            return Fetcher.useHonoQuery($get, keys.video(id), {
-                param: {
-                    id,
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.video(id),
+                {
+                    param: {
+                        id,
+                    },
                 },
-            });
+                {
+                    enabled: !!id,
+                },
+            );
         },
         useGetOwnedVideos(pagination: PaginationType) {
             const $get = baseApi.me.$get;
@@ -55,7 +62,9 @@ export const videoApi = {
                         id: videoId,
                     },
                 },
-                {},
+                {
+                    enabled: !!videoId,
+                },
             );
         },
         useGetRelateVideo(videoId: string) {

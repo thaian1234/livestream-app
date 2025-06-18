@@ -143,33 +143,9 @@ class BlurDataURLGenerator {
 
         // Default theme
         return {
-            colors: ["#374151", "#4b5563", "#6b7280"],
-            hasNoise: false,
+            colors: ["#1a1a2e", "#16213e", "#0f3460"],
+            hasNoise: true,
         };
-    }
-
-    // Generate CDN-optimized blur URL
-    private static generateCDNBlur(imageUrl: string): string | null {
-        try {
-            // Vercel/Next.js Image optimization
-            if (imageUrl.includes("_next/image") || imageUrl.startsWith("/")) {
-                return `/_next/image?url=${encodeURIComponent(imageUrl)}&w=16&q=10`;
-            }
-
-            // Generic CDN with query params
-            if (imageUrl.includes("cdn.") || imageUrl.includes("r2.dev")) {
-                const url = new URL(imageUrl);
-                url.searchParams.set("w", "16");
-                url.searchParams.set("h", "9");
-                url.searchParams.set("q", "10");
-                url.searchParams.set("blur", "3");
-                return url.toString();
-            }
-        } catch (error) {
-            console.warn("CDN blur generation failed:", error);
-        }
-
-        return null;
     }
 
     // Main generation method
@@ -184,16 +160,8 @@ class BlurDataURLGenerator {
         if (cached) return cached;
 
         let blurDataURL: string;
-
-        // Try CDN-optimized blur first
-        const cdnBlur = this.generateCDNBlur(imageUrl);
-        if (cdnBlur) {
-            blurDataURL = cdnBlur;
-        } else {
-            // Fallback to themed SVG blur
-            const { colors, hasNoise } = this.getThemeColors(imageUrl);
-            blurDataURL = this.createSVGBlur(16, 9, colors, hasNoise);
-        }
+        const { colors, hasNoise } = this.getThemeColors(imageUrl);
+        blurDataURL = this.createSVGBlur(16, 9, colors, hasNoise);
 
         // Cache the result
         blurCache.set(imageUrl, blurDataURL);

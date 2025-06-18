@@ -22,12 +22,15 @@ import { OptionsDropdown } from "./options-dropdown";
 export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
     const router = useRouter();
     const { user } = useUser();
+
     const handleEditClick = () => {
-        router.replace(ROUTES.VIDEO_EDIT_PAGE(user.username, row.original.id));
+        router.push(ROUTES.VIDEO_EDIT_PAGE(user.username, row.original.id));
     };
+
     const handleVideoClick = () => {
-        router.replace(ROUTES.VIDEO_PAGE(row.original.id));
+        window.open(ROUTES.VIDEO_PAGE(row.original.id), "_blank");
     };
+
     return (
         <div className="grid max-w-[400px] grid-cols-[150px_1fr] space-x-2">
             <div onClick={handleVideoClick}>
@@ -35,9 +38,12 @@ export function VideoCell({ row }: { row: Row<IVideoStudio> }) {
             </div>
             <div className="flex flex-col justify-between">
                 <Link
-                    href={`/video/${row.original.id}`}
+                    href={ROUTES.VIDEO_EDIT_PAGE(
+                        user.username,
+                        row.original.id,
+                    )}
+                    prefetch={false}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
-                    onClick={handleEditClick}
                 >
                     {row.original.title}
                 </Link>

@@ -5,11 +5,15 @@ import { format } from "date-fns";
 
 import { eventApi } from "@/lib/features/schedule/apis";
 import { Schedule } from "@/lib/features/schedule/components/schedule";
+import { useUser } from "@/lib/hooks/use-user";
 
 import { Spinner } from "@/components/ui/spinner";
 
 export default function SchedulePage() {
-    const { data, isPending, isError } = eventApi.query.useGetAllEvents();
+    const { user } = useUser();
+    const { data, isPending, isError } = eventApi.query.useGetAllEvents(
+        user.username,
+    );
 
     if (isPending || !data) {
         return <Spinner size="large" />;
@@ -17,6 +21,7 @@ export default function SchedulePage() {
     if (isError) {
         return <div>Error</div>;
     }
+
     const events: CalendarEventExternal[] = data.data.map((event) => ({
         id: event.id,
         description: event?.description || "",
