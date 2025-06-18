@@ -8,17 +8,25 @@ const baseKey = ["events"];
 
 const keys = {
     events: baseKey,
+    events_user: (username: string) => [...baseKey, username] as string[],
 };
 
 export const eventApi = {
     query: {
         useGetAllEvents(username?: string) {
             const $get = baseApi.$get;
-            return Fetcher.useHonoQuery($get, keys.events, {
-                query: {
-                    username,
+            return Fetcher.useHonoQuery(
+                $get,
+                keys.events_user(username || "unknown"),
+                {
+                    query: {
+                        username,
+                    },
                 },
-            });
+                {
+                    enabled: !!username,
+                },
+            );
         },
     },
     mutation: {
