@@ -69,8 +69,8 @@ const PaymentMethodDisplay = ({
     } else if (method === "WALLET") {
         return (
             <div className="flex items-center gap-2">
-                <Wallet2 color="#a08147" />
-                <span className="fotn-medium text-[#725b30]">Wallet</span>
+                <Wallet2 className="size-10" color="#a08147" />
+                <span className="font-medium text-[#725b30]">Wallet</span>
             </div>
         );
     }

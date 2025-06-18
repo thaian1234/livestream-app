@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import { ROUTES } from "@/lib/configs/routes.config";
 import { orderApi } from "@/lib/features/order/apis";
@@ -15,13 +16,15 @@ export default function DonationNoticePage() {
     const orderId = searchParams.get("orderId") || "";
     const isSuccess = searchParams.get("success") === "true";
 
-    console.log(searchParams);
-
     const { data, isPending, error } = orderApi.query.useGetOrderInfo(orderId);
+
+    useEffect(() => {
+        if (error) router.replace(ROUTES.HOME_PAGE);
+    }, [error, router]);
 
     if (isPending || data === undefined) return <Spinner size={"large"} />;
 
-    if (error) return router.replace(ROUTES.HOME_PAGE);
+    if (error) return null;
 
     return <DonationNotice isSuccess={isSuccess} orderDetails={data.data} />;
 }
