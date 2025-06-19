@@ -29,11 +29,11 @@ import { ErrorField } from "@/components/error-field";
 
 import { donationApi } from "../apis";
 
-interface DonateDialogProps {
+interface AddMoneyDialogProps {
     children: React.ReactNode;
 }
 
-export function AddMoneyDialog({ children }: DonateDialogProps) {
+export function AddMoneyDialog({ children }: AddMoneyDialogProps) {
     const [open, setOpen] = useState(false);
 
     const { user } = useUser();

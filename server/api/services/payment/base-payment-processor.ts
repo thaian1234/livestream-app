@@ -113,12 +113,15 @@ export abstract class BasePaymentProcessor {
             throw new MyError.NotFoundError("Stream not found");
         }
         const streamerId = stream.userId;
+        const isSelfDonation = order.userId === streamerId;
 
         // Step 1: Handle payment method specific logic (DEPOSIT for external payments)
         await this.handlePaymentMethodSpecificLogic(order, transactionId);
 
         // Step 2: Process the actual donation transaction (common for all methods)
-        await this.processDonationTransaction(order, streamerId);
+        if (!isSelfDonation) {
+            await this.processDonationTransaction(order, streamerId);
+        }
 
         // Step 3: Update order status to COMPLETED
         await this.orderRepository.update(order.id, {
