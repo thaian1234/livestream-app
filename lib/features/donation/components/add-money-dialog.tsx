@@ -100,7 +100,7 @@ export function AddMoneyDialog({ children }: DonateDialogProps) {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl sm:max-w-[500px] lg:max-w-4xl">
+            <DialogContent className="border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl">
                 <DialogHeader>
                     <DialogTitle>Add money to Wallet</DialogTitle>
                     <DialogDescription>

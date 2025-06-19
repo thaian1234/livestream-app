@@ -17,7 +17,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { categoryApi } from "../features/category/apis";
 import { SettingUpdateForm } from "../features/setting/components/setting-update-form";
 import { streamApi } from "../features/stream/apis";
 import { StreamCategoriesForm } from "../features/stream/components/local-livescreen/stream-categories-form";
