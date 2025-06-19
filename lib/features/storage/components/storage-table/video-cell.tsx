@@ -31,12 +31,10 @@ export function VideoCell({ row }: StorageCellProps) {
 
     return (
         <div className="grid max-w-[400px] grid-cols-[150px_1fr] space-x-2">
-            {/* <div onClick={handleFileClick}>
-                <VideoThumbnail thumbnailUrl={row.original.thumbnailUrl} />
-            </div> */}
             <div className="flex flex-col justify-between">
                 <Link
-                    href={`/storage/${row.original.id}`}
+                    href={row.original.fileUrl || ""}
+                    prefetch={false}
                     className="line-clamp-2 cursor-pointer text-sm text-teal-1 hover:underline"
                     onClick={handleEditClick}
                 >
