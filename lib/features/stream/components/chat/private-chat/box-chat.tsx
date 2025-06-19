@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, MessageSquare } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
     MessageInput,
     MessageList,
@@ -25,9 +25,9 @@ export function BoxChat({ streamerId }: BoxChatProps) {
     const { setViewerId } = useViewerId();
     const { messages } = useChannelStateContext();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const messagesLengthRef = useRef(messages?.length || 0);
 
-    //chat scrolls to the bottom
-    useEffect(() => {
+    const scrollToBottom = useCallback(() => {
         if (scrollAreaRef.current) {
             const scrollableNode = scrollAreaRef.current.querySelector(
                 "[data-radix-scroll-area-viewport]",
@@ -36,7 +36,26 @@ export function BoxChat({ streamerId }: BoxChatProps) {
                 scrollableNode.scrollTop = scrollableNode.scrollHeight;
             }
         }
-    }, [messages]);
+    }, []);
+
+    useEffect(() => {
+        const currentLength = messages?.length || 0;
+
+        // Chỉ scroll khi có tin nhắn mới
+        if (currentLength > messagesLengthRef.current) {
+            // Sử dụng requestAnimationFrame để tránh conflict với focus
+            requestAnimationFrame(() => {
+                scrollToBottom();
+            });
+        }
+
+        messagesLengthRef.current = currentLength;
+    }, [messages?.length, scrollToBottom]);
+
+    // Memoize click handler
+    const handleBackClick = useCallback(() => {
+        if (setViewerId) setViewerId(undefined);
+    }, [setViewerId]);
 
     return (
         <div className="px-2 py-1">
@@ -45,9 +64,7 @@ export function BoxChat({ streamerId }: BoxChatProps) {
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 p-0"
-                    onClick={() => {
-                        if (setViewerId) setViewerId(undefined);
-                    }}
+                    onClick={handleBackClick}
                 >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
