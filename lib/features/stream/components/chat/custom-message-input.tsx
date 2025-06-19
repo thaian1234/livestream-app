@@ -1,5 +1,5 @@
 import { Gift, SendHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMessageInputContext } from "stream-chat-react";
 import { EmojiPicker } from "stream-chat-react/emojis";
 
@@ -29,6 +29,7 @@ export const CustomMessageInput = ({
 }: CustomMessageInputProps) => {
     const { text, handleChange, handleSubmit } = useMessageInputContext();
     const [isDelayBlock, setIsDelayBlock] = useState(false);
+    const isComposingRef = useRef(false);
 
     const isChatDisabled =
         !isHost &&
@@ -37,7 +38,7 @@ export const CustomMessageInput = ({
             isDelayBlock);
 
     const handleMessageSubmit = () => {
-        if (isChatDisabled) return;
+        if (isChatDisabled || !text.trim()) return;
 
         if (isChatDelayed && !isDelayBlock) {
             setIsDelayBlock(true);
@@ -51,11 +52,19 @@ export const CustomMessageInput = ({
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Enter" && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey && !isComposingRef.current) {
             e.preventDefault();
             e.stopPropagation();
             handleMessageSubmit();
         }
+    };
+
+    const handleCompositionStart = () => {
+        isComposingRef.current = true;
+    };
+
+    const handleCompositionEnd = () => {
+        isComposingRef.current = false;
     };
 
     return (
@@ -72,6 +81,8 @@ export const CustomMessageInput = ({
                     onChange={handleChange}
                     rows={1}
                     onKeyDown={handleKeyDown}
+                    onCompositionStart={handleCompositionStart}
+                    onCompositionEnd={handleCompositionEnd}
                     disabled={isChatDisabled}
                     maxLength={50}
                     autoFocus={!isChatDisabled}
@@ -101,6 +112,7 @@ export const CustomMessageInput = ({
                             className="p-2"
                             onClick={handleMessageSubmit}
                             disabled={isChatDisabled}
+                            type="button"
                         >
                             <SendHorizontal className="h-6 w-6" />
                         </Button>
