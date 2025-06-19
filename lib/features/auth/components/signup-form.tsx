@@ -81,7 +81,7 @@ export function SignUpForm() {
                     <ErrorField>{errors.confirmPassword.message}</ErrorField>
                 )}
             </CardContent>
-            <CardFooter className="mt-8">
+            <CardFooter className="mt-8 pb-1">
                 <Button
                     className="w-full"
                     type="submit"

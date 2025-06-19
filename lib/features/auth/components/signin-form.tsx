@@ -59,7 +59,7 @@ export function SignInForm() {
                     tabIndex={2}
                 />
             </CardContent>
-            <CardFooter className="mt-8 flex flex-col items-center space-y-4">
+            <CardFooter className="mt-8 flex flex-col items-center space-y-4 pb-1">
                 <Button
                     className="w-full"
                     type="submit"
