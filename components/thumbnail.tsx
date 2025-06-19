@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { generateOptimizedBlurDataURL } from "@/lib/helpers/optimize-img";
 import { cn } from "@/lib/utils";
 
 import { AspectRatio } from "./ui/aspect-ratio";
@@ -22,12 +21,9 @@ export function VideoThumbnail({
     priority = false,
     sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
     alt = "Video thumbnail",
-    placeholder = "blur",
+    placeholder = "empty",
 }: VideoThumbnailProps) {
     const [thumbnailError, setThumbnailError] = useState(!thumbnailUrl);
-    const blurDataURL = useMemo(() => {
-        return generateOptimizedBlurDataURL(thumbnailUrl);
-    }, [thumbnailUrl]);
 
     return (
         <AspectRatio ratio={16 / 9} className="group relative">
@@ -48,8 +44,7 @@ export function VideoThumbnail({
                             priority={priority}
                             sizes={sizes}
                             quality={85}
-                            placeholder={placeholder}
-                            blurDataURL={blurDataURL}
+                            placeholder={"empty"}
                             className={cn(
                                 "rounded-lg object-cover transition-opacity duration-300",
                             )}
