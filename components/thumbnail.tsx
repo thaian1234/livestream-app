@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -23,12 +22,10 @@ export function VideoThumbnail({
     alt = "Video thumbnail",
     placeholder = "empty",
 }: VideoThumbnailProps) {
-    const [thumbnailError, setThumbnailError] = useState(!thumbnailUrl);
-
     return (
         <AspectRatio ratio={16 / 9} className="group relative">
             <div className="aspect-video w-full overflow-hidden rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 transition-all duration-300 group-hover:shadow-lg">
-                {thumbnailError ? (
+                {!thumbnailUrl ? (
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Avatar className="size-14">
                             <AvatarImage src="/circle-play.svg" />
@@ -36,23 +33,21 @@ export function VideoThumbnail({
                         </Avatar>
                     </div>
                 ) : (
-                    <>
+                    <div className="relative h-full w-full">
                         <Image
-                            src={thumbnailUrl || ""}
+                            src={thumbnailUrl}
                             alt={alt}
                             fill
                             priority={priority}
                             sizes={sizes}
                             quality={85}
-                            placeholder={"empty"}
+                            placeholder="empty"
                             className={cn(
                                 "rounded-lg object-cover transition-opacity duration-300",
+                                "bg-gradient-to-br from-gray-700 to-gray-900",
                             )}
-                            onError={() => {
-                                setThumbnailError(true);
-                            }}
                         />
-                    </>
+                    </div>
                 )}
             </div>
         </AspectRatio>
