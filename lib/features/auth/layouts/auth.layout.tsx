@@ -27,12 +27,12 @@ export function AuthLayout({
 }: AuthLayoutProps) {
     const footerLink = isSignUp
         ? {
-              title: "Don't have an account?",
+              title: "Already Registered?",
               to: "/sign-in",
               text: "Sign In",
           }
         : {
-              title: "Already Registered?",
+              title: "Don't have an account?",
               to: "/sign-up",
               text: "Sign Up",
           };
@@ -51,7 +51,7 @@ export function AuthLayout({
                 {children}
                 <OauthButton />
             </CardBody>
-            <CardFooter className="items-center">
+            <CardFooter className="items-center pt-2">
                 <CardTitle className="text-base font-normal">
                     <span className="mr-2">{footerLink.title}</span>
                     <Link href={footerLink.to} className="hover:underline">
