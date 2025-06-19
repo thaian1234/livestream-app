@@ -13,7 +13,7 @@ export function Navbar() {
     const { onCollapseSidebar } = useSidebar();
 
     return (
-        <nav className="max-w-screen-w sticky top-0 z-10 flex h-14 justify-between gap-1 bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-4 sm:px-12">
+        <nav className="sticky top-0 z-10 flex h-14 justify-between gap-1 bg-opacity-75 bg-gradient-to-r from-teal-2 to-black-1 px-4 sm:px-12">
             <div className="hidden items-center sm:flex">
                 <Link href="/">
                     <Image

@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MoneyInput } from "@/components/ui/money-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -220,7 +221,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                 No donation packages available
                                             </div>
                                         ) : (
-                                            <div className="grid max-h-[400px] grid-cols-1 overflow-y-auto pr-2">
+                                            <ScrollArea className="max-h-[300px]">
                                                 <RadioGroup
                                                     value={selectedCardId}
                                                     onValueChange={(value) =>
@@ -234,7 +235,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                         (card) => (
                                                             <div
                                                                 key={card.id}
-                                                                className="flex items-center space-x-2"
+                                                                className="flex items-center space-x-2 p-0"
                                                             >
                                                                 <RadioGroupItem
                                                                     value={
@@ -257,7 +258,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                                     }
                                                                 >
                                                                     <CardHeader className="py-1">
-                                                                        <CardTitle>
+                                                                        <CardTitle className="text-md">
                                                                             {
                                                                                 card.title
                                                                             }
@@ -280,7 +281,7 @@ export function DonateDialog({ children, streamerId = "" }: DonateDialogProps) {
                                                         ),
                                                     )}
                                                 </RadioGroup>
-                                            </div>
+                                            </ScrollArea>
                                         )}
                                         {errors.cardId && (
                                             <ErrorField>

@@ -74,17 +74,26 @@ export const CustomMessageInput = ({
                     onKeyDown={handleKeyDown}
                     disabled={isChatDisabled}
                     maxLength={50}
+                    autoFocus={!isChatDisabled}
                 />
                 <div className="flex items-center justify-between">
-                    <DonateDialog streamerId={streamerId}>
-                        <Button variant="ghost" className="p-2">
-                            <Gift className="h-6 w-6" />
-                        </Button>
-                    </DonateDialog>
+                    {!isHost ? (
+                        <DonateDialog streamerId={streamerId}>
+                            <Button variant="ghost" className="p-2">
+                                <Gift className="h-6 w-6" />
+                            </Button>
+                        </DonateDialog>
+                    ) : (
+                        <div></div>
+                    )}
+
                     <div className="flex items-center">
                         <EmojiPicker
-                            buttonClassName="h-10 w-10 p-2   rounded-md fill-white hover:bg-accent hover:fill-teal-2 disabled:opacity-50e"
+                            buttonClassName="h-10 w-10 p-2 rounded-md fill-white hover:bg-accent hover:fill-teal-2 disabled:opacity-50"
                             pickerProps={{ theme: "light" }}
+                            popperOptions={{
+                                placement: "left-end",
+                            }}
                         />
 
                         <Button
